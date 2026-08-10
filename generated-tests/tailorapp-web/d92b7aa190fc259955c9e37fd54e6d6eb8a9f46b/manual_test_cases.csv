@@ -1,0 +1,99 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Missing required fields,Order Creation,Negative,High,User is on the order creation page,"1. Leave all fields blank. 2. Attempt to submit the order.
+
+Test Data: No input data",The system should display an error message indicating that required fields are missing.,TC-001
+Invalid phone number,Order Creation,Negative,Medium,User is on the order creation page,"1. Enter an invalid phone number. 2. Attempt to submit the order.
+
+Test Data: Invalid phone number (e.g. 'abc')",The system should display an error message indicating that the phone number is invalid.,TC-002
+Invalid item type,Order Creation,Negative,Medium,User is on the order creation page,"1. Select an invalid item type. 2. Attempt to submit the order.
+
+Test Data: Invalid item type (e.g. 'unknown')",The system should display an error message indicating that the item type is invalid.,TC-003
+Unauthorized access,Order Creation,Negative,High,User is not logged in,"1. Attempt to access the order creation page. 2. Attempt to submit the order.
+
+Test Data: No login credentials",The system should display an error message indicating that the user is not authorized to access the page.,TC-004
+Invalid photo upload,Order Creation,Negative,Medium,User is on the order creation page,"1. Attempt to upload an invalid photo (e.g. a non-image file). 2. Attempt to submit the order.
+
+Test Data: Invalid photo file (e.g. a text file)",The system should display an error message indicating that the photo upload is invalid.,TC-005
+Missing photo upload,Order Creation,Negative,Medium,User is on the order creation page,"1. Do not upload a photo. 2. Attempt to submit the order.
+
+Test Data: No photo uploaded",The system should display an error message indicating that a photo is required.,TC-006
+Invalid order ID,Order Confirmation,Negative,Medium,User is on the order confirmation page,"1. Enter an invalid order ID. 2. Attempt to confirm the order.
+
+Test Data: Invalid order ID (e.g. 'abc')",The system should display an error message indicating that the order ID is invalid.,TC-007
+Unauthorized access,Order Confirmation,Negative,High,User is not logged in,"1. Attempt to access the order confirmation page. 2. Attempt to confirm the order.
+
+Test Data: No login credentials",The system should display an error message indicating that the user is not authorized to access the page.,TC-008
+Invalid order data,Order Success,Negative,Medium,User is on the order success page,"1. Attempt to display the order success page with invalid order data. 2. Verify that the page displays an error message.
+
+Test Data: Invalid order data (e.g. missing order ID)",The system should display an error message indicating that the order data is invalid.,TC-009
+"Verify that malicious file uploads (e.g., executable files) are rejected during photo upload",Order Creation - Photo Upload Security,Security,High,User is logged in and has reached the 'Add Photos' step of order creation with a valid customer and item selected,"1. Click the 'Upload' button for any photo type (e.g., 'Order Cloth').
+2. In the file picker, select a file with an executable extension (e.g., 'malicious.exe' or 'malicious.php').
+3. Confirm the upload.
+4. Observe the system response.
+5. Repeat steps 1-4 with a file containing a null byte in its name (e.g., 'malicious\0.png').
+6. Repeat steps 1-4 with a file containing path traversal sequences (e.g., '../../malicious.png').
+
+Test Data: Files: malicious.exe, malicious.php, malicious\0.png, ../../malicious.png","The system should reject all non-image files with an error message such as 'Only image files are allowed'. The upload should not proceed, and no photo should appear in the preview or be saved to the order.",TC-010
+Verify that oversized image uploads are rejected or handled appropriately,Order Creation - Photo Upload Security,Security,High,User is logged in and has reached the 'Add Photos' step of order creation with a valid customer and item selected,"1. Click the 'Upload' button for any photo type (e.g., 'Order Cloth').
+2. In the file picker, select an image file larger than 10MB.
+3. Confirm the upload.
+4. Observe the system response.
+
+Test Data: Image file: 15MB sample.jpg","The system should reject the oversized image with an error message such as 'Image size exceeds the maximum allowed limit of 10MB'. The upload should not proceed, and no photo should appear in the preview or be saved to the order.",TC-011
+Verify that base64-encoded image uploads are sanitized and do not allow injection attacks,Order Creation - Photo Upload Security,Security,High,User is logged in and has reached the 'Add Photos' step of order creation with a valid customer and item selected,"1. Intercept the network request during a legitimate photo upload (e.g., using browser dev tools).
+2. Modify the base64 payload in the request to include malicious JavaScript (e.g., `<script>alert('xss')</script>` embedded in the image metadata).
+3. Send the modified request.
+4. Observe the system response and check if the malicious script executes or is rendered in the UI.
+
+Test Data: Modified base64 payload with embedded script: `<script>alert('xss')</script>`","The system should sanitize the base64 payload and either reject the upload or strip out the malicious script. The photo should either not appear in the preview, or the script should not execute when the photo is displayed.",TC-012
+Verify that photo uploads enforce authentication and authorization,Order Creation - Photo Upload Security,Security,High,User is not logged in (clear all session and local storage tokens/cookies),"1. Navigate directly to the 'Add Photos' step of order creation by entering the URL in the browser.
+2. Attempt to upload a photo.
+3. Observe the system response.
+4. Log in as a different user who does not own the order in progress (if possible).
+5. Attempt to upload a photo to the existing order.
+6. Observe the system response.
+
+Test Data: Valid image file: sample.png","The system should redirect the unauthenticated user to the login page or display an 'Unauthorized' error. For the logged-in user, the system should either prevent access to the order or display an 'Access Denied' error.",TC-013
+Verify that server-side photo URLs are not exposed to unauthorized users,Order Creation - Photo Upload Security,Security,High,User A is logged in and has uploaded photos for an order. User B is logged in but does not own the order.,"1. As User A, complete the photo upload step and proceed to the 'Confirm Order' page.
+2. Note the server-side photo URLs displayed (if any).
+3. Log out as User A.
+4. Log in as User B.
+5. Attempt to access the photo URLs noted in step 2 by entering them directly in the browser.
+6. Observe the system response.
+
+Test Data: N/A",The system should prevent User B from accessing the photo URLs directly. The browser should display an 'Access Denied' error or redirect to the login page.,TC-014
+Verify that session storage does not leak sensitive photo data,Order Creation - Photo Upload Security,Security,Medium,User is logged in and has uploaded photos for an order in progress,"1. Complete the photo upload step and proceed to the 'Confirm Order' page.
+2. Open the browser's developer tools and inspect the session storage.
+3. Check the 'create-order:v4' key for any raw base64 photo data or server URLs.
+4. Log out of the application.
+5. Re-inspect the session storage to ensure all order-related data is cleared.
+
+Test Data: N/A","The session storage should not contain raw base64 photo data or server URLs after logout. The 'create-order:v4' key should either be cleared or contain only non-sensitive data (e.g., order metadata without photos).",TC-015
+Verify that photo upload API enforces rate limiting to prevent abuse,Order Creation - Photo Upload Security,Security,Medium,User is logged in and has reached the 'Add Photos' step of order creation with a valid customer and item selected,"1. Click the 'Upload' button for any photo type (e.g., 'Order Cloth').
+2. Select a valid image file and confirm the upload.
+3. Immediately attempt to upload the same file 10 times in rapid succession (e.g., using a script or rapid clicks).
+4. Observe the system response after the first few uploads.
+
+Test Data: Valid image file: sample.png",The system should allow the first few uploads but eventually throttle or block further requests with an error message such as 'Too many requests. Please try again later.',TC-016
+Verify that order confirmation does not expose sensitive data in error messages or logs,Order Creation - Confirmation Security,Security,High,User is logged in and has reached the 'Confirm Order' step with photos uploaded,"1. Proceed to the 'Confirm Order' step.
+2. Intercept the network request during order submission (e.g., using browser dev tools).
+3. Modify the request payload to include invalid or malicious data (e.g., negative makingCharge, SQL injection in deliveryDate).
+4. Send the modified request.
+5. Observe the system response and any error messages displayed.
+6. Check the browser console and network logs for any sensitive data exposure (e.g., tokens, raw photo URLs, customer PII).
+
+Test Data: Modified payload: { makingCharge: -1000, deliveryDate: ""2023-01-01'; DROP TABLE orders;--"" }","The system should reject the invalid payload with a generic error message such as 'Invalid order data. Please try again.' No sensitive data (e.g., tokens, photo URLs, customer PII) should be exposed in error messages or logs.",TC-017
+Verify that authentication tokens are securely handled and not exposed in URLs or logs,Order Creation - Token Handling Security,Security,High,User is logged in and has reached any step of order creation,"1. Open the browser's developer tools and inspect the network tab.
+2. Navigate through the order creation steps (e.g., 'Add Photos', 'Confirm Order').
+3. Check all network requests for the presence of authentication tokens in URLs, headers, or request payloads.
+4. Observe if tokens are logged in the browser console or network tab.
+5. Log out of the application and verify that tokens are cleared from storage and cookies.
+
+Test Data: N/A","Authentication tokens should never appear in URLs or be logged in the browser console. Tokens should be sent securely in request headers (e.g., Authorization: Bearer <token>). After logout, all tokens should be cleared from session storage, local storage, and cookies.",TC-018
+Verify that order IDs are not predictable or susceptible to insecure direct object reference (IDOR),Order Creation - Order ID Generation Security,Security,High,User is logged in and has completed an order,"1. Complete an order and note the generated order ID displayed on the success page.
+2. Log out and log in as a different user.
+3. Manually modify the URL to access the success page of the first user's order (e.g., by incrementing or decrementing the order ID in the URL).
+4. Observe the system response.
+5. Repeat step 3 with a random order ID not associated with any user.
+
+Test Data: N/A","The system should prevent access to order details for orders not owned by the logged-in user. The user should see an 'Access Denied' error or be redirected to a safe page (e.g., dashboard).",TC-019

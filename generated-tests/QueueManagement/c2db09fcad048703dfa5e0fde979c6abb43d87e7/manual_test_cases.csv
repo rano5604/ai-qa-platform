@@ -1,0 +1,113 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Add multiple shop holidays with one duplicate date (boundary: duplicate date handling),Shop Holiday Management,Boundary,High,A shop with ID 1 exists. The shop already has a holiday on 2024-12-25.,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData. 2. Observe the response status and body.
+
+Test Data: [
+  {
+    ""holidayDate"": ""2024-12-25"",
+    ""reason"": ""Christmas""
+  },
+  {
+    ""holidayDate"": ""2024-12-31"",
+    ""reason"": ""New Year's Eve""
+  }
+]",HTTP status code 200 (OK). Response body contains the message: 'Some holidays were already declared and were skipped: [2024-12-25]'. The holiday for 2024-12-31 is added successfully.,TC-001
+Add an empty list of shop holidays (boundary: empty collection),Shop Holiday Management,Boundary,Medium,A shop with ID 1 exists.,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData. 2. Observe the response status and body.
+
+Test Data: []",HTTP status code 200 (OK). Response body contains the message: 'All holidays added successfully for shop [shop name]'. No holidays are added.,TC-002
+Add shop holidays with a very large list (boundary: large collection input),Shop Holiday Management,Boundary,Medium,A shop with ID 1 exists.,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData. 2. Observe the response status and body.
+
+Test Data: [
+  {
+    ""holidayDate"": ""2024-01-01"",
+    ""reason"": ""New Year""
+  },
+  {
+    ""holidayDate"": ""2024-01-02"",
+    ""reason"": ""Day After New Year""
+  },
+  ... (1000 entries with unique dates) ...
+]",HTTP status code 200 (OK). Response body contains the message: 'All holidays added successfully for shop [shop name]'. All 1000 holidays are added successfully.,TC-003
+Add shop holidays with a null reason (boundary: null field value),Shop Holiday Management,Boundary,Medium,A shop with ID 1 exists.,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData. 2. Observe the response status and body.
+
+Test Data: [
+  {
+    ""holidayDate"": ""2024-01-01"",
+    ""reason"": null
+  }
+]",HTTP status code 200 (OK). Response body contains the message: 'All holidays added successfully for shop [shop name]'. The holiday is added with a null reason.,TC-004
+Add shop holidays with an empty reason (boundary: empty string field),Shop Holiday Management,Boundary,Medium,A shop with ID 1 exists.,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData. 2. Observe the response status and body.
+
+Test Data: [
+  {
+    ""holidayDate"": ""2024-01-01"",
+    ""reason"": """"
+  }
+]",HTTP status code 200 (OK). Response body contains the message: 'All holidays added successfully for shop [shop name]'. The holiday is added with an empty reason.,TC-005
+Add shop holidays with a date in the far past (boundary: past date edge),Shop Holiday Management,Boundary,Low,A shop with ID 1 exists.,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData. 2. Observe the response status and body.
+
+Test Data: [
+  {
+    ""holidayDate"": ""1970-01-01"",
+    ""reason"": ""Far Past Holiday""
+  }
+]",HTTP status code 200 (OK). Response body contains the message: 'All holidays added successfully for shop [shop name]'. The holiday is added successfully.,TC-006
+Add shop holidays with a date in the far future (boundary: future date edge),Shop Holiday Management,Boundary,Low,A shop with ID 1 exists.,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData. 2. Observe the response status and body.
+
+Test Data: [
+  {
+    ""holidayDate"": ""2099-12-31"",
+    ""reason"": ""Far Future Holiday""
+  }
+]",HTTP status code 200 (OK). Response body contains the message: 'All holidays added successfully for shop [shop name]'. The holiday is added successfully.,TC-007
+Remove a shop holiday with a non-existent ID (boundary: invalid ID),Shop Holiday Management,Boundary,High,No shop holiday with ID 999999 exists.,1. Send a DELETE request to /api/shop-holidays/999999. 2. Observe the response status and body.,HTTP status code 500 (Internal Server Error) or 404 (Not Found). Response body contains an error message indicating that the holiday was not found.,TC-008
+Remove a shop holiday with an ID of zero (boundary: zero ID),Shop Holiday Management,Boundary,High,No shop holiday with ID 0 exists.,1. Send a DELETE request to /api/shop-holidays/0. 2. Observe the response status and body.,HTTP status code 500 (Internal Server Error) or 404 (Not Found). Response body contains an error message indicating that the holiday was not found.,TC-009
+Retrieve shop holidays for a non-existent shop (boundary: invalid shop ID),Shop Holiday Management,Boundary,High,No shop with ID 999999 exists.,1. Send a GET request to /api/shop-holidays/999999. 2. Observe the response status and body.,HTTP status code 500 (Internal Server Error) or 404 (Not Found). Response body contains an error message indicating that the shop was not found.,TC-010
+Retrieve shop holidays for a shop with no holidays (boundary: empty result set),Shop Holiday Management,Boundary,Medium,A shop with ID 1 exists and has no holidays recorded.,1. Send a GET request to /api/shop-holidays/1. 2. Observe the response status and body.,HTTP status code 200 (OK). Response body contains an empty list: [].,TC-011
+Add multiple worker holidays with one duplicate date (boundary: duplicate date handling),Worker Holiday Management,Boundary,High,A worker with ID 1 exists. The worker already has a holiday on 2024-12-25.,"1. Send a POST request to /api/worker-holidays/add?workerId=1 with the payload in testData. 2. Observe the response status and body.
+
+Test Data: [
+  {
+    ""holidayDate"": ""2024-12-25"",
+    ""reason"": ""Christmas""
+  },
+  {
+    ""holidayDate"": ""2024-12-31"",
+    ""reason"": ""New Year's Eve""
+  }
+]",HTTP status code 200 (OK). Response body contains the message: 'Some holidays were already declared and were skipped: [2024-12-25]'. The holiday for 2024-12-31 is added successfully.,TC-012
+Add an empty list of worker holidays (boundary: empty collection),Worker Holiday Management,Boundary,Medium,A worker with ID 1 exists.,"1. Send a POST request to /api/worker-holidays/add?workerId=1 with the payload in testData. 2. Observe the response status and body.
+
+Test Data: []",HTTP status code 200 (OK). Response body contains the message: 'All holidays added successfully for worker [worker name]'. No holidays are added.,TC-013
+Add worker holidays with a very large list (boundary: large collection input),Worker Holiday Management,Boundary,Medium,A worker with ID 1 exists.,"1. Send a POST request to /api/worker-holidays/add?workerId=1 with the payload in testData. 2. Observe the response status and body.
+
+Test Data: [
+  {
+    ""holidayDate"": ""2024-01-01"",
+    ""reason"": ""New Year""
+  },
+  {
+    ""holidayDate"": ""2024-01-02"",
+    ""reason"": ""Day After New Year""
+  },
+  ... (1000 entries with unique dates) ...
+]",HTTP status code 200 (OK). Response body contains the message: 'All holidays added successfully for worker [worker name]'. All 1000 holidays are added successfully.,TC-014
+Add worker holidays with a null reason (boundary: null field value),Worker Holiday Management,Boundary,Medium,A worker with ID 1 exists.,"1. Send a POST request to /api/worker-holidays/add?workerId=1 with the payload in testData. 2. Observe the response status and body.
+
+Test Data: [
+  {
+    ""holidayDate"": ""2024-01-01"",
+    ""reason"": null
+  }
+]",HTTP status code 200 (OK). Response body contains the message: 'All holidays added successfully for worker [worker name]'. The holiday is added with a null reason.,TC-015
+Add worker holidays with an empty reason (boundary: empty string field),Worker Holiday Management,Boundary,Medium,A worker with ID 1 exists.,"1. Send a POST request to /api/worker-holidays/add?workerId=1 with the payload in testData. 2. Observe the response status and body.
+
+Test Data: [
+  {
+    ""holidayDate"": ""2024-01-01"",
+    ""reason"": """"
+  }
+]",HTTP status code 200 (OK). Response body contains the message: 'All holidays added successfully for worker [worker name]'. The holiday is added with an empty reason.,TC-016
+Remove a worker holiday with a non-existent ID (boundary: invalid ID),Worker Holiday Management,Boundary,High,No worker holiday with ID 999999 exists.,1. Send a DELETE request to /api/worker-holidays/999999. 2. Observe the response status and body.,HTTP status code 500 (Internal Server Error) or 404 (Not Found). Response body contains an error message indicating that the holiday was not found.,TC-017
+Remove a worker holiday with an ID of zero (boundary: zero ID),Worker Holiday Management,Boundary,High,No worker holiday with ID 0 exists.,1. Send a DELETE request to /api/worker-holidays/0. 2. Observe the response status and body.,HTTP status code 500 (Internal Server Error) or 404 (Not Found). Response body contains an error message indicating that the holiday was not found.,TC-018
+Retrieve worker holidays for a non-existent worker (boundary: invalid worker ID),Worker Holiday Management,Boundary,High,No worker with ID 999999 exists.,1. Send a GET request to /api/worker-holidays/999999. 2. Observe the response status and body.,HTTP status code 500 (Internal Server Error) or 404 (Not Found). Response body contains an error message indicating that the worker was not found.,TC-019
+Retrieve worker holidays for a worker with no holidays (boundary: empty result set),Worker Holiday Management,Boundary,Medium,A worker with ID 1 exists and has no holidays recorded.,1. Send a GET request to /api/worker-holidays/1. 2. Observe the response status and body.,HTTP status code 200 (OK). Response body contains an empty list: [].,TC-020

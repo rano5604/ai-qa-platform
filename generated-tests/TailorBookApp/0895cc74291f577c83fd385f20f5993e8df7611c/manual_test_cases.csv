@@ -1,0 +1,202 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Register a new worker with valid details and verify OTP is generated and sent,Worker Management - Worker Registration,Positive,High,Shop with ID 1 exists and the authenticated user is the shop owner,"1. Send a POST request to /api/shops/1/workers with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""name"": ""Rahim Khan"",
+  ""phone"": ""+8801712345678"",
+  ""email"": ""rahim.khan@example.com"",
+  ""address"": ""123 Tailor Street, Dhaka"",
+  ""role"": ""CUTTING_MASTER""
+}","HTTP 201 Created response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Workers added successfully"",
+  ""data"": ""<6-digit OTP>""
+}",TC-001
+Activate a worker by setting PIN using valid OTP,Worker Management - Worker Activation,Positive,High,Worker exists with phone number +8801712345678 and OTP has been generated and sent to the worker,"1. Send a POST request to /api/shops/1/workers/activate with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""phone"": ""+8801712345678"",
+  ""pin"": ""1234"",
+  ""otp"": ""<6-digit OTP>""
+}","HTTP 201 Created response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Workers activated"",
+  ""data"": null
+}",TC-002
+Register a worker with an email already associated with another shop and verify shop change request is initiated,Worker Management - Worker Registration with Existing Email,Positive,High,Worker with email 'rahim.khan@example.com' exists in shop with ID 2 and the authenticated user is the shop owner of shop ID 1,"1. Send a POST request to /api/shops/1/workers with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""name"": ""Rahim Khan"",
+  ""phone"": ""+8801712345689"",
+  ""email"": ""rahim.khan@example.com"",
+  ""address"": ""456 Tailor Street, Dhaka"",
+  ""role"": ""SEWING_MAN""
+}","HTTP 201 Created response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Workers added successfully"",
+  ""data"": ""<6-digit OTP>""
+}",TC-003
+Generate and send OTP to a worker's email for activation,Worker Management - OTP Generation for Worker,Positive,Medium,Worker exists with email 'karim.mia@example.com',"1. Send a POST request to /api/shops/1/workers/sendOtp with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""name"": ""Karim Mia"",
+  ""phone"": ""+8801812345678"",
+  ""email"": ""karim.mia@example.com"",
+  ""address"": ""789 Tailor Street, Dhaka"",
+  ""role"": ""PRESS_MAN""
+}","HTTP 201 Created response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Workers activated"",
+  ""data"": null
+}",TC-004
+Request OTP for a user email and verify OTP is generated and sent,Authentication - OTP Request,Positive,High,User email 'user@example.com' exists in the system,1. Send a POST request to /api/auth/request-otp?email=user@example.com. 2. Verify the response status and body.,"HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""OTP sent successfully"",
+  ""data"": null
+}",0399124-TC-001
+"Attempt to add a worker with missing required fields (phone, email, role)",Worker Management,Negative,High,User is authenticated as a SHOP_OWNER,"1. Send a POST request to /api/shops/{shopId}/workers with the payload in testData, omitting required fields.
+
+Test Data: {
+  ""name"": ""John Doe"",
+  ""address"": ""123 Main St""
+}","The system returns an HTTP 400 Bad Request status code with an error message indicating that 'phone', 'email', and 'role' fields are required.",TC-005
+Attempt to add a worker with an invalid email format,Worker Management,Negative,High,User is authenticated as a SHOP_OWNER,"1. Send a POST request to /api/shops/{shopId}/workers with the payload in testData, using an invalid email format.
+
+Test Data: {
+  ""name"": ""John Doe"",
+  ""phone"": ""+1234567890"",
+  ""email"": ""invalid-email"",
+  ""address"": ""123 Main St"",
+  ""role"": ""CUTTING_MASTER""
+}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'email' field must be a valid email address.,TC-006
+Attempt to add a worker with a duplicate email,Worker Management,Negative,High,User is authenticated as a SHOP_OWNER. A worker with email 'existing@example.com' already exists in the system.,"1. Send a POST request to /api/shops/{shopId}/workers with the payload in testData, using a duplicate email.
+
+Test Data: {
+  ""name"": ""John Doe"",
+  ""phone"": ""+1234567891"",
+  ""email"": ""existing@example.com"",
+  ""address"": ""123 Main St"",
+  ""role"": ""CUTTING_MASTER""
+}",The system returns an HTTP 409 Conflict status code with an error message indicating that a worker with this email already exists.,TC-007
+Attempt to add a worker with a duplicate phone number,Worker Management,Negative,High,User is authenticated as a SHOP_OWNER. A worker with phone '+1234567890' already exists in the system.,"1. Send a POST request to /api/shops/{shopId}/workers with the payload in testData, using a duplicate phone number.
+
+Test Data: {
+  ""name"": ""John Doe"",
+  ""phone"": ""+1234567890"",
+  ""email"": ""new@example.com"",
+  ""address"": ""123 Main St"",
+  ""role"": ""CUTTING_MASTER""
+}",The system returns an HTTP 409 Conflict status code with an error message indicating that a worker with this phone number already exists.,TC-008
+Attempt to add a worker with an invalid role,Worker Management,Negative,High,User is authenticated as a SHOP_OWNER,"1. Send a POST request to /api/shops/{shopId}/workers with the payload in testData, using an invalid role.
+
+Test Data: {
+  ""name"": ""John Doe"",
+  ""phone"": ""+1234567890"",
+  ""email"": ""john@example.com"",
+  ""address"": ""123 Main St"",
+  ""role"": ""INVALID_ROLE""
+}","The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'role' field must be one of: CUTTING_MASTER, SEWING_MAN, PRESS_MAN.",TC-009
+"Attempt to send OTP for worker activation without required fields (email, role)",Worker Management,Negative,High,User is authenticated as a SHOP_OWNER,"1. Send a POST request to /api/shops/{shopId}/workers/sendOtp with the payload in testData, omitting required fields.
+
+Test Data: {
+  ""name"": ""John Doe"",
+  ""phone"": ""+1234567890"",
+  ""address"": ""123 Main St""
+}",The system returns an HTTP 400 Bad Request status code with an error message indicating that 'email' and 'role' fields are required.,TC-010
+"Attempt to activate a worker with missing required fields (phone, pin, otp)",Worker Management,Negative,High,User is authenticated as a SHOP_OWNER. A worker exists with phone '+1234567890'.,"1. Send a POST request to /api/shops/{shopId}/workers/activate with the payload in testData, omitting required fields.
+
+Test Data: {}","The system returns an HTTP 400 Bad Request status code with an error message indicating that 'phone', 'pin', and 'otp' fields are required.",TC-011
+Attempt to activate a worker with an invalid OTP,Worker Management,Negative,High,User is authenticated as a SHOP_OWNER. A worker exists with phone '+1234567890'. A valid OTP was previously generated but not used.,"1. Send a POST request to /api/shops/{shopId}/workers/activate with the payload in testData, using an invalid OTP.
+
+Test Data: {
+  ""phone"": ""+1234567890"",
+  ""pin"": ""1234"",
+  ""otp"": ""000000""
+}",The system returns an HTTP 401 Unauthorized status code with an error message indicating that the OTP is invalid or expired.,TC-012
+Attempt to activate a worker with an expired OTP,Worker Management,Negative,Medium,User is authenticated as a SHOP_OWNER. A worker exists with phone '+1234567890'. An OTP was generated more than 5 minutes ago and not used.,"1. Send a POST request to /api/shops/{shopId}/workers/activate with the payload in testData, using the expired OTP.
+
+Test Data: {
+  ""phone"": ""+1234567890"",
+  ""pin"": ""1234"",
+  ""otp"": ""123456""
+}",The system returns an HTTP 401 Unauthorized status code with an error message indicating that the OTP is invalid or expired.,TC-013
+Attempt to add a worker as a non-SHOP_OWNER user,Worker Management,Negative,High,User is authenticated as a WORKER (not SHOP_OWNER).,"1. Send a POST request to /api/shops/{shopId}/workers with the payload in testData.
+
+Test Data: {
+  ""name"": ""John Doe"",
+  ""phone"": ""+1234567890"",
+  ""email"": ""john@example.com"",
+  ""address"": ""123 Main St"",
+  ""role"": ""CUTTING_MASTER""
+}",The system returns an HTTP 403 Forbidden status code with an error message indicating that the user is not authorized to perform this action.,TC-014
+Attempt to add a worker with a non-existent shop ID,Worker Management,Negative,High,User is authenticated as a SHOP_OWNER. Shop with ID 999999 does not exist.,"1. Send a POST request to /api/shops/999999/workers with the payload in testData.
+
+Test Data: {
+  ""name"": ""John Doe"",
+  ""phone"": ""+1234567890"",
+  ""email"": ""john@example.com"",
+  ""address"": ""123 Main St"",
+  ""role"": ""CUTTING_MASTER""
+}",The system returns an HTTP 404 Not Found status code with an error message indicating that the shop with ID 999999 does not exist.,TC-015
+Attempt to activate a worker who is already active (PIN already set),Worker Management,Negative,Medium,User is authenticated as a SHOP_OWNER. A worker exists with phone '+1234567890' and is already active (status = true).,"1. Send a POST request to /api/shops/{shopId}/workers/activate with the payload in testData.
+
+Test Data: {
+  ""phone"": ""+1234567890"",
+  ""pin"": ""1234"",
+  ""otp"": ""123456""
+}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the worker is already active and cannot be activated again.,TC-016
+Attempt to request OTP for a non-existent email,Worker Management,Negative,Medium,User is unauthenticated.,"1. Send a POST request to /api/auth/request-otp with the query parameter in testData for a non-existent email.
+
+Test Data: email=nonexistent@example.com",The system returns an HTTP 404 Not Found status code with an error message indicating that no user exists with this email.,TC-017
+Attempt to activate a worker with a malformed phone number,Worker Management,Negative,High,User is authenticated as a SHOP_OWNER. A worker exists with a valid phone number.,"1. Send a POST request to /api/shops/{shopId}/workers/activate with the payload in testData, using a malformed phone number.
+
+Test Data: {
+  ""phone"": ""invalid-phone"",
+  ""pin"": ""1234"",
+  ""otp"": ""123456""
+}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'phone' field must be a valid phone number.,TC-018
+Attempt to add a worker with a shop change request when a pending request already exists,Worker Management,Negative,Medium,User is authenticated as a SHOP_OWNER. A worker with email 'existing@example.com' exists in shop A. A pending shop change request for this worker to shop B already exists.,"1. Send a POST request to /api/shops/{shopId}/workers with the payload in testData, attempting to add the same worker to shop C.
+
+Test Data: {
+  ""name"": ""John Doe"",
+  ""phone"": ""+1234567890"",
+  ""email"": ""existing@example.com"",
+  ""address"": ""123 Main St"",
+  ""role"": ""CUTTING_MASTER""
+}",The system returns an HTTP 409 Conflict status code with an error message indicating that a pending shop change request already exists for this worker.,TC-019
+Verify that OTP generation for worker activation enforces rate limiting to prevent abuse,Worker Management - OTP Generation and Verification,Security,High,A shop owner is authenticated and has a valid shop ID. A worker record exists with a valid email and phone number.,"1. Send 10 consecutive POST requests to /api/shops/{shopId}/workers/sendOtp with the payload in testData within 1 second. 2. Observe the response for each request.
+
+Test Data: {""email"": ""worker@example.com"", ""phone"": ""+1234567890"", ""role"": ""CUTTING_MASTER""}","The API responds with HTTP status 201 (Created) for the first few requests, then starts responding with HTTP status 429 (Too Many Requests) and a response body containing 'status: error', 'message: Too many requests'.",TC-020
+Verify that OTP verification for worker activation rejects expired OTPs,Worker Management - OTP Verification,Security,High,A shop owner is authenticated and has a valid shop ID. A worker record exists with a valid phone number. An OTP was generated and saved for the worker 10 minutes ago (exceeding the OTP expiry time).,"1. Send a POST request to /api/shops/{shopId}/workers/activate with the payload in testData. 2. Observe the response.
+
+Test Data: {""phone"": ""+1234567890"", ""pin"": ""1234"", ""otp"": ""OLD_OTP""}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: OTP has expired'. The worker's PIN is not set.",TC-021
+Verify that OTP verification for worker activation rejects reused OTPs,Worker Management - OTP Verification,Security,High,"A shop owner is authenticated and has a valid shop ID. A worker record exists with a valid phone number. An OTP was generated, saved, and already used once for the worker.","1. Send a POST request to /api/shops/{shopId}/workers/activate with the payload in testData using the same OTP as before. 2. Observe the response.
+
+Test Data: {""phone"": ""+1234567890"", ""pin"": ""1234"", ""otp"": ""USED_OTP""}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid OTP'. The worker's PIN is not set.",TC-022
+Verify that adding a worker with an existing email from another shop triggers a shop change request and sends a new OTP,Worker Management - Worker Addition,Security,High,A shop owner is authenticated and has a valid shop ID (Shop A). A worker with the same email exists in Shop B.,"1. Send a POST request to /api/shops/{shopId}/workers with the payload in testData. 2. Observe the response. 3. Check the worker's email for the OTP.
+
+Test Data: {""name"": ""John Doe"", ""phone"": ""+1234567891"", ""email"": ""existing_worker@example.com"", ""address"": ""123 Street"", ""role"": ""SEWING_MAN""}","The API responds with HTTP status 201 (Created) and a response body containing 'status: success', 'message: Workers added successfully', and an OTP. The worker receives an email with the OTP for shop change request.",TC-023
+Verify that adding a worker with an email that does not exist creates a new worker record and sends an OTP,Worker Management - Worker Addition,Security,High,A shop owner is authenticated and has a valid shop ID.,"1. Send a POST request to /api/shops/{shopId}/workers with the payload in testData. 2. Observe the response. 3. Check the worker's email for the OTP.
+
+Test Data: {""name"": ""Jane Doe"", ""phone"": ""+1234567892"", ""email"": ""new_worker@example.com"", ""address"": ""456 Avenue"", ""role"": ""PRESS_MAN""}","The API responds with HTTP status 201 (Created) and a response body containing 'status: success', 'message: Workers added successfully', and an OTP. The worker receives an email with the OTP for activation.",TC-024
+Verify that OTP verification for worker activation enforces input validation for phone number format,Worker Management - OTP Verification,Security,Medium,A shop owner is authenticated and has a valid shop ID. A worker record exists with a valid email. An OTP was generated and saved for the worker.,"1. Send a POST request to /api/shops/{shopId}/workers/activate with the payload in testData. 2. Observe the response.
+
+Test Data: {""phone"": ""invalid_phone"", ""pin"": ""1234"", ""otp"": ""VALID_OTP""}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid phone number format'. The worker's PIN is not set.",TC-025
+Verify that OTP verification for worker activation enforces input validation for PIN format,Worker Management - OTP Verification,Security,Medium,A shop owner is authenticated and has a valid shop ID. A worker record exists with a valid phone number. An OTP was generated and saved for the worker.,"1. Send a POST request to /api/shops/{shopId}/workers/activate with the payload in testData. 2. Observe the response.
+
+Test Data: {""phone"": ""+1234567890"", ""pin"": ""12"", ""otp"": ""VALID_OTP""}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: PIN must be at least 4 digits'. The worker's PIN is not set.",TC-026
+"Verify that adding a worker with malicious input (e.g., SQL injection, script tags) in name or address is rejected or sanitized",Worker Management - Worker Addition,Security,High,A shop owner is authenticated and has a valid shop ID.,"1. Send a POST request to /api/shops/{shopId}/workers with the payload in testData. 2. Observe the response.
+
+Test Data: {""name"": ""<script>alert('xss')</script>"", ""phone"": ""+1234567893"", ""email"": ""test@example.com"", ""address"": ""123 Street; DROP TABLE workers;"", ""role"": ""CUTTING_MASTER""}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid input'. The worker is not created, or the malicious input is stored as plain text (not executed).",TC-027
+Verify that OTP generation for worker activation does not expose sensitive data in error messages or logs,Worker Management - OTP Generation,Security,Medium,A shop owner is authenticated and has a valid shop ID. A worker record exists with an invalid email format.,"1. Send a POST request to /api/shops/{shopId}/workers/sendOtp with the payload in testData. 2. Observe the response.
+
+Test Data: {""email"": ""invalid_email"", ""phone"": ""+1234567890"", ""role"": ""CUTTING_MASTER""}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid email format'. The error message and logs do not contain sensitive data (e.g., stack traces, raw SQL queries).",TC-028
+Verify that worker activation (PIN setting) enforces proper authorization - unauthorized user cannot activate a worker,Worker Management - Worker Activation,Security,High,A worker record exists with a valid phone number and email. An OTP was generated and saved for the worker. The user attempting activation is not the shop owner.,"1. Authenticate as a non-owner user. 2. Send a POST request to /api/shops/{shopId}/workers/activate with the payload in testData. 3. Observe the response.
+
+Test Data: {""phone"": ""+1234567890"", ""pin"": ""1234"", ""otp"": ""VALID_OTP""}","The API responds with HTTP status 403 (Forbidden) and a response body containing 'status: error', 'message: Access denied'. The worker's PIN is not set.",TC-029
+Verify that adding a worker with an existing phone number from another shop triggers a shop change request and sends a new OTP,Worker Management - Worker Addition,Security,High,A shop owner is authenticated and has a valid shop ID (Shop A). A worker with the same phone number exists in Shop B.,"1. Send a POST request to /api/shops/{shopId}/workers with the payload in testData. 2. Observe the response. 3. Check the worker's phone for the OTP.
+
+Test Data: {""name"": ""John Doe"", ""phone"": ""+1234567890"", ""email"": ""new_email@example.com"", ""address"": ""123 Street"", ""role"": ""SEWING_MAN""}","The API responds with HTTP status 201 (Created) and a response body containing 'status: success', 'message: Workers added successfully', and an OTP. The worker receives an SMS with the OTP for shop change request.",TC-030
+Verify that OTP verification for worker activation updates the worker's shop if a pending shop change request exists,Worker Management - OTP Verification,Security,High,A shop owner is authenticated and has a valid shop ID (Shop A). A worker exists in Shop B with a pending shop change request to Shop A. An OTP was generated and saved for the worker.,"1. Send a POST request to /api/shops/{shopId}/workers/activate with the payload in testData. 2. Observe the response. 3. Retrieve the worker's details to verify the shop ID.
+
+Test Data: {""phone"": ""+1234567890"", ""pin"": ""1234"", ""otp"": ""VALID_OTP""}","The API responds with HTTP status 201 (Created) and a response body containing 'status: success', 'message: Workers activated'. The worker's shop ID is updated to Shop A, and the pending shop change request is marked as completed.",TC-031

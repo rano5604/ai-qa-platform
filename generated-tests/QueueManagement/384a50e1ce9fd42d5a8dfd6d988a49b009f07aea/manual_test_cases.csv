@@ -1,0 +1,88 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+User successfully accesses the application from the updated allowed origin (no-q.club) without CORS errors,Cross-Origin Resource Sharing (CORS) Configuration,Positive,High,User has a valid session and the application is deployed with the updated CORS configuration,"1. Open a web browser and navigate to the application URL (e.g., https://no-q.club). 2. Log in to the application using valid credentials. 3. Navigate to any functional area (e.g., Appointment Reservation, Worker Management). 4. Perform a standard action (e.g., create an appointment, add a worker). 5. Verify the action completes without errors or CORS-related warnings in the browser console.
+
+Test Data: User credentials: username='testuser', password='validpassword'; Appointment details: customerName='John Doe', customerPhone='1234567890', serviceItem='Haircut', date='2024-12-25', time='10:00 AM'","The application loads successfully. All API calls complete without CORS-related errors. The user can perform actions (e.g., create an appointment, add a worker) and view data as expected without any access issues.",f041dfa-TC-001
+Attempt to access API from an unauthorized origin (non-whitelisted domain),API Access Control - CORS Configuration,Negative,High,User is logged into the application and has a valid session. The application is running and accessible via a web browser.,"1. Open the browser's developer tools (F12).
+2. Navigate to the 'Network' tab.
+3. In the browser address bar, enter a direct API endpoint URL (e.g., the shop management API).
+4. Manually modify the 'Origin' header in the request to a non-whitelisted domain (e.g., 'https://unauthorized-site.com').
+5. Send the request.
+
+Test Data: Origin: https://unauthorized-site.com","The browser should block the request due to CORS policy. The API should not return any data, and the browser's console should display an error message indicating that the request was blocked by CORS policy (e.g., 'Access to fetch at [API URL] from origin [unauthorized-site.com] has been blocked by CORS policy').",f041dfa-TC-004
+Attempt to access API with credentials from an unauthorized origin,API Access Control - CORS Configuration,Negative,High,"User is logged into the application and has a valid session with credentials (e.g., cookies or tokens). The application is running and accessible via a web browser.","1. Open the browser's developer tools (F12).
+2. Navigate to the 'Network' tab.
+3. In the browser address bar, enter a direct API endpoint URL that requires credentials (e.g., the appointment retrieval API).
+4. Manually modify the 'Origin' header in the request to a non-whitelisted domain (e.g., 'https://unauthorized-site.com').
+5. Ensure the 'withCredentials' flag is set to true (or cookies are included).
+6. Send the request.
+
+Test Data: Origin: https://unauthorized-site.com, withCredentials: true","The browser should block the request due to CORS policy. The API should not return any data, and the browser's console should display an error message indicating that the request was blocked by CORS policy (e.g., 'Credentials is not supported if the CORS header ‘Access-Control-Allow-Origin’ is *').",f041dfa-TC-006
+Attempt to access API using an unauthorized HTTP method (not in allowedMethods),API Access Control - CORS Configuration,Negative,High,User is logged into the application and has a valid session. The application is running and accessible via a web browser.,"1. Open the browser's developer tools (F12).
+2. Navigate to the 'Network' tab.
+3. In the browser address bar, enter a direct API endpoint URL (e.g., the shop management API).
+4. Use a tool like Postman or modify the request in the browser to send an HTTP method not allowed by CORS (e.g., PATCH).
+5. Send the request.
+
+Test Data: HTTP Method: PATCH","The browser should block the request due to CORS policy. The API should not return any data, and the browser's console should display an error message indicating that the request method 'PATCH' is not allowed by CORS policy.",f041dfa-TC-005
+Attempt to access API with a malformed Origin header,API Access Control - CORS Configuration,Negative,Medium,User is logged into the application and has a valid session. The application is running and accessible via a web browser.,"1. Open the browser's developer tools (F12).
+2. Navigate to the 'Network' tab.
+3. In the browser address bar, enter a direct API endpoint URL (e.g., the shop management API).
+4. Manually modify the 'Origin' header in the request to a malformed value (e.g., 'https://no-q.club:invalid').
+5. Send the request.
+
+Test Data: Origin: https://no-q.club:invalid",The API should reject the request and return an HTTP 403 Forbidden status code or block the request entirely due to the malformed Origin header. No data should be returned.,TC-001
+Attempt to access API from a browser with the Origin header removed,API Access Control - CORS Configuration,Negative,Low,User is logged into the application and has a valid session. The application is running and accessible via a web browser.,"1. Open the browser's developer tools (F12).
+2. Navigate to the 'Network' tab.
+3. In the browser address bar, enter a direct API endpoint URL (e.g., the shop management API).
+4. Remove the 'Origin' header from the request entirely.
+5. Send the request.
+
+Test Data: Origin: [removed]","The API should process the request normally and return the expected data, as CORS restrictions are enforced by browsers only when the Origin header is present.",TC-002
+Verify API access from the newly allowed origin domain (no-q.club) without credentials,API Cross-Origin Access Control,Boundary,High,User has access to a browser and the API is running. The allowed origin is set to 'https://no-q.club'.,"1. Open a browser and navigate to a page hosted on 'https://no-q.club'.
+2. Open the browser's developer tools and go to the 'Console' and 'Network' tabs.
+3. From the page, make an API request (e.g., fetch shop details) to the application's API endpoint.
+4. Observe the response in the 'Network' tab and the console for any errors.
+
+Test Data: API endpoint: GET /api/shops/1",The API request succeeds with HTTP status code 200. The response headers include 'Access-Control-Allow-Origin: https://no-q.club' and 'Access-Control-Allow-Credentials: true'. The response body contains the shop details.,f041dfa-TC-009
+Verify API access from the newly allowed origin domain (no-q.club) with credentials,API Cross-Origin Access Control,Boundary,High,"User has access to a browser, valid credentials, and the API is running. The allowed origin is set to 'https://no-q.club'.","1. Open a browser and navigate to a page hosted on 'https://no-q.club'.
+2. Open the browser's developer tools and go to the 'Console' and 'Network' tabs.
+3. From the page, make an authenticated API request (e.g., fetch user profile) to the application's API endpoint.
+4. Observe the response in the 'Network' tab and the console for any errors.
+
+Test Data: API endpoint: GET /api/user/profile (with valid credentials)",The API request succeeds with HTTP status code 200. The response headers include 'Access-Control-Allow-Origin: https://no-q.club' and 'Access-Control-Allow-Credentials: true'. The response body contains the user profile data.,f041dfa-TC-012
+Verify API access from the previously allowed origin domain (no-q:8080) is now blocked,API Cross-Origin Access Control,Boundary,High,User has access to a browser and the API is running. The allowed origin is now set to 'https://no-q.club'.,"1. Open a browser and navigate to a page hosted on 'https://no-q:8080'.
+2. Open the browser's developer tools and go to the 'Console' and 'Network' tabs.
+3. From the page, make an API request (e.g., fetch shop details) to the application's API endpoint.
+4. Observe the response in the 'Network' tab and the console for any errors.
+
+Test Data: API endpoint: GET /api/shops/1","The API request fails with an error in the browser console indicating CORS policy blocking. The 'Network' tab shows no successful response, or the response lacks CORS headers.",TC-003
+Verify Swagger UI access from the newly allowed origin domain (no-q.club) without authentication,API Documentation Access,Boundary,High,User has access to a browser and the API is running. The allowed origin is set to 'https://no-q.club'.,"1. Open a browser and navigate to 'https://no-q.club'.
+2. From this page, open the Swagger UI URL (e.g., '/swagger-ui.html') in a new tab or iframe.
+3. Observe whether the Swagger UI loads successfully without prompting for authentication.
+4. Check if all API endpoints are visible and explorable.
+
+Test Data: Swagger UI URL: /swagger-ui.html",Swagger UI loads successfully without prompting for authentication. All API endpoints are visible and explorable.,810dfc9-TC-018
+Verify OpenAPI JSON specification access from the newly allowed origin domain (no-q.club) without authentication,API Documentation Access,Boundary,High,User has access to a browser and the API is running. The allowed origin is set to 'https://no-q.club'.,"1. Open a browser and navigate to 'https://no-q.club'.
+2. From this page, make a request to the OpenAPI JSON specification endpoint (e.g., '/v3/api-docs').
+3. Observe the response in the browser or developer tools.
+
+Test Data: OpenAPI JSON URL: /v3/api-docs","OpenAPI JSON specification is returned successfully without requiring authentication. The response includes the API title 'Shop API', version 'v1.0', and license details.",810dfc9-TC-019
+Verify Swagger UI access from the previously allowed origin domain (no-q:8080) is now blocked,API Documentation Access,Boundary,High,User has access to a browser and the API is running. The allowed origin is now set to 'https://no-q.club'.,"1. Open a browser and navigate to 'https://no-q:8080'.
+2. From this page, open the Swagger UI URL (e.g., '/swagger-ui.html') in a new tab or iframe.
+3. Observe whether the Swagger UI loads or displays an error.
+
+Test Data: Swagger UI URL: /swagger-ui.html",Swagger UI fails to load or displays a CORS error. The page may show a blank screen or an error message indicating access is denied.,f041dfa-TC-014
+Verify OpenAPI JSON specification access from the previously allowed origin domain (no-q:8080) is now blocked,API Documentation Access,Boundary,High,User has access to a browser and the API is running. The allowed origin is now set to 'https://no-q.club'.,"1. Open a browser and navigate to 'https://no-q:8080'.
+2. From this page, make a request to the OpenAPI JSON specification endpoint (e.g., '/v3/api-docs').
+3. Observe the response in the browser or developer tools.
+
+Test Data: OpenAPI JSON URL: /v3/api-docs",The request fails with a CORS error or HTTP status code 403 (Forbidden). The response body is empty or contains an error message indicating access is denied.,f041dfa-TC-015
+Verify that CORS policy restricts API access to the updated allowed origin only,Cross-Origin Resource Sharing (CORS) Configuration,Security,High,"1. The application is running and accessible. 2. A test environment is available with the updated CORS configuration (allowed origin: https://no-q.club). 3. A disallowed origin (e.g., https://malicious-site.com) is available for testing.","1. Open a browser or API client (e.g., Postman). 2. Configure the request to target any API endpoint (e.g., appointment reservation retrieval). 3. Set the 'Origin' header to 'https://no-q.club'. 4. Send the request. 5. Observe the response headers. 6. Repeat steps 2-5 with the 'Origin' header set to 'https://malicious-site.com'.
+
+Test Data: 1. Allowed origin: https://no-q.club. 2. Disallowed origin: https://malicious-site.com. 3. API endpoint: /api/appointments (or any other endpoint).","1. For the allowed origin (https://no-q.club), the response includes the 'Access-Control-Allow-Origin' header with the value 'https://no-q.club' and the 'Access-Control-Allow-Credentials' header with the value 'true'. The request succeeds with HTTP status 200 OK. 2. For the disallowed origin (https://malicious-site.com), the response does NOT include the 'Access-Control-Allow-Origin' header with the disallowed origin, or the request fails with HTTP status 403 Forbidden or CORS error.",f041dfa-TC-016
+"Verify that credentials (cookies, authorization headers) are only allowed for the updated allowed origin",Cross-Origin Resource Sharing (CORS) Configuration,Security,High,"1. The application is running and accessible. 2. A user is logged in and has valid credentials (e.g., JWT token or session cookie). 3. The updated CORS configuration (allowed origin: https://no-q.club) is active.","1. Open a browser or API client (e.g., Postman). 2. Configure the request to target a secured API endpoint (e.g., appointment reservation creation). 3. Set the 'Origin' header to 'https://no-q.club'. 4. Include valid credentials (e.g., 'Authorization' header with a JWT token or session cookie). 5. Send the request. 6. Observe the response headers and status. 7. Repeat steps 2-6 with the 'Origin' header set to a disallowed origin (e.g., https://malicious-site.com).
+
+Test Data: 1. Allowed origin: https://no-q.club. 2. Disallowed origin: https://malicious-site.com. 3. API endpoint: /api/appointments (or any secured endpoint). 4. Valid credentials: JWT token or session cookie.","1. For the allowed origin (https://no-q.club), the response includes the 'Access-Control-Allow-Origin' header with the value 'https://no-q.club' and the 'Access-Control-Allow-Credentials' header with the value 'true'. The request succeeds with HTTP status 200 OK or 201 Created. 2. For the disallowed origin (https://malicious-site.com), the response does NOT include the 'Access-Control-Allow-Origin' header with the disallowed origin, or the request fails with HTTP status 403 Forbidden or CORS error. Credentials are not accepted.",TC-004
+Verify that Swagger UI and OpenAPI documentation are accessible only from the updated allowed origin,API Documentation Access,Security,Medium,"1. The application is running and accessible. 2. Swagger UI and OpenAPI documentation endpoints are enabled (e.g., /swagger-ui.html, /v3/api-docs). 3. The updated CORS configuration (allowed origin: https://no-q.club) is active.","1. Open a browser. 2. Navigate to the Swagger UI URL (e.g., https://no-q.club/swagger-ui.html) from the allowed origin. 3. Observe the response. 4. Navigate to the OpenAPI JSON documentation URL (e.g., https://no-q.club/v3/api-docs) from the allowed origin. 5. Observe the response. 6. Repeat steps 2-5 from a disallowed origin (e.g., https://malicious-site.com).
+
+Test Data: 1. Allowed origin: https://no-q.club. 2. Disallowed origin: https://malicious-site.com. 3. Swagger UI URL: /swagger-ui.html. 4. OpenAPI JSON URL: /v3/api-docs.","1. From the allowed origin (https://no-q.club), the Swagger UI and OpenAPI JSON documentation are accessible and displayed without errors. 2. From the disallowed origin (https://malicious-site.com), the Swagger UI and OpenAPI JSON documentation are not accessible, or the request fails with HTTP status 403 Forbidden or CORS error.",810dfc9-TC-029

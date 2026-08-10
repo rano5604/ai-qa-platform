@@ -1,0 +1,236 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Register a new worker with valid details and verify the worker details are returned in response,Worker Management - Worker Registration,Positive,High,User is authenticated as a shop owner and has a valid shop ID,"1. Send a POST request to /api/shops/{shopId}/workers with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""name"": ""John Doe"",
+  ""phone"": ""+8801712345678"",
+  ""email"": ""john.doe@example.com"",
+  ""address"": ""123 Main St, Dhaka"",
+  ""role"": ""TAILOR""
+}","HTTP 201 Created response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Workers added successfully"",
+  ""data"": {
+    ""name"": ""John Doe"",
+    ""phone"": ""+8801712345678"",
+    ""email"": ""john.doe@example.com"",
+    ""address"": ""123 Main St, Dhaka"",
+    ""role"": ""TAILOR""
+  }
+}",0895cc7-TC-001
+Generate and send OTP to a worker's email when a pending shop change request exists for the current user,Worker Management - OTP Generation for Worker,Positive,High,User is authenticated as a shop owner and has a pending shop change request for the worker's email,"1. Send a POST request to /api/shops/{shopId}/workers/send-otp with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""name"": ""John Doe"",
+  ""phone"": ""+8801712345678"",
+  ""email"": ""john.doe@example.com"",
+  ""role"": ""TAILOR""
+}","HTTP 201 Created response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""OTP sent to your email"",
+  ""data"": null
+}",TC-001
+Activate a worker by setting PIN using valid OTP and matching PIN,Worker Management - Worker Activation with PIN,Positive,High,"User is authenticated as a shop owner, a valid OTP has been sent to the worker's email, and the worker has a pending shop change request","1. Send a POST request to /api/shops/{shopId}/workers/set-pin with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""phoneNumber"": ""+8801712345678"",
+  ""otp"": ""123456"",
+  ""pin"": ""1234"",
+  ""confirmPin"": ""1234""
+}","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""PIN has been successfully set"",
+  ""data"": null
+}",0895cc7-TC-002
+Create a new item with measuring parameters including type and suggestive values,Item Management - Measuring Parameter Creation,Positive,High,User is authenticated and has permission to create items,"1. Send a POST request to /api/items (or relevant endpoint) with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""nameEn"": ""Shirt"",
+  ""nameBn"": ""শার্ট"",
+  ""status"": ""ACTIVE"",
+  ""parameters"": [
+    {
+      ""nameEn"": ""Chest"",
+      ""nameBn"": ""বুক"",
+      ""unit"": ""inch"",
+      ""type"": ""NUMERIC"",
+      ""suggestiveValues"": [""32"", ""34"", ""36"", ""38""]
+    },
+    {
+      ""nameEn"": ""Fit Type"",
+      ""nameBn"": ""ফিট টাইপ"",
+      ""unit"": null,
+      ""type"": ""TEXT"",
+      ""suggestiveValues"": [""Slim"", ""Regular"", ""Loose""]
+    }
+  ]
+}","HTTP 201 Created response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Item created successfully"",
+  ""data"": {
+    ""nameEn"": ""Shirt"",
+    ""nameBn"": ""শার্ট"",
+    ""status"": ""ACTIVE"",
+    ""parameters"": [
+      {
+        ""nameEn"": ""Chest"",
+        ""nameBn"": ""বুক"",
+        ""unit"": ""inch"",
+        ""type"": ""NUMERIC"",
+        ""suggestiveValues"": [""32"", ""34"", ""36"", ""38""]
+      },
+      {
+        ""nameEn"": ""Fit Type"",
+        ""nameBn"": ""ফিট টাইপ"",
+        ""unit"": null,
+        ""type"": ""TEXT"",
+        ""suggestiveValues"": [""Slim"", ""Regular"", ""Loose""]
+      }
+    ]
+  }
+}",TC-002
+Update an existing item with new measuring parameters including type and suggestive values,Item Management - Measuring Parameter Update,Positive,High,"User is authenticated, has permission to update items, and an item with ID exists","1. Send a PUT request to /api/items/{itemId} (or relevant endpoint) with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""nameEn"": ""Shirt"",
+  ""nameBn"": ""শার্ট"",
+  ""status"": ""ACTIVE"",
+  ""parameters"": [
+    {
+      ""nameEn"": ""Chest"",
+      ""nameBn"": ""বুক"",
+      ""unit"": ""inch"",
+      ""type"": ""NUMERIC"",
+      ""suggestiveValues"": [""32"", ""34"", ""36"", ""38"", ""40""]
+    },
+    {
+      ""nameEn"": ""Length"",
+      ""nameBn"": ""দৈর্ঘ্য"",
+      ""unit"": ""inch"",
+      ""type"": ""NUMERIC"",
+      ""suggestiveValues"": [""28"", ""30"", ""32""]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Item updated successfully"",
+  ""data"": {
+    ""nameEn"": ""Shirt"",
+    ""nameBn"": ""শার্ট"",
+    ""status"": ""ACTIVE"",
+    ""parameters"": [
+      {
+        ""nameEn"": ""Chest"",
+        ""nameBn"": ""বুক"",
+        ""unit"": ""inch"",
+        ""type"": ""NUMERIC"",
+        ""suggestiveValues"": [""32"", ""34"", ""36"", ""38"", ""40""]
+      },
+      {
+        ""nameEn"": ""Length"",
+        ""nameBn"": ""দৈর্ঘ্য"",
+        ""unit"": ""inch"",
+        ""type"": ""NUMERIC"",
+        ""suggestiveValues"": [""28"", ""30"", ""32""]
+      }
+    ]
+  }
+}",TC-003
+Verify that OTP generation for worker activation is rejected if the requesting user has no pending shop change request,Worker Management - OTP Generation and Verification,Security,High,User is authenticated as a shop owner with no pending shop change request for the target shop,"1. Send a POST request to /api/shops/{shopId}/workers/send-otp with the payload in testData, replacing {shopId} with a valid shop ID owned by the user.
+
+Test Data: {
+  ""name"": ""Test Worker"",
+  ""email"": ""testworker@example.com"",
+  ""phoneNumber"": ""+8801700000000"",
+  ""role"": ""TAILOR""
+}","The API responds with HTTP status 403 (Forbidden) and a response body containing 'status: error', 'message: You don't have any pending add/change worker request'. No OTP is sent to the worker's email or phone.",4502dc7-TC-007
+Verify that OTP generation for worker activation no longer returns the OTP in the API response,Worker Management - OTP Generation and Verification,Security,High,User is authenticated as a shop owner with a pending shop change request for the target shop,"1. Send a POST request to /api/shops/{shopId}/workers/send-otp with the payload in testData, replacing {shopId} with a valid shop ID owned by the user.
+
+Test Data: {
+  ""name"": ""Test Worker"",
+  ""email"": ""testworker@example.com"",
+  ""phoneNumber"": ""+8801700000000"",
+  ""role"": ""TAILOR""
+}","The API responds with HTTP status 201 (Created) and a response body containing 'status: success', 'message: OTP sent to your email', and 'data: null'. The OTP is not exposed in the response.",0895cc7-TC-024
+Verify that worker activation (PIN setting) enforces proper authorization - only users with pending shop change requests can activate workers for the target shop,Worker Management - Worker Activation,Security,High,User is authenticated as a shop owner with no pending shop change request for the target shop. A worker exists with a valid OTP.,"1. Send a POST request to /api/shops/{shopId}/workers/set-pin with the payload in testData, replacing {shopId} with a valid shop ID not associated with the user's pending request.
+
+Test Data: {
+  ""phoneNumber"": ""+8801700000000"",
+  ""otp"": ""123456"",
+  ""pin"": ""1234"",
+  ""confirmPin"": ""1234""
+}","The API responds with HTTP status 403 (Forbidden) and a response body containing 'status: error', 'message: You don't have permission to modify this shop'. The worker's PIN is not set.",0895cc7-TC-029
+Verify that worker activation (PIN setting) enforces input validation for phone number format,Worker Management - Worker Activation,Security,High,User is authenticated as a shop owner with a pending shop change request for the target shop. A worker exists with a valid OTP.,"1. Send a POST request to /api/shops/{shopId}/workers/set-pin with the payload in testData, replacing {shopId} with a valid shop ID owned by the user.
+
+Test Data: {
+  ""phoneNumber"": ""invalid-phone"",
+  ""otp"": ""123456"",
+  ""pin"": ""1234"",
+  ""confirmPin"": ""1234""
+}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid phone number format'. The worker's PIN is not set.",TC-004
+Verify that worker activation (PIN setting) enforces input validation for PIN length,Worker Management - Worker Activation,Security,High,User is authenticated as a shop owner with a pending shop change request for the target shop. A worker exists with a valid OTP.,"1. Send a POST request to /api/shops/{shopId}/workers/set-pin with the payload in testData, replacing {shopId} with a valid shop ID owned by the user.
+
+Test Data: {
+  ""phoneNumber"": ""+8801700000000"",
+  ""otp"": ""123456"",
+  ""pin"": ""123"",
+  ""confirmPin"": ""123""
+}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: PIN must be at least 4 digits'. The worker's PIN is not set.",TC-005
+Verify that worker activation (PIN setting) rejects mismatched PIN and Confirm PIN,Worker Management - Worker Activation,Security,High,User is authenticated as a shop owner with a pending shop change request for the target shop. A worker exists with a valid OTP.,"1. Send a POST request to /api/shops/{shopId}/workers/set-pin with the payload in testData, replacing {shopId} with a valid shop ID owned by the user.
+
+Test Data: {
+  ""phoneNumber"": ""+8801700000000"",
+  ""otp"": ""123456"",
+  ""pin"": ""1234"",
+  ""confirmPin"": ""5678""
+}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: PIN and Confirm PIN do not match'. The worker's PIN is not set.",fd2de64-TC-011
+"Verify that adding a worker with malicious input (e.g., SQL injection, script tags) in name or address is rejected or sanitized",Worker Management - Worker Addition,Security,High,User is authenticated as a shop owner with a pending shop change request for the target shop.,"1. Send a POST request to /api/shops/{shopId}/workers with the payload in testData, replacing {shopId} with a valid shop ID owned by the user.
+
+Test Data: {
+  ""name"": ""Test Worker<script>alert('xss')</script>"",
+  ""email"": ""testworker@example.com"",
+  ""phoneNumber"": ""+8801700000000"",
+  ""role"": ""TAILOR"",
+  ""address"": ""123 Main St; DROP TABLE workers;--""
+}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid input'. The worker is not created, or the malicious input is stored as plain text (not executed).",0895cc7-TC-027
+Verify that retrieving workers by shop ID enforces proper authorization (insecure direct object reference) - unauthorized user cannot access another shop's worker list,Worker Management - Worker Listing,Security,High,"User is authenticated as a shop owner or worker. Shop A and Shop B exist, and the user is associated with Shop A only.","1. Send a GET request to /api/shops/{shopId}/workers?page=0&limit=10, replacing {shopId} with the ID of Shop B.","The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and the response body contains a generic error message (e.g., 'Access denied' or 'Shop not found'). No worker data for Shop B is returned.",TC-006
+Verify that adding a worker with an existing email from the same shop returns an error and does not proceed,Worker Management - Worker Addition,Security,Medium,User is authenticated as a shop owner with a pending shop change request for the target shop. A worker with the same email already exists in the shop.,"1. Send a POST request to /api/shops/{shopId}/workers with the payload in testData, replacing {shopId} with a valid shop ID owned by the user.
+
+Test Data: {
+  ""name"": ""Test Worker"",
+  ""email"": ""existingworker@example.com"",
+  ""phoneNumber"": ""+8801700000001"",
+  ""role"": ""TAILOR""
+}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Worker Already assigned to this shop'. No OTP is sent, and no new worker record is created.",fd2de64-TC-010
+"Verify that creating a measuring parameter with malicious suggestive values (e.g., script tags, SQL injection) is rejected or sanitized",Measuring Parameter Management - Parameter Creation,Security,High,User is authenticated as a shop owner or admin with permission to create items and measuring parameters.,"1. Send a POST request to /api/items (assumed endpoint for item creation) with the payload in testData.
+
+Test Data: {
+  ""nameEn"": ""Shirt"",
+  ""nameBn"": ""শার্ট"",
+  ""status"": ""ACTIVE"",
+  ""parameters"": [
+    {
+      ""nameEn"": ""Chest"",
+      ""nameBn"": ""বুক"",
+      ""unit"": ""inch"",
+      ""type"": ""NUMERIC"",
+      ""suggestiveValues"": [""32<script>alert('xss')</script>"", ""34; DROP TABLE measuring_parameter;--""]
+    }
+  ]
+}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid suggestive values'. The measuring parameter is not created, or the malicious input is stored as plain text (not executed).",TC-007
+Verify that creating a measuring parameter with an invalid type value is rejected,Measuring Parameter Management - Parameter Creation,Security,Medium,User is authenticated as a shop owner or admin with permission to create items and measuring parameters.,"1. Send a POST request to /api/items (assumed endpoint for item creation) with the payload in testData.
+
+Test Data: {
+  ""nameEn"": ""Shirt"",
+  ""nameBn"": ""শার্ট"",
+  ""status"": ""ACTIVE"",
+  ""parameters"": [
+    {
+      ""nameEn"": ""Chest"",
+      ""nameBn"": ""বুক"",
+      ""unit"": ""inch"",
+      ""type"": ""INVALID_TYPE"",
+      ""suggestiveValues"": [""32"", ""34""]
+    }
+  ]
+}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid parameter type'. The measuring parameter is not created.",TC-008

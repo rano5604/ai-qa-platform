@@ -1,0 +1,28 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Send worker OTP with null worker object,Worker Management,Boundary,High,User is authenticated and has a shop,"1. Send a POST request to /api/shops/{shopId}/workers/sendOtp with a null worker object in the request body.
+
+Test Data: {""worker"": null}",The API responds with a 400 Bad Request status code and an error message indicating that the worker object cannot be null.,TC-001
+Send worker OTP with empty worker object,Worker Management,Boundary,High,User is authenticated and has a shop,"1. Send a POST request to /api/shops/{shopId}/workers/sendOtp with an empty worker object in the request body.
+
+Test Data: {""worker"": {}}",The API responds with a 400 Bad Request status code and an error message indicating that the worker object cannot be empty.,TC-002
+Send worker OTP with worker object having null email,Worker Management,Boundary,High,User is authenticated and has a shop,"1. Send a POST request to /api/shops/{shopId}/workers/sendOtp with a worker object having a null email in the request body.
+
+Test Data: {""worker"": {""email"": null}}",The API responds with a 400 Bad Request status code and an error message indicating that the worker email cannot be null.,TC-003
+Send worker OTP with worker object having empty email,Worker Management,Boundary,High,User is authenticated and has a shop,"1. Send a POST request to /api/shops/{shopId}/workers/sendOtp with a worker object having an empty email in the request body.
+
+Test Data: {""worker"": {""email"": """"}}",The API responds with a 400 Bad Request status code and an error message indicating that the worker email cannot be empty.,TC-004
+Send worker OTP with worker object having very long email,Worker Management,Boundary,Medium,User is authenticated and has a shop,"1. Send a POST request to /api/shops/{shopId}/workers/sendOtp with a worker object having a very long email in the request body.
+
+Test Data: {""worker"": {""email"": ""verylongemail@example.com""}}",The API responds with a 400 Bad Request status code and an error message indicating that the worker email exceeds the maximum allowed length.,TC-005
+Send worker OTP with worker object having null role,Worker Management,Boundary,High,User is authenticated and has a shop,"1. Send a POST request to /api/shops/{shopId}/workers/sendOtp with a worker object having a null role in the request body.
+
+Test Data: {""worker"": {""role"": null}}",The API responds with a 400 Bad Request status code and an error message indicating that the worker role cannot be null.,TC-006
+Send worker OTP with worker object having empty role,Worker Management,Boundary,High,User is authenticated and has a shop,"1. Send a POST request to /api/shops/{shopId}/workers/sendOtp with a worker object having an empty role in the request body.
+
+Test Data: {""worker"": {""role"": """"}}",The API responds with a 400 Bad Request status code and an error message indicating that the worker role cannot be empty.,TC-007
+Send worker OTP with worker object having very long role,Worker Management,Boundary,Medium,User is authenticated and has a shop,"1. Send a POST request to /api/shops/{shopId}/workers/sendOtp with a worker object having a very long role in the request body.
+
+Test Data: {""worker"": {""role"": ""verylongrole""}}",The API responds with a 400 Bad Request status code and an error message indicating that the worker role exceeds the maximum allowed length.,TC-008
+Send worker OTP with duplicate worker objects,Worker Management,Boundary,Medium,User is authenticated and has a shop,"1. Send a POST request to /api/shops/{shopId}/workers/sendOtp with a worker object in the request body. 2. Send another POST request to /api/shops/{shopId}/workers/sendOtp with the same worker object in the request body.
+
+Test Data: {""worker"": {""email"": ""worker@example.com"", ""role"": ""worker""}}",The API responds with a 400 Bad Request status code and an error message indicating that the worker object is a duplicate.,TC-009

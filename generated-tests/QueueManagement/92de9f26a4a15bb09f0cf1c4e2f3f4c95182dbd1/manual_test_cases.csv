@@ -1,0 +1,64 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+"Retrieve all shops for an area with default pagination (page 0, size 10)",Shop Management - Pagination,Boundary,High,At least one shop exists in the area with ID 1,"1. Send a GET request to /api/areas/1/shops with no query parameters.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of shops with up to 10 items on the first page, including pagination metadata (totalElements, totalPages, size=10, number=0).",TC-001
+Retrieve all shops for an area with custom page size (boundary: size 1),Shop Management - Pagination,Boundary,High,At least one shop exists in the area with ID 1,"1. Send a GET request to /api/areas/1/shops?page=0&limit=1.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of shops with exactly 1 item on the first page, including pagination metadata (totalElements, totalPages, size=1, number=0).",TC-002
+Retrieve all shops for an area with custom page size (boundary: size 0),Shop Management - Pagination,Boundary,High,At least one shop exists in the area with ID 1,"1. Send a GET request to /api/areas/1/shops?page=0&limit=0.
+
+Test Data: {}",HTTP status code 400 (Bad Request) with an error message indicating that page size must be greater than zero.,TC-003
+"Retrieve all shops for an area with custom page size (boundary: size 1000, very large input)",Shop Management - Pagination,Boundary,Medium,At least one shop exists in the area with ID 1,"1. Send a GET request to /api/areas/1/shops?page=0&limit=1000.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of shops with up to 1000 items on the first page, including pagination metadata (totalElements, totalPages, size=1000, number=0).",TC-004
+"Retrieve all shops for an area with custom page number (boundary: page -1, one below minimum)",Shop Management - Pagination,Boundary,High,At least one shop exists in the area with ID 1,"1. Send a GET request to /api/areas/1/shops?page=-1&limit=10.
+
+Test Data: {}",HTTP status code 400 (Bad Request) with an error message indicating that page number must be zero or greater.,TC-005
+"Retrieve all shops for an area with custom page number (boundary: page 0, exactly at minimum)",Shop Management - Pagination,Boundary,High,At least one shop exists in the area with ID 1,"1. Send a GET request to /api/areas/1/shops?page=0&limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of shops with items from the first page, including pagination metadata (totalElements, totalPages, size=10, number=0).",TC-006
+"Retrieve all shops for an area with custom page number (boundary: page 999, very large input)",Shop Management - Pagination,Boundary,Medium,At least one shop exists in the area with ID 1,"1. Send a GET request to /api/areas/1/shops?page=999&limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains an empty paginated list if no items exist on page 999, including pagination metadata (totalElements, totalPages, size=10, number=999).",TC-007
+Search shops by phone with custom page size (boundary: size 1),Shop Management - Search Pagination,Boundary,High,At least one shop exists with phone number '1234567890',"1. Send a GET request to /api/shops?shopPhone=1234567890&page=0&limit=1.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of shops with phone number '1234567890' and exactly 1 item on the first page, including pagination metadata (totalElements, totalPages, size=1, number=0).",TC-008
+Search shops by area ID with empty result set (boundary: no matching shops),Shop Management - Search Pagination,Boundary,Medium,No shops exist in area with ID 99999,"1. Send a GET request to /api/shops?areaId=99999&page=0&limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains an empty paginated list, including pagination metadata (totalElements=0, totalPages=0, size=10, number=0).",TC-009
+"Retrieve all service profiles for a shop with default pagination (page 0, size 10)",Service Profile Management - Pagination,Boundary,High,At least one service profile exists for shop with ID 1,"1. Send a GET request to /api/shops/1/profiles with no query parameters.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of service profiles with up to 10 items on the first page, including pagination metadata (totalElements, totalPages, size=10, number=0).",2868456-TC-011
+Retrieve all service profiles for a shop with custom page size (boundary: size 1),Service Profile Management - Pagination,Boundary,High,At least one service profile exists for shop with ID 1,"1. Send a GET request to /api/shops/1/profiles?page=0&limit=1.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of service profiles with exactly 1 item on the first page, including pagination metadata (totalElements, totalPages, size=1, number=0).",TC-010
+"Retrieve all slots for a shop with default pagination (page 0, size 10)",Slot Management - Pagination,Boundary,High,At least one slot exists for shop with ID 1,"1. Send a GET request to /api/slots/1 with no query parameters.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of slots with up to 10 items on the first page, including pagination metadata (totalElements, totalPages, size=10, number=0).",810dfc9-TC-023
+Retrieve all slots for a shop with custom page size (boundary: size 1),Slot Management - Pagination,Boundary,High,At least one slot exists for shop with ID 1,"1. Send a GET request to /api/slots/1?page=0&limit=1.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of slots with exactly 1 item on the first page, including pagination metadata (totalElements, totalPages, size=1, number=0).",TC-011
+"Retrieve all workers for a shop with default pagination (page 0, size 10)",Worker Management - Pagination,Boundary,High,At least one worker exists for shop with ID 1,"1. Send a GET request to /api/shops/1/workers with no query parameters.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of workers with up to 10 items on the first page, including pagination metadata (totalElements, totalPages, size=10, number=0).",3c56bc5-TC-020
+Retrieve all workers for a shop with custom page size (boundary: size 1),Worker Management - Pagination,Boundary,High,At least one worker exists for shop with ID 1,"1. Send a GET request to /api/shops/1/workers?page=0&limit=1.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of workers with exactly 1 item on the first page, including pagination metadata (totalElements, totalPages, size=1, number=0).",TC-012
+"Retrieve all holidays for a shop with default pagination (page 0, size 10)",Shop Holiday Management - Pagination,Boundary,High,At least one holiday exists for shop with ID 1,"1. Send a GET request to /api/shop-holidays/1 with no query parameters.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of holidays with up to 10 items on the first page, including pagination metadata (totalElements, totalPages, size=10, number=0).",3067f8e-TC-009
+Retrieve all holidays for a shop with custom page size (boundary: size 1),Shop Holiday Management - Pagination,Boundary,High,At least one holiday exists for shop with ID 1,"1. Send a GET request to /api/shop-holidays/1?page=0&limit=1.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of holidays with exactly 1 item on the first page, including pagination metadata (totalElements, totalPages, size=1, number=0).",TC-013
+"Retrieve all weekends for a shop with default pagination (page 0, size 10)",Weekend Management - Pagination,Boundary,Medium,At least one weekend exists for shop with ID 1,"1. Send a GET request to /api/shops/1/weekends with no query parameters.
+
+Test Data: {}",HTTP status code 200 (OK). Response body contains a list of weekends (pagination metadata may be null or present).,eac017c-TC-007
+Retrieve all weekends for a shop with custom page size (boundary: size 1),Weekend Management - Pagination,Boundary,Medium,At least one weekend exists for shop with ID 1,"1. Send a GET request to /api/shops/1/weekends?page=0&limit=1.
+
+Test Data: {}",HTTP status code 200 (OK). Response body contains a list of weekends (pagination metadata may be null or present).,TC-014
+"Search shops with no parameters (boundary: no filters, default pagination)",Shop Management - Search Pagination,Boundary,High,At least one shop exists in the system,"1. Send a GET request to /api/shops with no query parameters.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of all shops with up to 10 items on the first page, including pagination metadata (totalElements, totalPages, size=10, number=0).",TC-015
+Search shops with empty phone and area ID (boundary: empty filters),Shop Management - Search Pagination,Boundary,Medium,At least one shop exists in the system,"1. Send a GET request to /api/shops?shopPhone=&areaId=&page=0&limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of all shops with up to 10 items on the first page, including pagination metadata (totalElements, totalPages, size=10, number=0).",TC-016

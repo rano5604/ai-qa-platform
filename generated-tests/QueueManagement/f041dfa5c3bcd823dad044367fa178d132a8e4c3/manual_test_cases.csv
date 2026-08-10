@@ -1,0 +1,131 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+User successfully accesses the application from the allowed origin without CORS errors,Cross-Origin Resource Sharing (CORS) Configuration,Positive,High,User is accessing the application from the allowed origin 'https://no-q:8080',"1. Open a web browser and navigate to the application URL from 'https://no-q:8080'. 2. Log in to the application as a shop owner or customer. 3. Perform any action that triggers an API call (e.g., view shop details, create an appointment).
+
+Test Data: User credentials for a valid shop owner or customer account","The application loads successfully, and all API calls complete without CORS-related errors. The user can perform actions and view data as expected without any access issues.",TC-001
+"API endpoints accept requests with allowed HTTP methods (GET, POST, PUT, DELETE, OPTIONS)",Cross-Origin Resource Sharing (CORS) Configuration,Positive,High,User is logged in to the application from the allowed origin 'https://no-q:8080',"1. Navigate to the appointment creation page. 2. Create a new appointment reservation (POST). 3. View the created appointment details (GET). 4. Update the appointment details (PUT). 5. Delete the appointment (DELETE).
+
+Test Data: Valid appointment details (e.g., customer name, phone, service, date, time)","All actions (create, view, update, delete) complete successfully without method-related errors. The appointment is created, displayed, updated, and deleted as expected.",TC-002
+"API endpoints include credentials (e.g., cookies, auth headers) in cross-origin requests",Cross-Origin Resource Sharing (CORS) Configuration,Positive,High,User is logged in to the application from the allowed origin 'https://no-q:8080' and has an active session with cookies/auth headers,"1. Navigate to the worker management page. 2. Add a new worker to the shop (POST). 3. Verify the worker is listed in the worker management page (GET).
+
+Test Data: Valid worker details (e.g., name, phone, address)",The worker is successfully added and displayed in the worker list. The session/authentication is maintained throughout the process without requiring re-login.,TC-003
+Attempt to access API from an unauthorized origin,API Access Control - CORS Configuration,Negative,High,"User has access to a web client configured to send requests from an origin not listed in the allowed origins (e.g., http://unauthorized-client:3000)","1. Open the web client configured to send requests from an unauthorized origin. 2. Attempt to make a GET request to any API endpoint (e.g., fetch shop details). 3. Observe the network response in the browser's developer tools.
+
+Test Data: Origin: http://unauthorized-client:3000","The browser should block the request due to CORS policy, and the API should not return any data. The browser's console should display an error message indicating that the request was blocked by CORS policy: 'No 'Access-Control-Allow-Origin' header is present on the requested resource.'",TC-004
+Attempt to access API using an unauthorized HTTP method,API Access Control - CORS Configuration,Negative,High,User has access to a web client configured to send requests from the allowed origin (https://no-q:8080),"1. Open the web client configured to send requests from the allowed origin. 2. Attempt to make a PATCH request to any API endpoint (e.g., update shop details). 3. Observe the network response in the browser's developer tools.
+
+Test Data: Origin: https://no-q:8080, HTTP Method: PATCH","The browser should block the request due to CORS policy, and the API should not return any data. The browser's console should display an error message indicating that the request method 'PATCH' is not allowed by the CORS policy.",TC-005
+Attempt to access API with credentials from an unauthorized origin,API Access Control - CORS Configuration,Negative,High,"User has valid authentication credentials (e.g., session cookie or token) and access to a web client configured to send requests from an origin not listed in the allowed origins (e.g., http://unauthorized-client:3000)","1. Open the web client configured to send requests from an unauthorized origin. 2. Include valid authentication credentials (e.g., session cookie) in the request. 3. Attempt to make a GET request to any API endpoint (e.g., fetch user profile). 4. Observe the network response in the browser's developer tools.
+
+Test Data: Origin: http://unauthorized-client:3000, Credentials: Valid session cookie","The browser should block the request due to CORS policy, and the API should not return any data. The browser's console should display an error message indicating that the request was blocked by CORS policy: 'Credentials are not supported by the 'Access-Control-Allow-Origin' header.'",TC-006
+Attempt to access API with malformed Origin header,API Access Control - CORS Configuration,Negative,Medium,"User has access to a tool or script capable of sending HTTP requests with custom headers (e.g., Postman or cURL)","1. Configure the tool to send a GET request to any API endpoint (e.g., fetch shop details). 2. Set the 'Origin' header to a malformed value (e.g., 'https://no-q:8080@malicious.com'). 3. Send the request and observe the response.
+
+Test Data: Origin: https://no-q:8080@malicious.com",The API should reject the request and return an HTTP 403 Forbidden status code or block the request entirely due to the malformed Origin header. No data should be returned.,TC-007
+Attempt to access API without the Origin header from a non-browser client,API Access Control - CORS Configuration,Negative,Low,"User has access to a non-browser client (e.g., Postman or cURL) that does not automatically include the Origin header","1. Configure the non-browser client to send a GET request to any API endpoint (e.g., fetch shop details) without including the Origin header. 2. Send the request and observe the response.
+
+Test Data: No Origin header included","The API should process the request normally and return the expected data, as CORS restrictions are enforced by browsers and not by non-browser clients.",TC-008
+Verify API access from the allowed origin domain and port,API Cross-Origin Access Control,Boundary,High,User has access to a browser and the allowed origin domain 'https://no-q:8080' is accessible,"1. Open a browser and navigate to the allowed origin domain 'https://no-q:8080'.
+2. Open the browser's developer tools and go to the 'Network' tab.
+3. Trigger an API request (e.g., fetch shop list) from the application UI.
+4. Observe the request and response in the 'Network' tab.
+
+Test Data: Allowed origin: 'https://no-q:8080'","The API request succeeds with HTTP status code 200. The response headers include 'Access-Control-Allow-Origin: https://no-q:8080', 'Access-Control-Allow-Credentials: true', and 'Access-Control-Allow-Methods' containing 'GET, POST, PUT, DELETE, OPTIONS'.",TC-009
+Verify API access from a disallowed origin domain,API Cross-Origin Access Control,Boundary,High,"User has access to a browser and a disallowed origin domain (e.g., 'https://unauthorized-domain:8080')","1. Open a browser and navigate to a disallowed origin domain (e.g., 'https://unauthorized-domain:8080').
+2. Open the browser's developer tools and go to the 'Console' and 'Network' tabs.
+3. Trigger an API request (e.g., fetch shop list) from the application UI.
+4. Observe the request and response in the 'Network' tab and any console errors.
+
+Test Data: Disallowed origin: 'https://unauthorized-domain:8080'","The API request fails with an error in the browser console indicating CORS policy blocking. The 'Network' tab shows no successful response, or the response lacks CORS headers.",TC-010
+Verify API access with disallowed HTTP method,API Cross-Origin Access Control,Boundary,Medium,User has access to a tool like Postman or cURL and the allowed origin domain 'https://no-q:8080',"1. Open Postman or a terminal with cURL.
+2. Configure a request to the API endpoint (e.g., 'GET /shops') with the allowed origin 'https://no-q:8080' in headers.
+3. Change the HTTP method to a disallowed method (e.g., 'PATCH').
+4. Send the request and observe the response.
+
+Test Data: Disallowed HTTP method: 'PATCH'",The API request fails with HTTP status code 405 (Method Not Allowed) or a CORS error indicating the method is not permitted.,TC-011
+Verify API access with credentials from allowed origin,API Cross-Origin Access Control,Boundary,High,User is logged into the application on the allowed origin domain 'https://no-q:8080' and has valid session cookies,"1. Open a browser and navigate to the allowed origin domain 'https://no-q:8080'.
+2. Ensure the user is logged in and has valid session cookies.
+3. Open the browser's developer tools and go to the 'Network' tab.
+4. Trigger an authenticated API request (e.g., fetch user profile).
+5. Observe the request and response in the 'Network' tab.
+
+Test Data: Allowed origin: 'https://no-q:8080' with credentials",The API request succeeds with HTTP status code 200. The response headers include 'Access-Control-Allow-Credentials: true' and the response body contains the user profile data.,TC-012
+Verify API access with credentials from disallowed origin,API Cross-Origin Access Control,Boundary,High,"User has valid session cookies but accesses the application from a disallowed origin domain (e.g., 'https://unauthorized-domain:8080')","1. Open a browser and navigate to a disallowed origin domain (e.g., 'https://unauthorized-domain:8080').
+2. Manually set the session cookies for the API domain.
+3. Open the browser's developer tools and go to the 'Console' and 'Network' tabs.
+4. Trigger an authenticated API request (e.g., fetch user profile).
+5. Observe the request and response in the 'Network' tab and any console errors.
+
+Test Data: Disallowed origin: 'https://unauthorized-domain:8080' with credentials","The API request fails with an error in the browser console indicating CORS policy blocking. The 'Network' tab shows no successful response, or the response lacks CORS headers.",TC-013
+Verify Swagger UI access from allowed origin without authentication,API Documentation Access,Boundary,Medium,User has access to a browser and the allowed origin domain 'https://no-q:8080',"1. Open a browser and navigate to the Swagger UI URL (e.g., 'https://no-q:8080/swagger-ui/') from the allowed origin.
+2. Observe the Swagger UI page.
+
+Test Data: Allowed origin: 'https://no-q:8080'",Swagger UI loads successfully without prompting for authentication. All API endpoints are visible and explorable.,810dfc9-TC-018
+Verify OpenAPI JSON specification access from allowed origin without authentication,API Documentation Access,Boundary,Medium,User has access to a browser or tool like Postman and the allowed origin domain 'https://no-q:8080',"1. Open a browser or Postman and navigate to the OpenAPI JSON URL (e.g., 'https://no-q:8080/v3/api-docs') from the allowed origin.
+2. Observe the response.
+
+Test Data: Allowed origin: 'https://no-q:8080'","OpenAPI JSON specification is returned successfully without requiring authentication. The response includes the API title 'Shop API', version 'v1.0', and license details.",810dfc9-TC-019
+Verify Swagger UI access from disallowed origin without authentication,API Documentation Access,Boundary,Medium,"User has access to a browser and a disallowed origin domain (e.g., 'https://unauthorized-domain:8080')","1. Open a browser and navigate to the Swagger UI URL (e.g., 'https://no-q:8080/swagger-ui/') from a disallowed origin.
+2. Observe the page or any errors.
+
+Test Data: Disallowed origin: 'https://unauthorized-domain:8080'",Swagger UI fails to load or displays a CORS error. The page may show a blank screen or an error message indicating access is denied.,TC-014
+Verify OpenAPI JSON specification access from disallowed origin without authentication,API Documentation Access,Boundary,Medium,"User has access to a browser or tool like Postman and a disallowed origin domain (e.g., 'https://unauthorized-domain:8080')","1. Open a browser or Postman and navigate to the OpenAPI JSON URL (e.g., 'https://no-q:8080/v3/api-docs') from a disallowed origin.
+2. Observe the response.
+
+Test Data: Disallowed origin: 'https://unauthorized-domain:8080'",The request fails with a CORS error or HTTP status code 403 (Forbidden). The response body is empty or contains an error message indicating access is denied.,TC-015
+Verify that CORS policy restricts API access to the allowed origin only,Cross-Origin Resource Sharing (CORS) Configuration,Security,High,"User has access to a web browser and a tool to send HTTP requests (e.g., Postman, cURL). The application is running and accessible via the allowed origin (https://no-q:8080) and a disallowed origin (e.g., https://malicious-site.com).","1. Open the HTTP request tool (e.g., Postman).
+2. Configure a GET request to any API endpoint (e.g., /api/appointments).
+3. Set the 'Origin' header to the allowed origin: https://no-q:8080.
+4. Send the request and observe the response.
+5. Set the 'Origin' header to a disallowed origin: https://malicious-site.com.
+6. Send the request and observe the response.
+7. Repeat steps 2-6 for POST, PUT, and DELETE methods.
+
+Test Data: Allowed origin: https://no-q:8080
+Disallowed origin: https://malicious-site.com
+Endpoint: /api/appointments","1. For the allowed origin, the response includes the 'Access-Control-Allow-Origin' header with the value 'https://no-q:8080' and the 'Access-Control-Allow-Credentials' header with the value 'true'. The request succeeds with HTTP status 200 OK (or appropriate success status).
+2. For the disallowed origin, the response does NOT include the 'Access-Control-Allow-Origin' header for the disallowed origin. The request may succeed (if the endpoint is public) but CORS headers are not present for the disallowed origin.",TC-016
+Verify that CORS policy allows only specified HTTP methods,Cross-Origin Resource Sharing (CORS) Configuration,Security,High,"User has access to a web browser and a tool to send HTTP requests (e.g., Postman, cURL). The application is running and accessible via the allowed origin (https://no-q:8080).","1. Open the HTTP request tool (e.g., Postman).
+2. Configure an OPTIONS request to any API endpoint (e.g., /api/appointments).
+3. Set the 'Origin' header to the allowed origin: https://no-q:8080.
+4. Set the 'Access-Control-Request-Method' header to 'GET'.
+5. Send the request and observe the response.
+6. Repeat steps 4-5 for 'POST', 'PUT', 'DELETE', and 'PATCH' methods.
+
+Test Data: Allowed origin: https://no-q:8080
+Endpoint: /api/appointments
+Methods to test: GET, POST, PUT, DELETE, PATCH","1. For GET, POST, PUT, DELETE, and OPTIONS methods, the response includes the 'Access-Control-Allow-Methods' header with the value 'GET, POST, PUT, DELETE, OPTIONS'. The request succeeds with HTTP status 200 OK.
+2. For PATCH method, the response does NOT include 'PATCH' in the 'Access-Control-Allow-Methods' header. The request may still succeed, but the method is not explicitly allowed via CORS.",TC-017
+"Verify that CORS policy allows credentials (cookies, authorization headers) for the allowed origin",Cross-Origin Resource Sharing (CORS) Configuration,Security,High,"User has access to a web browser and a tool to send HTTP requests (e.g., Postman, cURL). The application is running and accessible via the allowed origin (https://no-q:8080). User is authenticated and has a valid session cookie or authorization token.","1. Open the HTTP request tool (e.g., Postman).
+2. Configure a GET request to a protected API endpoint (e.g., /api/appointments/me).
+3. Set the 'Origin' header to the allowed origin: https://no-q:8080.
+4. Include valid credentials (e.g., session cookie or 'Authorization' header with a valid token).
+5. Send the request and observe the response.
+6. Remove the credentials and send the request again.
+
+Test Data: Allowed origin: https://no-q:8080
+Endpoint: /api/appointments/me
+Credentials: Valid session cookie or authorization token","1. With valid credentials and the allowed origin, the response includes the 'Access-Control-Allow-Origin' header with the value 'https://no-q:8080' and the 'Access-Control-Allow-Credentials' header with the value 'true'. The request succeeds with HTTP status 200 OK.
+2. Without credentials, the request fails with HTTP status 401 Unauthorized or 403 Forbidden.",TC-018
+Verify that CORS policy does not allow arbitrary headers,Cross-Origin Resource Sharing (CORS) Configuration,Security,Medium,"User has access to a web browser and a tool to send HTTP requests (e.g., Postman, cURL). The application is running and accessible via the allowed origin (https://no-q:8080).","1. Open the HTTP request tool (e.g., Postman).
+2. Configure an OPTIONS request to any API endpoint (e.g., /api/appointments).
+3. Set the 'Origin' header to the allowed origin: https://no-q:8080.
+4. Set the 'Access-Control-Request-Method' header to 'GET'.
+5. Set the 'Access-Control-Request-Headers' header to 'X-Custom-Header'.
+6. Send the request and observe the response.
+7. Repeat steps 5-6 with a standard header (e.g., 'Authorization').
+
+Test Data: Allowed origin: https://no-q:8080
+Endpoint: /api/appointments
+Headers to test: X-Custom-Header, Authorization","1. For the 'Authorization' header, the response includes the 'Access-Control-Allow-Headers' header with the value '*' or explicitly includes 'Authorization'. The request succeeds with HTTP status 200 OK.
+2. For the 'X-Custom-Header', the response includes the 'Access-Control-Allow-Headers' header with the value '*' (allowing all headers). The request succeeds with HTTP status 200 OK.",TC-019
+Verify that Swagger UI and OpenAPI documentation are accessible only from the allowed origin,API Documentation Access,Security,High,"User has access to a web browser. The application is running and accessible via the allowed origin (https://no-q:8080) and a disallowed origin (e.g., https://malicious-site.com).","1. Open a web browser.
+2. Navigate to the Swagger UI URL (e.g., https://no-q:8080/swagger-ui/).
+3. Observe the response.
+4. Open a new browser tab or use a tool to send a request to the Swagger UI URL from a disallowed origin (e.g., via cURL with the 'Origin' header set to https://malicious-site.com).
+5. Observe the response.
+6. Repeat steps 2-5 for the OpenAPI JSON URL (e.g., https://no-q:8080/v3/api-docs).
+
+Test Data: Allowed origin: https://no-q:8080
+Disallowed origin: https://malicious-site.com
+Swagger UI URL: https://no-q:8080/swagger-ui/
+OpenAPI JSON URL: https://no-q:8080/v3/api-docs","1. From the allowed origin, the Swagger UI and OpenAPI JSON documentation are accessible and displayed without errors.
+2. From the disallowed origin, the Swagger UI and OpenAPI JSON documentation are accessible (as the endpoint may not enforce CORS), but the browser blocks access due to CORS policy if credentials are required. If no credentials are required, the documentation may still be accessible, but this is a potential security risk and should be reviewed.",810dfc9-TC-029

@@ -1,0 +1,73 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify that orders for a shop are displayed in descending order by creation date (newest first),Order Management - Shop Order Listing,Positive,High,User is logged in as a shop owner with at least 3 existing orders in the shop,"1. Navigate to the 'Orders' section in the shop dashboard. 2. Observe the list of orders displayed on the first page.
+
+Test Data: Shop with orders created on: today, yesterday, and two days ago","The orders are listed with the most recently created order at the top of the list, followed by older orders in descending order by creation date.",5437faa-TC-001
+Verify pagination works correctly with newest orders appearing on the first page,Order Management - Shop Order Listing,Positive,High,"User is logged in as a shop owner with at least 15 existing orders in the shop, created over multiple days","1. Navigate to the 'Orders' section in the shop dashboard. 2. Set the pagination size to 5 orders per page. 3. Observe the orders on the first page. 4. Navigate to the second page and observe the orders.
+
+Test Data: Shop with 15 orders created over the last 30 days, pagination size set to 5","The first page displays the 5 most recently created orders. The second page displays the next 5 most recent orders, and so on, all in descending order by creation date.",TC-001
+Attempt to fetch orders for a shop with an invalid shop ID format,Order Management - Shop Order Listing,Negative,High,User is logged in as a SHOP_OWNER with a bound shop,"1. Navigate to the 'Orders' section in the shop dashboard. 2. Manually modify the URL to replace the shop ID with a non-numeric value (e.g., 'abc'). 3. Press Enter to load the page.
+
+Test Data: Shop ID: 'abc' (non-numeric)",The system displays an error message indicating that the 'Shop ID' must be a valid numeric value. No orders are displayed.,TC-002
+Attempt to fetch orders for a non-existent shop ID,Order Management - Shop Order Listing,Negative,High,User is logged in as a SHOP_OWNER with a bound shop,"1. Navigate to the 'Orders' section in the shop dashboard. 2. Manually modify the URL to replace the shop ID with a numeric value that does not correspond to any existing shop (e.g., '999999'). 3. Press Enter to load the page.
+
+Test Data: Shop ID: 999999 (non-existent)",The system displays an error message indicating that no orders exist for the specified shop ID. No orders are displayed.,TC-003
+Attempt to fetch orders for a shop without authentication,Order Management - Shop Order Listing,Negative,High,User is not logged in,"1. Open a browser in incognito mode. 2. Navigate directly to the URL for fetching orders by shop ID (e.g., '/shops/1/orders'). 3. Press Enter to load the page.
+
+Test Data: Shop ID: 1 (valid but unauthenticated access)",The system returns an HTTP 401 Unauthorized status code with an error message indicating that authentication is required. No orders are displayed.,d217aa0-TC-006
+Attempt to fetch orders for a shop as an unauthorized user (non-SHOP_OWNER role),Order Management - Shop Order Listing,Negative,High,"User is logged in with a role other than SHOP_OWNER (e.g., CUSTOMER)","1. Navigate to the 'Orders' section in the shop dashboard. 2. The system should either hide the option or display an error when accessed.
+
+Test Data: User role: CUSTOMER",The system returns an HTTP 403 Forbidden status code with an error message indicating that the user is not authorized to view orders for this shop. No orders are displayed.,d217aa0-TC-007
+Attempt to fetch orders for a shop with invalid pagination parameters (negative page number),Order Management - Shop Order Listing,Negative,Medium,User is logged in as a SHOP_OWNER with a bound shop,"1. Navigate to the 'Orders' section in the shop dashboard. 2. Manually modify the URL to include a negative page number (e.g., '?page=-1&limit=10'). 3. Press Enter to load the page.
+
+Test Data: Page: -1, Limit: 10",The system displays an error message indicating that the 'page' parameter must be a non-negative integer. No orders are displayed.,d217aa0-TC-016
+Attempt to fetch orders for a shop with invalid pagination parameters (zero or negative limit),Order Management - Shop Order Listing,Negative,Medium,User is logged in as a SHOP_OWNER with a bound shop,"1. Navigate to the 'Orders' section in the shop dashboard. 2. Manually modify the URL to include a zero or negative limit (e.g., '?page=0&limit=0' or '?page=0&limit=-5'). 3. Press Enter to load the page.
+
+Test Data: Page: 0, Limit: 0 or -5",The system displays an error message indicating that the 'limit' parameter must be a positive integer. No orders are displayed.,TC-004
+Attempt to fetch orders for a shop with a non-integer pagination parameter,Order Management - Shop Order Listing,Negative,Medium,User is logged in as a SHOP_OWNER with a bound shop,"1. Navigate to the 'Orders' section in the shop dashboard. 2. Manually modify the URL to include a non-integer page or limit (e.g., '?page=abc&limit=10' or '?page=1&limit=xyz'). 3. Press Enter to load the page.
+
+Test Data: Page: 'abc', Limit: 'xyz'",The system displays an error message indicating that the 'page' and 'limit' parameters must be valid integers. No orders are displayed.,TC-005
+Retrieve orders for a shop with no orders (empty list boundary),Order Retrieval by Shop,Boundary,High,User is logged in as a SHOP_OWNER with a valid shopId and no orders exist for the shop,"1. Navigate to the Orders section in the dashboard. 2. Select the 'All Orders' tab. 3. Observe the list of orders displayed.
+
+Test Data: shopId = [valid shop ID with no orders]",The system displays a message 'No orders found' and an empty list with no errors.,TC-006
+Retrieve orders for a shop with exactly one order (minimum non-empty list boundary),Order Retrieval by Shop,Boundary,High,User is logged in as a SHOP_OWNER with a valid shopId and exactly one order exists for the shop,"1. Navigate to the Orders section in the dashboard. 2. Select the 'All Orders' tab. 3. Observe the list of orders displayed.
+
+Test Data: shopId = [valid shop ID with exactly one order]","The system displays a single order in the list, sorted by the most recent created date at the top.",TC-007
+Retrieve orders for a shop with maximum allowed orders per page (pagination boundary),Order Retrieval by Shop,Boundary,High,User is logged in as a SHOP_OWNER with a valid shopId and at least [max allowed orders per page + 1] orders exist for the shop,"1. Navigate to the Orders section in the dashboard. 2. Select the 'All Orders' tab. 3. Set the pagination limit to the maximum allowed value (e.g., 20). 4. Observe the list of orders displayed on the first page.
+
+Test Data: shopId = [valid shop ID], limit = 20 (or system-defined max)","The system displays exactly 20 orders on the first page, sorted by the most recent created date at the top, with pagination controls available.",5437faa-TC-003
+Retrieve orders for a shop with page value set to zero (minimum allowed value boundary),Order Retrieval by Shop,Boundary,High,User is logged in as a SHOP_OWNER with a valid shopId and at least one order exists for the shop,"1. Navigate to the Orders section in the dashboard. 2. Select the 'All Orders' tab. 3. Manually set the page value to 0 in the URL or pagination control. 4. Observe the response.
+
+Test Data: shopId = [valid shop ID], page = 0",The system responds with a 200 OK status and displays the first page of orders sorted by the most recent created date at the top.,5437faa-TC-002
+Retrieve orders for a shop with page value set to one below minimum allowed value (-1),Order Retrieval by Shop,Boundary,High,User is logged in as a SHOP_OWNER with a valid shopId,"1. Navigate to the Orders section in the dashboard. 2. Select the 'All Orders' tab. 3. Manually set the page value to -1 in the URL or pagination control. 4. Observe the response.
+
+Test Data: shopId = [valid shop ID], page = -1",The system responds with a 400 Bad Request status and an error message indicating that the page value is invalid.,5437faa-TC-004
+Retrieve orders for a shop with page value set to one above maximum allowed value,Order Retrieval by Shop,Boundary,High,User is logged in as a SHOP_OWNER with a valid shopId and total orders exceed the maximum page value,"1. Navigate to the Orders section in the dashboard. 2. Select the 'All Orders' tab. 3. Manually set the page value to [max allowed page + 1] in the URL or pagination control. 4. Observe the response.
+
+Test Data: shopId = [valid shop ID], page = [max allowed page + 1]",The system responds with a 400 Bad Request status and an error message indicating that the page value is invalid.,5437faa-TC-005
+Retrieve orders for a shop with limit value set to zero (boundary case),Order Retrieval by Shop,Boundary,High,User is logged in as a SHOP_OWNER with a valid shopId,"1. Navigate to the Orders section in the dashboard. 2. Select the 'All Orders' tab. 3. Manually set the limit value to 0 in the URL or pagination control. 4. Observe the response.
+
+Test Data: shopId = [valid shop ID], limit = 0",The system responds with a 400 Bad Request status and an error message indicating that the limit value is invalid.,5437faa-TC-006
+Retrieve orders for a shop with limit value set to one below minimum allowed value,Order Retrieval by Shop,Boundary,High,User is logged in as a SHOP_OWNER with a valid shopId,"1. Navigate to the Orders section in the dashboard. 2. Select the 'All Orders' tab. 3. Manually set the limit value to [min allowed limit - 1] in the URL or pagination control. 4. Observe the response.
+
+Test Data: shopId = [valid shop ID], limit = [min allowed limit - 1]",The system responds with a 400 Bad Request status and an error message indicating that the limit value is invalid.,5437faa-TC-007
+Retrieve orders for a shop with limit value set to one above maximum allowed value (boundary case),Order Retrieval by Shop,Boundary,High,User is logged in as a SHOP_OWNER with a valid shopId,"1. Navigate to the Orders section in the dashboard. 2. Select the 'All Orders' tab. 3. Manually set the limit value to [max allowed limit + 1] in the URL or pagination control. 4. Observe the response.
+
+Test Data: shopId = [valid shop ID], limit = [max allowed limit + 1]",The system responds with a 400 Bad Request status and an error message indicating that the limit value is invalid.,5437faa-TC-008
+Retrieve orders for a shop with null shopId (boundary case),Order Retrieval by Shop,Boundary,High,User is logged in as a SHOP_OWNER,"1. Navigate to the Orders section in the dashboard. 2. Manually modify the API request to set shopId to null. 3. Observe the response.
+
+Test Data: shopId = null",The system responds with a 400 Bad Request status and an error message indicating that the shopId is invalid.,5437faa-TC-009
+Retrieve orders for a shop with empty shopId (boundary case),Order Retrieval by Shop,Boundary,High,User is logged in as a SHOP_OWNER,"1. Navigate to the Orders section in the dashboard. 2. Manually modify the API request to set shopId to an empty string. 3. Observe the response.
+
+Test Data: shopId = ''",The system responds with a 400 Bad Request status and an error message indicating that the shopId is invalid.,5437faa-TC-010
+Retrieve orders for a shop with a very large shopId (boundary case),Order Retrieval by Shop,Boundary,Medium,User is logged in as a SHOP_OWNER,"1. Navigate to the Orders section in the dashboard. 2. Manually modify the API request to set shopId to a very large number (e.g., 99999999999999999999). 3. Observe the response.
+
+Test Data: shopId = 99999999999999999999","The system responds with a 400 Bad Request status or 404 Not Found status, indicating the shopId is invalid or no orders exist for the shop.",TC-008
+Retrieve orders for a shop with orders created at exactly the same timestamp (boundary case),Order Retrieval by Shop,Boundary,Medium,User is logged in as a SHOP_OWNER with a valid shopId and multiple orders exist with the exact same created timestamp,"1. Navigate to the Orders section in the dashboard. 2. Select the 'All Orders' tab. 3. Observe the order of the list displayed.
+
+Test Data: shopId = [valid shop ID with orders created at the same timestamp]","The system displays all orders with the same timestamp in a consistent but arbitrary order (e.g., by internal ID), with no errors.",TC-009
+Verify that the order listing for a shop is sorted by creation date in descending order to prevent data manipulation via reordering,Order Management - Shop Order Listing,Security,Medium,"User is logged in as SHOP_OWNER with access to at least two orders for their shop, created at different times (e.g., Order A created yesterday, Order B created today).","1. Navigate to the 'Orders' section in the shop dashboard. 2. Observe the order of the listed orders. 3. Verify that the most recently created order (Order B) appears first in the list.
+
+Test Data: Order A (created: 2023-10-01T10:00:00), Order B (created: 2023-10-02T10:00:00)","The order list displays Order B (created today) at the top, followed by Order A (created yesterday). The sorting is consistent and not affected by other fields (e.g., order ID, customer name).",TC-010
+Verify that a SHOP_OWNER cannot access or infer the existence of orders from another shop by manipulating the shop ID in the order listing,Order Management - Data Isolation,Security,High,User is logged in as SHOP_OWNER of Shop A. Another shop (Shop B) exists with at least one order.,"1. Navigate to the 'Orders' section in the shop dashboard. 2. Using browser developer tools or a proxy, intercept the request to fetch orders and modify the shop ID parameter to Shop B's ID. 3. Observe the response or UI behavior.
+
+Test Data: Shop A ID: 1001, Shop B ID: 1002","The system displays a generic error message (e.g., 'Access denied' or 'No orders found'). No orders from Shop B are displayed, and the response does not indicate whether Shop B exists or has orders.",a50ac21-TC-006

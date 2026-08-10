@@ -1,0 +1,178 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify that a shop owner can create an order for their own shop using JWT authentication,Authentication and Authorization,Positive,High,1. A shop owner is authenticated and has a valid JWT token. 2. The shop owner has a shop with ID 1. 3. At least one item exists in the shop.,"1. Send a POST request to /api/orders with the payload in testData using the JWT token of the shop owner. 2. Verify the response status and body.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""MALE"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""specialInstruction"": ""Urgent tailoring"",
+          ""measurements"": [
+            {
+              ""nameEn"": ""Collar Size"",
+              ""nameBn"": ""কলার সাইজ"",
+              ""unit"": ""inch"",
+              ""type"": ""NUMBER"",
+              ""value"": ""15.5""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Order created successfully"",
+  ""data"": {
+    ""orderId"": ""<non-null string>"",
+    ""customerName"": ""John Doe""
+  }
+}",TC-001
+Verify that a shop owner cannot create an order for a shop they do not own,Authentication and Authorization,Positive,High,1. A shop owner is authenticated and has a valid JWT token. 2. The shop owner does not own shop with ID 2.,"1. Send a POST request to /api/orders with the payload in testData using the JWT token of the shop owner. 2. Verify the response status and body.
+
+Test Data: {
+  ""shopId"": 2,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""MALE"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""specialInstruction"": ""Urgent tailoring"",
+          ""measurements"": [
+            {
+              ""nameEn"": ""Collar Size"",
+              ""nameBn"": ""কলার সাইজ"",
+              ""unit"": ""inch"",
+              ""type"": ""NUMBER"",
+              ""value"": ""15.5""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 403 Forbidden response with a JSON body containing: {
+  ""status"": 403,
+  ""error"": ""Forbidden"",
+  ""code"": ""ACCESS_DENIED"",
+  ""message"": ""You do not have permission to access this resource""
+}",TC-002
+Verify that a shop owner can retrieve workers only from their own shop using JWT authentication,Worker Management,Positive,High,1. A shop owner is authenticated and has a valid JWT token. 2. The shop owner owns shop with ID 1. 3. Shop with ID 1 has at least one worker.,1. Send a GET request to /api/shops/1/workers?page=0&limit=10 using the JWT token of the shop owner. 2. Verify the response status and body.,"HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Workers retrieved successfully"",
+  ""data"": {
+    ""content"": [<list of workers under shop ID 1>],
+    ""totalElements"": >0,
+    ""totalPages"": >=1
+  }
+}",0895cc7-TC-001
+Verify that an expired JWT token returns an appropriate error response,Authentication and Authorization,Positive,High,1. A user has an expired JWT token. 2. The user attempts to access a protected endpoint.,1. Send a GET request to /api/shops/1/workers with the expired JWT token in the Authorization header. 2. Verify the response status and body.,"HTTP 401 Unauthorized response with a JSON body containing: {
+  ""status"": 401,
+  ""error"": ""Unauthorized"",
+  ""code"": ""TOKEN_EXPIRED"",
+  ""message"": ""Your session has expired. Please login again.""
+}",TC-003
+Verify that an invalid JWT token returns an appropriate error response,Authentication and Authorization,Positive,High,1. A user has an invalid JWT token. 2. The user attempts to access a protected endpoint.,1. Send a GET request to /api/shops/1/workers with an invalid JWT token in the Authorization header. 2. Verify the response status and body.,"HTTP 401 Unauthorized response with a JSON body containing: {
+  ""status"": 401,
+  ""error"": ""Unauthorized"",
+  ""code"": ""TOKEN_INVALID"",
+  ""message"": ""Invalid token. Please login again.""
+}",TC-004
+Verify successful authentication with valid JWT token for protected API endpoints,JWT Authentication and Authorization,Configuration,High,A valid JWT token is available for a registered user (shop owner),"1. Send a GET request to /api/shops/{shopId}/workers with the Authorization header containing 'Bearer <valid-jwt-token>'. Use shopId owned by the user.
+2. Send a POST request to /api/orders with the payload in testData and the same Authorization header.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""customerGender"": ""MALE"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""nsId"": ""chest"",
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inch"",
+              ""type"": ""NUMBER"",
+              ""value"": ""40""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with status 'success' and a paginated list of workers in the 'data' field.
+2. HTTP 201 Created response with status 'success', message 'Order created successfully', and the created order details including 'orderId' in the 'data' field.",TC-005
+Verify authentication failure with expired JWT token,JWT Authentication and Authorization,Configuration,High,An expired JWT token is available for a registered user,1. Send a GET request to /api/shops/{shopId}/workers with the Authorization header containing 'Bearer <expired-jwt-token>'. Use any shopId.,"HTTP 401 Unauthorized response with a JSON body containing: {""status"": 401, ""error"": ""Unauthorized"", ""code"": ""TOKEN_EXPIRED"", ""message"": ""Your session has expired. Please login again.""}",TC-006
+Verify authentication failure with invalid JWT token,JWT Authentication and Authorization,Configuration,High,"An invalid JWT token is available (e.g., malformed or tampered token)",1. Send a GET request to /api/shops/{shopId}/workers with the Authorization header containing 'Bearer <invalid-jwt-token>'. Use any shopId.,"HTTP 401 Unauthorized response with a JSON body containing: {""status"": 401, ""error"": ""Unauthorized"", ""code"": ""TOKEN_INVALID"", ""message"": ""Invalid token. Please login again.""}",TC-007
+Verify shop owner can access and modify orders for their own shop only,Shop Ownership and Access Control,Configuration,High,A valid JWT token is available for a shop owner who owns shop with ID 1 but not shop with ID 2,"1. Send a POST request to /api/orders with the payload in testData and Authorization header containing 'Bearer <valid-jwt-token>'.
+2. Send a PUT request to /api/orders/{orderId} with the payload in testData and the same Authorization header. Use the orderId returned from step 1.
+3. Send a POST request to /api/orders with the payload in testData but with shopId set to 2 and the same Authorization header.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""Jane Smith"",
+  ""customerPhone"": ""+1987654321"",
+  ""customerGender"": ""FEMALE"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""nsId"": ""waist"",
+              ""nameEn"": ""Waist"",
+              ""nameBn"": ""কোমর"",
+              ""unit"": ""inch"",
+              ""type"": ""NUMBER"",
+              ""value"": ""32""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 201 Created response with status 'success' and the created order details.
+2. HTTP 200 OK response with status 'success' and the updated order details.
+3. HTTP 403 Forbidden response with a JSON body containing: {""status"": 403, ""error"": ""Forbidden"", ""code"": ""ACCESS_DENIED"", ""message"": ""You do not have permission to access this resource""}",f3ee410-TC-023
+Verify shop owner can add a new worker and set their PIN after OTP verification,Worker Management with OTP Authentication,Configuration,High,A valid JWT token is available for a shop owner who owns shop with ID 1. A worker email is available for OTP delivery.,"1. Send a POST request to /api/shops/1/workers/send-otp with the payload in testData.
+2. Retrieve the OTP sent to the worker's email.
+3. Send a POST request to /api/shops/1/workers/set-pin with the payload in testData, including the OTP from step 2.
+
+Test Data: Step 1: {
+  ""name"": ""New Worker"",
+  ""phone"": ""+15551234567"",
+  ""email"": ""worker@example.com"",
+  ""address"": ""123 Worker St""
+}
+
+Step 3: {
+  ""phoneNumber"": ""+15551234567"",
+  ""otp"": ""123456"",
+  ""pin"": ""1234"",
+  ""confirmPin"": ""1234""
+}","1. HTTP 200 OK response with status 'success' and message 'OTP sent to your email'.
+2. OTP is received at the worker's email address.
+3. HTTP 200 OK response with status 'success' and message 'Worker PIN set successfully'. The worker can now authenticate using their phone number and PIN.",TC-008
+Verify the new feature flag 'app.security.config2.enabled' is respected and does not break existing functionality when disabled,New Feature Flag Configuration,Configuration,High,1. Application is deployed with the updated application.properties. 2. No other changes to security-related configurations.,"1. Start the application. 2. Perform a security-sensitive operation (e.g., login, token generation). 3. Observe application logs and behavior.
+
+Test Data: app.security.config2.enabled=false (new setting)",1. Application starts without errors. 2. Security-sensitive operations complete successfully without errors or unexpected behavior. 3. No errors or warnings related to 'app.security.config2.enabled' appear in logs.,TC-009
+Verify the application behaves correctly when the new feature flag 'app.security.config2.enabled' is absent or commented out,Feature Flag Default Behavior,Configuration,Medium,1. Application is deployed with the new feature flag removed or commented out from application.properties. 2. No other changes to security-related configurations.,"1. Start the application. 2. Perform a security-sensitive operation (e.g., login, token generation). 3. Observe application logs and behavior.
+
+Test Data: app.security.config2.enabled (absent or commented out)",1. Application starts without errors. 2. Security-sensitive operations complete successfully without errors or unexpected behavior. 3. No errors or warnings related to missing 'app.security.config2.enabled' appear in logs.,TC-010
+Verify the project builds successfully with the updated pom.xml and produces the correct artifact,Build and Dependency Resolution,Configuration,High,"1. Clean the project (e.g., mvn clean). 2. Ensure no local or remote dependency conflicts exist.","1. Run the build command (e.g., mvn clean install). 2. Observe the build output and logs. 3. Check the target directory for the generated artifact.
+
+Test Data: pom.xml (no version changes, only formatting)",1. Build completes with SUCCESS status. 2. Artifact is generated in the target directory with the correct name (TailorBookApp-0.0.1-SNAPSHOT.jar). 3. No dependency resolution errors or warnings appear in logs.,3c1bbe1-TC-022

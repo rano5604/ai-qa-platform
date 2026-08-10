@@ -1,0 +1,34 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify that deleting a non-existent area returns appropriate HTTP status code,Area Management - Resource Deletion,Security,High,User is authenticated with ADMIN role and no area with ID 99999 exists in the system,"1. Send a DELETE request to /api/areas/99999 with valid authentication headers.
+
+Test Data: N/A",The API responds with HTTP status 404 Not Found and no response body.,TC-001
+Verify that deleting a non-existent worker returns appropriate HTTP status code,Worker Management - Resource Deletion,Security,High,"User is authenticated with shop owner role, shop with ID 1 exists, and no worker with ID 99999 exists in the system","1. Send a DELETE request to /api/shops/1/workers/99999 with valid authentication headers.
+
+Test Data: N/A",The API responds with HTTP status 404 Not Found and no response body.,TC-002
+Verify that deleting a worker for a non-existent shop returns appropriate HTTP status code,Worker Management - Resource Deletion,Security,High,"User is authenticated with shop owner role, worker with ID 1 exists, and no shop with ID 99999 exists in the system","1. Send a DELETE request to /api/shops/99999/workers/1 with valid authentication headers.
+
+Test Data: N/A",The API responds with HTTP status 404 Not Found and no response body.,TC-003
+Verify that successful area deletion returns appropriate HTTP status code,Area Management - Resource Deletion,Security,High,User is authenticated with ADMIN role and area with ID 1 exists in the system,"1. Send a DELETE request to /api/areas/1 with valid authentication headers.
+
+Test Data: N/A",The API responds with HTTP status 204 No Content and no response body.,TC-004
+Verify that successful worker deletion returns appropriate HTTP status code,Worker Management - Resource Deletion,Security,High,"User is authenticated with shop owner role, shop with ID 1 exists, and worker with ID 1 exists in the system and belongs to shop 1","1. Send a DELETE request to /api/shops/1/workers/1 with valid authentication headers.
+
+Test Data: N/A",The API responds with HTTP status 204 No Content and no response body.,TC-005
+Verify that creating a new area returns HTTP status 201 Created,Resource Creation - HTTP Status Codes,Security,Medium,User is authenticated with ADMIN role,"1. Send a POST request to /api/areas with the payload in testData and valid authentication headers.
+
+Test Data: {""name"": ""New Area""}",The API responds with HTTP status 201 Created and the created area in the response body with fields matching the input.,TC-006
+Verify that creating a new appointment reservation returns HTTP status 201 Created,Resource Creation - HTTP Status Codes,Security,Medium,"User is authenticated with shop owner role, shop with ID 1 exists, and valid appointment request data is available","1. Send a POST request to /api/shops/1/appointments with the payload in testData and valid authentication headers.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""date"": ""2023-12-25"", ""time"": ""10:00"", ""workerId"": 1, ""serviceId"": 1}",The API responds with HTTP status 201 Created and the created appointment reservation in the response body with fields matching the input.,TC-007
+Verify that creating a new item returns HTTP status 201 Created,Resource Creation - HTTP Status Codes,Security,Medium,User is authenticated with appropriate role,"1. Send a POST request to /api/items with the payload in testData and valid authentication headers.
+
+Test Data: {""name"": ""New Item"", ""description"": ""Item Description"", ""price"": 10.0}",The API responds with HTTP status 201 Created and the created item in the response body with fields matching the input.,TC-008
+Verify that creating a new payment intent returns HTTP status 201 Created,Resource Creation - HTTP Status Codes,Security,Medium,User is authenticated with appropriate role and appointment with ID 1 exists,"1. Send a POST request to /api/payments?appointmentId=1 with valid authentication headers.
+
+Test Data: N/A",The API responds with HTTP status 201 Created and the created payment intent in the response body.,422e025-TC-043
+Verify that creating a new service profile returns HTTP status 201 Created,Resource Creation - HTTP Status Codes,Security,Medium,User is authenticated with shop owner role and shop with ID 1 exists,"1. Send a POST request to /api/shops/1/profiles with the payload in testData and valid authentication headers.
+
+Test Data: {""name"": ""New Service"", ""description"": ""Service Description"", ""duration"": 30, ""price"": 20.0}",The API responds with HTTP status 201 Created and the created service profile in the response body with fields matching the input.,TC-009
+Verify that creating a new worker returns HTTP status 201 Created,Resource Creation - HTTP Status Codes,Security,Medium,User is authenticated with shop owner role and shop with ID 1 exists,"1. Send a POST request to /api/shops/1/workers with the payload in testData and valid authentication headers.
+
+Test Data: {""name"": ""New Worker"", ""phone"": ""1234567890"", ""address"": ""Worker Address""}",The API responds with HTTP status 201 Created and the created worker in the response body with fields matching the input.,TC-010

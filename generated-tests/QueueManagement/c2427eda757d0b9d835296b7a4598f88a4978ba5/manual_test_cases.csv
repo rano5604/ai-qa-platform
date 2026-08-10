@@ -1,0 +1,61 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Search appointments by shop and date with date parameter as empty string (boundary: empty date),Appointment Reservation Date Filtering,Boundary,High,Shop with ID 1 exists and has at least one appointment reservation recorded,"1. Send a GET request to /api/shops/1/appointments with query parameters: date='', page=0, limit=10.
+
+Test Data: {}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the date parameter is invalid or empty.,TC-001
+Search appointments by shop and date with date parameter as null (boundary: missing date),Appointment Reservation Date Filtering,Boundary,High,Shop with ID 1 exists and has at least one appointment reservation recorded,"1. Send a GET request to /api/shops/1/appointments with query parameters: page=0, limit=10 (omitting the date parameter).
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of all appointments for the shop, regardless of date, with pagination metadata (totalElements, totalPages, size=10, number=0).",TC-002
+Search appointments by shop and date with date parameter exactly at the start of day (boundary: minimum valid datetime),Appointment Reservation Date Filtering,Boundary,High,Shop with ID 1 exists and has at least one appointment reservation recorded for the date 2023-10-01,"1. Send a GET request to /api/shops/1/appointments with query parameters: date='2023-10-01T00:00:00', page=0, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of appointments for the shop on 2023-10-01, including those at the start of the day, with pagination metadata.",TC-003
+Search appointments by shop and date with date parameter exactly at the end of day (boundary: maximum valid datetime),Appointment Reservation Date Filtering,Boundary,High,Shop with ID 1 exists and has at least one appointment reservation recorded for the date 2023-10-01 at 23:59:59.999,"1. Send a GET request to /api/shops/1/appointments with query parameters: date='2023-10-01T23:59:59.999', page=0, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of appointments for the shop on 2023-10-01, including those at the end of the day, with pagination metadata.",TC-004
+Search appointments by shop and date with date parameter one millisecond before start of day (boundary: just below minimum valid datetime),Appointment Reservation Date Filtering,Boundary,High,Shop with ID 1 exists and has at least one appointment reservation recorded for the date 2023-10-01,"1. Send a GET request to /api/shops/1/appointments with query parameters: date='2023-09-30T23:59:59.999', page=0, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains an empty paginated list (no appointments found) with pagination metadata (totalElements=0, totalPages=0, size=10, number=0).",TC-005
+Search appointments by shop and date with date parameter one millisecond after end of day (boundary: just above maximum valid datetime),Appointment Reservation Date Filtering,Boundary,High,Shop with ID 1 exists and has at least one appointment reservation recorded for the date 2023-10-01,"1. Send a GET request to /api/shops/1/appointments with query parameters: date='2023-10-02T00:00:00.001', page=0, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains an empty paginated list (no appointments found) with pagination metadata (totalElements=0, totalPages=0, size=10, number=0).",TC-006
+Search appointments by shop and date with date parameter in far past (boundary: extreme past date),Appointment Reservation Date Filtering,Boundary,Medium,Shop with ID 1 exists and has no appointments recorded for the date 1970-01-01,"1. Send a GET request to /api/shops/1/appointments with query parameters: date='1970-01-01T00:00:00', page=0, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains an empty paginated list (no appointments found) with pagination metadata (totalElements=0, totalPages=0, size=10, number=0).",TC-007
+Search appointments by shop and date with date parameter in far future (boundary: extreme future date),Appointment Reservation Date Filtering,Boundary,Medium,Shop with ID 1 exists and has no appointments recorded for the date 2100-01-01,"1. Send a GET request to /api/shops/1/appointments with query parameters: date='2100-01-01T00:00:00', page=0, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains an empty paginated list (no appointments found) with pagination metadata (totalElements=0, totalPages=0, size=10, number=0).",TC-008
+Search appointments by shop and date with date parameter using LocalDate format (boundary: legacy date format),Appointment Reservation Date Filtering,Boundary,High,Shop with ID 1 exists and has at least one appointment reservation recorded for the date 2023-10-01,"1. Send a GET request to /api/shops/1/appointments with query parameters: date='2023-10-01', page=0, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of appointments for the shop on 2023-10-01, with pagination metadata.",TC-009
+"Search appointments by shop, worker, and date with date parameter as empty string (boundary: empty date)",Appointment Reservation Search,Boundary,High,Shop with ID 1 and worker with ID 1 exist and have at least one appointment reservation recorded,"1. Send a GET request to /api/shops/1/appointments/search with query parameters: workerId=1, date='', page=0, limit=10.
+
+Test Data: {}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the date parameter is invalid or empty.,TC-010
+"Search appointments by shop, worker, and date with date parameter exactly at the start of day (boundary: minimum valid datetime)",Appointment Reservation Search,Boundary,High,Shop with ID 1 and worker with ID 1 exist and have at least one appointment reservation recorded for the date 2023-10-01 at 00:00:00,"1. Send a GET request to /api/shops/1/appointments/search with query parameters: workerId=1, date='2023-10-01T00:00:00', page=0, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of appointments for the worker on 2023-10-01, including those at the start of the day, with pagination metadata.",TC-011
+"Search appointments by shop, customer phone, and date with date parameter one millisecond before start of day (boundary: just below minimum valid datetime)",Appointment Reservation Search,Boundary,High,Shop with ID 1 exists and has at least one appointment reservation recorded for customer phone '1234567890' on 2023-10-01,"1. Send a GET request to /api/shops/1/appointments/search with query parameters: customerPhone='1234567890', date='2023-09-30T23:59:59.999', page=0, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains an empty paginated list (no appointments found) with pagination metadata (totalElements=0, totalPages=0, size=10, number=0).",TC-012
+Retrieve all areas with page number at maximum allowed value (boundary: max page number),Area Management - Pagination,Boundary,Medium,At least one area exists in the system,"1. Send a GET request to /api/areas with query parameters: page=999999, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains an empty paginated list (no areas found) with pagination metadata (totalElements=X, totalPages=Y, size=10, number=999999).",2c7a11d-TC-009
+Retrieve all areas with limit at maximum allowed value (boundary: max limit),Area Management - Pagination,Boundary,Medium,At least 101 areas exist in the system,"1. Send a GET request to /api/areas with query parameters: page=0, limit=100.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of up to 100 areas with pagination metadata (totalElements=100+, totalPages=2+, size=100, number=0).",2c7a11d-TC-010
+Retrieve all areas with limit exceeding maximum allowed value (boundary: one above max),Area Management - Pagination,Boundary,Medium,At least one area exists in the system,"1. Send a GET request to /api/areas with query parameters: page=0, limit=101.
+
+Test Data: {}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the limit exceeds the maximum allowed value.,2c7a11d-TC-011
+Search areas by name with name parameter as empty string (boundary: empty name),Area Management - Search by Name,Boundary,Medium,At least one area exists in the system,"1. Send a GET request to /api/areas-name with query parameters: name='', page=0, limit=10.
+
+Test Data: {}",HTTP status code 200 (OK). Response body contains a paginated list of all areas (no name filter applied) with pagination metadata.,TC-013
+Search areas by name with name parameter at maximum allowed length (boundary: max length),Area Management - Search by Name,Boundary,Medium,An area exists with a name of exactly 100 characters,"1. Send a GET request to /api/areas-name with query parameters: name='A'.repeat(100), page=0, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of areas with names matching the 100-character string, with pagination metadata.",TC-014
+Search areas by name with name parameter exceeding maximum allowed length (boundary: one above max),Area Management - Search by Name,Boundary,Medium,At least one area exists in the system,"1. Send a GET request to /api/areas-name with query parameters: name='A'.repeat(101), page=0, limit=10.
+
+Test Data: {}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the name parameter exceeds the maximum allowed length.,TC-015
+Retrieve area by ID with ID of zero (boundary: zero ID),Area Management - Retrieve by ID,Boundary,High,No area with ID 0 exists in the system,"1. Send a GET request to /api/areas/0.
+
+Test Data: {}",HTTP status code 404 (Not Found). Response body is empty or contains an error message indicating that the area was not found.,3c56bc5-TC-012
+Retrieve area by ID with a very large ID (boundary: large numeric input),Area Management - Retrieve by ID,Boundary,Medium,No area with ID 9999999999 exists in the system,"1. Send a GET request to /api/areas/9999999999.
+
+Test Data: {}",HTTP status code 404 (Not Found). Response body is empty or contains an error message indicating that the area was not found.,3c56bc5-TC-013

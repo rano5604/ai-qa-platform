@@ -1,0 +1,273 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References,Source Ref
+Attempt to create an order without providing customer phone number,Order Creation,Negative,High,User is logged into the application and is on the order creation page,"1. Fill in the 'Customer Name' field. 2. Leave the 'Phone Number' field empty. 3. Fill in all other required fields (e.g., item type, making charge). 4. Proceed to the confirmation step. 5. Click 'Confirm Order'.
+
+Test Data: Customer Name: John Doe, Phone Number: [empty], Item Type: Shirt, Making Charge: 500",The system should display an error message indicating that the 'Phone Number' field is required and prevent proceeding to the confirmation step.,d92b7aa-TC-001,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to create an order with an invalid phone number format,Order Creation,Negative,High,User is logged into the application and is on the order creation page,"1. Fill in the 'Customer Name' field. 2. Enter an invalid phone number (e.g., '123' or 'abc12345678'). 3. Fill in all other required fields (e.g., item type, making charge). 4. Proceed to the confirmation step. 5. Click 'Confirm Order'.
+
+Test Data: Customer Name: John Doe, Phone Number: abc12345678, Item Type: Shirt, Making Charge: 500",The system should display an error message indicating that the phone number is invalid and prevent proceeding to the confirmation step.,d92b7aa-TC-002,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to create an order without selecting an item type,Order Creation,Negative,High,User is logged into the application and is on the order creation 'Items' step,"1. Fill in customer details (name and phone number). 2. Skip selecting an item type. 3. Proceed to the next step. 4. Attempt to confirm the order.
+
+Test Data: Customer Name: John Doe, Phone Number: 01712345678, Item Type: [none selected]",The system should display an error message indicating that an item type must be selected and prevent proceeding to the confirmation step.,d92b7aa-TC-003,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to create an order without being logged in (unauthorized access),Order Creation,Negative,High,User is not logged into the application,"1. Clear all authentication tokens/cookies from the browser. 2. Manually navigate to the order creation page. 3. Attempt to fill in order details and proceed through the steps.
+
+Test Data: Authentication: none",The system should redirect the user to the login page or display an error message indicating that the user is not authorized to access the order creation feature.,d92b7aa-TC-004,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to upload an invalid photo format during order creation,Order Creation,Negative,High,User is logged into the application and is on the order creation 'Photos' step,"1. Fill in customer details and item type. 2. On the 'Photos' step, attempt to upload a file that is not an image (e.g., a PDF or text file). 3. Proceed to the confirmation step.
+
+Test Data: File to upload: sample.pdf (or any non-image file)",The system should display an error message indicating that the uploaded file is not a valid image format and prevent proceeding to the confirmation step.,d92b7aa-TC-005,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to create an order without uploading a required photo,Order Creation,Negative,High,User is logged into the application and is on the order creation 'Photos' step,"1. Fill in customer details and item type. 2. On the 'Photos' step, skip uploading the 'Order Cloth' photo. 3. Proceed to the confirmation step. 4. Click 'Confirm Order'.
+
+Test Data: Order Cloth Photo: [not uploaded]",The system should display an error message indicating that the 'Order Cloth' photo is required and prevent proceeding to the confirmation step.,d92b7aa-TC-006,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to access the order success page with an invalid order ID,Order Success Page,Negative,Medium,User is logged into the application and has just confirmed an order,"1. After confirming an order, manually modify the URL to include an invalid order ID (e.g., '?id=invalid' or '?orderId=invalid'). 2. Press Enter to reload the page.
+
+Test Data: Order ID URL parameter: ?id=invalid or ?orderId=invalid","The system should generate a valid order ID based on the shop and sequence number, ignoring the invalid parameter. The success page should display the generated order ID.",d92b7aa-TC-007,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to confirm an order without being logged in (unauthorized access),Order Confirmation,Negative,High,User is not logged into the application and has a partially filled order in progress,"1. Clear all authentication tokens/cookies from the browser. 2. Manually navigate to the order confirmation page. 3. Click 'Confirm Order'.
+
+Test Data: Authentication: none",The system should redirect the user to the login page or display an error message indicating that the user is not authorized to confirm the order.,d92b7aa-TC-008,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to access the order success page without being logged in (unauthorized access),Order Success Page,Negative,High,User is not logged into the application and has just confirmed an order,"1. Clear all authentication tokens/cookies from the browser. 2. Manually navigate to the order success page. 3. Observe the page behavior.
+
+Test Data: Authentication: none",The system should redirect the user to the login page or display an error message indicating that the user is not authorized to view the order success page.,d92b7aa-TC-009,e0a22d06ff9cccfc70611002d82d60ce21975a36
+"Verify that malicious file uploads (e.g., executable files) are rejected during photo upload",Order Creation - Photo Upload Security,Security,High,User is logged in and has reached the 'Add Photos' step of order creation with a valid customer and item selected,"1. Click the 'Upload' button for any photo type (e.g., 'Order Cloth').
+2. In the file picker, select a file with an executable extension (e.g., 'malicious.exe' or 'malicious.php').
+3. Confirm the upload.
+4. Observe the system response.
+5. Repeat steps 1-4 with a file containing a null byte in its name (e.g., 'malicious\0.png').
+6. Repeat steps 1-4 with a file containing path traversal sequences (e.g., '../../malicious.png').
+
+Test Data: Files: malicious.exe, malicious.php, malicious\0.png, ../../malicious.png","The system should reject all non-image files with an error message such as 'Only image files are allowed'. The upload should not proceed, and no photo should appear in the preview or be saved to the order.",d92b7aa-TC-010,d92b7aa190fc259955c9e37fd54e6d6eb8a9f46b
+Verify that oversized image uploads are rejected or handled appropriately,Order Creation - Photo Upload Security,Security,High,User is logged in and has reached the 'Add Photos' step of order creation with a valid customer and item selected,"1. Click the 'Upload' button for any photo type (e.g., 'Order Cloth').
+2. In the file picker, select an image file larger than 10MB.
+3. Confirm the upload.
+4. Observe the system response.
+
+Test Data: Image file: 15MB sample.jpg","The system should reject the oversized image with an error message such as 'Image size exceeds the maximum allowed limit of 10MB'. The upload should not proceed, and no photo should appear in the preview or be saved to the order.",d92b7aa-TC-011,d92b7aa190fc259955c9e37fd54e6d6eb8a9f46b
+Verify that the photo upload API sanitizes base64-encoded image payloads to prevent injection attacks,Order Creation - Photo Upload,Security,High,User is logged in and is on the 'Add Photos' step of the order creation flow.,"1. Open the browser developer tools (Network tab).
+2. Attempt to upload a valid image file and intercept the request.
+3. Modify the request payload to include a malicious script in the base64-encoded image data (e.g., append ';alert(1);' to the base64 string).
+4. Send the modified request.
+5. If the upload succeeds, attempt to view the uploaded photo in the application.
+
+Test Data: photo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=;alert(1);","The system should sanitize the base64 payload and either reject the upload or strip out the malicious script. The photo should either not appear in the preview, or the script should not execute when the photo is viewed. The system should not expose any error details that reveal internal processing logic.",d92b7aa-TC-012,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify that the photo upload API enforces the API_ORIGIN restriction to prevent open proxy abuse,Order Creation - Photo Upload,Security,High,User is logged in and is on the 'Add Photos' step of the order creation flow.,"1. Open the browser developer tools (Network tab).
+2. Attempt to upload a valid image file.
+3. Intercept the network request to the photo upload API.
+4. Modify the 'Referer' or 'Origin' header to point to an external domain (e.g., 'https://malicious-site.com').
+5. Send the modified request.
+6. Repeat steps 4-5 with an empty or malformed 'Referer'/'Origin' header.
+
+Test Data: Referer=https://malicious-site.com, Origin=https://malicious-site.com","The system should reject all photo upload requests with a '403 Forbidden' status if the 'Referer' or 'Origin' header does not match the API_ORIGIN. The upload should not proceed, and no photo should be saved.",d92b7aa-TC-013,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify that server-side photo URLs are not exposed to unauthorized users via the image proxy,Order Creation - Photo Upload,Security,High,User A is logged in and has created an order with photos. User B is logged in with a different account.,"1. As User A, navigate to the order success page and note the photo URLs displayed.
+2. Copy one of the photo URLs.
+3. Log out as User A.
+4. As User B, paste the copied photo URL into the browser address bar and press Enter.
+5. Log out as User B and attempt to access the photo URL again.
+
+Test Data: Photo URL from User A's order (e.g., /api/proxy/image?src=/photos/123)","The system should prevent User B from accessing the photo URLs directly. The browser should display an 'Access Denied' error or redirect to the login page. After logout, the system should reject the request with a '401 Unauthorized' status.",d92b7aa-TC-014,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify that session storage does not leak sensitive photo data after order completion or logout,Order Creation - Photo Upload,Security,Medium,User is logged in and has completed an order with photos.,"1. Complete an order with at least one photo uploaded.
+2. Open the browser developer tools (Application tab).
+3. Navigate to Session Storage and inspect the 'create-order:v4' key.
+4. Note any sensitive data stored (e.g., photo URLs, base64 data).
+5. Log out of the application.
+6. Repeat step 3 and verify that the 'create-order:v4' key is cleared or contains only non-sensitive data.
+7. Log in again and navigate to the order creation flow to verify that no residual data is present.
+
+Test Data: N/A","The session storage should not contain raw base64 photo data or server URLs after logout. The 'create-order:v4' key should either be cleared or contain only non-sensitive data (e.g., order metadata without photo references). After logging in again, the order creation flow should start fresh with no residual data.",d92b7aa-TC-015,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify that the photo upload API enforces rate limiting to prevent abuse,Order Creation - Photo Upload,Security,Medium,User is logged in and is on the 'Add Photos' step of the order creation flow.,"1. Open the browser developer tools (Network tab).
+2. Rapidly attempt to upload multiple large image files (e.g., 10 files in quick succession).
+3. Observe the response status and any error messages.
+4. Repeat step 2 after a short delay (e.g., 1 minute).
+
+Test Data: 10 large image files (e.g., 5MB each)",The system should allow the first few uploads but eventually throttle or block further requests with an error message such as 'Too many requests. Please try again later.' The system should not crash or become unresponsive.,d92b7aa-TC-016,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify that the order confirmation step does not expose sensitive data in error messages or logs,Order Creation - Confirmation,Security,High,User is logged in and has completed the 'Add Photos' step of the order creation flow with at least one photo uploaded.,"1. Proceed to the 'Confirm Order' step.
+2. Open the browser developer tools (Console and Network tabs).
+3. Intercept the network request to the order submission API.
+4. Modify the request payload to include invalid or malformed data (e.g., negative making charge, invalid customer phone number).
+5. Send the modified request.
+6. Observe the error message displayed to the user and any logs in the browser console.
+7. Repeat steps 4-6 with a payload that includes sensitive data (e.g., photo URLs, customer PII) in unexpected fields.
+
+Test Data: makingCharge=-1000, customerPhone=invalid, photoUrls={'orderCloth': 'http://internal-server/photos/123'}","The system should reject the invalid payload with a generic error message such as 'Invalid order data. Please try again.' No sensitive data (e.g., tokens, photo URLs, customer PII) should be exposed in the error message or browser console logs.",d92b7aa-TC-017,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify that authentication tokens are securely handled and not exposed in URLs or logs during order creation,Order Creation - Token Handling,Security,High,User is logged in and is on the 'Customer Details' step of the order creation flow.,"1. Open the browser developer tools (Console and Network tabs).
+2. Proceed through each step of the order creation flow (Customer Details, Add Items, Add Photos, Confirm Order).
+3. Observe all network requests and note any URLs that include tokens or sensitive data.
+4. Check the browser console for any logs that expose tokens or sensitive data.
+5. Log out of the application and verify that all tokens are cleared from storage (localStorage, sessionStorage, cookies).
+6. Attempt to navigate back to any order creation step using the browser's back button.
+
+Test Data: N/A","Authentication tokens should never appear in URLs or be logged in the browser console. Tokens should be sent securely in request headers (e.g., Authorization: Bearer <token>). After logout, all tokens should be cleared from storage, and the user should be redirected to the login page when attempting to access order creation steps.",d92b7aa-TC-018,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify that order IDs are not predictable or susceptible to insecure direct object reference (IDOR),Order Creation - Order ID Generation,Security,High,User A and User B are both logged in. User A has created at least one order.,"1. As User A, navigate to the order success page and note the generated order ID.
+2. Log out as User A.
+3. As User B, manually construct a URL to access User A's order using the noted order ID (e.g., /orders/create/success?id=123&orderId=SHOP-YYYYMMDD-0001).
+4. Attempt to access the constructed URL.
+5. Repeat steps 3-4 with a slightly modified order ID (e.g., incrementing the sequence number).
+
+Test Data: Order ID from User A's order (e.g., SHOP-YYYYMMDD-0001), modified Order ID (e.g., SHOP-YYYYMMDD-0002)","The system should prevent access to order details for orders not owned by the logged-in user. User B should see an 'Access Denied' error or be redirected to a safe page (e.g., dashboard). The system should not expose any sensitive order details.",d92b7aa-TC-019,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify order details and QR code display correctly after order creation,Order Success Page Display,Positive,High,"User has just completed creating a new order with customer details, items, and photos. The order includes an advance payment and a due amount.","1. Complete the order creation process by confirming all details and submitting the order. 2. Observe the success page that loads automatically after submission. 3. Verify the order ID displayed at the top of the page. 4. Check the customer name, order date, delivery date, and trial date. 5. Confirm the total amount, paid amount (advance), and due amount are displayed correctly. 6. Verify the QR code is displayed and scannable.
+
+Test Data: Order ID: auto-generated (e.g., '1-20240515-0001'), Customer Name: 'John Doe', Order Date: today's date, Delivery Date: tomorrow's date, Trial Date: two days from today, Total Amount: 2000, Paid Amount: 500, Due Amount: 1500","The success page displays the correct order ID, customer name, dates, and monetary values formatted as currency (e.g., '2,000.00'). The QR code is visible and can be scanned without errors. All details match the order submitted.",e0a22d0-TC-001,8a8e05d448980fa635edc0248460f175f877b83c
+Verify that protected images load correctly using the enhanced proxy with multiple auth sources,Order Image Proxy,Positive,High,User is logged in and has at least one order with associated customer and order images in the system,"1. Navigate to the Orders list page. 2. Select an order with a customer photo. 3. Verify the customer photo loads correctly without broken image icons. 4. Navigate to the order detail page. 5. Verify the order cloth photo loads correctly without broken image icons. 6. Log out and log in using a different auth method (e.g., session cookie instead of access token). 7. Repeat steps 1-5 to verify images load correctly with the new auth method.
+
+Test Data: Use an order with known customer photo URL '/customers/123/photo.jpg' and order cloth photo URL '/orders/456/cloth.jpg'",All images load correctly regardless of the authentication method used. Images display quickly and match the expected content without any broken image icons or auth-related errors.,e0a22d0-TC-002,5000da40a9fe50030e7d0125c7c8b3439162aba7
+Verify monetary values are displayed with consistent decimal formatting,Order Success Page - Monetary Value Formatting,Positive,High,User has just completed creating a new order with monetary values that may include whole numbers or decimals.,"1. Complete the order creation process and navigate to the success page. 2. Observe the total amount, paid amount, and due amount displayed. 3. Verify all monetary values show exactly two decimal places (e.g., '2000.00', '500.00').
+
+Test Data: Total Amount: 2000, Paid Amount: 500, Due Amount: 1500","All monetary values are displayed with two decimal places (e.g., '2,000.00', '500.00', '1,500.00'). No values are truncated or missing decimals.",e0a22d0-TC-003,8a8e05d448980fa635edc0248460f175f877b83c
+Verify that dashboard summary cards display correct counts for today's and tomorrow's deliveries,Dashboard Summary Cards,Positive,High,User is logged in and has orders scheduled for delivery today and tomorrow,"1. Navigate to the Dashboard. 2. Locate the 'Delivery Today' card. 3. Verify the count matches the number of orders due for delivery today. 4. Locate the 'Delivery Tomorrow' card. 5. Verify the count matches the number of orders due for delivery tomorrow.
+
+Test Data: Existing orders with delivery dates set for today and tomorrow",The 'Delivery Today' and 'Delivery Tomorrow' cards display the correct number of orders. Clicking on each card redirects to the respective order list filtered by the correct delivery date.,e0a22d0-TC-004,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify that customer photos are displayed correctly in the customer list,Customer List with Photos,Positive,Medium,User is logged in and has customers with photos recorded,"1. Navigate to the 'All Customers' page. 2. Scroll through the customer list. 3. Verify that customer photos are displayed next to each customer's name and phone number. 4. Click on a customer with a photo to view details.
+
+Test Data: Any existing customer with a photo",Customer photos are displayed correctly next to each customer's details. Photos load without errors and match the expected customer.,e0a22d0-TC-005,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to fetch an image with missing 'src' parameter,Image Proxy Service,Negative,High,User is logged into the application and has access to any page that loads images via the proxy,"1. Open browser developer tools and navigate to the Network tab. 2. Trigger an image load by navigating to a page that uses the image proxy (e.g., customer list or order list). 3. Manually modify the image URL in the network request to remove the 'src' parameter. 4. Send the modified request.
+
+Test Data: Image URL without 'src' parameter: /api/proxy/image","The system should return an HTTP 400 error with the message 'Missing src'. The image should not load, and an error placeholder or broken image icon should be displayed.",e0a22d0-TC-006,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to fetch an image with malformed 'src' URL,Image Proxy Service,Negative,High,User is logged into the application and has access to any page that loads images via the proxy,"1. Open browser developer tools and navigate to the Network tab. 2. Trigger an image load by navigating to a page that uses the image proxy. 3. Manually modify the image URL to include a malformed 'src' parameter (e.g., 'src=ht%3A%2F%2Fmalformed.url'). 4. Send the modified request.
+
+Test Data: Malformed 'src' parameter: src=ht%3A%2F%2Fmalformed.url","The system should return an HTTP 400 error with the message 'Invalid src'. The image should not load, and an error placeholder or broken image icon should be displayed.",e0a22d0-TC-007,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to fetch an image from a forbidden origin,Image Proxy Service,Negative,High,User is logged into the application and has access to any page that loads images via the proxy,"1. Open browser developer tools and navigate to the Network tab. 2. Trigger an image load by navigating to a page that uses the image proxy. 3. Manually modify the image URL to include a 'src' parameter pointing to a forbidden origin (e.g., 'src=https://external-forbidden-site.com/image.jpg'). 4. Send the modified request.
+
+Test Data: Forbidden origin 'src' parameter: src=https://external-forbidden-site.com/image.jpg","The system should return an HTTP 403 error with the message 'Forbidden origin'. The image should not load, and an error placeholder or broken image icon should be displayed.",e0a22d0-TC-008,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to confirm an order with an invalid advance payment amount,Order Confirmation,Negative,Medium,User is logged into the application and is on the order confirmation page with a valid order,"1. On the confirmation page, manually modify the URL to include an invalid advance payment amount (e.g., '?advance=-100' or '?advance=abc'). 2. Press Enter to reload the page. 3. Click 'Confirm Order'.
+
+Test Data: Advance payment URL parameter: ?advance=-100 or ?advance=abc","The system should ignore the invalid advance amount, default it to 0, and proceed with the order confirmation. The due amount should reflect the total amount minus 0.",e0a22d0-TC-009,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to confirm an order without any items added,Order Confirmation,Negative,High,User is logged into the application and has filled in customer details but no items,"1. Fill in customer details (name and phone number). 2. Skip the 'Items' step and manually navigate to the confirmation page. 3. Click 'Confirm Order'.
+
+Test Data: Customer Name: John Doe, Phone Number: 01712345678, Items: [none]",The system should redirect the user back to the 'Items' step and display an error message indicating that at least one item must be added to the order.,e0a22d0-TC-010,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to access the order success page without any order data in session storage,Order Success Page,Negative,Medium,User is logged into the application and has cleared session storage,"1. Clear the browser's session storage. 2. Manually navigate to the order success page. 3. Observe the page behavior.
+
+Test Data: Session storage: cleared","The system should display a generic success message with a generated order ID but no specific order details (e.g., customer name, items, amounts). The QR code should still be generated for payment.",e0a22d0-TC-011,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to create an order with a malformed delivery date,Order Creation,Negative,Medium,User is logged into the application and is on the order creation 'Items' step,"1. Fill in customer details and select an item type. 2. Manually modify the delivery date input to an invalid format (e.g., '31-02-2023' or 'invalid-date'). 3. Proceed to the confirmation step. 4. Click 'Confirm Order'.
+
+Test Data: Delivery Date: 31-02-2023 or invalid-date",The system should display an error message indicating that the delivery date is invalid and prevent proceeding to the confirmation step.,e0a22d0-TC-012,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Attempt to create an order with a negative making charge,Order Creation,Negative,Medium,User is logged into the application and is on the order creation 'Items' step,"1. Fill in customer details and select an item type. 2. Enter a negative value for the making charge (e.g., -500). 3. Proceed to the confirmation step. 4. Click 'Confirm Order'.
+
+Test Data: Making Charge: -500",The system should display an error message indicating that the making charge must be a positive number and prevent proceeding to the confirmation step.,e0a22d0-TC-013,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify that the image proxy rejects requests with malicious 'src' parameter values to prevent SSRF attacks,Image Proxy Service,Security,High,User is logged in and has access to the application. The application is configured with a valid API_ORIGIN.,"1. Open the browser developer tools (Network tab).
+2. Navigate to any page that loads customer or order photos (e.g., Customers List, Orders List).
+3. Intercept the network request to the image proxy endpoint (e.g., /api/proxy/image?src=...).
+4. Modify the 'src' parameter to an external URL (e.g., 'https://malicious-site.com/image.jpg').
+5. Send the modified request.
+6. Repeat step 4 with a local file path (e.g., '/etc/passwd').
+7. Repeat step 4 with a JavaScript URI (e.g., 'javascript:alert(1)').
+
+Test Data: src=https://malicious-site.com/image.jpg, src=/etc/passwd, src=javascript:alert(1)","The system should reject all requests with a '403 Forbidden' status for external URLs and local file paths. JavaScript URIs should be rejected with a '400 Invalid src' status. No image should be displayed, and the response should not contain any sensitive data.",e0a22d0-TC-014,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify that the image proxy enforces authentication and authorization for protected images,Image Proxy Service,Security,High,User is logged in with a valid access token. There exists at least one customer or order with a photo that requires authentication.,"1. Open the browser developer tools (Network tab).
+2. Navigate to a page that loads a protected image (e.g., customer photo).
+3. Copy the image URL from the 'src' attribute of the <img> tag.
+4. Log out of the application.
+5. Paste the copied image URL directly into the browser address bar and press Enter.
+6. Log in as a different user who does not have access to the original user's data.
+7. Repeat step 5.
+
+Test Data: Image URL from a protected customer/order photo","The system should reject the request with a '401 Unauthorized' status when accessed without a valid session. When accessed by a different user, the system should either return a '403 Forbidden' status or a placeholder image, but never the actual protected image.",e0a22d0-TC-015,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify that the image proxy sanitizes the 'src' parameter to prevent path traversal attacks,Image Proxy Service,Security,High,User is logged in and has access to the application.,"1. Open the browser developer tools (Network tab).
+2. Navigate to any page that loads customer or order photos.
+3. Intercept the network request to the image proxy endpoint.
+4. Modify the 'src' parameter to include path traversal sequences (e.g., '/../../../etc/passwd').
+5. Send the modified request.
+6. Repeat step 4 with URL-encoded path traversal sequences (e.g., '%2F..%2F..%2Fetc%2Fpasswd').
+
+Test Data: src=/../../../etc/passwd, src=%2F..%2F..%2Fetc%2Fpasswd","The system should reject all requests with path traversal sequences with a '400 Invalid src' status. No sensitive files should be returned, and the response should not contain any internal system details.",e0a22d0-TC-016,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify that customer and order data is not accessible via insecure direct object reference (IDOR) in list views,Customer and Order Data Access,Security,High,User A and User B are both logged in. User A has at least one customer and order recorded.,"1. As User A, navigate to the Customers List or Orders List page.
+2. Note the ID of a customer or order.
+3. Log out as User A.
+4. As User B, manually construct a URL to access the customer or order details using the noted ID (e.g., /customers/all?customerId=123 or /orders/all?orderId=456).
+5. Attempt to access the constructed URL.
+6. Repeat steps 4-5 with a slightly modified ID (e.g., incrementing the ID number).
+
+Test Data: Customer ID or Order ID from User A's data (e.g., 123, 456), modified ID (e.g., 124, 457)","The system should prevent User B from accessing customer or order details for records not owned by their account. User B should see an empty list, a 'No records found' message, or be redirected to a safe page. The system should not expose any sensitive data.",e0a22d0-TC-017,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify that the image proxy does not cache or expose sensitive images beyond their intended scope,Image Proxy Service,Security,High,User A is logged in and has uploaded photos for an order. User B is logged in with a different account.,"1. As User A, navigate to the order success page and note the photo URLs.
+2. Open a new incognito/private browsing window and log in as User B.
+3. In the incognito window, attempt to access the photo URLs noted in step 1.
+4. Log out as User B and attempt to access the photo URLs again in the incognito window.
+5. As User A, delete the order or photos associated with the URLs.
+6. As User B, attempt to access the photo URLs again.
+
+Test Data: Photo URLs from User A's order","The system should prevent User B from accessing User A's photos at all times. After User A deletes the order or photos, the URLs should become invalid for all users, including User A. The system should return a '404 Not Found' or '403 Forbidden' status for deleted or inaccessible photos.",e0a22d0-TC-018,e0a22d06ff9cccfc70611002d82d60ce21975a36
+Verify order dates are displayed in a consistent format regardless of input format,Order Success Page - Date Format Handling,Positive,Medium,"User has just completed creating a new order. The order date was stored in 'YYYYMMDD' format (e.g., '20240515').","1. Complete the order creation process and navigate to the success page. 2. Observe the order date displayed on the success page. 3. Verify the date is shown in 'YYYY-MM-DD' format (e.g., '2024-05-15').
+
+Test Data: Order Date: '20240515' (stored as 'YYYYMMDD')","The order date is displayed in 'YYYY-MM-DD' format (e.g., '2024-05-15') on the success page.",8a8e05d-TC-001,8a8e05d448980fa635edc0248460f175f877b83c
+Verify order date is displayed in 'YYYY-MM-DD' format,Order Success Page,Boundary,Medium,User has successfully placed an order,"1. Place an order with a specific date. 2. Go to the order success page.
+
+Test Data: Order date: '2024-09-16'",The order date is displayed as '2024-09-16' on the order success page,8a8e05d-TC-002,8a8e05d448980fa635edc0248460f175f877b83c
+Verify order date is displayed in 'YYYYMMDD' format,Order Success Page,Boundary,Medium,User has successfully placed an order,"1. Place an order with a specific date. 2. Go to the order success page.
+
+Test Data: Order date: '20240916'",The order date is displayed as '2024-09-16' on the order success page,8a8e05d-TC-003,8a8e05d448980fa635edc0248460f175f877b83c
+Verify order date is displayed when it is null or empty,Order Success Page,Boundary,Low,User has successfully placed an order,"1. Place an order without a specific date. 2. Go to the order success page.
+
+Test Data: Order date: '' or null",The order date is displayed as an empty string on the order success page,8a8e05d-TC-004,8a8e05d448980fa635edc0248460f175f877b83c
+Verify order amount is displayed with two decimal places,Order Success Page,Boundary,Medium,User has successfully placed an order,"1. Place an order with a specific amount. 2. Go to the order success page.
+
+Test Data: Order amount: 100.1234",The order amount is displayed as '100.12' on the order success page,8a8e05d-TC-005,8a8e05d448980fa635edc0248460f175f877b83c
+Verify order amount is displayed when it is null or empty,Order Success Page,Boundary,Low,User has successfully placed an order,"1. Place an order without a specific amount. 2. Go to the order success page.
+
+Test Data: Order amount: '' or null",The order amount is displayed as '0.00' on the order success page,8a8e05d-TC-006,8a8e05d448980fa635edc0248460f175f877b83c
+Verify order amount is displayed with a very large value,Order Success Page,Boundary,Low,User has successfully placed an order,"1. Place an order with a very large amount. 2. Go to the order success page.
+
+Test Data: Order amount: 1000000000.1234",The order amount is displayed correctly on the order success page,8a8e05d-TC-007,8a8e05d448980fa635edc0248460f175f877b83c
+Verify order ID is generated correctly,Order Success Page,Boundary,Medium,User has successfully placed an order,"1. Place an order. 2. Go to the order success page.
+
+Test Data: Shop ID: 1, Order date: '2024-09-16'",The order ID is displayed in the format '1-20240916-0001' on the order success page,8a8e05d-TC-008,8a8e05d448980fa635edc0248460f175f877b83c
+Verify order ID is generated correctly when shop ID is null or empty,Order Success Page,Boundary,Low,User has successfully placed an order,"1. Place an order without a specific shop ID. 2. Go to the order success page.
+
+Test Data: Shop ID: '' or null, Order date: '2024-09-16'",The order ID is displayed in the format '1-20240916-0001' on the order success page,8a8e05d-TC-009,8a8e05d448980fa635edc0248460f175f877b83c
+Verify order details display correctly including item measurements and delivery dates,Order Detail View,Positive,High,User is logged in and has at least one order with multiple items and measurement groups in the system,"1. Navigate to the Orders list page. 2. Select an order with multiple items and measurement groups. 3. Verify the customer name and photo display correctly. 4. Verify each item's title, making charge, and measurement count display correctly. 5. Verify the delivery date for each item group displays in 'YYYY-MM-DD' format. 6. Verify the payment summary (making, advance, due) displays correctly with currency formatting.
+
+Test Data: Use an order with orderId 'ORD-2024-001', customer 'John Doe', 2 items ('Shirt' and 'Pant'), each with 5 measurements, delivery dates '2024-06-15' and '2024-06-20', making charge 1500, advance 500","The order detail page displays all items with correct titles, making charges (৳1,500), measurement counts (5), and delivery dates (2024-06-15, 2024-06-20). The payment summary shows making ৳3,000, advance ৳500, and due ৳2,500. The earliest delivery date (2024-06-15) is displayed in the summary section.",5000da4-TC-001,5000da40a9fe50030e7d0125c7c8b3439162aba7
+Verify that order item measurements and details can be edited and saved successfully,Order Item Editing,Positive,High,User is logged in and has at least one order with editable items in the system,"1. Navigate to the Orders list page. 2. Select an order with editable items. 3. Click the 'Update' button on an item group. 4. On the edit page, modify the making charge (e.g., from 1500 to 1800). 5. Modify one numeric measurement value (e.g., chest from 38 to 40). 6. Modify the delivery date (e.g., from 2024-06-15 to 2024-06-18). 7. Add a special instruction (e.g., 'Please add extra pocket'). 8. Click 'Save' to submit changes. 9. Verify the changes are reflected on the order detail page.
+
+Test Data: Use an order with orderId 'ORD-2024-001', groupId 'GRP-001', making charge 1500, chest measurement 38, delivery date 2024-06-15","The edited values are saved successfully and displayed on the order detail page: making charge shows ৳1,800, chest measurement shows 40, delivery date shows 2024-06-18, and special instruction 'Please add extra pocket' is visible. No data loss occurs for unchanged fields.",5000da4-TC-002,5000da40a9fe50030e7d0125c7c8b3439162aba7
+Verify that existing customer details are auto-filled during order creation,Order Creation - Customer Lookup,Positive,High,User is logged in and has at least one existing customer with phone number '01712345678' in the system,"1. Navigate to the 'Create New Order' page. 2. Enter the phone number '01712345678' in the phone field. 3. Wait for the system to auto-lookup the customer. 4. Verify the customer name and gender are auto-filled from the existing record. 5. Select an item type (e.g., 'Shirt'). 6. Proceed through the order creation flow to the summary page. 7. Verify the customer details remain consistent throughout the flow.
+
+Test Data: Use phone number '01712345678' for customer 'Fatema Akter' with gender 'FEMALE'",The customer name 'Fatema Akter' and gender 'FEMALE' are auto-filled after entering the phone number. The details remain consistent on all subsequent pages of the order creation flow.,5000da4-TC-003,5000da40a9fe50030e7d0125c7c8b3439162aba7
+Verify that order lists display with correct pagination and limit controls,Order List Pagination,Positive,Medium,User is logged in and has at least 15 orders in the system with varying delivery dates,"1. Navigate to the 'Delivery Today' orders page. 2. Verify the list displays the correct number of orders per page (default 10). 3. Use the pagination controls to navigate to the next page. 4. Verify the next set of orders displays correctly. 5. Change the 'per page' limit to 20 using the dropdown. 6. Verify all orders now display on a single page. 7. Navigate to 'Delivery Overdue' page and repeat steps 2-6.
+
+Test Data: Use a dataset with 15 orders: 5 due today, 5 overdue, 5 tomorrow",Orders display correctly with the selected pagination settings. Changing the 'per page' limit updates the display immediately and resets to the first page. All pagination controls work as expected across different order list pages.,5000da4-TC-004,5000da40a9fe50030e7d0125c7c8b3439162aba7
+Display customer photo from API using proxy with cookie-based auth,Image Proxy Service,Configuration,High,User is logged in and has at least one order with a customer photo stored in the system,"1. Navigate to the Orders list page (e.g., '/orders/all').
+2. Locate an order with a customer photo.
+3. Verify the customer photo is displayed correctly next to the order details.
+
+Test Data: Use an existing order with a known customer photo URL (e.g., customer photo stored at '/uploads/photos/customer123.jpg').","The customer photo is displayed without broken image icons, and the image matches the expected customer.",5000da4-TC-005,5000da40a9fe50030e7d0125c7c8b3439162aba7
+Display cloth photo from API using proxy with query parameter auth fallback,Image Proxy Service,Configuration,High,User is logged in and has at least one order with a cloth photo stored in the system,"1. Navigate to the order detail page for an order with a cloth photo (e.g., '/orders/123').
+2. Locate the cloth photo section under the item details.
+3. Verify the cloth photo is displayed correctly.
+4. Open the same order detail page in a new tab using a URL with a valid 'bearer' query parameter (e.g., '/orders/123?bearer=valid_token').
+
+Test Data: Use an existing order with a known cloth photo URL (e.g., cloth photo stored at '/uploads/cloth/photo456.jpg').","The cloth photo is displayed correctly in both tabs, regardless of whether auth is provided via cookie or query parameter.",5000da4-TC-006,5000da40a9fe50030e7d0125c7c8b3439162aba7
+Update measurements for an existing order item,Order Item Update,Configuration,High,User is logged in and has at least one order with an item that has measurements,"1. Navigate to the order detail page (e.g., '/orders/123').
+2. Click the 'Update' button next to an item with measurements.
+3. On the edit page, modify one or more measurement values (e.g., change 'Chest' from 38 to 40).
+4. Click 'Save' to submit the changes.
+5. Return to the order detail page and verify the updated measurements are reflected.
+
+Test Data: Use an order with an item that has numeric measurements (e.g., 'Chest: 38', 'Length: 42').",The updated measurement values are saved and displayed correctly on the order detail page. No error messages appear.,5000da4-TC-007,5000da40a9fe50030e7d0125c7c8b3439162aba7
+Update delivery date and special instructions for an order item,Order Item Update,Configuration,High,User is logged in and has at least one order with an item that has a delivery date and special instructions field,"1. Navigate to the order detail page (e.g., '/orders/123').
+2. Click the 'Update' button next to an item.
+3. On the edit page, change the delivery date to a future date (e.g., 3 days from today).
+4. Add or modify the special instructions (e.g., 'Please add extra stitching on the collar').
+5. Click 'Save' to submit the changes.
+6. Return to the order detail page and verify the updated delivery date and special instructions.
+
+Test Data: Use an order with an item that has a delivery date and special instructions field.",The updated delivery date and special instructions are saved and displayed correctly on the order detail page.,5000da4-TC-008,5000da40a9fe50030e7d0125c7c8b3439162aba7
+"View order details including customer info, items, and payment summary",Order Detail View,Configuration,High,User is logged in and has at least one order in the system,"1. Navigate to the order detail page (e.g., '/orders/123').
+2. Verify the customer name, phone, and photo are displayed correctly.
+3. Verify the list of items, including item name, amount, and delivery date, is displayed.
+4. Verify the payment summary (making charge, advance, due) is calculated and displayed correctly.
+
+Test Data: Use an order with known customer details, items, and payment amounts (e.g., customer: 'John Doe', items: ['Shirt', 'Pant'], making charge: ৳2000, advance: ৳500, due: ৳1500).","All order details, including customer info, items, and payment summary, are displayed accurately and match the expected values.",5000da4-TC-009,5000da40a9fe50030e7d0125c7c8b3439162aba7
+Verify that the newly added react-day-picker library (v9.11.1) loads and functions correctly in the application,New Date Picker Dependency,Configuration,High,Application deployed with updated package-lock.json and package.json. No existing date picker functionality in use.,"1. Deploy the application with the updated configuration. 2. Navigate to any page where date selection is expected (e.g., forms with date fields). 3. Interact with the date picker component (open, select a date, navigate months). 4. Check browser console and application logs for errors related to react-day-picker or its dependencies.
+
+Test Data: New dependency: react-day-picker v9.11.1 (previously not present). Supporting libraries: date-fns v4.1.0, @date-fns/tz v1.4.1, date-fns-jalali v4.1.0-0.","Date picker component renders without errors, allows date selection, and correctly updates the input field with the selected date. No console errors or warnings related to the new dependencies.",5000da4-TC-010,5000da40a9fe50030e7d0125c7c8b3439162aba7
+Ensure the new date-fns v4.1.0 and related libraries do not conflict with existing date handling in the application,Date Library Version Compatibility,Configuration,High,"Application deployed with updated package-lock.json. Existing date-related features (e.g., date display, calculations) are functional.","1. Deploy the application with the updated configuration. 2. Use existing features that rely on date handling (e.g., displaying dates, date arithmetic). 3. Verify that dates are displayed and calculated correctly. 4. Check for any console errors or warnings related to date-fns or its plugins.
+
+Test Data: New versions: date-fns v4.1.0 (previously not present), @date-fns/tz v1.4.1, date-fns-jalali v4.1.0-0. Existing date handling logic remains unchanged.",All existing date-related features continue to work as expected. No errors or unexpected behavior in date display or calculations.,5000da4-TC-011,5000da40a9fe50030e7d0125c7c8b3439162aba7
+Validate that the application's Node.js environment meets the requirement for react-day-picker (>=18),Node Engine Compatibility for New Dependency,Configuration,High,Application deployed in an environment with Node.js version <18 or unknown.,"1. Check the Node.js version in the deployment environment (e.g., run `node -v`). 2. If Node.js version is <18, attempt to deploy the application with the updated configuration. 3. Observe the deployment logs for errors related to react-day-picker or Node.js version incompatibility.
+
+Test Data: react-day-picker requires Node.js >=18 (new constraint). Current Node.js version in environment (e.g., 16.x, 18.x).","If Node.js version is >=18, deployment succeeds without errors. If Node.js version is <18, deployment fails with a clear error message indicating the Node.js version requirement for react-day-picker.",5000da4-TC-012,5000da40a9fe50030e7d0125c7c8b3439162aba7
+Confirm that react-day-picker's peer dependency (React >=16.8.0) is satisfied by the current React version,Peer Dependency Resolution for react-day-picker,Configuration,Medium,Application deployed with updated package-lock.json and package.json. React version in use is 19.2.0.,"1. Deploy the application with the updated configuration. 2. Check the application logs and browser console for warnings or errors related to peer dependency resolution for react-day-picker. 3. Verify that the date picker component renders and functions without issues.
+
+Test Data: react-day-picker peer dependency: React >=16.8.0. Current React version: 19.2.0.",No warnings or errors related to peer dependency resolution for react-day-picker. The component loads and functions correctly.,5000da4-TC-013,5000da40a9fe50030e7d0125c7c8b3439162aba7
+Ensure all new dependencies are installed correctly and their integrity hashes match the expected values,Dependency Installation and Integrity,Configuration,High,"Clean installation environment (e.g., deleted node_modules and package-lock.json).","1. Delete node_modules and package-lock.json. 2. Run `npm install` to regenerate node_modules and package-lock.json. 3. Verify that all new dependencies (react-day-picker, date-fns, @date-fns/tz, date-fns-jalali) are installed in node_modules. 4. Check the integrity hashes in the newly generated package-lock.json match those in the updated configuration.
+
+Test Data: New dependencies and their integrity hashes: react-day-picker, date-fns v4.1.0, @date-fns/tz v1.4.1, date-fns-jalali v4.1.0-0.",All new dependencies are installed without errors. Integrity hashes in the regenerated package-lock.json match the expected values from the updated configuration.,5000da4-TC-014,5000da40a9fe50030e7d0125c7c8b3439162aba7
+Verify that the build and linting processes complete successfully with the updated devDependencies,Build and Linting Process,Configuration,Medium,Application source code and updated package.json are available. No existing build or linting errors.,"1. Run the build process (e.g., `npm run build`). 2. Run the linting process (e.g., `npm run lint`). 3. Observe the output for any errors or warnings related to the updated devDependencies.
+
+Test Data: Updated devDependencies: @tailwindcss/postcss v4, tailwindcss v4, typescript v5, eslint v9, eslint-config-next v16.0.1 (order changed but versions unchanged).",Build and linting processes complete without errors or warnings related to the updated devDependencies. Output matches previous successful runs (except for timing or unrelated warnings).,5000da4-TC-015,5000da40a9fe50030e7d0125c7c8b3439162aba7

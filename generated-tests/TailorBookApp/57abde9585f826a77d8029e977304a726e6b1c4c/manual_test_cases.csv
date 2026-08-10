@@ -1,0 +1,99 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Retrieve paginated order history for a customer by phone number with default pagination,Order History Retrieval,Positive,High,Customer with phone '5551234567' has at least 3 orders recorded in the system,"1. Send a GET request to /api/orders/by-phone with query parameters: phone=5551234567, page=0, limit=10.","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Orders retrieved successfully"", ""data"": {""content"": [<list of order summaries>], ""pageable"": {""pageNumber"": 0, ""pageSize"": 10}}, ""meta"": {""totalElements"": 3, ""totalPages"": 1, ""page"": 0}}. The 'data.content' array contains all 3 order summaries sorted by orderDate in descending order (newest first). Each order summary includes: orderId, shopName, customerName, totalAmount, paidAmount, dueAmount, orderDate, trialDate, deliveryDate, status, and items list with itemName and count.",9f19f61-TC-001
+Retrieve paginated order history for a shop with custom pagination,Order History Retrieval,Positive,High,Shop with ID 1 has at least 15 orders recorded in the system,"1. Send a GET request to /api/orders/shop/1 with query parameters: page=1, limit=5.","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Orders retrieved successfully"", ""data"": {""content"": [<list of order summaries>], ""pageable"": {""pageNumber"": 1, ""pageSize"": 5}}, ""meta"": {""totalElements"": 15, ""totalPages"": 3, ""page"": 1}}. The 'data.content' array contains 5 order summaries (records 6-10) sorted by orderDate in descending order (newest first). Each order summary includes: orderId, shopName, customerName, totalAmount, paidAmount, dueAmount, orderDate, trialDate, deliveryDate, status, and items list with itemName and count.",9f19f61-TC-002
+Retrieve paginated orders for a shop filtered by order gender with custom pagination,Order History Retrieval,Positive,High,Shop with ID 1 has at least 8 orders with orderGender='male' recorded in the system,"1. Send a GET request to /api/orders/shop/1/orderGender/male with query parameters: page=0, limit=5.","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Orders retrieved successfully"", ""data"": {""content"": [<list of order summaries>], ""pageable"": {""pageNumber"": 0, ""pageSize"": 5}}, ""meta"": {""totalElements"": 8, ""totalPages"": 2, ""page"": 0}}. The 'data.content' array contains 5 order summaries for male orders sorted by orderDate in descending order (newest first). Each order summary includes: orderId, shopName, customerName, totalAmount, paidAmount, dueAmount, orderDate, trialDate, deliveryDate, status, and items list with itemName and count.",2c3f63d-TC-003
+Retrieve last measurement for a customer and item with API response wrapper,Order Measurement Retrieval,Positive,Medium,Customer with phone '5556667777' has at least one order with item ID 2 recorded in the system,"1. Send a GET request to /api/orders/last-measurement with query parameters: phone=5556667777, itemId=2.","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Measurement retrieved successfully"", ""data"": {""itemName"": ""Formal Shirt"", ""measurements"": [{""name"": ""Chest"", ""unit"": ""cm"", ""value"": 95.0}, {""name"": ""Waist"", ""unit"": ""cm"", ""value"": 85.0}]}, ""meta"": null}.",d9f8e47-TC-002
+Create a new item with no measuring parameters,Item Management,Positive,Medium,User is authenticated and authorized to create items,"1. Send a POST request to /api/items with the payload in testData.
+
+Test Data: {
+  ""name"": ""Plain Scarf"",
+  ""status"": ""ACTIVE"",
+  ""parameters"": []
+}","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Item created successfully"", ""data"": {""id"": <non-null number>, ""name"": ""Plain Scarf"", ""status"": ""ACTIVE"", ""parameters"": []}}.",TC-001
+Attempt to retrieve orders by phone with a missing phone parameter,Order Management,Negative,High,No preconditions required,"1. Send a GET request to /api/orders/by-phone without the 'phone' query parameter.
+
+Test Data: N/A",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'phone' parameter is required.,9f19f61-TC-004
+Attempt to retrieve orders by phone with an empty phone parameter value,Order Management,Negative,High,No preconditions required,"1. Send a GET request to /api/orders/by-phone with the 'phone' query parameter set to an empty string.
+
+Test Data: { 'phone': '' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'phone' parameter cannot be empty.,9f19f61-TC-005
+Attempt to retrieve orders by phone with a malformed phone number (non-numeric characters),Order Management,Negative,High,No preconditions required,"1. Send a GET request to /api/orders/by-phone with the 'phone' query parameter set to a non-numeric value (e.g., 'abc123').
+
+Test Data: { 'phone': 'abc123' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'phone' parameter must be a valid numeric value.,86c0b01-TC-007
+Attempt to retrieve orders by phone with an excessively long phone number,Order Management,Negative,High,No preconditions required,"1. Send a GET request to /api/orders/by-phone with the 'phone' query parameter set to a value exceeding the maximum allowed length (e.g., 20 digits).
+
+Test Data: { 'phone': '123456789012345678901' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'phone' parameter exceeds the maximum allowed length.,86c0b01-TC-008
+Attempt to retrieve orders by shop with a non-numeric shopId path variable,Order Management,Negative,High,No preconditions required,"1. Send a GET request to /api/orders/shop/abc with a non-numeric 'shopId' path variable.
+
+Test Data: N/A",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'shopId' must be a valid numeric value.,9f19f61-TC-006
+Attempt to retrieve orders by shop with a non-existent shopId,Order Management,Negative,High,No preconditions required,"1. Send a GET request to /api/orders/shop/999999 with a non-existent 'shopId' path variable.
+
+Test Data: N/A",The system returns an HTTP 404 Not Found status code with no content in the response body.,9f19f61-TC-008
+Attempt to retrieve orders by shop with a negative page number,Order Management,Negative,Medium,No preconditions required,"1. Send a GET request to /api/orders/shop/1 with the 'page' query parameter set to a negative value (e.g., -1).
+
+Test Data: { 'page': -1, 'limit': 10 }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'page' parameter must be a non-negative integer.,TC-002
+Attempt to retrieve orders by shop with a negative limit value,Order Management,Negative,Medium,No preconditions required,"1. Send a GET request to /api/orders/shop/1 with the 'limit' query parameter set to a negative value (e.g., -5).
+
+Test Data: { 'page': 0, 'limit': -5 }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'limit' parameter must be a positive integer.,TC-003
+Attempt to retrieve orders by phone with a negative page number,Order Management,Negative,Medium,No preconditions required,"1. Send a GET request to /api/orders/by-phone with the 'phone' query parameter set to a valid phone number and 'page' set to a negative value (e.g., -1).
+
+Test Data: { 'phone': '1234567890', 'page': -1, 'limit': 10 }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'page' parameter must be a non-negative integer.,TC-004
+Attempt to retrieve orders by phone with a zero limit value,Order Management,Negative,Medium,No preconditions required,"1. Send a GET request to /api/orders/by-phone with the 'phone' query parameter set to a valid phone number and 'limit' set to 0.
+
+Test Data: { 'phone': '1234567890', 'page': 0, 'limit': 0 }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'limit' parameter must be a positive integer.,TC-005
+Attempt to retrieve last measurement with a missing phone parameter,Order Management,Negative,High,No preconditions required,"1. Send a GET request to /api/orders/last-measurement without the 'phone' query parameter.
+
+Test Data: N/A",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'phone' parameter is required.,ad5f663-TC-011
+Attempt to retrieve last measurement with a missing itemId parameter,Order Management,Negative,High,No preconditions required,"1. Send a GET request to /api/orders/last-measurement with the 'phone' query parameter but without the 'itemId' parameter.
+
+Test Data: { 'phone': '1234567890' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'itemId' parameter is required.,ad5f663-TC-012
+Attempt to retrieve last measurement with a non-numeric itemId parameter,Order Management,Negative,High,No preconditions required,"1. Send a GET request to /api/orders/last-measurement with the 'phone' query parameter set to a valid value and 'itemId' set to a non-numeric value (e.g., 'abc').
+
+Test Data: { 'phone': '1234567890', 'itemId': 'abc' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'itemId' must be a valid numeric value.,ad5f663-TC-014
+Attempt to retrieve last measurement for a non-existent customer and item combination,Order Management,Negative,High,No preconditions required,"1. Send a GET request to /api/orders/last-measurement with the 'phone' and 'itemId' query parameters set to non-existent values (e.g., '0000000000' and 999999).
+
+Test Data: { 'phone': '0000000000', 'itemId': 999999 }",The system returns an HTTP 404 Not Found status code with an error message indicating that no measurement data was found for the specified customer and item.,ad5f663-TC-015
+Attempt to retrieve orders by shop and order gender with a non-numeric shopId path variable,Order Management,Negative,High,No preconditions required,"1. Send a GET request to /api/orders/shop/abc/orderGender/MALE with a non-numeric 'shopId' path variable.
+
+Test Data: N/A",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'shopId' must be a valid numeric value.,TC-006
+Attempt to retrieve orders by shop and order gender with an invalid orderGender value,Order Management,Negative,Medium,No preconditions required,"1. Send a GET request to /api/orders/shop/1/orderGender/INVALID with an invalid 'orderGender' path variable.
+
+Test Data: N/A","The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'orderGender' must be a valid value (e.g., MALE, FEMALE, or UNISEX).",TC-007
+Attempt to retrieve orders by shop and order gender with a negative page number,Order Management,Negative,Medium,No preconditions required,"1. Send a GET request to /api/orders/shop/1/orderGender/MALE with the 'page' query parameter set to a negative value (e.g., -1).
+
+Test Data: { 'page': -1, 'limit': 10 }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'page' parameter must be a non-negative integer.,TC-008
+Attempt to retrieve orders by shop and order gender with a zero limit value,Order Management,Negative,Medium,No preconditions required,"1. Send a GET request to /api/orders/shop/1/orderGender/MALE with the 'limit' query parameter set to 0.
+
+Test Data: { 'page': 0, 'limit': 0 }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'limit' parameter must be a positive integer.,TC-009
+Verify that paginated order retrieval by phone number enforces proper authorization (insecure direct object reference) - unauthorized user cannot access another user's orders,Order Management - Order Retrieval by Phone,Security,High,User A has existing orders recorded with phone number '1234567890'. User B is authenticated but does not own any orders with phone number '1234567890'.,"1. Authenticate as User B. 2. Send a GET request to /api/orders/by-phone with query parameters: phone='1234567890', page=0, limit=10.
+
+Test Data: Query parameters: {""phone"": ""1234567890"", ""page"": 0, ""limit"": 10}","The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and the response body contains 'status: error' or 'status: fail' with no order data returned in the 'data' field.",9f19f61-TC-025
+Verify that paginated order retrieval by phone number rejects injection attempts via special characters in input,Order Management - Order Retrieval by Phone,Security,High,User has existing orders recorded with a valid phone number.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/by-phone with query parameters: phone='1234567890'' OR '1'='1', page=0, limit=10.
+
+Test Data: Query parameters: {""phone"": ""1234567890' OR '1'='1"", ""page"": 0, ""limit"": 10}","The API responds with HTTP status 400 (Bad Request) or 404 (Not Found), and the response body contains 'status: error' or 'status: fail' with no order data returned in the 'data' field.",9f19f61-TC-026
+Verify that paginated order retrieval by phone number does not expose sensitive system details in error messages when no orders are found,Order Management - Order Retrieval by Phone,Security,Medium,User is authenticated and has no orders recorded with the provided phone number.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/by-phone with query parameters: phone='0000000000', page=0, limit=10.
+
+Test Data: Query parameters: {""phone"": ""0000000000"", ""page"": 0, ""limit"": 10}","The API responds with HTTP status 200 (OK) and a response body containing 'status: success', 'message: No orders found for this phone number', and an empty 'data' array. No internal system details (e.g., stack traces, database errors) are exposed.",9f19f61-TC-027
+Verify that paginated order retrieval by phone number handles oversized input to prevent overflow or denial of service,Order Management - Order Retrieval by Phone,Security,High,User is authenticated.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/by-phone with query parameters: phone='123456789012345678901234567890', page=0, limit=10.
+
+Test Data: Query parameters: {""phone"": ""123456789012345678901234567890"", ""page"": 0, ""limit"": 10}","The API responds with HTTP status 400 (Bad Request) and an error message indicating that the phone number length exceeds the allowed limit (e.g., 'Phone number must not exceed 15 characters').",9f19f61-TC-028
+Verify that paginated order retrieval by shop ID enforces proper authorization (insecure direct object reference) - unauthorized user cannot access another shop's orders,Order Management - Order Retrieval by Shop,Security,High,Shop A has existing orders recorded with shopId=1. User is authenticated but does not have access to Shop A's orders.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/shop/1 with query parameters: page=0, limit=10.
+
+Test Data: Query parameters: {""page"": 0, ""limit"": 10}","The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and no order data is returned in the response body.",9f19f61-TC-029
+Verify that paginated order retrieval by shop ID does not expose sensitive system details in error messages when no orders are found,Order Management - Order Retrieval by Shop,Security,Medium,User is authenticated and has access to the shop but no orders exist for shopId=999999.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/shop/999999 with query parameters: page=0, limit=10.
+
+Test Data: Query parameters: {""page"": 0, ""limit"": 10}","The API responds with HTTP status 404 (Not Found) and a generic error message (e.g., 'No orders found for this shop') without revealing internal system details (e.g., stack traces, database errors).",9f19f61-TC-030
+Verify that last measurement retrieval enforces proper authorization (insecure direct object reference) - unauthorized user cannot access another user's last measurement,Order Management - Last Measurement Retrieval,Security,High,User A has existing measurements recorded with phone number '1234567890' and itemId=1. User B is authenticated but does not own any measurements with phone number '1234567890'.,"1. Authenticate as User B. 2. Send a GET request to /api/orders/last-measurement with query parameters: phone='1234567890', itemId=1.
+
+Test Data: Query parameters: {""phone"": ""1234567890"", ""itemId"": 1}","The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and the response body contains 'status: error' or 'status: fail' with no measurement data returned in the 'data' field.",TC-010
+Verify that last measurement retrieval rejects injection attempts via special characters in input,Order Management - Last Measurement Retrieval,Security,High,User has existing measurements recorded with a valid phone number and itemId.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/last-measurement with query parameters: phone='1234567890'' OR '1'='1', itemId=1.
+
+Test Data: Query parameters: {""phone"": ""1234567890' OR '1'='1"", ""itemId"": 1}","The API responds with HTTP status 400 (Bad Request) or 404 (Not Found), and the response body contains 'status: error' or 'status: fail' with no measurement data returned in the 'data' field.",TC-011
+Verify that last measurement retrieval handles oversized phone number input to prevent overflow or denial of service,Order Management - Last Measurement Retrieval,Security,High,User is authenticated.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/last-measurement with query parameters: phone='123456789012345678901234567890', itemId=1.
+
+Test Data: Query parameters: {""phone"": ""123456789012345678901234567890"", ""itemId"": 1}","The API responds with HTTP status 400 (Bad Request) and an error message indicating that the phone number length exceeds the allowed limit (e.g., 'Phone number must not exceed 15 characters').",2c3f63d-TC-006
+Verify that paginated order retrieval by shop ID and gender enforces proper authorization (insecure direct object reference) - unauthorized user cannot access another shop's orders,Order Management - Order Retrieval by Shop and Gender,Security,High,Shop A has existing orders recorded with shopId=1 and orderGender='MALE'. User is authenticated but does not have access to Shop A's orders.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/shop/1/orderGender/MALE with query parameters: page=0, limit=10.
+
+Test Data: Query parameters: {""page"": 0, ""limit"": 10}","The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and no order data is returned in the response body.",2c3f63d-TC-007
+Verify that paginated order retrieval by phone number does not expose raw database details in meta field,Order Management - Order Retrieval by Phone,Security,Medium,User has existing orders recorded with phone number '1234567890'.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/by-phone with query parameters: phone='1234567890', page=0, limit=10.
+
+Test Data: Query parameters: {""phone"": ""1234567890"", ""page"": 0, ""limit"": 10}","The API responds with HTTP status 200 (OK) and a response body containing 'status: success', 'message: Orders retrieved successfully', and a 'data' array with order records. The 'meta' field contains only pagination details (totalElements, page, totalPages) and no raw database details (e.g., SQL queries, table names).",d3da340-TC-020

@@ -1,0 +1,234 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Shop owner successfully cancels an existing appointment reservation for their shop,Appointment Reservation Cancellation,Positive,High,An appointment reservation exists for shop ID 100 with ID 200 and status 'ACTIVE'. The logged-in user is the owner of shop ID 100.,"1. Send a PUT request to /api/shops/100/appointments/cancel/200 with no request body.
+2. Verify the response status and body.","Response status code is 200. The response body contains a JSON object with 'status' as 'success', 'message' as 'Appointment canceled successfully', and 'data' containing the updated appointment reservation details with 'status' as 'INACTIVE' and 'shopId' as 100.",c8399ba-TC-001
+Shop owner successfully updates appointment service status from PENDING to IN-PROGRESS for their shop,Appointment Service Status Update,Positive,High,"An appointment reservation exists for shop ID 100 with ID 200, 'serviceStatus' as 'PENDING', and 'status' as 'ACTIVE'. The logged-in user is the owner of shop ID 100.","1. Send a PUT request to /api/shops/100/appointments/200?status=IN-PROGRESS with no request body.
+2. Verify the response status and body.","Response status code is 200. The response body contains a JSON object with 'status' as 'success', 'message' as 'Appointment status updated successfully', and 'data' containing the updated appointment reservation details with 'serviceStatus' as 'IN-PROGRESS' and 'shopId' as 100.",43776ad-TC-001
+Shop owner successfully updates an existing service profile for their shop,Service Profile Management,Positive,High,"A service profile exists for shop ID 100 with ID 50, and the logged-in user is the owner of shop ID 100. The service profile has a valid item ID 300.","1. Send a PUT request to /api/shops/100/profiles/50 with the payload in testData.
+2. Verify the response status and body.
+
+Test Data: {
+  ""id"": 50,
+  ""itemId"": 300,
+  ""serviceName"": ""Haircut & Styling"",
+  ""price"": 45.00,
+  ""duration"": 45,
+  ""shopId"": 100
+}","Response status code is 200. The response body contains a JSON object with 'status' as 'success', 'message' as 'Service profile updated successfully', and 'data' containing the updated service profile details with 'id' as 50, 'serviceName' as 'Haircut & Styling', 'price' as 45.00, 'duration' as 45, and 'shopId' as 100.",623fc6e-TC-004
+Shop owner successfully deletes an existing service profile for their shop,Service Profile Management,Positive,High,"A service profile exists for shop ID 100 with ID 50, and the logged-in user is the owner of shop ID 100.","1. Send a DELETE request to /api/shops/100/profiles/50 with no request body.
+2. Verify the response status.",Response status code is 204 (No Content).,TC-001
+Fail to cancel an appointment reservation for a non-existent shop,Appointment Reservation Access Control,Positive,Medium,"An appointment reservation exists with ID 200, and the logged-in user is the owner of a valid shop (ID 100).","1. Send a PUT request to /api/shops/999/appointments/cancel/200 with no request body.
+2. Verify the response status and body.",Response status code is 404 (Not Found). The response body contains an error message: 'Shop not found'.,TC-002
+Attempt to cancel an appointment with a non-existent shop ID,Appointment Reservation Management,Negative,High,User is authenticated and has an existing appointment reservation with ID 123,"1. Send a PUT request to /api/shops/99999/appointments/cancel/123 with no request body.
+
+Test Data: N/A",The system should return an HTTP 404 Not Found status code with an error message in the response body: 'Shop not found'.,TC-003
+Attempt to update appointment status with a non-existent shop ID,Appointment Reservation Management,Negative,High,User is authenticated and has an existing appointment reservation with ID 123,"1. Send a PUT request to /api/shops/99999/appointments/123?status=CONFIRMED with no request body.
+
+Test Data: N/A",The system should return an HTTP 404 Not Found status code with an error message in the response body: 'Shop not found'.,TC-004
+Attempt to update a service profile with a non-existent shop ID,Service Profile Management,Negative,High,User is authenticated and has an existing service profile with ID 456,"1. Send a PUT request to /api/shops/99999/profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": ""Haircut"",
+  ""itemId"": 789,
+  ""price"": 50,
+  ""duration"": 30
+}",The system should return an HTTP 404 Not Found status code with an error message in the response body: 'Shop not found'.,TC-005
+Attempt to delete a service profile with a non-existent shop ID,Service Profile Management,Negative,High,User is authenticated and has an existing service profile with ID 456,"1. Send a DELETE request to /api/shops/99999/profiles/456 with no request body.
+
+Test Data: N/A",The system should return an HTTP 404 Not Found status code with an error message in the response body: 'Shop not found'.,TC-006
+Attempt to cancel an appointment with mismatched shop ID and appointment ID,Appointment Reservation Management,Negative,Medium,"User is authenticated, has an existing appointment with ID 123 under shop ID 1, and another shop with ID 2 exists","1. Send a PUT request to /api/shops/2/appointments/cancel/123 with no request body.
+
+Test Data: N/A",The system should return an HTTP 404 Not Found status code or an HTTP 400 Bad Request status code with an error message indicating that the appointment does not belong to the specified shop.,TC-007
+Attempt to update appointment status with mismatched shop ID and appointment ID,Appointment Reservation Management,Negative,Medium,"User is authenticated, has an existing appointment with ID 123 under shop ID 1, and another shop with ID 2 exists","1. Send a PUT request to /api/shops/2/appointments/123?status=CONFIRMED with no request body.
+
+Test Data: N/A",The system should return an HTTP 404 Not Found status code or an HTTP 400 Bad Request status code with an error message indicating that the appointment does not belong to the specified shop.,TC-008
+Attempt to update a service profile with mismatched shop ID and service profile ID,Service Profile Management,Negative,Medium,"User is authenticated, has an existing service profile with ID 456 under shop ID 1, and another shop with ID 2 exists","1. Send a PUT request to /api/shops/2/profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": ""Haircut"",
+  ""itemId"": 789,
+  ""price"": 50,
+  ""duration"": 30
+}",The system should return an HTTP 403 Forbidden status code or an HTTP 400 Bad Request status code with an error message indicating that the service profile does not belong to the specified shop.,TC-009
+Attempt to delete a service profile with mismatched shop ID and service profile ID,Service Profile Management,Negative,Medium,"User is authenticated, has an existing service profile with ID 456 under shop ID 1, and another shop with ID 2 exists","1. Send a DELETE request to /api/shops/2/profiles/456 with no request body.
+
+Test Data: N/A",The system should return an HTTP 403 Forbidden status code or an HTTP 400 Bad Request status code with an error message indicating that the service profile does not belong to the specified shop.,TC-010
+Attempt to cancel an appointment with malformed shop ID (non-numeric),Appointment Reservation Management,Negative,High,User is authenticated and has an existing appointment reservation with ID 123,"1. Send a PUT request to /api/shops/abc/appointments/cancel/123 with no request body.
+
+Test Data: N/A",The system should return an HTTP 400 Bad Request status code with an error message indicating that the shop ID must be a valid number.,TC-011
+Attempt to update appointment status with malformed shop ID (non-numeric),Appointment Reservation Management,Negative,High,User is authenticated and has an existing appointment reservation with ID 123,"1. Send a PUT request to /api/shops/abc/appointments/123?status=CONFIRMED with no request body.
+
+Test Data: N/A",The system should return an HTTP 400 Bad Request status code with an error message indicating that the shop ID must be a valid number.,TC-012
+Attempt to update a service profile with malformed shop ID (non-numeric),Service Profile Management,Negative,High,User is authenticated and has an existing service profile with ID 456,"1. Send a PUT request to /api/shops/abc/profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": ""Haircut"",
+  ""itemId"": 789,
+  ""price"": 50,
+  ""duration"": 30
+}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the shop ID must be a valid number.,TC-013
+Attempt to delete a service profile with malformed shop ID (non-numeric),Service Profile Management,Negative,High,User is authenticated and has an existing service profile with ID 456,"1. Send a DELETE request to /api/shops/abc/profiles/456 with no request body.
+
+Test Data: N/A",The system should return an HTTP 400 Bad Request status code with an error message indicating that the shop ID must be a valid number.,TC-014
+Attempt to cancel an appointment with missing shop ID path variable,Appointment Reservation Management,Negative,Medium,User is authenticated and has an existing appointment reservation with ID 123,"1. Send a PUT request to /api/shops//appointments/cancel/123 with no request body.
+
+Test Data: N/A",The system should return an HTTP 404 Not Found status code or an HTTP 400 Bad Request status code with an error message indicating that the shop ID is required.,TC-015
+Attempt to update appointment status with missing shop ID path variable,Appointment Reservation Management,Negative,Medium,User is authenticated and has an existing appointment reservation with ID 123,"1. Send a PUT request to /api/shops//appointments/123?status=CONFIRMED with no request body.
+
+Test Data: N/A",The system should return an HTTP 404 Not Found status code or an HTTP 400 Bad Request status code with an error message indicating that the shop ID is required.,TC-016
+Attempt to update a service profile with missing shop ID path variable,Service Profile Management,Negative,Medium,User is authenticated and has an existing service profile with ID 456,"1. Send a PUT request to /api/shops//profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": ""Haircut"",
+  ""itemId"": 789,
+  ""price"": 50,
+  ""duration"": 30
+}",The system should return an HTTP 404 Not Found status code or an HTTP 400 Bad Request status code with an error message indicating that the shop ID is required.,TC-017
+Attempt to delete a service profile with missing shop ID path variable,Service Profile Management,Negative,Medium,User is authenticated and has an existing service profile with ID 456,"1. Send a DELETE request to /api/shops//profiles/456 with no request body.
+
+Test Data: N/A",The system should return an HTTP 404 Not Found status code or an HTTP 400 Bad Request status code with an error message indicating that the shop ID is required.,TC-018
+Unauthorized user attempts to cancel an appointment for a shop they do not own,Appointment Reservation Management,Negative,High,"User is authenticated but does not own the shop with ID 1, and has an existing appointment with ID 123 under shop ID 1","1. Send a PUT request to /api/shops/1/appointments/cancel/123 with no request body.
+
+Test Data: N/A",The system should return an HTTP 403 Forbidden status code with an error message indicating that the user does not have permission to cancel appointments for this shop.,695863a-TC-009
+Unauthorized user attempts to update appointment status for a shop they do not own,Appointment Reservation Management,Negative,High,"User is authenticated but does not own the shop with ID 1, and has an existing appointment with ID 123 under shop ID 1","1. Send a PUT request to /api/shops/1/appointments/123?status=CONFIRMED with no request body.
+
+Test Data: N/A",The system should return an HTTP 403 Forbidden status code with an error message indicating that the user does not have permission to update appointments for this shop.,TC-019
+Cancel an appointment reservation with a non-existent shop ID,Appointment Reservation Management,Boundary,High,An existing appointment reservation with ID 123 exists in the system,"1. Send a PUT request to /api/shops/99999/appointments/cancel/123 with no request body.
+
+Test Data: N/A",HTTP status code 404 (Not Found). Response body contains an error message: 'Shop not found'.,TC-020
+Cancel an appointment reservation with a shop ID of zero,Appointment Reservation Management,Boundary,High,An existing appointment reservation with ID 123 exists in the system,"1. Send a PUT request to /api/shops/0/appointments/cancel/123 with no request body.
+
+Test Data: N/A",HTTP status code 404 (Not Found). Response body contains an error message: 'Shop not found'.,TC-021
+Cancel an appointment reservation with a very large shop ID,Appointment Reservation Management,Boundary,Medium,An existing appointment reservation with ID 123 exists in the system,"1. Send a PUT request to /api/shops/9999999999/appointments/cancel/123 with no request body.
+
+Test Data: N/A",HTTP status code 404 (Not Found). Response body contains an error message: 'Shop not found'.,TC-022
+Update appointment reservation status with a non-existent shop ID,Appointment Reservation Management,Boundary,High,An existing appointment reservation with ID 123 exists in the system,"1. Send a PUT request to /api/shops/99999/appointments/123?status=CONFIRMED with no request body.
+
+Test Data: N/A",HTTP status code 404 (Not Found). Response body contains an error message: 'Shop not found'.,TC-023
+Update appointment reservation status with a shop ID of zero,Appointment Reservation Management,Boundary,High,An existing appointment reservation with ID 123 exists in the system,"1. Send a PUT request to /api/shops/0/appointments/123?status=CONFIRMED with no request body.
+
+Test Data: N/A",HTTP status code 404 (Not Found). Response body contains an error message: 'Shop not found'.,TC-024
+Update appointment reservation status with an empty status value,Appointment Reservation Management,Boundary,High,An existing appointment reservation with ID 123 exists in the system and shop ID 1 exists,"1. Send a PUT request to /api/shops/1/appointments/123?status= with no request body.
+
+Test Data: N/A",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the status is required.,TC-025
+Update a service profile with a non-existent shop ID,Service Profile Management,Boundary,High,An existing service profile with ID 456 exists in the system,"1. Send a PUT request to /api/shops/99999/profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": ""Haircut"",
+  ""itemId"": 789,
+  ""price"": 25.0,
+  ""duration"": 30
+}",HTTP status code 404 (Not Found). Response body contains an error message: 'Shop not found'.,TC-026
+Update a service profile with a shop ID of zero,Service Profile Management,Boundary,High,An existing service profile with ID 456 exists in the system,"1. Send a PUT request to /api/shops/0/profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": ""Haircut"",
+  ""itemId"": 789,
+  ""price"": 25.0,
+  ""duration"": 30
+}",HTTP status code 404 (Not Found). Response body contains an error message: 'Shop not found'.,TC-027
+Delete a service profile with a non-existent shop ID,Service Profile Management,Boundary,High,An existing service profile with ID 456 exists in the system,"1. Send a DELETE request to /api/shops/99999/profiles/456 with no request body.
+
+Test Data: N/A",HTTP status code 404 (Not Found). Response body contains an error message: 'Shop not found'.,689a3f2-TC-022
+Delete a service profile with a shop ID of zero,Service Profile Management,Boundary,High,An existing service profile with ID 456 exists in the system,"1. Send a DELETE request to /api/shops/0/profiles/456 with no request body.
+
+Test Data: N/A",HTTP status code 404 (Not Found). Response body contains an error message: 'Shop not found'.,TC-028
+Update a service profile with a price of zero,Service Profile Management,Boundary,Medium,An existing service profile with ID 456 exists in the system and shop ID 1 exists,"1. Send a PUT request to /api/shops/1/profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": ""Haircut"",
+  ""itemId"": 789,
+  ""price"": 0.0,
+  ""duration"": 30
+}",HTTP status code 200 (OK). Response body contains the updated service profile with price set to 0.0.,TC-029
+Update a service profile with a negative price,Service Profile Management,Boundary,High,An existing service profile with ID 456 exists in the system and shop ID 1 exists,"1. Send a PUT request to /api/shops/1/profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": ""Haircut"",
+  ""itemId"": 789,
+  ""price"": -1.0,
+  ""duration"": 30
+}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the price cannot be negative.,TC-030
+Update a service profile with a very large price,Service Profile Management,Boundary,Medium,An existing service profile with ID 456 exists in the system and shop ID 1 exists,"1. Send a PUT request to /api/shops/1/profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": ""Haircut"",
+  ""itemId"": 789,
+  ""price"": 9999999999.99,
+  ""duration"": 30
+}",HTTP status code 200 (OK). Response body contains the updated service profile with the very large price.,TC-031
+Update a service profile with a duration of zero,Service Profile Management,Boundary,High,An existing service profile with ID 456 exists in the system and shop ID 1 exists,"1. Send a PUT request to /api/shops/1/profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": ""Haircut"",
+  ""itemId"": 789,
+  ""price"": 25.0,
+  ""duration"": 0
+}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the duration must be greater than zero.,TC-032
+Update a service profile with a negative duration,Service Profile Management,Boundary,High,An existing service profile with ID 456 exists in the system and shop ID 1 exists,"1. Send a PUT request to /api/shops/1/profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": ""Haircut"",
+  ""itemId"": 789,
+  ""price"": 25.0,
+  ""duration"": -1
+}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the duration must be a positive number.,TC-033
+Update a service profile with a very large duration,Service Profile Management,Boundary,Medium,An existing service profile with ID 456 exists in the system and shop ID 1 exists,"1. Send a PUT request to /api/shops/1/profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": ""Haircut"",
+  ""itemId"": 789,
+  ""price"": 25.0,
+  ""duration"": 9999
+}",HTTP status code 200 (OK). Response body contains the updated service profile with the very large duration.,TC-034
+Update a service profile with an empty service name,Service Profile Management,Boundary,High,An existing service profile with ID 456 exists in the system and shop ID 1 exists,"1. Send a PUT request to /api/shops/1/profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": """",
+  ""itemId"": 789,
+  ""price"": 25.0,
+  ""duration"": 30
+}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the service name cannot be empty.,TC-035
+Update a service profile with a service name at maximum allowed length,Service Profile Management,Boundary,Medium,An existing service profile with ID 456 exists in the system and shop ID 1 exists,"1. Send a PUT request to /api/shops/1/profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": ""This is a very long service name that reaches the maximum allowed length of 100 characters exactly."",
+  ""itemId"": 789,
+  ""price"": 25.0,
+  ""duration"": 30
+}",HTTP status code 200 (OK). Response body contains the updated service profile with the service name at maximum allowed length.,TC-036
+Update a service profile with a service name exceeding maximum allowed length,Service Profile Management,Boundary,High,An existing service profile with ID 456 exists in the system and shop ID 1 exists,"1. Send a PUT request to /api/shops/1/profiles/456 with the payload in testData.
+
+Test Data: {
+  ""serviceName"": ""This is a very long service name that exceeds the maximum allowed length of 100 characters by being just one character too long."",
+  ""itemId"": 789,
+  ""price"": 25.0,
+  ""duration"": 30
+}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the service name exceeds the maximum allowed length.,TC-037
+Update appointment reservation status with a status at maximum allowed length,Appointment Reservation Management,Boundary,Medium,An existing appointment reservation with ID 123 exists in the system and shop ID 1 exists,"1. Send a PUT request to /api/shops/1/appointments/123?status=ThisIsAVeryLongStatusThatReachesTheMaximumAllowedLengthOf50Characters with no request body.
+
+Test Data: N/A",HTTP status code 200 (OK). Response body contains the updated appointment reservation with the status at maximum allowed length.,TC-038
+Update appointment reservation status with a status exceeding maximum allowed length,Appointment Reservation Management,Boundary,High,An existing appointment reservation with ID 123 exists in the system and shop ID 1 exists,"1. Send a PUT request to /api/shops/1/appointments/123?status=ThisIsAVeryLongStatusThatExceedsTheMaximumAllowedLengthOf50CharactersByOne with no request body.
+
+Test Data: N/A",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the status exceeds the maximum allowed length.,TC-039
+Verify that a user cannot cancel an appointment reservation for a shop they do not own (Insecure Direct Object Reference),Appointment Reservation Management,Security,High,1. User A is authenticated and owns Shop A with ID 1. 2. User B is authenticated and owns Shop B with ID 2. 3. An appointment reservation with ID 101 exists for Shop A.,1. Authenticate as User B. 2. Send a PUT request to /api/shops/2/appointments/cancel/101 with no request body. 3. Observe the response.,The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. The appointment reservation is not canceled.,TC-040
+Verify that a user cannot update the status of an appointment reservation for a shop they do not own (Insecure Direct Object Reference),Appointment Reservation Management,Security,High,"1. User A is authenticated and owns Shop A with ID 1. 2. User B is authenticated and owns Shop B with ID 2. 3. An appointment reservation with ID 101 exists for Shop A. 4. A valid status value (e.g., 'CONFIRMED') is available.",1. Authenticate as User B. 2. Send a PUT request to /api/shops/2/appointments/101?status=CONFIRMED with no request body. 3. Observe the response.,The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. The appointment reservation status is not updated.,TC-041
+Verify that a user cannot update a service profile for a shop they do not own (Insecure Direct Object Reference),Service Profile Management,Security,High,1. User A is authenticated and owns Shop A with ID 1. 2. User B is authenticated and owns Shop B with ID 2. 3. A service profile with ID 201 exists for Shop A.,"1. Authenticate as User B. 2. Send a PUT request to /api/shops/2/profiles/201 with the payload in testData. 3. Observe the response.
+
+Test Data: {
+  ""serviceName"": ""Updated Service"",
+  ""price"": 50.0,
+  ""duration"": 60,
+  ""itemId"": 301
+}",The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. The service profile is not updated.,TC-042
+Verify that a user cannot delete a service profile for a shop they do not own (Insecure Direct Object Reference),Service Profile Management,Security,High,1. User A is authenticated and owns Shop A with ID 1. 2. User B is authenticated and owns Shop B with ID 2. 3. A service profile with ID 201 exists for Shop A.,1. Authenticate as User B. 2. Send a DELETE request to /api/shops/2/profiles/201 with no request body. 3. Observe the response.,The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. The service profile is not deleted.,623fc6e-TC-022
+Verify that canceling an appointment reservation for a non-existent shop returns appropriate status,Appointment Reservation Management,Security,Medium,1. User is authenticated and owns Shop A with ID 1. 2. An appointment reservation with ID 101 exists for Shop A.,1. Authenticate as the user. 2. Send a PUT request to /api/shops/999/appointments/cancel/101 with no request body. 3. Observe the response.,The API responds with HTTP status 404 Not Found and an error message 'Shop not found'. The appointment reservation is not canceled.,TC-043
+Verify that updating the status of an appointment reservation for a non-existent shop returns appropriate status,Appointment Reservation Management,Security,Medium,"1. User is authenticated and owns Shop A with ID 1. 2. An appointment reservation with ID 101 exists for Shop A. 3. A valid status value (e.g., 'CONFIRMED') is available.",1. Authenticate as the user. 2. Send a PUT request to /api/shops/999/appointments/101?status=CONFIRMED with no request body. 3. Observe the response.,The API responds with HTTP status 404 Not Found and an error message 'Shop not found'. The appointment reservation status is not updated.,TC-044
+Verify that updating a service profile for a non-existent shop returns appropriate status,Service Profile Management,Security,Medium,1. User is authenticated and owns Shop A with ID 1. 2. A service profile with ID 201 exists for Shop A.,"1. Authenticate as the user. 2. Send a PUT request to /api/shops/999/profiles/201 with the payload in testData. 3. Observe the response.
+
+Test Data: {
+  ""serviceName"": ""Updated Service"",
+  ""price"": 50.0,
+  ""duration"": 60,
+  ""itemId"": 301
+}",The API responds with HTTP status 404 Not Found and an error message 'Shop not found'. The service profile is not updated.,TC-045
+Verify that deleting a service profile for a non-existent shop returns appropriate status,Service Profile Management,Security,Medium,1. User is authenticated and owns Shop A with ID 1. 2. A service profile with ID 201 exists for Shop A.,1. Authenticate as the user. 2. Send a DELETE request to /api/shops/999/profiles/201 with no request body. 3. Observe the response.,The API responds with HTTP status 404 Not Found and an error message 'Shop not found'. The service profile is not deleted.,623fc6e-TC-023

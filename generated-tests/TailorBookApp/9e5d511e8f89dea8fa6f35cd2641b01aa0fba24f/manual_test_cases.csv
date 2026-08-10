@@ -1,0 +1,93 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Update order status from MEASUREMENT_DONE to CUTTING_DONE,Order Status Management,Positive,High,An existing order with status MEASUREMENT_DONE and orderId available,"1. Send a PATCH request to /api/orders/{orderId}/status with the payload in testData, replacing {orderId} with the actual order ID.
+2. Verify the response status and body.
+
+Test Data: {
+  ""newStatus"": ""CUTTING_DONE""
+}","HTTP 200 OK response with a JSON body containing: {""message"": ""Order status updated successfully.""}",TC-001
+Update order status from CUTTING_DONE to SEWING_DONE,Order Status Management,Positive,High,An existing order with status CUTTING_DONE and orderId available,"1. Send a PATCH request to /api/orders/{orderId}/status with the payload in testData, replacing {orderId} with the actual order ID.
+2. Verify the response status and body.
+
+Test Data: {
+  ""newStatus"": ""SEWING_DONE""
+}","HTTP 200 OK response with a JSON body containing: {""message"": ""Order status updated successfully.""}",TC-002
+"Attempt to update order status with invalid transition (e.g., MEASUREMENT_DONE to PRESS_DONE)",Order Status Management,Positive,High,An existing order with status MEASUREMENT_DONE and orderId available,"1. Send a PATCH request to /api/orders/{orderId}/status with the payload in testData, replacing {orderId} with the actual order ID.
+2. Verify the response status and error message.
+
+Test Data: {
+  ""newStatus"": ""PRESS_DONE""
+}","HTTP 400 Bad Request response with an error message: ""Invalid status transition from MEASUREMENT_DONE to PRESS_DONE""",TC-003
+Update order status to READY_FOR_DELIVERY as final step,Order Status Management,Positive,High,An existing order with status PRESS_DONE and orderId available,"1. Send a PATCH request to /api/orders/{orderId}/status with the payload in testData, replacing {orderId} with the actual order ID.
+2. Verify the response status and body.
+
+Test Data: {
+  ""newStatus"": ""READY_FOR_DELIVERY""
+}","HTTP 200 OK response with a JSON body containing: {""message"": ""Order status updated successfully.""}",TC-004
+Retrieve all orders for a shop sorted by order date descending,Order History Retrieval,Positive,Medium,A shop with at least two existing orders having different order dates,"1. Send a GET request to /api/orders/shop/{shopId}, replacing {shopId} with the actual shop ID.
+2. Verify the response status and order of the results.","HTTP 200 OK response with a JSON body containing a list of order summaries sorted by orderDate in descending order (newest first). Each order summary includes: orderId, shopName, customerName, totalAmount, paidAmount, dueAmount, orderDate, trialDate, deliveryDate, status.",9f19f61-TC-002
+Attempt to update order status with a non-existent order ID,Order Status Management,Negative,High,User is authenticated and has permission to update order statuses,"1. Send a PATCH request to /api/orders/999999/status with the payload in testData.
+
+Test Data: {""newStatus"": ""SEWING_DONE""}",The system returns an HTTP 404 Not Found status code with an error message indicating that the order with ID 999999 does not exist.,TC-005
+Attempt to update order status with a missing request body,Order Status Management,Negative,High,User is authenticated and has permission to update order statuses. An order with ID 1 exists.,1. Send a PATCH request to /api/orders/1/status with no request body.,The system returns an HTTP 400 Bad Request status code with an error message indicating that the request body is required.,TC-006
+Attempt to update order status with an invalid status value,Order Status Management,Negative,High,User is authenticated and has permission to update order statuses. An order with ID 1 exists and its current status is MEASUREMENT_DONE.,"1. Send a PATCH request to /api/orders/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""INVALID_STATUS""}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the status value is invalid.,TC-007
+Attempt to update order status with a non-permissible transition (skipping a step),Order Status Management,Negative,High,User is authenticated and has permission to update order statuses. An order with ID 1 exists and its current status is MEASUREMENT_DONE.,"1. Send a PATCH request to /api/orders/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""PRESS_DONE""}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the status transition from MEASUREMENT_DONE to PRESS_DONE is invalid.,TC-008
+Attempt to update order status after it has reached the final status,Order Status Management,Negative,High,User is authenticated and has permission to update order statuses. An order with ID 1 exists and its current status is READY_FOR_DELIVERY.,"1. Send a PATCH request to /api/orders/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""SEWING_DONE""}",The system returns an HTTP 400 Bad Request status code with an error message indicating that no further status updates are allowed after READY_FOR_DELIVERY.,TC-009
+Attempt to update order status without proper authorization,Order Status Management,Negative,High,User is not authenticated or does not have permission to update order statuses. An order with ID 1 exists.,"1. Send a PATCH request to /api/orders/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""SEWING_DONE""}",The system returns an HTTP 403 Forbidden status code with an error message indicating access is denied.,9e06ad6-TC-017
+Attempt to update order status with a non-numeric order ID,Order Status Management,Negative,High,User is authenticated and has permission to update order statuses.,"1. Send a PATCH request to /api/orders/abc/status with the payload in testData.
+
+Test Data: {""newStatus"": ""SEWING_DONE""}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the order ID must be a valid numeric value.,TC-010
+Attempt to update order status with a null status value,Order Status Management,Negative,Medium,User is authenticated and has permission to update order statuses. An order with ID 1 exists.,"1. Send a PATCH request to /api/orders/1/status with the payload in testData.
+
+Test Data: {""newStatus"": null}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the status value cannot be null.,TC-011
+Attempt to update order status with an empty request body field,Order Status Management,Negative,Medium,User is authenticated and has permission to update order statuses. An order with ID 1 exists.,"1. Send a PATCH request to /api/orders/1/status with the payload in testData.
+
+Test Data: {}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the newStatus field is required.,TC-012
+Attempt to update order status with a status transition that is not the immediate next step,Order Status Management,Negative,High,User is authenticated and has permission to update order statuses. An order with ID 1 exists and its current status is CUTTING_DONE.,"1. Send a PATCH request to /api/orders/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""READY_FOR_DELIVERY""}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the status transition from CUTTING_DONE to READY_FOR_DELIVERY is invalid.,TC-013
+Update order status from MEASUREMENT_DONE to CUTTING_DONE (valid transition),Order Status Transition,Boundary,High,An existing order with status MEASUREMENT_DONE and orderId available,"1. Send a PATCH request to /api/orders/1/status with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}",The API responds with a 200 OK status code and the message 'Order status updated successfully.',TC-014
+Update order status from CUTTING_DONE to SEWING_DONE (valid transition),Order Status Transition,Boundary,High,An existing order with status CUTTING_DONE and orderId available,"1. Send a PATCH request to /api/orders/1/status with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""newStatus"": ""SEWING_DONE""}",The API responds with a 200 OK status code and the message 'Order status updated successfully.',TC-015
+Update order status from SEWING_DONE to PRESS_DONE (valid transition),Order Status Transition,Boundary,High,An existing order with status SEWING_DONE and orderId available,"1. Send a PATCH request to /api/orders/1/status with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""newStatus"": ""PRESS_DONE""}",The API responds with a 200 OK status code and the message 'Order status updated successfully.',TC-016
+Update order status from PRESS_DONE to READY_FOR_DELIVERY (valid transition),Order Status Transition,Boundary,High,An existing order with status PRESS_DONE and orderId available,"1. Send a PATCH request to /api/orders/1/status with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""newStatus"": ""READY_FOR_DELIVERY""}",The API responds with a 200 OK status code and the message 'Order status updated successfully.',TC-017
+Update order status from READY_FOR_DELIVERY to any other status (invalid transition),Order Status Transition,Boundary,High,An existing order with status READY_FOR_DELIVERY and orderId available,"1. Send a PATCH request to /api/orders/1/status with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""newStatus"": ""MEASUREMENT_DONE""}",The API responds with a 400 Bad Request status code and an error message: 'Invalid status transition from READY_FOR_DELIVERY to MEASUREMENT_DONE'.,TC-018
+Update order status with a null newStatus value,Order Status Transition,Boundary,Medium,An existing order with any status and orderId available,"1. Send a PATCH request to /api/orders/1/status with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""newStatus"": null}",The API responds with a 400 Bad Request status code and an error message indicating that newStatus cannot be null.,TC-019
+Update order status for a non-existent orderId,Order Status Transition,Boundary,High,No order exists with the specified orderId,"1. Send a PATCH request to /api/orders/999999/status with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}",The API responds with a 404 Not Found status code and an error message: 'Order not found with ID: 999999'.,TC-020
+Update order status from MEASUREMENT_DONE to SEWING_DONE (invalid transition),Order Status Transition,Boundary,High,An existing order with status MEASUREMENT_DONE and orderId available,"1. Send a PATCH request to /api/orders/1/status with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""newStatus"": ""SEWING_DONE""}",The API responds with a 400 Bad Request status code and an error message: 'Invalid status transition from MEASUREMENT_DONE to SEWING_DONE'.,TC-021
+Update order status with an empty request body,Order Status Transition,Boundary,Medium,An existing order with any status and orderId available,"1. Send a PATCH request to /api/orders/1/status with an empty request body. 2. Verify the response status and body.
+
+Test Data: {}",The API responds with a 400 Bad Request status code and an error message indicating that newStatus is required.,TC-022
+Update order status with an invalid status value,Order Status Transition,Boundary,Medium,An existing order with any status and orderId available,"1. Send a PATCH request to /api/orders/1/status with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""newStatus"": ""INVALID_STATUS""}",The API responds with a 400 Bad Request status code and an error message indicating that newStatus is invalid.,TC-023
+Update order status from null to MEASUREMENT_DONE (valid initial transition),Order Status Transition,Boundary,High,An existing order with null status and orderId available,"1. Send a PATCH request to /api/orders/1/status with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""newStatus"": ""MEASUREMENT_DONE""}",The API responds with a 200 OK status code and the message 'Order status updated successfully.',TC-024
+Update order status from null to CUTTING_DONE (invalid initial transition),Order Status Transition,Boundary,High,An existing order with null status and orderId available,"1. Send a PATCH request to /api/orders/1/status with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}",The API responds with a 400 Bad Request status code and an error message: 'Invalid status transition from null to CUTTING_DONE'.,TC-025
+Retrieve orders for a shop and verify they are sorted by orderDate descending,Order Lookup by Shop ID,Boundary,High,A shop with multiple orders having different orderDates exists,1. Send a GET request to /api/orders/shop/1. 2. Verify the response status and the order of the returned orders.,The API responds with a 200 OK status code and a list of orders sorted by orderDate in descending order (newest first).,9f19f61-TC-014
+Verify all valid order status values are correctly returned in order summaries after status rename,Order Status Validation,Boundary,High,Orders exist with various statuses,1. Send a GET request to /api/orders/shop/1. 2. Verify the response status and the status values in the returned orders.,"The API responds with a 200 OK status code and a list of order summaries. Each order summary includes a 'status' field with one of the following values: 'MEASUREMENT_DONE', 'CUTTING_DONE', 'SEWING_DONE', 'PRESS_DONE', 'READY_FOR_DELIVERY'.",9f19f61-TC-019

@@ -1,0 +1,165 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify that a shop owner can retrieve their own dashboard summary without providing shopId explicitly,Shop Owner Dashboard Access Control,Positive,High,User is authenticated as a shop owner with a valid JWT token and has at least one shop bound to their account,1. Send a GET request to /api/dashboard/summary with the Authorization header containing the JWT token of the shop owner.,"HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Dashboard summary retrieved successfully"", ""data"": {""totalOrders"": <non-null number>, ""pendingOrders"": <non-null number>, ""completedOrders"": <non-null number>, ""totalRevenue"": <non-null number>}}",TC-001
+Verify that a shop owner can retrieve today's orders for their own shop without providing shopId explicitly,Shop Owner Dashboard Access Control,Positive,High,"User is authenticated as a shop owner with a valid JWT token, has at least one shop bound to their account, and has at least one order scheduled for today",1. Send a GET request to /api/dashboard/orders/today?page=0&limit=10 with the Authorization header containing the JWT token of the shop owner.,"HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Orders retrieved successfully"", ""data"": {""content"": [<list of orders scheduled for today>], ""totalElements"": <non-null number>, ""totalPages"": <non-null number>}}",TC-002
+Verify that a shop owner can retrieve customers for their own shop without providing shopId explicitly,Shop Owner Customer Management Access Control,Positive,High,"User is authenticated as a shop owner with a valid JWT token, has at least one shop bound to their account, and has at least one customer recorded","1. Send a GET request to /api/customers/by-shop/{shopId}?page=0&limit=10 with the Authorization header containing the JWT token of the shop owner, replacing {shopId} with any valid shop ID (the value should be ignored by the API).","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Customers retrieved successfully"", ""data"": {""content"": [<list of customers under the shop owner's shop>], ""totalElements"": <non-null number>, ""totalPages"": <non-null number>}}",0895cc7-TC-001
+Verify that a shop owner can upload a photo to their own shop storage,Shop Owner Photo Management Access Control,Positive,High,User is authenticated as a shop owner with a valid JWT token and has at least one shop bound to their account,"1. Send a POST request to /api/photos/upload with the Authorization header containing the JWT token of the shop owner and a file in the request body under the key 'file'.
+
+Test Data: A valid image file (e.g., JPEG or PNG) with size less than 5MB","HTTP 200 OK response with a JSON body containing: {""objectName"": <non-null string>, ""url"": <non-null string>}",TC-003
+Verify that a non-shop-owner user cannot access dashboard endpoints,Shop Owner Dashboard Access Control,Positive,High,"User is authenticated with a valid JWT token but does not have the SHOP_OWNER role (e.g., a customer or worker)",1. Send a GET request to /api/dashboard/summary with the Authorization header containing the JWT token of the non-shop-owner user.,"HTTP 403 Forbidden response with a JSON body containing: {""status"": 403, ""error"": ""Forbidden"", ""message"": ""Access is denied""}",TC-004
+Attempt to access customer details as an unauthorized user (non-SHOP_OWNER role),Customer Management,Negative,High,User is authenticated but does not have the SHOP_OWNER role,"1. Send a GET request to /api/customers/1 with a valid JWT token for a non-SHOP_OWNER user.
+
+Test Data: N/A (use existing JWT token for a non-SHOP_OWNER user)",The system returns an HTTP 403 Forbidden status code with an error message indicating that the user is not authorized to perform this action.,TC-005
+Attempt to fetch customers by shop without authentication,Customer Management,Negative,High,No user is authenticated,"1. Send a GET request to /api/customers/by-shop/1?page=0&limit=10 without providing any authentication token.
+
+Test Data: N/A",The system returns an HTTP 401 Unauthorized status code with an error message indicating that authentication is required.,TC-006
+Attempt to access dashboard summary as an unauthorized user (non-SHOP_OWNER role),Dashboard Access,Negative,High,User is authenticated but does not have the SHOP_OWNER role,"1. Send a GET request to /api/dashboard/summary with a valid JWT token for a non-SHOP_OWNER user.
+
+Test Data: N/A (use existing JWT token for a non-SHOP_OWNER user)",The system returns an HTTP 403 Forbidden status code with an error message indicating that the user is not authorized to perform this action.,TC-007
+Attempt to access today's orders without authentication,Dashboard Access,Negative,High,No user is authenticated,"1. Send a GET request to /api/dashboard/orders/today?page=0&limit=10 without providing any authentication token.
+
+Test Data: N/A",The system returns an HTTP 401 Unauthorized status code with an error message indicating that authentication is required.,TC-008
+Attempt to access dashboard summary as a SHOP_OWNER with no bound shop,Dashboard Access,Negative,High,User is authenticated with SHOP_OWNER role but has no shop bound to their account,"1. Send a GET request to /api/dashboard/summary with a valid JWT token for a SHOP_OWNER user with no bound shop.
+
+Test Data: N/A (use existing JWT token for a SHOP_OWNER user with no bound shop)",The system returns an HTTP 403 Forbidden status code with an error message indicating that no shop is bound to the current owner.,TC-009
+Attempt to upload a photo as an unauthorized user (non-SHOP_OWNER role),Photo Management,Negative,High,User is authenticated but does not have the SHOP_OWNER role,"1. Send a POST request to /api/photos/upload with a valid file and a JWT token for a non-SHOP_OWNER user.
+
+Test Data: file: any valid image file",The system returns an HTTP 403 Forbidden status code with an error message indicating that the user is not authorized to perform this action.,5f2baf0-TC-004
+Attempt to upload a photo without authentication,Photo Management,Negative,High,No user is authenticated,"1. Send a POST request to /api/photos/upload with a valid file but without providing any authentication token.
+
+Test Data: file: any valid image file",The system returns an HTTP 401 Unauthorized status code with an error message indicating that authentication is required.,TC-010
+Attempt to upload a base64 photo with missing image data field,Photo Management,Negative,Medium,User is authenticated with SHOP_OWNER role,"1. Send a POST request to /api/photos/upload-base64 with a payload missing the 'imageData' field.
+
+Test Data: {""imageName"": ""test.jpg""}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'imageData' field is required.,TC-011
+Attempt to get a photo URL as an unauthorized user (non-SHOP_OWNER role),Photo Management,Negative,High,User is authenticated but does not have the SHOP_OWNER role,"1. Send a GET request to /api/photos/url?objectName=test.jpg with a valid JWT token for a non-SHOP_OWNER user.
+
+Test Data: N/A (use existing JWT token for a non-SHOP_OWNER user)",The system returns an HTTP 403 Forbidden status code with an error message indicating that the user is not authorized to perform this action.,TC-012
+Attempt to delete a photo without providing an object name,Photo Management,Negative,Medium,User is authenticated with SHOP_OWNER role,"1. Send a DELETE request to /api/photos/delete without providing the 'objectName' query parameter.
+
+Test Data: N/A",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'objectName' parameter is required.,TC-013
+Attempt to fetch customer by ID with an invalid ID format,Customer Management,Negative,Medium,User is authenticated with SHOP_OWNER role,"1. Send a GET request to /api/customers/abc where 'abc' is not a valid numeric ID.
+
+Test Data: N/A",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'id' must be a valid numeric value.,TC-014
+Attempt to fetch customers by name and phone with missing phone parameter,Customer Management,Negative,Medium,User is authenticated with SHOP_OWNER role,"1. Send a GET request to /api/customers/by-name-phone?name=John without providing the 'phone' query parameter.
+
+Test Data: N/A",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'phone' parameter is required.,TC-015
+Attempt to fetch today's orders with invalid page or limit values,Dashboard Access,Negative,Medium,User is authenticated with SHOP_OWNER role and has a bound shop,"1. Send a GET request to /api/dashboard/orders/today?page=-1&limit=0 with invalid page and limit values.
+
+Test Data: N/A",The system returns an HTTP 400 Bad Request status code with an error message indicating that 'page' must be a non-negative integer and 'limit' must be a positive integer.,TC-016
+Attempt to fetch orders by date with an invalid date format,Dashboard Access,Negative,Medium,User is authenticated with SHOP_OWNER role and has a bound shop,"1. Send a GET request to /api/dashboard/orders/new?orderDate=2023/13/01&page=0&limit=10 with an invalid date format.
+
+Test Data: N/A","The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'orderDate' must be in a valid date format (e.g., 'YYYY-MM-DD').",TC-017
+Access customer data with a non-SHOP_OWNER role (boundary case),Customer Access Control,Boundary,High,"User has a valid JWT token with a role other than SHOP_OWNER (e.g., CUSTOMER)","1. Send a GET request to /api/customers/1 with the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-non-shop-owner-jwt-token>",The API responds with a 403 Forbidden status code and an error message indicating access is denied.,TC-018
+Access customer data with a SHOP_OWNER role (boundary case),Customer Access Control,Boundary,High,User has a valid JWT token with the SHOP_OWNER role and at least one customer exists in the shop bound to the owner,"1. Send a GET request to /api/customers/1 with the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token>","The API responds with a 200 OK status code, a status of 'success', and the response body contains the customer data in the 'data' field.",TC-019
+Access customer data with a missing JWT token (boundary case),Customer Access Control,Boundary,High,No JWT token is provided in the request,"1. Send a GET request to /api/customers/1 without an Authorization header.
+
+Test Data: None",The API responds with a 401 Unauthorized status code and an error message indicating authentication is required.,TC-020
+Access dashboard summary with a non-SHOP_OWNER role (boundary case),Dashboard Access Control,Boundary,High,"User has a valid JWT token with a role other than SHOP_OWNER (e.g., CUSTOMER)","1. Send a GET request to /api/dashboard/summary with the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-non-shop-owner-jwt-token>",The API responds with a 403 Forbidden status code and an error message indicating access is denied.,TC-021
+Access dashboard summary with a SHOP_OWNER role but no shop bound to the owner (boundary case),Dashboard Access Control,Boundary,High,User has a valid JWT token with the SHOP_OWNER role but no shop is bound to the owner's username,"1. Send a GET request to /api/dashboard/summary with the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token-with-no-shop>",The API responds with a 403 Forbidden status code and an error message indicating no shop is bound to the current owner.,TC-022
+Access dashboard summary with a SHOP_OWNER role and a shop bound to the owner (boundary case),Dashboard Access Control,Boundary,High,User has a valid JWT token with the SHOP_OWNER role and a shop is bound to the owner's username,"1. Send a GET request to /api/dashboard/summary with the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token-with-shop>","The API responds with a 200 OK status code, a status of 'success', and the response body contains the dashboard summary data in the 'data' field.",TC-023
+Retrieve today's orders with page value set to zero (minimum allowed value),Dashboard Pagination,Boundary,Medium,User has a valid JWT token with the SHOP_OWNER role and a shop is bound to the owner's username,"1. Send a GET request to /api/dashboard/orders/today?page=0&limit=10 with the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token-with-shop>","The API responds with a 200 OK status code, a status of 'success', and the response body contains 'data' with a list of today's orders (or an empty list if none exist).",5437faa-TC-002
+Retrieve today's orders with page value set to one below minimum allowed value (-1),Dashboard Pagination,Boundary,Medium,User has a valid JWT token with the SHOP_OWNER role and a shop is bound to the owner's username,"1. Send a GET request to /api/dashboard/orders/today?page=-1&limit=10 with the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token-with-shop>","The API responds with a 400 Bad Request status code, a status of 'error', and an error message indicating that the page value is invalid.",5437faa-TC-004
+Retrieve today's orders with limit value set to zero (boundary case),Dashboard Pagination,Boundary,Medium,User has a valid JWT token with the SHOP_OWNER role and a shop is bound to the owner's username,"1. Send a GET request to /api/dashboard/orders/today?page=0&limit=0 with the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token-with-shop>","The API responds with a 400 Bad Request status code, a status of 'error', and an error message indicating that the limit value is invalid.",5437faa-TC-006
+Retrieve today's orders with limit value set to one below minimum allowed value (boundary case),Dashboard Pagination,Boundary,Medium,User has a valid JWT token with the SHOP_OWNER role and a shop is bound to the owner's username,"1. Send a GET request to /api/dashboard/orders/today?page=0&limit=-1 with the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token-with-shop>","The API responds with a 400 Bad Request status code, a status of 'error', and an error message indicating that the limit value is invalid.",TC-024
+Retrieve today's orders with limit value set to one above maximum allowed value (boundary case),Dashboard Pagination,Boundary,Medium,User has a valid JWT token with the SHOP_OWNER role and a shop is bound to the owner's username,"1. Send a GET request to /api/dashboard/orders/today?page=0&limit=101 with the JWT token in the Authorization header (assuming max limit is 100).
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token-with-shop>","The API responds with a 400 Bad Request status code, a status of 'error', and an error message indicating that the limit value is invalid.",5437faa-TC-008
+Upload a photo with a non-SHOP_OWNER role (boundary case),Photo Upload Access Control,Boundary,High,"User has a valid JWT token with a role other than SHOP_OWNER (e.g., CUSTOMER)","1. Send a POST request to /api/photos/upload with a file in the 'file' parameter and the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-non-shop-owner-jwt-token>
+file: <valid-image-file>",The API responds with a 403 Forbidden status code and an error message indicating access is denied.,TC-025
+Upload a photo with a SHOP_OWNER role (boundary case),Photo Upload Access Control,Boundary,High,User has a valid JWT token with the SHOP_OWNER role,"1. Send a POST request to /api/photos/upload with a file in the 'file' parameter and the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token>
+file: <valid-image-file>","The API responds with a 200 OK status code, a status of 'success', and the response body contains a URL to the uploaded photo in the 'url' field.",TC-026
+Upload a photo with an empty file (boundary case),Photo Upload,Boundary,Medium,User has a valid JWT token with the SHOP_OWNER role,"1. Send a POST request to /api/photos/upload with an empty file in the 'file' parameter and the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token>
+file: (empty file)",The API responds with a 400 Bad Request status code and an error message indicating that the file cannot be empty.,TC-027
+Upload a photo with a file name exactly at the maximum allowed length (boundary case),Photo Upload,Boundary,Medium,User has a valid JWT token with the SHOP_OWNER role,"1. Send a POST request to /api/photos/upload with a file named 'a' repeated 255 times (e.g., 'a...a.jpg') in the 'file' parameter and the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token>
+file: <file-with-255-char-name.jpg>","The API responds with a 200 OK status code, a status of 'success', and the response body contains a URL to the uploaded photo in the 'url' field.",d743d3c-TC-005
+Upload a photo with a file name exceeding the maximum allowed length (boundary case),Photo Upload,Boundary,Medium,User has a valid JWT token with the SHOP_OWNER role,"1. Send a POST request to /api/photos/upload with a file named 'a' repeated 256 times (e.g., 'a...a.jpg') in the 'file' parameter and the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token>
+file: <file-with-256-char-name.jpg>",The API responds with a 400 Bad Request status code and an error message indicating that the file name exceeds the maximum allowed length.,d743d3c-TC-004
+Retrieve a photo URL with an empty object name (boundary case),Photo Retrieval,Boundary,Medium,User has a valid JWT token with the SHOP_OWNER role,"1. Send a GET request to /api/photos/url?objectName= with the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token>",The API responds with a 400 Bad Request status code and an error message indicating that the object name cannot be empty.,TC-028
+Retrieve a photo URL with an object name exactly at the maximum allowed length (boundary case),Photo Retrieval,Boundary,Medium,User has a valid JWT token with the SHOP_OWNER role and a photo with a 255-character object name exists in storage,"1. Send a GET request to /api/photos/url?objectName=<255-character-object-name> with the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token>
+objectName: <255-character-string>",The API responds with a 200 OK status code and the response body contains a presigned URL to the photo in the 'url' field.,d743d3c-TC-005
+Delete a photo with an empty object name (boundary case),Photo Deletion,Boundary,Medium,User has a valid JWT token with the SHOP_OWNER role,"1. Send a DELETE request to /api/photos/delete?objectName= with the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token>",The API responds with a 400 Bad Request status code and an error message indicating that the object name cannot be empty.,TC-029
+Delete a photo with an object name exactly at the maximum allowed length (boundary case),Photo Deletion,Boundary,Medium,User has a valid JWT token with the SHOP_OWNER role and a photo with a 255-character object name exists in storage,"1. Send a DELETE request to /api/photos/delete?objectName=<255-character-object-name> with the JWT token in the Authorization header.
+
+Test Data: Authorization: Bearer <valid-shop-owner-jwt-token>
+objectName: <255-character-string>",The API responds with a 200 OK status code and a success message indicating the photo was deleted.,TC-030
+Verify that dashboard endpoints reject requests from non-SHOP_OWNER roles,Dashboard Access Control,Security,High,"User has a valid JWT token with a role other than SHOP_OWNER (e.g., WORKER or CUSTOMER)","1. Send a GET request to /api/dashboard/summary with a valid JWT token for a non-SHOP_OWNER role.
+2. Send a GET request to /api/dashboard/orders/today?page=0&limit=10 with the same token.
+3. Send a GET request to /api/dashboard/orders/tomorrow?page=0&limit=10 with the same token.
+4. Send a GET request to /api/dashboard/orders/overdue?page=0&limit=10 with the same token.
+5. Send a GET request to /api/dashboard/orders/monthly?page=0&limit=10 with the same token.
+6. Send a GET request to /api/dashboard/orders/new?orderDate=2023-10-01&page=0&limit=10 with the same token.","For all requests, the API responds with HTTP status 403 (Forbidden) and a response body containing 'status: error' and a generic error message (e.g., 'Access denied'). No dashboard data is returned.",TC-031
+Verify that dashboard endpoints reject unauthenticated requests,Dashboard Access Control,Security,High,No user is logged in (no JWT token provided),"1. Send a GET request to /api/dashboard/summary without a JWT token.
+2. Send a GET request to /api/dashboard/orders/today?page=0&limit=10 without a JWT token.
+3. Send a GET request to /api/dashboard/orders/tomorrow?page=0&limit=10 without a JWT token.
+4. Send a GET request to /api/dashboard/orders/overdue?page=0&limit=10 without a JWT token.
+5. Send a GET request to /api/dashboard/orders/monthly?page=0&limit=10 without a JWT token.
+6. Send a GET request to /api/dashboard/orders/new?orderDate=2023-10-01&page=0&limit=10 without a JWT token.","For all requests, the API responds with HTTP status 401 (Unauthorized) and a response body containing 'status: error' and a generic error message (e.g., 'Unauthorized'). No dashboard data is returned.",TC-032
+Verify that SHOP_OWNER can only access dashboard data for their own shop,Dashboard Data Isolation,Security,High,Two shops (Shop A and Shop B) exist. User is a SHOP_OWNER of Shop A with a valid JWT token. Shop B has existing orders and customers.,"1. Send a GET request to /api/dashboard/summary with the SHOP_OWNER's JWT token.
+2. Inspect the response to confirm the shopId matches Shop A's ID.
+3. Send a GET request to /api/dashboard/orders/today?page=0&limit=10 with the same token.
+4. Inspect the response to confirm all orders belong to Shop A.
+5. Repeat steps 3-4 for endpoints /api/dashboard/orders/tomorrow, /api/dashboard/orders/overdue, /api/dashboard/orders/monthly, and /api/dashboard/orders/new?orderDate=2023-10-01&page=0&limit=10.","For all requests, the API responds with HTTP status 200 (OK) and a response body containing 'status: success'. The returned data (summary, orders) only includes records for Shop A. No data from Shop B is returned.",TC-033
+Verify that dashboard endpoints return a secure error message when the SHOP_OWNER has no bound shop,Dashboard Error Handling,Security,High,"User is a SHOP_OWNER with a valid JWT token but has no shop bound to their account (e.g., shopId is null).","1. Send a GET request to /api/dashboard/summary with the SHOP_OWNER's JWT token.
+2. Send a GET request to /api/dashboard/orders/today?page=0&limit=10 with the same token.
+3. Repeat step 2 for endpoints /api/dashboard/orders/tomorrow, /api/dashboard/orders/overdue, /api/dashboard/orders/monthly, and /api/dashboard/orders/new?orderDate=2023-10-01&page=0&limit=10.","For all requests, the API responds with HTTP status 403 (Forbidden) and a response body containing 'status: error' and the message 'No shop bound to the current owner'. No sensitive data (e.g., stack traces, internal system details) is exposed in the response.",TC-034
+Verify that customer endpoints reject requests from non-SHOP_OWNER roles,Customer Data Access Control,Security,High,"User has a valid JWT token with a role other than SHOP_OWNER (e.g., WORKER or CUSTOMER)","1. Send a GET request to /api/customers/1 with a valid JWT token for a non-SHOP_OWNER role.
+2. Send a GET request to /api/customers/by-name-phone?name=John&phone=1234567890 with the same token.
+3. Send a GET request to /api/customers/by-phone?phone=1234567890 with the same token.
+4. Send a GET request to /api/customers/by-shop/1?page=0&limit=10 with the same token.","For all requests, the API responds with HTTP status 403 (Forbidden) and a response body containing 'status: error' and a generic error message (e.g., 'Access denied'). No customer data is returned.",TC-035
+Verify that customer endpoints reject unauthenticated requests,Customer Data Access Control,Security,High,No user is logged in (no JWT token provided),"1. Send a GET request to /api/customers/1 without a JWT token.
+2. Send a GET request to /api/customers/by-name-phone?name=John&phone=1234567890 without a JWT token.
+3. Send a GET request to /api/customers/by-phone?phone=1234567890 without a JWT token.
+4. Send a GET request to /api/customers/by-shop/1?page=0&limit=10 without a JWT token.","For all requests, the API responds with HTTP status 401 (Unauthorized) and a response body containing 'status: error' and a generic error message (e.g., 'Unauthorized'). No customer data is returned.",TC-036
+Verify that SHOP_OWNER can only access customer data for their own shop,Customer Data Isolation,Security,High,Two shops (Shop A and Shop B) exist. User is a SHOP_OWNER of Shop A with a valid JWT token. Shop B has existing customers.,"1. Send a GET request to /api/customers/by-shop/{shopId}?page=0&limit=10 with {shopId} set to Shop A's ID.
+2. Inspect the response to confirm all customers belong to Shop A.
+3. Send a GET request to /api/customers/by-shop/{shopId}?page=0&limit=10 with {shopId} set to Shop B's ID.
+4. Inspect the response to confirm no customer data from Shop B is returned.","For step 1, the API responds with HTTP status 200 (OK) and a response body containing 'status: success' and customer data for Shop A only. For step 3, the API responds with HTTP status 403 (Forbidden) or 404 (Not Found) and a generic error message (e.g., 'Access denied' or 'Shop not found'). No customer data from Shop B is returned.",a50ac21-TC-006
+Verify that photo endpoints reject requests from non-SHOP_OWNER roles,Photo Access Control,Security,High,"User has a valid JWT token with a role other than SHOP_OWNER (e.g., WORKER or CUSTOMER)","1. Send a POST request to /api/photos/upload with a valid file and a JWT token for a non-SHOP_OWNER role.
+2. Send a POST request to /api/photos/upload-base64 with the payload in testData and the same token.
+3. Send a GET request to /api/photos/url?objectName=test.jpg with the same token.
+4. Send a DELETE request to /api/photos/delete?objectName=test.jpg with the same token.
+
+Test Data: {
+  ""base64Image"": ""data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP...""
+}","For all requests, the API responds with HTTP status 403 (Forbidden) and a response body containing 'status: error' and a generic error message (e.g., 'Access denied'). No photo operations are performed.",TC-037
+Verify that photo endpoints reject unauthenticated requests,Photo Access Control,Security,High,No user is logged in (no JWT token provided),"1. Send a POST request to /api/photos/upload without a JWT token.
+2. Send a POST request to /api/photos/upload-base64 with the payload in testData and no JWT token.
+3. Send a GET request to /api/photos/url?objectName=test.jpg without a JWT token.
+4. Send a DELETE request to /api/photos/delete?objectName=test.jpg without a JWT token.
+
+Test Data: {
+  ""base64Image"": ""data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP...""
+}","For all requests, the API responds with HTTP status 401 (Unauthorized) and a response body containing 'status: error' and a generic error message (e.g., 'Unauthorized'). No photo operations are performed.",TC-038

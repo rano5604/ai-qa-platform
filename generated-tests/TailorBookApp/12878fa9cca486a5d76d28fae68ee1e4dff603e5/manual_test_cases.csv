@@ -1,0 +1,166 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify today's earnings reflect payments made on the same day,Dashboard Financial Summary,Positive,High,User is logged in as a shop owner with at least one order that has a payment recorded today,"1. Navigate to the Dashboard screen.
+2. Locate the 'Today's Earnings' card in the financial summary section.
+3. Note the amount displayed under 'Today's Earnings'.
+4. Open the Payments screen and filter payments by today's date.
+5. Sum the amounts of all payments listed for today.
+
+Test Data: Use an order with a payment of 500 BDT made today",The 'Today's Earnings' amount on the Dashboard matches the total sum of payments recorded for today in the Payments screen.,TC-001
+Verify total due amount reflects the sum of all unpaid order balances,Dashboard Financial Summary,Positive,High,User is logged in as a shop owner with at least two orders having unpaid balances (due amounts > 0),"1. Navigate to the Dashboard screen.
+2. Locate the 'Total Due' card in the financial summary section.
+3. Note the amount displayed under 'Total Due'.
+4. Open the Orders screen and filter orders by 'Unpaid' status.
+5. Sum the 'Due Amount' of all unpaid orders listed.
+
+Test Data: Use two orders with due amounts of 200 BDT and 300 BDT respectively",The 'Total Due' amount on the Dashboard matches the total sum of due amounts from all unpaid orders.,TC-002
+Verify total earnings reflect the sum of all payments received this month,Dashboard Financial Summary,Positive,High,User is logged in as a shop owner with at least two payments recorded within the current month,"1. Navigate to the Dashboard screen.
+2. Locate the 'Earning This Month' card in the financial summary section.
+3. Note the amount displayed under 'Earning This Month'.
+4. Open the Payments screen and filter payments by the current month.
+5. Sum the amounts of all payments listed for this month.
+
+Test Data: Use payments of 1000 BDT and 1500 BDT made on different dates within the current month",The 'Earning This Month' amount on the Dashboard matches the total sum of payments recorded for the current month.,d217aa0-TC-001
+Verify payment made during order creation is recorded and reflected in today's earnings,Order Payment Tracking,Positive,High,User is logged in as a shop owner with no existing payments recorded for today,"1. Navigate to the 'Create Order' screen.
+2. Fill in all required order details including customer information and items.
+3. Enter a 'Paid Amount' of 500 BDT during order creation.
+4. Submit the order and confirm it is created successfully.
+5. Navigate to the Dashboard screen.
+6. Check the 'Today's Earnings' card in the financial summary section.
+
+Test Data: Use a paid amount of 500 BDT for the new order","The 'Today's Earnings' amount on the Dashboard increases by 500 BDT after the order is created, reflecting the payment made during order creation.",TC-003
+Verify total order amount reflects the sum of all order totals in the system,Dashboard Financial Summary,Positive,Medium,User is logged in as a shop owner with at least two orders recorded in the system,"1. Navigate to the Dashboard screen.
+2. Locate the 'Total Order Amount' card in the financial summary section.
+3. Note the amount displayed under 'Total Order Amount'.
+4. Open the Orders screen and list all orders.
+5. Sum the 'Total Amount' of all orders listed.
+
+Test Data: Use two orders with total amounts of 1000 BDT and 2000 BDT respectively",The 'Total Order Amount' on the Dashboard matches the total sum of all order amounts in the system.,TC-004
+Attempt to fetch dashboard summary with an invalid shop ID format,Dashboard Summary Metrics,Negative,High,User is logged in as a SHOP_OWNER with a valid session,"1. Navigate to the dashboard summary page. 2. Manually modify the URL or API request to use a non-numeric shop ID (e.g., 'invalidID'). 3. Submit the request.
+
+Test Data: Shop ID: 'invalidID'",The system displays an error message indicating that the 'Shop ID' must be a valid numeric value. No dashboard metrics are shown.,TC-005
+Attempt to fetch dashboard summary for a non-existent shop ID,Dashboard Summary Metrics,Negative,High,User is logged in as a SHOP_OWNER with a valid session,"1. Navigate to the dashboard summary page. 2. Manually modify the URL or API request to use a non-existent shop ID (e.g., '999999'). 3. Submit the request.
+
+Test Data: Shop ID: 999999",The system displays an error message indicating that no shop exists with the specified ID. No dashboard metrics are shown.,TC-006
+Attempt to record a payment with a negative payment amount during order creation,Order Payment Processing,Negative,High,User is logged in as a SHOP_OWNER with a valid session and has an active shop,"1. Navigate to the 'Create Order' page. 2. Fill in all required fields for a new order. 3. Enter a negative value in the 'Paid Amount' field (e.g., '-100'). 4. Submit the order.
+
+Test Data: Paid Amount: -100","The system displays an error message indicating that the 'Paid Amount' must be a non-negative value. The order is not created, and no payment is recorded.",0b31caa-TC-001
+Attempt to record a payment with a non-numeric payment amount during order creation,Order Payment Processing,Negative,High,User is logged in as a SHOP_OWNER with a valid session and has an active shop,"1. Navigate to the 'Create Order' page. 2. Fill in all required fields for a new order. 3. Enter a non-numeric value in the 'Paid Amount' field (e.g., 'abc'). 4. Submit the order.
+
+Test Data: Paid Amount: 'abc'","The system displays an error message indicating that the 'Paid Amount' must be a valid numeric value. The order is not created, and no payment is recorded.",TC-007
+Attempt to record a payment for an order with a null paid amount during order creation,Order Payment Processing,Negative,Medium,User is logged in as a SHOP_OWNER with a valid session and has an active shop,"1. Navigate to the 'Create Order' page. 2. Fill in all required fields for a new order. 3. Leave the 'Paid Amount' field blank. 4. Submit the order.
+
+Test Data: Paid Amount: (blank)",The system defaults the 'Paid Amount' to zero and creates the order without recording a payment. The dashboard metrics for 'Today's Earnings' should not include this order.,TC-008
+Attempt to create an order with a paid amount exceeding the total order amount,Order Management - Order Creation,Negative,High,User is logged in as a SHOP_OWNER with a valid session and has an active shop,"1. Navigate to the 'Create Order' page. 2. Fill in all required fields for a new order with a total amount of 1000. 3. Enter a paid amount greater than the total amount (e.g., '1500'). 4. Submit the order.
+
+Test Data: Total Amount: 1000, Paid Amount: 1500","The system displays an error message indicating that the 'Paid Amount' cannot exceed the total order amount. The order is not created, and no payment is recorded.",TC-009
+Attempt to fetch dashboard summary as an unauthorized user (non-SHOP_OWNER role),Dashboard Summary Metrics,Negative,High,"User is logged in with a role other than SHOP_OWNER (e.g., CUSTOMER)","1. Navigate to the dashboard summary page. 2. Observe the system response.
+
+Test Data: User Role: CUSTOMER",The system returns an HTTP 403 Forbidden status code with an error message indicating that the user is not authorized to view the dashboard summary. No metrics are displayed.,d217aa0-TC-009
+Attempt to fetch dashboard summary without authentication,Dashboard Summary Metrics,Negative,High,User is not logged in,"1. Navigate directly to the dashboard summary URL. 2. Observe the system response.
+
+Test Data: No authentication",The system returns an HTTP 401 Unauthorized status code with an error message indicating that authentication is required. No metrics are displayed.,TC-010
+"Attempt to update an order item status to an invalid transition (e.g., from 'PENDING' to 'DELIVERED' directly)",Order Management - Order Status Update,Negative,High,"User is logged in as a SHOP_OWNER with a valid session, and an order exists with an item in 'PENDING' status","1. Navigate to the order details page for an existing order. 2. Select an item in 'PENDING' status. 3. Attempt to change the status directly to 'DELIVERED'. 4. Submit the update.
+
+Test Data: Current Status: PENDING, New Status: DELIVERED",The system displays an error message indicating that the status transition from 'PENDING' to 'DELIVERED' is not allowed. The order item status remains unchanged.,TC-011
+Attempt to update the status of a non-existent order item,Order Management - Order Status Update,Negative,High,User is logged in as a SHOP_OWNER with a valid session,"1. Navigate to the order details page. 2. Manually modify the URL or API request to use a non-existent order item ID (e.g., '999999'). 3. Attempt to update the status of this item. 4. Submit the update.
+
+Test Data: Order Item ID: 999999",The system displays an error message indicating that the order item with ID 999999 does not exist. The status update is not processed.,TC-012
+Attempt to create an order with a future payment date (invalid for initial payment),Order Management - Order Creation,Negative,Medium,User is logged in as a SHOP_OWNER with a valid session and has an active shop,"1. Navigate to the 'Create Order' page. 2. Fill in all required fields for a new order. 3. Attempt to set the payment date to a future date (e.g., tomorrow). 4. Submit the order.
+
+Test Data: Payment Date: Tomorrow's date","The system ignores the future payment date and records the payment with today's date. The order is created, and the payment is recorded for today.",TC-013
+Attempt to create an order with a malformed payment date format,Order Management - Order Creation,Negative,High,User is logged in as a SHOP_OWNER with a valid session and has an active shop,"1. Navigate to the 'Create Order' page. 2. Fill in all required fields for a new order. 3. Manually modify the payment date field to an invalid format (e.g., '31-13-2023'). 4. Submit the order.
+
+Test Data: Payment Date: '31-13-2023'","The system displays an error message indicating that the 'Payment Date' must be in a valid date format (e.g., 'YYYY-MM-DD'). The order is not created, and no payment is recorded.",TC-014
+"Verify that dashboard financial totals (earning today, total due, total earning, total order amount, earning this month) are calculated and displayed only for the authenticated shop owner's data",Dashboard Financial Summary,Security,High,User is logged in as SHOP_OWNER of Shop A. Shop A has at least one order with a paid amount and one order with a due amount. Shop B exists with orders but is not accessible to the current user.,"1. Navigate to the Dashboard screen.
+2. Observe the financial summary section displaying 'Earning Today', 'Total Due', 'Total Earning', 'Total Order Amount', and 'Earning This Month'.
+3. Log out and log in as SHOP_OWNER of Shop B.
+4. Navigate to the Dashboard screen and observe the financial summary values.
+5. Compare the values between Shop A and Shop B.
+
+Test Data: Shop A: Order 1 (paid: 5000, due: 0), Order 2 (paid: 2000, due: 3000). Shop B: Order 3 (paid: 7000, due: 1000).","The financial summary values for Shop A and Shop B are distinct and reflect only their respective orders. No data from Shop B is visible when logged in as Shop A, and vice versa.",TC-015
+Verify that dashboard financial totals do not expose sensitive data in error messages or logs when calculation fails,Dashboard Financial Summary,Security,High,User is logged in as SHOP_OWNER of Shop A. The database is temporarily unavailable or misconfigured to simulate a calculation error.,"1. Navigate to the Dashboard screen.
+2. Observe the system response when financial totals cannot be calculated.
+3. Check the error message displayed to the user and any logs accessible to the tester.
+
+Test Data: N/A","The system displays a generic error message (e.g., 'Failed to load financial data. Please try again later.'). The error message and logs do not expose sensitive data such as database queries, stack traces, or internal paths.",TC-016
+Verify that initial payment during order creation is recorded and reflected in 'Earning Today' on the dashboard,Order Payment Processing,Security,High,User is logged in as SHOP_OWNER of Shop A. No orders exist for today in Shop A.,"1. Navigate to the 'Create Order' screen.
+2. Enter customer details and order items.
+3. Set the 'Paid Amount' to 2000 and submit the order.
+4. Navigate to the Dashboard screen.
+5. Observe the 'Earning Today' value in the financial summary.
+
+Test Data: Customer: John Doe, Phone: 1234567890. Order Item: Shirt, Paid Amount: 2000.","The 'Earning Today' value on the dashboard is 2000, matching the paid amount of the newly created order.",TC-017
+Verify that zero initial payment during order creation does not affect 'Earning Today' on the dashboard,Order Payment Processing,Security,Medium,User is logged in as SHOP_OWNER of Shop A. No orders exist for today in Shop A.,"1. Navigate to the 'Create Order' screen.
+2. Enter customer details and order items.
+3. Set the 'Paid Amount' to 0 and submit the order.
+4. Navigate to the Dashboard screen.
+5. Observe the 'Earning Today' value in the financial summary.
+
+Test Data: Customer: Jane Doe, Phone: 9876543210. Order Item: Pants, Paid Amount: 0.","The 'Earning Today' value on the dashboard remains 0, as no payment was recorded for the order.",TC-018
+Verify that negative initial payment during order creation is rejected and does not affect dashboard totals,Order Payment Processing,Security,High,User is logged in as SHOP_OWNER of Shop A. No orders exist for today in Shop A.,"1. Navigate to the 'Create Order' screen.
+2. Enter customer details and order items.
+3. Attempt to set the 'Paid Amount' to -1000 and submit the order.
+4. Observe the system response.
+5. Navigate to the Dashboard screen and observe the 'Earning Today' value.
+
+Test Data: Customer: Alice Smith, Phone: 5551234567. Order Item: Dress, Paid Amount: -1000.","The system rejects the order submission with an error message (e.g., 'Paid amount must be a positive value'). The 'Earning Today' value on the dashboard remains 0.",0b31caa-TC-005
+Verify that non-numeric initial payment during order creation is rejected and does not affect dashboard totals,Order Payment Processing,Security,High,User is logged in as SHOP_OWNER of Shop A. No orders exist for today in Shop A.,"1. Navigate to the 'Create Order' screen.
+2. Enter customer details and order items.
+3. Attempt to set the 'Paid Amount' to 'abc' and submit the order.
+4. Observe the system response.
+5. Navigate to the Dashboard screen and observe the 'Earning Today' value.
+
+Test Data: Customer: Bob Johnson, Phone: 5559876543. Order Item: Suit, Paid Amount: 'abc'.","The system rejects the order submission with an error message (e.g., 'Paid amount must be a valid number'). The 'Earning Today' value on the dashboard remains 0.",dbc9d14-TC-016
+Verify that oversized initial payment during order creation is rejected and does not affect dashboard totals,Order Payment Processing,Security,Medium,User is logged in as SHOP_OWNER of Shop A. No orders exist for today in Shop A.,"1. Navigate to the 'Create Order' screen.
+2. Enter customer details and order items with a total amount of 5000.
+3. Attempt to set the 'Paid Amount' to 999999999999 and submit the order.
+4. Observe the system response.
+5. Navigate to the Dashboard screen and observe the 'Earning Today' value.
+
+Test Data: Customer: Charlie Brown, Phone: 5554567890. Order Item: Jacket, Total Amount: 5000, Paid Amount: 999999999999.","The system rejects the order submission with an error message (e.g., 'Paid amount exceeds maximum allowed value'). The 'Earning Today' value on the dashboard remains 0.",TC-019
+Verify that initial payment is not recorded if order creation fails,Order Payment Processing,Security,High,User is logged in as SHOP_OWNER of Shop A. Database is temporarily misconfigured to simulate an order creation failure.,"1. Navigate to the 'Create Order' screen.
+2. Enter customer details and order items.
+3. Set the 'Paid Amount' to 2000 and submit the order.
+4. Observe the system response.
+5. Navigate to the Dashboard screen and observe the 'Earning Today' value.
+
+Test Data: Customer: Dave Wilson, Phone: 5557891234. Order Item: Coat, Paid Amount: 2000.","The system displays an error message (e.g., 'Failed to create order. Please try again.'). The 'Earning Today' value on the dashboard remains 0, as no payment was recorded.",TC-020
+Verify that updating an order item status to CANCELLED recalculates the order's due amount and reflects it in the dashboard totals,Order Status Update,Security,High,User is logged in as SHOP_OWNER of Shop A. Shop A has an order with a due amount of 3000 and at least one order item not yet cancelled.,"1. Navigate to the 'Orders' screen and select the order with a due amount of 3000.
+2. Update the status of one order item to 'CANCELLED'.
+3. Observe the updated due amount for the order.
+4. Navigate to the Dashboard screen and observe the 'Total Due' value.
+
+Test Data: Order: Total Amount: 5000, Paid Amount: 2000, Due Amount: 3000. Order Item: Shirt (not cancelled).","The order's due amount is recalculated to reflect the cancellation (e.g., 1000 if the cancelled item was 2000). The 'Total Due' value on the dashboard is updated to reflect the new due amount.",TC-021
+Verify that updating an order item status to CANCELLED does not allow negative due amounts,Order Status Update,Security,Medium,User is logged in as SHOP_OWNER of Shop A. Shop A has an order with a due amount of 0 and at least one order item not yet cancelled.,"1. Navigate to the 'Orders' screen and select the order with a due amount of 0.
+2. Update the status of one order item to 'CANCELLED'.
+3. Observe the updated due amount for the order.
+4. Navigate to the Dashboard screen and observe the 'Total Due' value.
+
+Test Data: Order: Total Amount: 5000, Paid Amount: 5000, Due Amount: 0. Order Item: Pants (not cancelled).",The order's due amount remains 0 after cancellation. The 'Total Due' value on the dashboard remains unchanged.,TC-022
+Verify that dashboard financial totals are not affected by rapid successive order creations (rate limiting),Dashboard Financial Summary,Security,Medium,User is logged in as SHOP_OWNER of Shop A. No orders exist for today in Shop A.,"1. Navigate to the 'Create Order' screen.
+2. Rapidly create 10 orders with a paid amount of 1000 each (within a short time frame).
+3. Navigate to the Dashboard screen and observe the 'Earning Today' value.
+4. Wait for a few minutes and refresh the Dashboard screen.
+
+Test Data: Customer: Test User, Phone: 5550000001 to 5550000010. Order Item: Test Item, Paid Amount: 1000 (for each order).","The system either processes all orders and updates the 'Earning Today' value to 10000, or throttles the requests and displays an error message (e.g., 'Too many requests. Please try again later.'). The 'Earning Today' value does not exceed the expected total (10000) or remains 0 if throttled.",TC-023
+Verify dashboard displays correct today's earnings after order creation with advance payment,Dashboard Financial Summary,Configuration,High,"User is logged in as a shop owner with at least one existing order in the system. Current date is set to a known value (e.g., 2024-05-20) for consistent testing.","1. Navigate to the 'Create New Order' screen. 2. Enter customer details: Name = 'John Doe', Phone = '01712345678'. 3. Select an item (e.g., 'Shirt'). 4. Enter measurements (e.g., Length = 30, Chest = 40). 5. Set advance payment amount to 500. 6. Set delivery date to 2024-05-25. 7. Click 'Save Order'. 8. Navigate to the 'Dashboard' screen.
+
+Test Data: Customer Name: John Doe, Phone: 01712345678, Item: Shirt, Advance Payment: 500, Delivery Date: 2024-05-25",Dashboard displays 'Today's Earnings' as 500. The 'Total Earning' and 'Total Paid Amount' values increase by 500 compared to their previous values. The 'Total Due' value reflects the remaining amount for all orders.,TC-024
+Verify dashboard displays correct monthly earnings for the current month,Dashboard Financial Summary,Configuration,High,"User is logged in as a shop owner. Current date is within a month that has existing orders with payments (e.g., May 2024). At least one order exists with a payment recorded in the current month.","1. Navigate to the 'Dashboard' screen. 2. Note the 'Earning This Month' value displayed. 3. Navigate to the 'Orders' screen. 4. Filter orders by the current month (e.g., May 2024). 5. Sum the 'Paid Amount' for all orders in the filtered list. 6. Compare the sum with the 'Earning This Month' value from the dashboard.
+
+Test Data: Current month: May 2024, Expected sum of paid amounts for May orders: 12000","The 'Earning This Month' value on the dashboard matches the sum of all paid amounts for orders in the current month (e.g., 12000).",TC-025
+Verify dashboard displays correct total due amount across all orders,Dashboard Financial Summary,Configuration,High,User is logged in as a shop owner. At least two orders exist in the system: one fully paid and one partially paid.,"1. Navigate to the 'Dashboard' screen. 2. Note the 'Total Due' value displayed. 3. Navigate to the 'Orders' screen. 4. For each order, calculate the due amount (Total Amount - Paid Amount). 5. Sum all due amounts. 6. Compare the sum with the 'Total Due' value from the dashboard.
+
+Test Data: Order 1: Total = 2000, Paid = 2000, Due = 0; Order 2: Total = 3000, Paid = 1000, Due = 2000; Expected Total Due: 2000","The 'Total Due' value on the dashboard matches the sum of all due amounts across all orders (e.g., 2000).",TC-026
+Verify dashboard displays correct total order amount across all orders,Dashboard Financial Summary,Configuration,High,User is logged in as a shop owner. At least two orders exist in the system with known total amounts.,"1. Navigate to the 'Dashboard' screen. 2. Note the 'Total Order Amount' value displayed. 3. Navigate to the 'Orders' screen. 4. Sum the 'Total Amount' for all orders. 5. Compare the sum with the 'Total Order Amount' value from the dashboard.
+
+Test Data: Order 1: Total = 2000; Order 2: Total = 3000; Expected Total Order Amount: 5000","The 'Total Order Amount' value on the dashboard matches the sum of all order totals (e.g., 5000).",3c1bbe1-TC-020
+Verify the application builds successfully with Java 17 compiler settings and produces the correct artifact,Java Compiler Version Configuration,Configuration,High,Java 17 JDK is installed and available in the system PATH. The project workspace is clean (no existing build artifacts).,"1. Run 'mvn clean install' from the project root directory. 2. Observe the build output for any errors or warnings. 3. Verify the generated artifact in the 'target' directory.
+
+Test Data: Old compiler settings: <maven.compiler.source>18</maven.compiler.source>, <maven.compiler.target>18</maven.compiler.target>. New compiler settings: <maven.compiler.source>17</maven.compiler.source>, <maven.compiler.target>17</maven.compiler.target>.",Build completes with SUCCESS status. The artifact 'TailorBookApp-0.0.1-SNAPSHOT.jar' is generated in the target directory. No compilation errors or warnings related to Java version incompatibility appear in the build logs.,3c1bbe1-TC-022
+Verify the application runs without runtime errors or warnings related to Java 17 compatibility,Java Compiler Version Compatibility,Configuration,High,The application is built successfully with Java 17 compiler settings. The application is deployed or started in a development environment with Java 17.,"1. Start the application using 'mvn spring-boot:run' or the generated JAR file. 2. Trigger key workflows such as order creation, image upload, and QR code generation. 3. Observe application logs for any Java version-related errors or warnings.
+
+Test Data: Java version changed from 18 to 17.","Application starts without errors. All triggered workflows complete successfully. No runtime errors or warnings related to Java version incompatibility (e.g., 'UnsupportedClassVersionError', 'IllegalAccessError') appear in the logs.",TC-027
+Verify all dependencies resolve and function correctly with Java 17 runtime,Dependency Compatibility with Java 17,Configuration,High,The application is built and running with Java 17. All dependencies are resolved as per the pom.xml.,"1. Run 'mvn dependency:tree' to generate the dependency tree. 2. Observe the output for any dependency resolution errors or warnings. 3. Execute key operations that rely on dependencies (e.g., MinIO file upload, QR code generation, database operations). 4. Check application logs for any dependency-related errors.
+
+Test Data: Java version changed from 18 to 17. Dependency tree should remain consistent with no new conflicts.","Dependency tree is generated without errors or warnings. All key operations complete successfully. No dependency-related errors (e.g., 'NoClassDefFoundError', 'NoSuchMethodError') appear in the logs.",TC-028

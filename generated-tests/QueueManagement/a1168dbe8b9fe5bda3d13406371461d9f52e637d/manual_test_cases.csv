@@ -1,0 +1,22 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Attempt to add a shop with a phone number already registered as a customer,Shop Management,Negative,High,User is logged in as an ADMIN. A customer account exists with phone number '1234567890'.,"1. Navigate to the 'Add New Shop' screen. 2. Enter valid shop details (e.g., shop name, address, area ID). 3. Enter the phone number '1234567890' in the 'Shop Phone' field. 4. Click the 'Save' button.
+
+Test Data: Shop Name: 'Test Shop', Address: '123 Test St', Area ID: 1, Shop Phone: '1234567890'",The system should display an error message: 'This Phone Number is Registered as Customer' and prevent the shop from being created.,TC-001
+Attempt to add a shop with a non-existent area ID,Shop Management,Negative,High,User is logged in as an ADMIN.,"1. Navigate to the 'Add New Shop' screen. 2. Enter valid shop details (e.g., shop name, address, phone number). 3. Enter a non-existent area ID (e.g., 99999) in the 'Area ID' field. 4. Click the 'Save' button.
+
+Test Data: Shop Name: 'Test Shop', Address: '123 Test St', Area ID: 99999, Shop Phone: '9876543210'",The system should display an error message: 'Area not found' and prevent the shop from being created.,TC-002
+Attempt to add a shop with missing required field 'Shop Phone',Shop Management,Negative,High,User is logged in as an ADMIN.,"1. Navigate to the 'Add New Shop' screen. 2. Enter valid shop details (e.g., shop name, address, area ID). 3. Leave the 'Shop Phone' field empty. 4. Click the 'Save' button.
+
+Test Data: Shop Name: 'Test Shop', Address: '123 Test St', Area ID: 1, Shop Phone: ''",The system should display an error message indicating that the 'Shop Phone' field is required and prevent the shop from being created.,TC-003
+Attempt to add a shop with a malformed phone number (non-numeric characters),Shop Management,Negative,Medium,User is logged in as an ADMIN.,"1. Navigate to the 'Add New Shop' screen. 2. Enter valid shop details (e.g., shop name, address, area ID). 3. Enter a malformed phone number (e.g., '123-456-7890') in the 'Shop Phone' field. 4. Click the 'Save' button.
+
+Test Data: Shop Name: 'Test Shop', Address: '123 Test St', Area ID: 1, Shop Phone: '123-456-7890'",The system should display an error message indicating that the 'Shop Phone' must be a valid numeric value and prevent the shop from being created.,TC-004
+Unauthorized user attempts to add a shop,Shop Management,Negative,High,"User is logged in with a non-ADMIN role (e.g., CUSTOMER or SHOP_OWNER).","1. Navigate to the 'Add New Shop' screen. 2. Enter valid shop details (e.g., shop name, address, area ID, phone number). 3. Click the 'Save' button.
+
+Test Data: Shop Name: 'Test Shop', Address: '123 Test St', Area ID: 1, Shop Phone: '9876543210'","The system should display an error message: 'Access Denied' or redirect to an unauthorized access page, preventing the shop from being created.",TC-005
+Attempt to add a shop with missing required field 'Area ID',Shop Management,Negative,High,User is logged in as an ADMIN.,"1. Navigate to the 'Add New Shop' screen. 2. Enter valid shop details (e.g., shop name, address, phone number). 3. Leave the 'Area ID' field empty. 4. Click the 'Save' button.
+
+Test Data: Shop Name: 'Test Shop', Address: '123 Test St', Area ID: '', Shop Phone: '9876543210'",The system should display an error message indicating that the 'Area ID' field is required and prevent the shop from being created.,TC-006
+Attempt to add a shop with a non-numeric area ID,Shop Management,Negative,Medium,User is logged in as an ADMIN.,"1. Navigate to the 'Add New Shop' screen. 2. Enter valid shop details (e.g., shop name, address, phone number). 3. Enter a non-numeric area ID (e.g., 'ABC') in the 'Area ID' field. 4. Click the 'Save' button.
+
+Test Data: Shop Name: 'Test Shop', Address: '123 Test St', Area ID: 'ABC', Shop Phone: '9876543210'",The system should display an error message indicating that the 'Area ID' must be a valid number and prevent the shop from being created.,TC-007

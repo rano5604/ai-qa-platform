@@ -1,0 +1,226 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify that a successful sign-in returns shopId and areaId in the JWT response for a shop owner,Authentication - JWT Response,Positive,High,"A shop owner user exists with email 'owner@shop.com', password 'password123', and is associated with a shop (ID: 1) and area (ID: 5)","1. Send a POST request to /api/auth/signin with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""username"": ""owner@shop.com"",
+  ""password"": ""password123""
+}","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""User signed in successfully"",
+  ""data"": {
+    ""id"": <non-null number>,
+    ""username"": ""owner@shop.com"",
+    ""email"": ""owner@shop.com"",
+    ""roles"": [""ROLE_OWNER""],
+    ""shopId"": 1,
+    ""areaId"": 5
+  }
+}",0399124-TC-001
+Verify that a successful login (PIN-based) returns shopId and areaId in the JWT response for a shop owner,Authentication - JWT Response,Positive,High,"A shop owner user exists with email 'owner@shop.com', PIN '1234', and is associated with a shop (ID: 1) and area (ID: 5)","1. Send a POST request to /api/auth/login with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""username"": ""owner@shop.com"",
+  ""pin"": ""1234""
+}","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""User logged in successfully"",
+  ""data"": {
+    ""id"": <non-null number>,
+    ""username"": ""owner@shop.com"",
+    ""email"": ""owner@shop.com"",
+    ""roles"": [""ROLE_OWNER""],
+    ""shopId"": 1,
+    ""areaId"": 5
+  }
+}",TC-001
+Verify that a successful sign-in returns shopId and areaId as null in the JWT response for a customer,Authentication - JWT Response,Positive,Medium,"A customer user exists with email 'customer@example.com' and password 'password123', and is not associated with any shop","1. Send a POST request to /api/auth/signin with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""username"": ""customer@example.com"",
+  ""password"": ""password123""
+}","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""User signed in successfully"",
+  ""data"": {
+    ""id"": <non-null number>,
+    ""username"": ""customer@example.com"",
+    ""email"": ""customer@example.com"",
+    ""roles"": [""ROLE_CUSTOMER""],
+    ""shopId"": null,
+    ""areaId"": null
+  }
+}",TC-002
+Verify that a shop owner can retrieve workers only from their own shop using shopId from JWT,Worker Access Control,Positive,High,"A shop owner user exists with email 'owner@shop.com', password 'password123', and is associated with shop ID 1. At least one worker exists under shop ID 1.","1. Send a POST request to /api/auth/signin with the payload in testData to obtain a JWT token. 2. Use the JWT token to send a GET request to /api/workers?shopId=1. 3. Verify the response status and body.
+
+Test Data: {
+  ""username"": ""owner@shop.com"",
+  ""password"": ""password123""
+}","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Workers retrieved successfully"",
+  ""data"": {
+    ""content"": [<list of workers under shop ID 1>],
+    ""totalElements"": >0
+  }
+}",0895cc7-TC-001
+Attempt to authenticate a user with a valid username but no associated shop or area,Authentication and Authorization,Negative,High,A user exists in the system with a valid username and password but is not associated with any shop or area (shopId and areaId are null).,"1. Send a POST request to /api/auth/signin with the payload in testData.
+
+Test Data: {
+  ""username"": ""valid_user@example.com"",
+  ""password"": ""ValidPass123!""
+}","The system returns an HTTP 200 OK status code with a response body containing the user's JWT token, username, email, roles, and null values for shopId and areaId.",TC-003
+Attempt to authenticate a user with an invalid username format,Authentication and Authorization,Negative,High,None.,"1. Send a POST request to /api/auth/signin with the payload in testData.
+
+Test Data: {
+  ""username"": ""invalid-email-format"",
+  ""password"": ""ValidPass123!""
+}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'username' field must be a valid email address.,TC-004
+Attempt to authenticate a user with a missing password field,Authentication and Authorization,Negative,High,None.,"1. Send a POST request to /api/auth/signin with the payload in testData.
+
+Test Data: {
+  ""username"": ""valid_user@example.com""
+}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'password' field is required.,TC-005
+Attempt to authenticate a user with an incorrect password,Authentication and Authorization,Negative,High,A user exists in the system with a valid username and password.,"1. Send a POST request to /api/auth/signin with the payload in testData.
+
+Test Data: {
+  ""username"": ""valid_user@example.com"",
+  ""password"": ""IncorrectPass123!""
+}",The system returns an HTTP 401 Unauthorized status code with an error message indicating that the credentials are invalid.,TC-006
+Attempt to request OTP with a malformed email format,Authentication and Authorization,Negative,High,None.,1. Send a POST request to /api/auth/request-otp?email=invalid-email-format.,The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'email' field must be a valid email address.,fd2de64-TC-007
+Attempt to verify OTP with a missing OTP field,Authentication and Authorization,Negative,High,A valid OTP has been generated and sent to the user's email.,"1. Send a POST request to /api/auth/verify-otp with the payload in testData.
+
+Test Data: {
+  ""phoneNumber"": ""valid_user@example.com""
+}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'otp' field is required.,TC-007
+Attempt to verify OTP with an invalid OTP value,Authentication and Authorization,Negative,High,A valid OTP has been generated and sent to the user's email.,"1. Send a POST request to /api/auth/verify-otp with the payload in testData.
+
+Test Data: {
+  ""phoneNumber"": ""valid_user@example.com"",
+  ""otp"": ""123456""
+}",The system returns an HTTP 401 Unauthorized status code with an error message indicating that the OTP is invalid or expired.,TC-008
+Attempt to set PIN with mismatched pin and confirmPin fields,Authentication and Authorization,Negative,High,A valid OTP has been verified for the user.,"1. Send a POST request to /api/auth/set-pin with the payload in testData.
+
+Test Data: {
+  ""phoneNumber"": ""valid_user@example.com"",
+  ""otp"": ""123456"",
+  ""pin"": ""1234"",
+  ""confirmPin"": ""5678""
+}",The system returns an HTTP 400 Bad Request status code with an error message indicating that 'PIN and Confirm PIN do not match'.,fd2de64-TC-008
+Attempt to set PIN with a missing pin field,Authentication and Authorization,Negative,High,A valid OTP has been verified for the user.,"1. Send a POST request to /api/auth/set-pin with the payload in testData.
+
+Test Data: {
+  ""phoneNumber"": ""valid_user@example.com"",
+  ""otp"": ""123456"",
+  ""confirmPin"": ""1234""
+}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'pin' field is required.,TC-009
+Attempt to fetch workers for a shop as a non-owner and non-customer user,Worker Management,Negative,High,A user exists in the system with a role other than 'owner' or 'customer' and is associated with a shop.,1. Authenticate the user and obtain a JWT token. 2. Send a GET request to /api/workers?shopId=1 with the JWT token in the Authorization header.,The system returns an HTTP 403 Forbidden status code with an error message indicating that the user is not authorized to perform this action.,TC-010
+Attempt to fetch workers for a non-existent shop ID,Worker Management,Negative,High,A user with 'owner' or 'customer' role exists in the system.,1. Authenticate the user and obtain a JWT token. 2. Send a GET request to /api/workers?shopId=999999 with the JWT token in the Authorization header.,The system returns an HTTP 404 Not Found status code with an error message indicating that the shop with ID 999999 does not exist.,fd2de64-TC-006
+Attempt to fetch workers for a shop without providing a shopId parameter,Worker Management,Negative,High,A user with 'owner' or 'customer' role exists in the system.,1. Authenticate the user and obtain a JWT token. 2. Send a GET request to /api/workers with the JWT token in the Authorization header.,The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'shopId' parameter is required.,TC-011
+Attempt to authenticate a user with a missing username field,Authentication and Authorization,Negative,High,None.,"1. Send a POST request to /api/auth/signin with the payload in testData.
+
+Test Data: {
+  ""password"": ""ValidPass123!""
+}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'username' field is required.,TC-012
+Authenticate user with valid credentials and verify shopId and areaId are returned in JWT response (shopId and areaId are non-null),User Authentication and Authorization,Boundary,High,"User exists in the system with valid credentials, assigned to a shop and area","1. Send a POST request to /api/auth/signin with the payload in testData.1.
+2. Observe the response status and body.
+
+Test Data: 1. {
+  ""username"": ""valid_user@example.com"",
+  ""password"": ""ValidPass123!""
+}","The API responds with a 200 OK status code, a status of 'success', and the response body contains 'data' with 'shopId' and 'areaId' fields populated with non-null values (e.g., 'shopId': 123, 'areaId': 456).",TC-013
+Authenticate user with valid credentials and verify shopId and areaId are null in JWT response (user not assigned to any shop),User Authentication and Authorization,Boundary,High,"User exists in the system with valid credentials, not assigned to any shop or area","1. Send a POST request to /api/auth/signin with the payload in testData.1.
+2. Observe the response status and body.
+
+Test Data: 1. {
+  ""username"": ""unassigned_user@example.com"",
+  ""password"": ""ValidPass123!""
+}","The API responds with a 200 OK status code, a status of 'success', and the response body contains 'data' with 'shopId' and 'areaId' fields set to null.",TC-014
+"Authenticate user with valid credentials and verify shopId and areaId are returned in JWT response (shopId is minimum allowed value, areaId is minimum allowed value)",User Authentication and Authorization,Boundary,Medium,"User exists in the system with valid credentials, assigned to a shop with minimum allowed ID (1) and area with minimum allowed ID (1)","1. Send a POST request to /api/auth/signin with the payload in testData.1.
+2. Observe the response status and body.
+
+Test Data: 1. {
+  ""username"": ""min_id_user@example.com"",
+  ""password"": ""ValidPass123!""
+}","The API responds with a 200 OK status code, a status of 'success', and the response body contains 'data' with 'shopId' set to 1 and 'areaId' set to 1.",TC-015
+"Authenticate user with valid credentials and verify shopId and areaId are returned in JWT response (shopId is maximum allowed value, areaId is maximum allowed value)",User Authentication and Authorization,Boundary,Medium,"User exists in the system with valid credentials, assigned to a shop with maximum allowed ID (9999999999999999999) and area with maximum allowed ID (9999999999999999999)","1. Send a POST request to /api/auth/signin with the payload in testData.1.
+2. Observe the response status and body.
+
+Test Data: 1. {
+  ""username"": ""max_id_user@example.com"",
+  ""password"": ""ValidPass123!""
+}","The API responds with a 200 OK status code, a status of 'success', and the response body contains 'data' with 'shopId' set to 9999999999999999999 and 'areaId' set to 9999999999999999999.",TC-016
+"Authenticate user with valid credentials and verify shopId and areaId are returned in JWT response (shopId is one below minimum allowed value, should be treated as invalid)",User Authentication and Authorization,Boundary,High,"User exists in the system with valid credentials, assigned to a shop with ID 0 (invalid)","1. Send a POST request to /api/auth/signin with the payload in testData.1.
+2. Observe the response status and body.
+
+Test Data: 1. {
+  ""username"": ""invalid_shop_user@example.com"",
+  ""password"": ""ValidPass123!""
+}","The API responds with a 200 OK status code, a status of 'success', and the response body contains 'data' with 'shopId' set to null (or appropriate error handling if shop ID validation is enforced).",TC-017
+"Authenticate user with valid credentials and verify shopId and areaId are returned in JWT response (shopId is one above maximum allowed value, should be treated as invalid)",User Authentication and Authorization,Boundary,High,"User exists in the system with valid credentials, assigned to a shop with ID 10000000000000000000 (invalid)","1. Send a POST request to /api/auth/signin with the payload in testData.1.
+2. Observe the response status and body.
+
+Test Data: 1. {
+  ""username"": ""exceed_max_shop_user@example.com"",
+  ""password"": ""ValidPass123!""
+}","The API responds with a 200 OK status code, a status of 'success', and the response body contains 'data' with 'shopId' set to null (or appropriate error handling if shop ID validation is enforced).",TC-018
+Authenticate user with valid credentials and verify shopId and areaId are returned in JWT response (negative shopId and areaId),User Authentication and Authorization,Boundary,High,"User exists in the system with valid credentials, assigned to a shop with negative ID (-1) and area with negative ID (-1)","1. Send a POST request to /api/auth/signin with the payload in testData.1.
+2. Observe the response status and body.
+
+Test Data: 1. {
+  ""username"": ""negative_id_user@example.com"",
+  ""password"": ""ValidPass123!""
+}","The API responds with a 200 OK status code, a status of 'success', and the response body contains 'data' with 'shopId' and 'areaId' set to null (or appropriate error handling if negative IDs are invalid).",TC-019
+Retrieve all workers for a shop where the authenticated user is the owner and shopId matches (shopId is minimum allowed value),Worker Management,Boundary,Medium,"User is authenticated as a shop owner, assigned to a shop with minimum allowed ID (1), and shop has at least one worker","1. Send a GET request to /api/workers?shopId=1 with the Authorization header containing a valid JWT token.
+2. Observe the response status and body.","The API responds with a 200 OK status code, a status of 'success', and the response body contains 'data' with a list of workers for shop ID 1.",TC-020
+Retrieve all workers for a shop where the authenticated user is the owner and shopId matches (shopId is maximum allowed value),Worker Management,Boundary,Medium,"User is authenticated as a shop owner, assigned to a shop with maximum allowed ID (9999999999999999999), and shop has at least one worker","1. Send a GET request to /api/workers?shopId=9999999999999999999 with the Authorization header containing a valid JWT token.
+2. Observe the response status and body.","The API responds with a 200 OK status code, a status of 'success', and the response body contains 'data' with a list of workers for shop ID 9999999999999999999.",TC-021
+Retrieve all workers for a shop where the authenticated user is the owner but shopId does not match (unauthorized access),Worker Management,Boundary,High,"User is authenticated as a shop owner, assigned to shop ID 1, but requests workers for shop ID 2","1. Send a GET request to /api/workers?shopId=2 with the Authorization header containing a valid JWT token for a user assigned to shop ID 1.
+2. Observe the response status and body.","The API responds with a 403 Forbidden status code, a status of 'error', and a message indicating that the user is not authorized to access workers for the requested shop.",TC-022
+Retrieve all workers for a shop where the authenticated user is a customer (unauthorized access),Worker Management,Boundary,High,"User is authenticated as a customer, not a shop owner or worker","1. Send a GET request to /api/workers?shopId=1 with the Authorization header containing a valid JWT token for a customer.
+2. Observe the response status and body.","The API responds with a 200 OK status code, a status of 'success', and the response body contains 'data' with a list of workers for shop ID 1 (or 403 Forbidden if customers are not allowed to view workers).",TC-023
+Authenticate user with valid OTP and verify shopId and areaId are returned in JWT response (shopId and areaId are non-null),User Authentication and Authorization,Boundary,High,"User exists in the system, OTP is generated and valid, assigned to a shop and area","1. Send a POST request to /api/auth/verify-otp with the payload in testData.1.
+2. Observe the response status and body.
+3. If successful, send a POST request to /api/auth/login with the payload in testData.2.
+4. Observe the response status and body.
+
+Test Data: 1. {
+  ""phoneNumber"": ""1234567890"",
+  ""otp"": ""123456""
+}
+2. {
+  ""username"": ""valid_user@example.com"",
+  ""pin"": ""1234""
+}","The API responds with a 200 OK status code for both requests, a status of 'success', and the response body for the login request contains 'data' with 'shopId' and 'areaId' fields populated with non-null values (e.g., 'shopId': 123, 'areaId': 456).",TC-024
+Authenticate user with valid OTP and verify shopId and areaId are null in JWT response (user not assigned to any shop),User Authentication and Authorization,Boundary,High,"User exists in the system, OTP is generated and valid, not assigned to any shop or area","1. Send a POST request to /api/auth/verify-otp with the payload in testData.1.
+2. Observe the response status and body.
+3. If successful, send a POST request to /api/auth/login with the payload in testData.2.
+4. Observe the response status and body.
+
+Test Data: 1. {
+  ""phoneNumber"": ""1234567891"",
+  ""otp"": ""123456""
+}
+2. {
+  ""username"": ""unassigned_user@example.com"",
+  ""pin"": ""1234""
+}","The API responds with a 200 OK status code for both requests, a status of 'success', and the response body for the login request contains 'data' with 'shopId' and 'areaId' fields set to null.",TC-025
+Verify that JWT token response includes shopId and areaId only for authenticated users and does not expose sensitive data,Authentication - JWT Token Response,Security,High,User has a valid account with assigned shop and area. User is not logged in.,"1. Send a POST request to /api/auth/signin with the payload in testData. 2. Examine the response body for the presence of shopId and areaId fields.
+
+Test Data: {
+  ""username"": ""testuser@example.com"",
+  ""password"": ""validPassword123""
+}","The API responds with HTTP status 200 (OK). The response body contains 'status: success', 'data' with fields 'id', 'username', 'email', 'roles', 'shopId', and 'areaId'. The shopId and areaId values match the user's assigned shop and area. No sensitive data (e.g., password, internal system details) is exposed.",TC-026
+Verify that JWT token response does not include shopId and areaId for users without assigned shop or area,Authentication - JWT Token Response,Security,High,User has a valid account with no assigned shop or area. User is not logged in.,"1. Send a POST request to /api/auth/signin with the payload in testData. 2. Examine the response body for the presence of shopId and areaId fields.
+
+Test Data: {
+  ""username"": ""noshopuser@example.com"",
+  ""password"": ""validPassword123""
+}","The API responds with HTTP status 200 (OK). The response body contains 'status: success', 'data' with fields 'id', 'username', 'email', 'roles', 'shopId: null', and 'areaId: null'. No sensitive data is exposed.",TC-027
+Verify that JWT token response does not expose sensitive data in error messages during authentication failure,Authentication - JWT Token Response,Security,High,User is not logged in.,"1. Send a POST request to /api/auth/signin with the payload in testData. 2. Examine the response body and error message.
+
+Test Data: {
+  ""username"": ""nonexistentuser@example.com"",
+  ""password"": ""wrongPassword123""
+}","The API responds with HTTP status 401 (Unauthorized) or 400 (Bad Request). The response body contains 'status: error' and a generic error message (e.g., 'Invalid credentials'). No sensitive data (e.g., stack traces, internal system details) is exposed.",TC-028
+Verify that retrieving workers by shop ID enforces proper authorization (insecure direct object reference) - unauthorized user cannot access another shop's worker list,Worker Management - Worker Listing,Security,High,User A is logged in and assigned to Shop A. User B is logged in and assigned to Shop B. Shop A and Shop B have workers.,1. Log in as User A and obtain a valid JWT token. 2. Send a GET request to /api/workers?shopId=<ShopB_ID> with the Authorization header containing User A's JWT token. 3. Examine the response.,"The API responds with HTTP status 403 (Forbidden) or 404 (Not Found). The response body contains a generic error message (e.g., 'Access denied' or 'Shop not found'). No worker data for Shop B is returned.",a50ac21-TC-006
+Verify that retrieving workers by shop ID returns correct shopId and areaId context for authorized users,Worker Management - Worker Listing,Security,Medium,User is logged in and assigned to Shop A with area X. Shop A has workers.,1. Log in as User and obtain a valid JWT token. 2. Send a GET request to /api/workers?shopId=<ShopA_ID> with the Authorization header containing User's JWT token. 3. Examine the response body for shopId and areaId context.,"The API responds with HTTP status 200 (OK). The response body contains 'status: success' and a list of workers for Shop A. Each worker's shopId matches Shop A's ID, and the areaId matches Shop A's area X.",TC-029

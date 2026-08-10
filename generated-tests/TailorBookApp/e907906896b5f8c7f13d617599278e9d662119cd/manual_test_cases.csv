@@ -1,0 +1,170 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a new order with making charge for measurement groups and verify it is stored and returned in the response,Order Management - Making Charge Calculation,Positive,High,A shop and customer exist in the system. At least one item is available for order.,"1. Send a POST request to /api/orders with the payload in testData. 2. Send a GET request to /api/orders/{orderId} using the orderId from the response.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01712345678"",
+  ""customerGender"": ""MALE"",
+  ""shopId"": 1,
+  ""paidAmount"": 500,
+  ""trialDate"": ""2024-12-20"",
+  ""deliveryDate"": ""2024-12-25"",
+  ""status"": ""MEASUREMENT_DONE"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""clothPhoto"": ""data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ..."",
+          ""patternClothPhoto"": ""data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ..."",
+          ""deliveryDate"": ""2024-12-25"",
+          ""makingCharge"": 200.50,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inches"",
+              ""type"": ""NUMBER"",
+              ""value"": ""40""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order created successfully"", ""data"": {""orderId"": ""<string order ID>"", ""totalAmount"": 700.50, ""dueAmount"": 200.50, ""paidAmount"": 500}}. 2. HTTP 200 OK response with a JSON body containing the measurement group with ""makingCharge"": 200.50.",TC-001
+Update an existing order with a new making charge for measurement groups and verify it is updated in the response,Order Management - Making Charge Update,Positive,High,An existing order with at least one measurement group exists in the system.,"1. Send a PUT request to /api/orders/{orderId} with the payload in testData. 2. Send a GET request to /api/orders/{orderId} to verify the update.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01712345678"",
+  ""customerGender"": ""MALE"",
+  ""shopId"": 1,
+  ""paidAmount"": 600,
+  ""trialDate"": ""2024-12-20"",
+  ""deliveryDate"": ""2024-12-25"",
+  ""status"": ""MEASUREMENT_DONE"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""clothPhoto"": ""data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ..."",
+          ""patternClothPhoto"": ""data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ..."",
+          ""deliveryDate"": ""2024-12-25"",
+          ""makingCharge"": 300.75,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inches"",
+              ""type"": ""NUMBER"",
+              ""value"": ""40""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order updated successfully"", ""data"": {""orderId"": ""<string order ID>"", ""totalAmount"": 900.75, ""dueAmount"": 300.75, ""paidAmount"": 600}}. 2. HTTP 200 OK response with a JSON body containing the measurement group with ""makingCharge"": 300.75.",TC-002
+Verify that error messages include detailed exception information when an unexpected error occurs,Order Management - Error Message Detail,Positive,Medium,"A scenario exists where an unexpected error can be triggered (e.g., invalid base64 image data).","1. Send a POST request to /api/orders with the payload in testData to trigger an unexpected error.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01712345678"",
+  ""customerGender"": ""MALE"",
+  ""shopId"": 1,
+  ""paidAmount"": 500,
+  ""trialDate"": ""2024-12-20"",
+  ""deliveryDate"": ""2024-12-25"",
+  ""status"": ""MEASUREMENT_DONE"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""clothPhoto"": ""invalid-base64-data"",
+          ""patternClothPhoto"": ""data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ..."",
+          ""deliveryDate"": ""2024-12-25"",
+          ""makingCharge"": 200.50,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inches"",
+              ""type"": ""NUMBER"",
+              ""value"": ""40""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 500 Internal Server Error response with a JSON body containing: {""status"": ""error"", ""message"": ""An unexpected error occurred:Illegal base64 character""}.",d3da340-TC-002
+Create a new order and verify that the 'urgent' flag is no longer present in the response,Order Management - Urgent Flag Removal,Positive,High,A shop and customer exist in the system. At least one item is available for order.,"1. Send a POST request to /api/orders with the payload in testData. 2. Send a GET request to /api/orders/{orderId} using the orderId from the response.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01712345678"",
+  ""customerGender"": ""MALE"",
+  ""shopId"": 1,
+  ""paidAmount"": 500,
+  ""trialDate"": ""2024-12-20"",
+  ""deliveryDate"": ""2024-12-25"",
+  ""status"": ""MEASUREMENT_DONE"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""clothPhoto"": ""data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ..."",
+          ""patternClothPhoto"": ""data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ..."",
+          ""deliveryDate"": ""2024-12-25"",
+          ""makingCharge"": 200.50,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inches"",
+              ""type"": ""NUMBER"",
+              ""value"": ""40""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}",1. HTTP 200 OK response with a JSON body not containing the field 'urgent' at the order level. 2. HTTP 200 OK response with a JSON body not containing the field 'urgent' in any measurement group.,45ca61c-TC-001
+"Create a new order without specifying total, paid, or due amounts and verify default values are set",Order Management - Default Amount Initialization,Positive,High,A shop and customer exist in the system. At least one item is available for order.,"1. Send a POST request to /api/orders with the payload in testData. 2. Send a GET request to /api/orders/{orderId} using the orderId from the response.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01712345678"",
+  ""customerGender"": ""MALE"",
+  ""shopId"": 1,
+  ""trialDate"": ""2024-12-20"",
+  ""deliveryDate"": ""2024-12-25"",
+  ""status"": ""MEASUREMENT_DONE"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""clothPhoto"": ""data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ..."",
+          ""patternClothPhoto"": ""data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ..."",
+          ""deliveryDate"": ""2024-12-25"",
+          ""makingCharge"": 200.50,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inches"",
+              ""type"": ""NUMBER"",
+              ""value"": ""40""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order created successfully"", ""data"": {""orderId"": ""<string order ID>"", ""totalAmount"": 200.50, ""dueAmount"": 200.50, ""paidAmount"": 0}}.",TC-003

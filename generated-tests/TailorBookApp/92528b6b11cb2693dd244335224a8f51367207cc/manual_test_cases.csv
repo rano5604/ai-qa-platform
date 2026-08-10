@@ -1,0 +1,135 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify that order IDs are generated sequentially and uniquely for the same shop on the same day,Order Management - Order ID Generation,Positive,High,User is logged in and has access to create orders for Shop ID 1. No orders exist for Shop ID 1 on the current date.,"1. Navigate to the 'Create Order' page for Shop ID 1.
+2. Fill in all required fields (customer name, phone, gender, order gender, items with measurements).
+3. Click 'Create Order' and note the generated order ID.
+4. Repeat steps 1-3 to create a second order for the same shop on the same day.
+5. Note the generated order ID for the second order.
+
+Test Data: Customer Name: John Doe, Phone: 01712345678, Gender: Male, Order Gender: Male, Item: Formal Shirt, Measurements: Chest=40 inches, Waist=34 inches","1. The first order ID follows the format '1-YYYYMMDD-0001' (e.g., '1-20240515-0001').
+2. The second order ID follows the format '1-YYYYMMDD-0002' (e.g., '1-20240515-0002').
+3. Both order IDs are unique and sequential for the same shop and date.",3c1bbe1-TC-003
+Verify that order IDs are generated correctly for different shops on the same day,Order Management - Order ID Generation,Positive,High,User is logged in and has access to create orders for Shop ID 1 and Shop ID 2. No orders exist for either shop on the current date.,"1. Navigate to the 'Create Order' page for Shop ID 1.
+2. Fill in all required fields and create an order. Note the generated order ID.
+3. Navigate to the 'Create Order' page for Shop ID 2.
+4. Fill in all required fields and create an order. Note the generated order ID.
+
+Test Data: Customer Name: Jane Smith, Phone: 01812345678, Gender: Female, Order Gender: Female, Item: Salwar Kameez, Measurements: Bust=36 inches, Waist=30 inches","1. The order ID for Shop ID 1 follows the format '1-YYYYMMDD-0001'.
+2. The order ID for Shop ID 2 follows the format '2-YYYYMMDD-0001'.
+3. Order IDs are unique across different shops on the same date.",TC-001
+Verify that order IDs reset to 0001 for the same shop on a new day,Order Management - Order ID Generation,Positive,Medium,User is logged in and has access to create orders for Shop ID 1. At least one order exists for Shop ID 1 from the previous day.,"1. Navigate to the 'Create Order' page for Shop ID 1.
+2. Fill in all required fields and create an order on the current date.
+3. Note the generated order ID.
+
+Test Data: Customer Name: Alex Johnson, Phone: 01912345678, Gender: Male, Order Gender: Male, Item: Casual Shirt, Measurements: Chest=42 inches, Waist=36 inches","The order ID for the new day follows the format '1-YYYYMMDD-0001', resetting the sequence to 0001 for the new date.",TC-002
+Verify that a new order is created successfully with a valid order ID format,Order Management - Order Creation,Positive,High,User is logged in and has access to create orders for Shop ID 1. No orders exist for Shop ID 1 on the current date.,"1. Navigate to the 'Create Order' page for Shop ID 1.
+2. Fill in all required fields (customer name, phone, gender, order gender, items with measurements).
+3. Click 'Create Order'.
+4. Note the order ID displayed in the success message or order details page.
+
+Test Data: Customer Name: Robert Brown, Phone: 01612345678, Gender: Male, Order Gender: Male, Item: Suit, Measurements: Chest=44 inches, Waist=38 inches","1. The order is created successfully with a confirmation message: 'Order created successfully'.
+2. The order ID follows the format '1-YYYYMMDD-0001' (e.g., '1-20240515-0001').",0393c6e-TC-001
+Attempt to generate an order ID with a non-existent shop ID,Order ID Generation,Negative,High,User is logged in and has access to the order creation screen. No existing orders for the given date and shop.,"1. Navigate to the 'Create New Order' screen. 2. Enter a non-existent shop ID (e.g., 999999) in the shop ID field. 3. Fill in all other required fields with valid data. 4. Click the 'Create Order' button.
+
+Test Data: Shop ID: 999999, Customer Name: John Doe, Customer Phone: 1234567890, Customer Gender: Male, Order Gender: Male, Items: [Item ID: 1, Quantity: 1]","The system displays an error message indicating that the shop with ID 999999 does not exist, and the order is not created.",TC-003
+Attempt to generate an order ID with a null shop ID,Order ID Generation,Negative,High,User is logged in and has access to the order creation screen.,"1. Navigate to the 'Create New Order' screen. 2. Leave the shop ID field empty. 3. Fill in all other required fields with valid data. 4. Click the 'Create Order' button.
+
+Test Data: Shop ID: [empty], Customer Name: John Doe, Customer Phone: 1234567890, Customer Gender: Male, Order Gender: Male, Items: [Item ID: 1, Quantity: 1]","The system displays an error message indicating that the 'shopId' field is required, and the order is not created.",3c1bbe1-TC-007
+Attempt to generate an order ID with a malformed shop ID (non-numeric),Order ID Generation,Negative,High,User is logged in and has access to the order creation screen.,"1. Navigate to the 'Create New Order' screen. 2. Enter a non-numeric value (e.g., 'ABC') in the shop ID field. 3. Fill in all other required fields with valid data. 4. Click the 'Create Order' button.
+
+Test Data: Shop ID: ABC, Customer Name: John Doe, Customer Phone: 1234567890, Customer Gender: Male, Order Gender: Male, Items: [Item ID: 1, Quantity: 1]","The system displays an error message indicating that the 'shopId' field must be a valid numeric value, and the order is not created.",TC-004
+Attempt to generate an order ID with a negative shop ID,Order ID Generation,Negative,High,User is logged in and has access to the order creation screen.,"1. Navigate to the 'Create New Order' screen. 2. Enter a negative value (e.g., -1) in the shop ID field. 3. Fill in all other required fields with valid data. 4. Click the 'Create Order' button.
+
+Test Data: Shop ID: -1, Customer Name: John Doe, Customer Phone: 1234567890, Customer Gender: Male, Order Gender: Male, Items: [Item ID: 1, Quantity: 1]","The system displays an error message indicating that the 'shopId' field must be a positive numeric value, and the order is not created.",TC-005
+Attempt to create an order with concurrent requests leading to duplicate order IDs for the same shop and date,Order ID Generation,Negative,Medium,User is logged in and has access to the order creation screen. Two users attempt to create orders simultaneously for the same shop and date.,"1. Simulate two concurrent requests to create orders for the same shop ID (e.g., 1) and current date. 2. Fill in all required fields with valid data in both requests. 3. Submit both requests at the same time.
+
+Test Data: Shop ID: 1, Customer Name: [John Doe, Jane Smith], Customer Phone: [1234567890, 9876543210], Customer Gender: [Male, Female], Order Gender: [Male, Female], Items: [Item ID: 1, Quantity: 1]","One of the requests succeeds and creates the order with a unique order ID. The other request fails with an error message indicating a conflict due to concurrent order creation, and the order is not created.",TC-006
+Attempt to create an order with an invalid order date (future date),Order Management,Negative,Medium,User is logged in and has access to the order creation screen.,"1. Navigate to the 'Create New Order' screen. 2. Enter a future date (e.g., tomorrow's date) in the order date field. 3. Fill in all other required fields with valid data. 4. Click the 'Create Order' button.
+
+Test Data: Order Date: [tomorrow's date], Shop ID: 1, Customer Name: John Doe, Customer Phone: 1234567890, Customer Gender: Male, Order Gender: Male, Items: [Item ID: 1, Quantity: 1]","The system displays an error message indicating that the 'orderDate' field cannot be a future date, and the order is not created.",TC-007
+Attempt to create an order with an invalid order date (malformed format),Order Management,Negative,Medium,User is logged in and has access to the order creation screen.,"1. Navigate to the 'Create New Order' screen. 2. Enter a malformed date (e.g., '31-02-2023') in the order date field. 3. Fill in all other required fields with valid data. 4. Click the 'Create Order' button.
+
+Test Data: Order Date: 31-02-2023, Shop ID: 1, Customer Name: John Doe, Customer Phone: 1234567890, Customer Gender: Male, Order Gender: Male, Items: [Item ID: 1, Quantity: 1]","The system displays an error message indicating that the 'orderDate' field must be in a valid date format (e.g., YYYY-MM-DD), and the order is not created.",TC-008
+Attempt to update an order with an invalid shop ID (non-existent),Order Management,Negative,High,"User is logged in, has access to the order update screen, and an existing order is available for update.","1. Navigate to the 'Update Order' screen for an existing order. 2. Change the shop ID to a non-existent value (e.g., 999999). 3. Fill in all other fields with valid data. 4. Click the 'Update Order' button.
+
+Test Data: Order ID: [existing order ID], Shop ID: 999999, Customer Name: John Doe, Customer Phone: 1234567890, Customer Gender: Male, Order Gender: Male, Items: [Item ID: 1, Quantity: 1]","The system displays an error message indicating that the shop with ID 999999 does not exist, and the order is not updated.",TC-009
+Attempt to update an order with a null shop ID,Order Management,Negative,High,"User is logged in, has access to the order update screen, and an existing order is available for update.","1. Navigate to the 'Update Order' screen for an existing order. 2. Clear the shop ID field. 3. Fill in all other fields with valid data. 4. Click the 'Update Order' button.
+
+Test Data: Order ID: [existing order ID], Shop ID: [empty], Customer Name: John Doe, Customer Phone: 1234567890, Customer Gender: Male, Order Gender: Male, Items: [Item ID: 1, Quantity: 1]","The system displays an error message indicating that the 'shopId' field is required, and the order is not updated.",TC-010
+Generate order ID for a new shop on a new date (sequence starts at 1),Order ID Generation,Boundary,High,User is logged in and has permission to create orders for a shop. No orders exist for the shop on the current date.,"1. Navigate to the 'Create Order' screen. 2. Fill in all required fields (customer name, phone, gender, items, etc.) with valid values. 3. Click 'Create Order'. 4. Observe the generated order ID displayed on the order confirmation screen.
+
+Test Data: Shop ID: 123, Current date: today (e.g., 2024-05-20)",The generated order ID follows the format '123-20240520-0001'.,TC-011
+Generate order ID for a shop with existing orders on the same date (sequence increments by 1),Order ID Generation,Boundary,High,User is logged in and has permission to create orders for a shop. At least one order exists for the shop on the current date with sequence number 5.,"1. Navigate to the 'Create Order' screen. 2. Fill in all required fields with valid values. 3. Click 'Create Order'. 4. Observe the generated order ID displayed on the order confirmation screen.
+
+Test Data: Shop ID: 123, Current date: today (e.g., 2024-05-20), Existing sequence: 5",The generated order ID follows the format '123-20240520-0006'.,TC-012
+Generate order ID for a shop with maximum sequence number (9999) on the same date,Order ID Generation,Boundary,High,User is logged in and has permission to create orders for a shop. The shop has 9999 orders on the current date.,"1. Navigate to the 'Create Order' screen. 2. Fill in all required fields with valid values. 3. Click 'Create Order'. 4. Observe the generated order ID displayed on the order confirmation screen.
+
+Test Data: Shop ID: 123, Current date: today (e.g., 2024-05-20), Existing sequence: 9999",The generated order ID follows the format '123-20240520-10000'.,TC-013
+Generate order ID for a shop with sequence number exceeding maximum (10000) on the same date,Order ID Generation,Boundary,Medium,User is logged in and has permission to create orders for a shop. The shop has 10000 orders on the current date.,"1. Navigate to the 'Create Order' screen. 2. Fill in all required fields with valid values. 3. Click 'Create Order'. 4. Observe the generated order ID displayed on the order confirmation screen.
+
+Test Data: Shop ID: 123, Current date: today (e.g., 2024-05-20), Existing sequence: 10000",The generated order ID follows the format '123-20240520-10001'. The system does not truncate or error out due to sequence number length.,TC-014
+Generate order ID for a shop with a very large shop ID (19 digits),Order ID Generation,Boundary,Medium,User is logged in and has permission to create orders for a shop with a very large ID.,"1. Navigate to the 'Create Order' screen. 2. Fill in all required fields with valid values. 3. Click 'Create Order'. 4. Observe the generated order ID displayed on the order confirmation screen.
+
+Test Data: Shop ID: 9999999999999999999, Current date: today (e.g., 2024-05-20), Existing sequence: 1",The generated order ID follows the format '9999999999999999999-20240520-0002'. The system handles the large shop ID without truncation or error.,TC-015
+"Generate order ID for a shop on a date far in the past (e.g., 1970-01-01)",Order ID Generation,Boundary,Medium,User is logged in and has permission to create orders for a shop. No orders exist for the shop on the specified past date.,"1. Navigate to the 'Create Order' screen. 2. Fill in all required fields with valid values, including setting the order date to '1970-01-01'. 3. Click 'Create Order'. 4. Observe the generated order ID displayed on the order confirmation screen.
+
+Test Data: Shop ID: 123, Order date: 1970-01-01",The generated order ID follows the format '123-19700101-0001'.,TC-016
+"Generate order ID for a shop on a date far in the future (e.g., 2099-12-31)",Order ID Generation,Boundary,Medium,User is logged in and has permission to create orders for a shop. No orders exist for the shop on the specified future date.,"1. Navigate to the 'Create Order' screen. 2. Fill in all required fields with valid values, including setting the order date to '2099-12-31'. 3. Click 'Create Order'. 4. Observe the generated order ID displayed on the order confirmation screen.
+
+Test Data: Shop ID: 123, Order date: 2099-12-31",The generated order ID follows the format '123-20991231-0001'.,TC-017
+Generate order ID for a shop with a null shop ID (invalid input),Order ID Generation,Boundary,High,"User is logged in and has permission to create orders. The system allows triggering order creation with a null shop ID (e.g., via API or UI bypass).","1. Attempt to create an order with a null shop ID. 2. Observe the system's response.
+
+Test Data: Shop ID: null, Current date: today (e.g., 2024-05-20)",The system displays an error message indicating that the shop ID cannot be null. The order is not created.,TC-018
+Generate order ID for a shop with a negative shop ID (invalid input),Order ID Generation,Boundary,High,"User is logged in and has permission to create orders. The system allows triggering order creation with a negative shop ID (e.g., via API or UI bypass).","1. Attempt to create an order with a negative shop ID. 2. Observe the system's response.
+
+Test Data: Shop ID: -1, Current date: today (e.g., 2024-05-20)",The system displays an error message indicating that the shop ID must be a positive number. The order is not created.,TC-019
+Generate order ID for a shop with a zero shop ID (invalid input),Order ID Generation,Boundary,High,"User is logged in and has permission to create orders. The system allows triggering order creation with a zero shop ID (e.g., via API or UI bypass).","1. Attempt to create an order with a zero shop ID. 2. Observe the system's response.
+
+Test Data: Shop ID: 0, Current date: today (e.g., 2024-05-20)",The system displays an error message indicating that the shop ID must be a positive number. The order is not created.,TC-020
+Concurrent order creation for the same shop and date (sequence integrity),Order ID Generation,Boundary,High,User is logged in and has permission to create orders for a shop. No orders exist for the shop on the current date. Two users attempt to create orders simultaneously.,"1. User A and User B both navigate to the 'Create Order' screen for the same shop. 2. Both users fill in all required fields with valid values. 3. Both users click 'Create Order' at approximately the same time. 4. Observe the generated order IDs for both orders.
+
+Test Data: Shop ID: 123, Current date: today (e.g., 2024-05-20)","Both orders are created successfully with unique sequence numbers (e.g., '123-20240520-0001' and '123-20240520-0002'). No duplicate sequence numbers are generated.",TC-021
+Generate order ID for a shop with a very long date format (edge case),Order ID Generation,Boundary,Low,User is logged in and has permission to create orders for a shop. The system allows setting a custom date format.,"1. Navigate to the 'Create Order' screen. 2. Fill in all required fields with valid values, including setting the order date to a very long string (e.g., '0001-01-01'). 3. Click 'Create Order'. 4. Observe the generated order ID displayed on the order confirmation screen.
+
+Test Data: Shop ID: 123, Order date: 0001-01-01",The generated order ID follows the format '123-00010101-0001'. The system handles the long date format without error.,TC-022
+Update an existing order and verify the order ID remains unchanged,Order ID Generation,Boundary,High,User is logged in and has permission to update orders. An existing order with ID '123-20240520-0001' is present in the system.,"1. Navigate to the 'Order List' screen. 2. Select the order with ID '123-20240520-0001'. 3. Update any editable field (e.g., customer name). 4. Click 'Save'. 5. Observe the order ID on the updated order details screen.
+
+Test Data: Order ID: 123-20240520-0001, Updated customer name: 'John Doe Updated'",The order ID remains '123-20240520-0001' and is not regenerated or altered.,TC-023
+"Verify that concurrent order creation for the same shop and date generates unique, sequential order IDs without collisions or duplicates",Order Management - Order ID Generation,Security,High,User is authenticated and has permission to create orders for a specific shop. No orders exist for the shop on the current date.,"1. Open two separate browser sessions (or use two different devices) logged in as the same user or different users with the same shop permissions.
+2. In both sessions, simultaneously initiate the order creation flow for the same shop.
+3. In both sessions, fill in identical order details (customer name, phone, items, etc.) and submit the order at the same time.
+4. Record the order ID generated in each session.
+5. Open the order list for the shop and verify the order IDs for the current date.
+
+Test Data: Shop ID: 50, Order details: Customer Name: 'Test User', Customer Phone: '01712345678', Items: [Item ID: 1, Quantity: 1]","Both orders are created successfully with unique order IDs in the format '50-YYYYMMDD-NNNN', where NNNN is a sequential number (e.g., 0001 and 0002). No duplicate order IDs are generated, and the sequence is continuous without gaps or overlaps.",TC-024
+Verify that order ID generation enforces optimistic locking to prevent race conditions and data corruption,Order Management - Order ID Generation,Security,High,User is authenticated and has permission to create orders for a specific shop. The shop has existing orders for the current date.,"1. Open two separate browser sessions (or use two different devices) logged in as the same user or different users with the same shop permissions.
+2. In both sessions, simultaneously initiate the order creation flow for the same shop.
+3. In both sessions, fill in order details and submit the order at the same time.
+4. Observe the response in both sessions.
+5. Check the server logs for any errors related to optimistic locking or database conflicts.
+
+Test Data: Shop ID: 50, Order details: Customer Name: 'Test User', Customer Phone: '01712345678', Items: [Item ID: 1, Quantity: 1]","One order is created successfully with a unique order ID. The other session receives an error message indicating a conflict (e.g., 'Order could not be created due to a conflict. Please try again.'). No duplicate order IDs are generated, and no data corruption occurs.",TC-025
+Verify that order creation with a maliciously crafted shop ID does not expose internal system details or cause unexpected behavior,Order Management - Order Creation,Security,High,User is authenticated and has permission to create orders.,"1. Initiate the order creation flow.
+2. Intercept the request (e.g., using a proxy tool) and modify the shop ID to an invalid or malicious value (e.g., SQL injection payload, negative number, or extremely large number).
+3. Submit the modified request.
+4. Observe the response from the system.
+
+Test Data: Malicious shop IDs: ['1 OR 1=1', '-1', '99999999999999999999']","The API responds with HTTP status 400 (Bad Request) or 404 (Not Found) and a generic error message (e.g., 'Invalid shop ID' or 'Shop not found'). No internal system details (e.g., stack traces, database errors) are exposed in the response.",TC-026
+Verify that order ID generation does not expose internal sequence numbers or shop IDs in error messages,Order Management - Order ID Generation,Security,Medium,User is authenticated and has permission to create orders for a specific shop.,"1. Initiate the order creation flow for a valid shop.
+2. Intercept the request and simulate a server error (e.g., by disabling the database or network connection).
+3. Submit the request and observe the error response.
+4. Repeat the test with a valid request but simulate a conflict (e.g., by manually locking the sequence table).
+
+Test Data: Shop ID: 50, Order details: Customer Name: 'Test User', Customer Phone: '01712345678'","The API responds with HTTP status 500 (Internal Server Error) or 409 (Conflict) and a generic error message (e.g., 'An unexpected error occurred' or 'Order could not be created due to a conflict'). No internal details (e.g., sequence numbers, shop IDs, database errors) are exposed in the response.",0399124-TC-037
+Verify that order creation with a tampered order date does not bypass sequence logic or generate duplicate order IDs,Order Management - Order Creation,Security,High,User is authenticated and has permission to create orders for a specific shop.,"1. Initiate the order creation flow for a valid shop.
+2. Intercept the request and modify the order date to a past or future date (e.g., '2020-01-01' or '2030-01-01').
+3. Submit the modified request.
+4. Record the generated order ID.
+5. Repeat the process for the same shop and tampered date to check for duplicate order IDs.
+
+Test Data: Shop ID: 50, Tampered order dates: ['2020-01-01', '2030-01-01']","The API either rejects the request with HTTP status 400 (Bad Request) and a generic error message (e.g., 'Invalid order date') or generates a unique order ID for the tampered date. No duplicate order IDs are generated for the same shop and tampered date.",TC-027
+Verify that order retrieval by order ID does not expose internal sequence logic or shop IDs in the response,Order Management - Order Retrieval,Security,Medium,User is authenticated and has permission to retrieve orders. An order exists for the user's shop.,"1. Open the order list and select an existing order to view its details.
+2. Observe the order ID displayed in the order details.
+3. Verify that the order ID follows the expected format (e.g., '50-YYYYMMDD-NNNN').
+4. Confirm that no internal details (e.g., raw shop ID, sequence number, or database IDs) are exposed in the response.
+
+Test Data: Order ID: '50-20231001-0001'","The order details are displayed successfully, and the order ID is shown in the format '50-YYYYMMDD-NNNN'. No internal details (e.g., raw shop ID, sequence number, or database IDs) are exposed in the response.",3c1bbe1-TC-016

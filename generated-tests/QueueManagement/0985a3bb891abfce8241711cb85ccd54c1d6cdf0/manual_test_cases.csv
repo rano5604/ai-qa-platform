@@ -1,0 +1,31 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a shop with a very large ID,Shop Management,Boundary,Medium,User has admin role,"1. Log in as an admin user. 2. Navigate to the shop creation page. 3. Enter a very large ID (e.g. 1000000) and other required details. 4. Submit the form.
+
+Test Data: Shop ID: 1000000",HTTP status code 404 (Not Found) or an error message indicating that the shop ID is invalid,TC-001
+Create a shop with an ID of zero,Shop Management,Boundary,Medium,User has admin role,"1. Log in as an admin user. 2. Navigate to the shop creation page. 3. Enter an ID of zero and other required details. 4. Submit the form.
+
+Test Data: Shop ID: 0",HTTP status code 404 (Not Found) or an error message indicating that the shop ID is invalid,TC-002
+Retrieve workers for a shop with a very large ID,Worker Management,Boundary,Medium,User has shop owner role,"1. Log in as a shop owner user. 2. Navigate to the worker management page. 3. Enter a very large shop ID (e.g. 1000000) and submit the form.
+
+Test Data: Shop ID: 1000000",HTTP status code 404 (Not Found) or an error message indicating that the shop was not found,TC-003
+Retrieve workers for a shop with an ID of zero,Worker Management,Boundary,Medium,User has shop owner role,"1. Log in as a shop owner user. 2. Navigate to the worker management page. 3. Enter a shop ID of zero and submit the form.
+
+Test Data: Shop ID: 0",HTTP status code 404 (Not Found) or an error message indicating that the shop was not found,TC-004
+Add a worker to a shop with a very large ID,Worker Management,Boundary,Medium,User has shop owner role,"1. Log in as a shop owner user. 2. Navigate to the worker management page. 3. Enter a very large shop ID (e.g. 1000000) and other required details. 4. Submit the form.
+
+Test Data: Shop ID: 1000000",HTTP status code 404 (Not Found) or an error message indicating that the shop was not found,TC-005
+Add a worker to a shop with an ID of zero,Worker Management,Boundary,Medium,User has shop owner role,"1. Log in as a shop owner user. 2. Navigate to the worker management page. 3. Enter a shop ID of zero and other required details. 4. Submit the form.
+
+Test Data: Shop ID: 0",HTTP status code 404 (Not Found) or an error message indicating that the shop was not found,TC-006
+Delete a shop with a very large ID,Shop Management,Boundary,Medium,User has admin role,"1. Log in as an admin user. 2. Navigate to the shop management page. 3. Enter a very large shop ID (e.g. 1000000) and submit the form.
+
+Test Data: Shop ID: 1000000",HTTP status code 404 (Not Found) or an error message indicating that the shop was not found,TC-007
+Delete a shop with an ID of zero,Shop Management,Boundary,Medium,User has admin role,"1. Log in as an admin user. 2. Navigate to the shop management page. 3. Enter a shop ID of zero and submit the form.
+
+Test Data: Shop ID: 0",HTTP status code 404 (Not Found) or an error message indicating that the shop was not found,TC-008
+Retrieve all workers for a shop with default pagination and a very large shop ID,Worker Management,Boundary,Medium,User has shop owner role,"1. Log in as a shop owner user. 2. Navigate to the worker management page. 3. Enter a very large shop ID (e.g. 1000000) and submit the form.
+
+Test Data: Shop ID: 1000000",HTTP status code 404 (Not Found) or an error message indicating that the shop was not found,TC-009
+Retrieve all workers for a shop with default pagination and a shop ID of zero,Worker Management,Boundary,Medium,User has shop owner role,"1. Log in as a shop owner user. 2. Navigate to the worker management page. 3. Enter a shop ID of zero and submit the form.
+
+Test Data: Shop ID: 0",HTTP status code 404 (Not Found) or an error message indicating that the shop was not found,TC-010

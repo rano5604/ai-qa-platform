@@ -1,0 +1,34 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify order details and QR code display correctly after order creation,Order Success Page Display,Positive,High,"User has just completed creating a new order with customer details, items, and photos. The order includes an advance payment and a due amount.","1. Complete the order creation process by confirming all details and submitting the order. 2. Observe the success page that loads automatically after submission. 3. Verify the order ID displayed at the top of the page. 4. Check the customer name, order date, delivery date, and trial date. 5. Confirm the total amount, paid amount (advance), and due amount are displayed correctly. 6. Verify the QR code is displayed and scannable.
+
+Test Data: Order ID: auto-generated (e.g., '1-20240515-0001'), Customer Name: 'John Doe', Order Date: today's date, Delivery Date: tomorrow's date, Trial Date: two days from today, Total Amount: 2000, Paid Amount: 500, Due Amount: 1500","The success page displays the correct order ID, customer name, dates, and monetary values formatted as currency (e.g., '2,000.00'). The QR code is visible and can be scanned without errors. All details match the order submitted.",e0a22d0-TC-001
+Verify order dates are displayed in a consistent format regardless of input format,Order Success Page - Date Format Handling,Positive,Medium,"User has just completed creating a new order. The order date was stored in 'YYYYMMDD' format (e.g., '20240515').","1. Complete the order creation process and navigate to the success page. 2. Observe the order date displayed on the success page. 3. Verify the date is shown in 'YYYY-MM-DD' format (e.g., '2024-05-15').
+
+Test Data: Order Date: '20240515' (stored as 'YYYYMMDD')","The order date is displayed in 'YYYY-MM-DD' format (e.g., '2024-05-15') on the success page.",TC-001
+Verify monetary values are displayed with consistent decimal formatting,Order Success Page - Monetary Value Formatting,Positive,High,User has just completed creating a new order with monetary values that may include whole numbers or decimals.,"1. Complete the order creation process and navigate to the success page. 2. Observe the total amount, paid amount, and due amount displayed. 3. Verify all monetary values show exactly two decimal places (e.g., '2000.00', '500.00').
+
+Test Data: Total Amount: 2000, Paid Amount: 500, Due Amount: 1500","All monetary values are displayed with two decimal places (e.g., '2,000.00', '500.00', '1,500.00'). No values are truncated or missing decimals.",e0a22d0-TC-003
+Verify order date is displayed in 'YYYY-MM-DD' format,Order Success Page,Boundary,Medium,User has successfully placed an order,"1. Place an order with a specific date. 2. Go to the order success page.
+
+Test Data: Order date: '2024-09-16'",The order date is displayed as '2024-09-16' on the order success page,TC-002
+Verify order date is displayed in 'YYYYMMDD' format,Order Success Page,Boundary,Medium,User has successfully placed an order,"1. Place an order with a specific date. 2. Go to the order success page.
+
+Test Data: Order date: '20240916'",The order date is displayed as '2024-09-16' on the order success page,TC-003
+Verify order date is displayed when it is null or empty,Order Success Page,Boundary,Low,User has successfully placed an order,"1. Place an order without a specific date. 2. Go to the order success page.
+
+Test Data: Order date: '' or null",The order date is displayed as an empty string on the order success page,TC-004
+Verify order amount is displayed with two decimal places,Order Success Page,Boundary,Medium,User has successfully placed an order,"1. Place an order with a specific amount. 2. Go to the order success page.
+
+Test Data: Order amount: 100.1234",The order amount is displayed as '100.12' on the order success page,TC-005
+Verify order amount is displayed when it is null or empty,Order Success Page,Boundary,Low,User has successfully placed an order,"1. Place an order without a specific amount. 2. Go to the order success page.
+
+Test Data: Order amount: '' or null",The order amount is displayed as '0.00' on the order success page,TC-006
+Verify order amount is displayed with a very large value,Order Success Page,Boundary,Low,User has successfully placed an order,"1. Place an order with a very large amount. 2. Go to the order success page.
+
+Test Data: Order amount: 1000000000.1234",The order amount is displayed correctly on the order success page,TC-007
+Verify order ID is generated correctly,Order Success Page,Boundary,Medium,User has successfully placed an order,"1. Place an order. 2. Go to the order success page.
+
+Test Data: Shop ID: 1, Order date: '2024-09-16'",The order ID is displayed in the format '1-20240916-0001' on the order success page,TC-008
+Verify order ID is generated correctly when shop ID is null or empty,Order Success Page,Boundary,Low,User has successfully placed an order,"1. Place an order without a specific shop ID. 2. Go to the order success page.
+
+Test Data: Shop ID: '' or null, Order date: '2024-09-16'",The order ID is displayed in the format '1-20240916-0001' on the order success page,TC-009

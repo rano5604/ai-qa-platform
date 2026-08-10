@@ -1,0 +1,120 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+User successfully logs in and receives JWT token in response header with user details in body,User Authentication,Positive,High,User has valid credentials (username and password) and exists in the system,"1. Send a POST request to /api/auth/signin with the payload in testData. 2. Observe the response headers and body.
+
+Test Data: {""username"": ""testuser"", ""password"": ""validPassword123""}","Response status code is 200. The 'Authorization' header contains a JWT token with the prefix 'Bearer'. The response body contains user details including 'id', 'username', 'email', and 'roles' (no 'token' field in the body).",b469760-TC-002
+User successfully creates a new appointment reservation and receives confirmation,Appointment Reservation,Positive,High,User is authenticated and has a valid shop ID,"1. Send a POST request to /api/shops/1/appointments with the payload in testData. 2. Observe the response.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""+1234567890"", ""appointmentDate"": ""2024-12-30"", ""startHour"": 14, ""startMinute"": 30, ""durationMinutes"": 60, ""serviceIds"": [1, 2], ""workerId"": 1}","Response status code is 200. The response body contains the created appointment reservation details, including 'id', 'customerName', 'customerPhone', 'status' as 'ACTIVE', 'serviceStatus' as 'PENDING', 'paymentStatus' as 'UNPAID', and 'reservationPaymentStatus' as 'UNPAID'.",d159982-TC-001
+User successfully cancels an existing appointment reservation,Appointment Reservation,Positive,High,"User is authenticated, has a valid shop ID, and an existing appointment reservation with 'serviceStatus' as 'PENDING'",1. Send a PUT request to /api/shops/1/appointments/cancel/1 (where 1 is the appointment ID). 2. Observe the response.,Response status code is 200. The response body contains the updated appointment reservation details with 'status' as 'INACTIVE'.,TC-001
+User successfully initiates payment for an active and unpaid appointment,Appointment Payment,Positive,High,User is authenticated and has an existing appointment reservation with 'status' as 'ACTIVE' and 'paymentStatus' as 'UNPAID',1. Send a POST request to /api/payments?appointmentId=1. 2. Observe the response.,"Response status code is 200. The response body contains the created payment details, including 'appointmentId', 'paymentIntentId', 'amount', and the appointment's 'reservationPaymentStatus' is updated to 'PAID'.",d159982-TC-003
+User fails to initiate payment for a canceled appointment,Appointment Payment,Positive,Medium,User is authenticated and has an existing appointment reservation with 'status' as 'INACTIVE',1. Send a POST request to /api/payments?appointmentId=1. 2. Observe the response.,Response status code is 400. The response body contains an error message: 'Payment Done or Appointment is Canceled with ID: 1'.,TC-002
+Attempt to authenticate with valid credentials but missing Authorization header expectation,User Authentication - JWT Response,Negative,High,User has valid credentials and exists in the system,"1. Send a POST request to /api/auth/signin with the payload in testData. 2. Verify the response does not include the JWT token in the expected header format.
+
+Test Data: {
+  ""username"": ""validUser"",
+  ""password"": ""validPassword123""
+}","The system should return an HTTP 200 OK status code, but the response should include the JWT token in the 'Authorization' header as 'Bearer <token>'. If the header is missing or malformed, the system fails the test.",TC-003
+Create appointment reservation with missing shopId path variable,Appointment Reservation - Creation,Negative,High,User is authenticated and has permission to create appointments,"1. Send a POST request to /api/shops//appointments (missing shopId) with the payload in testData.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""appointmentDate"": ""2024-12-31"",
+  ""slot"": ""MORNING"",
+  ""serviceProfiles"": [1, 2]
+}",The system should return an HTTP 404 Not Found status code with an error message indicating that the path is invalid or shopId is missing.,TC-004
+Create appointment reservation with invalid status transition (non-ACTIVE status),Appointment Reservation - Creation,Negative,Medium,"User is authenticated, shop exists, and appointment with status 'CANCELED' already exists","1. Send a POST request to /api/shops/1/appointments with the payload in testData, referencing an appointment ID that is already 'CANCELED'.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""appointmentDate"": ""2024-12-31"",
+  ""slot"": ""MORNING"",
+  ""serviceProfiles"": [1, 2]
+}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the appointment cannot be created or modified due to its current status.,TC-005
+Cancel appointment reservation with non-PENDING service status,Appointment Reservation - Cancellation,Negative,High,"User is authenticated, shop exists, and appointment with serviceStatus 'COMPLETED' already exists",1. Send a PUT request to /api/shops/1/appointments/cancel/1 (where appointment ID 1 has serviceStatus 'COMPLETED').,The system should return an HTTP 400 Bad Request status code with an error message indicating that the appointment cannot be canceled due to its current service status.,d159982-TC-011
+Create payment intent for appointment with status 'CANCELED',Appointment Payment - Creation,Negative,High,"User is authenticated, and appointment with status 'CANCELED' exists",1. Send a POST request to /api/payments?appointmentId=1 (where appointment ID 1 has status 'CANCELED').,The system should return an HTTP 400 Bad Request status code with an error message indicating that payment cannot be done for a canceled appointment.,d159982-TC-014
+Create payment intent for appointment with missing appointmentId parameter,Appointment Payment - Creation,Negative,High,User is authenticated and has permission to create payments,1. Send a POST request to /api/payments without the appointmentId query parameter.,The system should return an HTTP 400 Bad Request status code with an error message indicating that the appointmentId parameter is required.,d159982-TC-013
+Create payment intent for appointment with invalid appointmentId data type,Appointment Payment - Creation,Negative,Medium,User is authenticated and has permission to create payments,1. Send a POST request to /api/payments?appointmentId=invalidId.,The system should return an HTTP 400 Bad Request status code with an error message indicating that the appointmentId must be a valid number.,TC-006
+Verify OTP with expired OTP code,User Authentication - OTP Verification,Negative,Medium,"User has requested an OTP, and the OTP has expired","1. Send a POST request to /api/auth/verify-otp with the payload in testData.
+
+Test Data: {
+  ""phoneNumber"": ""+1234567890"",
+  ""otp"": ""123456""
+}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the OTP is invalid or expired.,b469760-TC-010
+Set PIN with mismatched PIN and Confirm PIN fields,User Authentication - Set PIN,Negative,Medium,User has a valid OTP for their phone number,"1. Send a POST request to /api/auth/set-pin with the payload in testData.
+
+Test Data: {
+  ""phoneNumber"": ""+1234567890"",
+  ""otp"": ""123456"",
+  ""pin"": ""1234"",
+  ""confirmPin"": ""4321""
+}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the PIN and Confirm PIN do not match.,b469760-TC-015
+Verify JWT token is returned in the response header and user details in the body after successful sign-in,Authentication,Boundary,High,User exists with valid credentials (username and password),"1. Send a POST request to /api/auth/signin with the payload in testData. 2. Observe the response headers and body.
+
+Test Data: {
+  ""username"": ""validUser"",
+  ""password"": ""validPassword123""
+}","HTTP status code 200. Response body contains user details (id, username, email, roles) without the token field. Response header 'Authorization' contains a Bearer token.",b469760-TC-027
+Verify JWT token is returned in the response header and user details in the body after successful PIN login,Authentication,Boundary,High,User exists with valid credentials (username and PIN),"1. Send a POST request to /api/auth/login with the payload in testData. 2. Observe the response headers and body.
+
+Test Data: {
+  ""username"": ""validUser"",
+  ""pin"": ""1234""
+}","HTTP status code 200. Response body contains user details (id, username, email, roles) without the token field. Response header 'Authorization' contains a Bearer token.",TC-007
+Create reservation with zero total amount and verify error handling,Appointment Reservation,Boundary,High,Shop and service profiles exist with a total amount calculation resulting in zero,"1. Send a POST request to /api/shops/1/appointments with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""appointmentDate"": ""2023-12-01"",
+  ""startHour"": 10,
+  ""startMinute"": 0,
+  ""durationMinutes"": 60,
+  ""serviceProfiles"": [1],
+  ""totalAmount"": 0
+}",HTTP status code 400 (Bad Request) with an error message indicating that payment cannot be processed for zero amount or invalid reservation.,d159982-TC-025
+Create reservation with minimum allowed total amount (1 cent) and verify successful creation,Appointment Reservation,Boundary,High,Shop and service profiles exist with a total amount of 0.01,"1. Send a POST request to /api/shops/1/appointments with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""appointmentDate"": ""2023-12-01"",
+  ""startHour"": 10,
+  ""startMinute"": 0,
+  ""durationMinutes"": 60,
+  ""serviceProfiles"": [1],
+  ""totalAmount"": 0.01
+}","HTTP status code 200. Response body contains reservation details with status 'ACTIVE', serviceStatus 'PENDING', totalAmount 0.01, reservationAmount null, dueAmount 0.01, and paymentStatus 'UNPAID'.",d159982-TC-026
+Cancel reservation with status 'PENDING' and verify successful cancellation,Appointment Reservation,Boundary,High,An active reservation exists with serviceStatus 'PENDING',1. Send a PUT request to /api/shops/1/appointments/cancel/123 (where 123 is the reservation ID). 2. Observe the response.,HTTP status code 200. Response body contains reservation details with status 'INACTIVE'.,TC-008
+Cancel reservation with status other than 'PENDING' and verify error handling,Appointment Reservation,Boundary,High,"An active reservation exists with serviceStatus not 'PENDING' (e.g., 'COMPLETED')",1. Send a PUT request to /api/shops/1/appointments/cancel/123 (where 123 is the reservation ID). 2. Observe the response.,HTTP status code 400 (Bad Request) with an error message indicating that the appointment cannot be canceled.,TC-009
+Create payment for appointment with status 'INACTIVE' and verify error handling,Appointment Payment,Boundary,High,An appointment exists with status 'INACTIVE' and paymentStatus 'UNPAID',1. Send a POST request to /api/payments?appointmentId=123 (where 123 is the appointment ID). 2. Observe the response.,HTTP status code 400 (Bad Request) with an error message indicating that payment is done or the appointment is canceled.,TC-010
+Create payment for appointment with very large total amount and verify successful processing,Appointment Payment,Boundary,Medium,"An active appointment exists with a very large total amount (e.g., 99999999.99)",1. Send a POST request to /api/payments?appointmentId=123 (where 123 is the appointment ID). 2. Observe the response.,"HTTP status code 200. Response body contains payment details with the correct amount (50% of total amount). Reservation payment status is updated to 'PAID', and due amount is set to the remaining 50%.",d159982-TC-027
+Create payment for appointment with reservation payment status 'PAID' and verify full due payment,Appointment Payment,Boundary,High,An active appointment exists with reservationPaymentStatus 'PAID' and dueAmount > 0,1. Send a POST request to /api/payments?appointmentId=123 (where 123 is the appointment ID). 2. Observe the response.,"HTTP status code 200. Response body contains payment details with the correct amount (due amount). Payment status is updated to 'PAID', and due amount is set to 0.",d159982-TC-032
+Create payment for appointment with total amount exactly at the boundary of 50% advance payment,Appointment Payment,Boundary,High,An active appointment exists with totalAmount = 100.00 and reservationPaymentStatus 'UNPAID',1. Send a POST request to /api/payments?appointmentId=123 (where 123 is the appointment ID). 2. Observe the response.,"HTTP status code 200. Response body contains payment details with amount = 50.00. Reservation payment status is updated to 'PAID', and due amount is set to 50.00.",TC-011
+Create payment for appointment with total amount one cent below 50% advance payment threshold,Appointment Payment,Boundary,Medium,An active appointment exists with totalAmount = 99.99 and reservationPaymentStatus 'UNPAID',1. Send a POST request to /api/payments?appointmentId=123 (where 123 is the appointment ID). 2. Observe the response.,"HTTP status code 200. Response body contains payment details with amount = 49.99 (50% of 99.99). Reservation payment status is updated to 'PAID', and due amount is set to 50.00.",TC-012
+Create payment for appointment with total amount one cent above 50% advance payment threshold,Appointment Payment,Boundary,Medium,An active appointment exists with totalAmount = 100.01 and reservationPaymentStatus 'UNPAID',1. Send a POST request to /api/payments?appointmentId=123 (where 123 is the appointment ID). 2. Observe the response.,"HTTP status code 200. Response body contains payment details with amount = 50.00 (50% of 100.01). Reservation payment status is updated to 'PAID', and due amount is set to 50.01.",TC-013
+Unauthorized user cannot access authentication endpoint,Authentication,Security,High,User is not authenticated,"1. Send a POST request to /api/auth/signin with an invalid username and password. 2. Verify the response status code is 401 Unauthorized.
+
+Test Data: {""username"": ""invalid"", ""password"": ""invalid""}",HTTP status code 401 Unauthorized,TC-014
+Authorized user can access authentication endpoint,Authentication,Security,High,User is authenticated,"1. Send a POST request to /api/auth/signin with a valid username and password. 2. Verify the response status code is 200 OK and a JWT token is returned.
+
+Test Data: {""username"": ""valid"", ""password"": ""valid""}",HTTP status code 200 OK and a JWT token in the response body,TC-015
+Unauthorized user cannot create an appointment reservation,Appointment Reservation,Security,High,User is not authenticated,"1. Send a POST request to /api/shops/{shopId}/appointments with an invalid JWT token. 2. Verify the response status code is 401 Unauthorized.
+
+Test Data: {""appointmentReq"": {""shopId"": 1, ""workerId"": 1, ""customerPhone"": ""1234567890"", ""customerName"": ""John Doe""}}",HTTP status code 401 Unauthorized,TC-016
+Authorized user can create an appointment reservation,Appointment Reservation,Security,High,User is authenticated,"1. Send a POST request to /api/shops/{shopId}/appointments with a valid JWT token. 2. Verify the response status code is 201 Created and an appointment reservation is created.
+
+Test Data: {""appointmentReq"": {""shopId"": 1, ""workerId"": 1, ""customerPhone"": ""1234567890"", ""customerName"": ""John Doe""}}",HTTP status code 201 Created and an appointment reservation in the response body,TC-017
+Unauthorized user cannot create a payment,Payment,Security,High,User is not authenticated,"1. Send a POST request to /api/payments with an invalid JWT token. 2. Verify the response status code is 401 Unauthorized.
+
+Test Data: {""appointmentId"": 1}",HTTP status code 401 Unauthorized,TC-018
+Authorized user can create a payment,Payment,Security,High,User is authenticated,"1. Send a POST request to /api/payments with a valid JWT token. 2. Verify the response status code is 201 Created and a payment is created.
+
+Test Data: {""appointmentId"": 1}",HTTP status code 201 Created and a payment in the response body,TC-019
+SQL injection attack on appointment reservation creation,Security,Security,High,User is authenticated,"1. Send a POST request to /api/shops/{shopId}/appointments with a malicious SQL injection payload. 2. Verify the response status code is 400 Bad Request or 500 Internal Server Error.
+
+Test Data: {""appointmentReq"": {""shopId"": 1, ""workerId"": 1, ""customerPhone"": ""1234567890"", ""customerName"": ""John Doe""}}",HTTP status code 400 Bad Request or 500 Internal Server Error,TC-020
+Cross-site scripting (XSS) attack on appointment reservation creation,Security,Security,High,User is authenticated,"1. Send a POST request to /api/shops/{shopId}/appointments with a malicious XSS payload. 2. Verify the response status code is 400 Bad Request or 500 Internal Server Error.
+
+Test Data: {""appointmentReq"": {""shopId"": 1, ""workerId"": 1, ""customerPhone"": ""1234567890"", ""customerName"": ""John Doe""}}",HTTP status code 400 Bad Request or 500 Internal Server Error,TC-021

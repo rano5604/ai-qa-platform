@@ -1,0 +1,173 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+"Verify successful creation of a new order with customer details, items, and photos",Order Creation Flow,Positive,High,User is logged in and has access to the order creation module,"1. Navigate to the 'Create New Order' page. 2. Enter customer name: 'John Doe' and phone: '01712345678'. 3. Click 'Next' to proceed to items selection. 4. Select an item type (e.g., 'Pant'). 5. Enter making charge: '1200' and select delivery date 3 days from today. 6. Click 'Next' to proceed to photos. 7. Upload a photo for 'Order Cloth' using the camera or file upload. 8. Click 'Next' to proceed to order confirmation. 9. Verify all details are correct and click 'Confirm Order'. 10. Verify the order success page loads with order ID and QR code.
+
+Test Data: Customer Name: John Doe, Phone: 01712345678, Item Type: Pant, Making Charge: 1200, Delivery Date: 3 days from today, Photo: Any valid image file","Order is successfully created. User is redirected to the success page displaying the order ID, customer details, item details, and a scannable QR code. The order appears in the 'New Orders' list.",TC-001
+Verify that customer and order images load correctly from the API,Order Image Proxy,Positive,High,User is logged in and has at least one order with a customer photo recorded,"1. Navigate to the 'All Orders' page. 2. Locate an order with a customer photo. 3. Verify that the customer photo is displayed correctly next to the order details. 4. Click on the order to view details. 5. Verify that any order-related photos (e.g., design sketches) are displayed correctly.
+
+Test Data: Any existing order with customer photo and order photos",All images associated with the order and customer are displayed correctly without broken image icons. Images load quickly and match the expected content.,TC-002
+Verify that advance payment is correctly reflected in the order confirmation,Order Confirmation and Payment,Positive,High,User is logged in and has entered customer details and at least one order item,"1. Navigate to the 'Create New Order' page and enter customer details. 2. Add an item with making charge: '2000'. 3. Proceed to the confirmation page. 4. Enter an advance payment amount of '500' in the URL parameter (?advance=500). 5. Refresh the page. 6. Verify the total amount, advance amount, and due amount are displayed correctly.
+
+Test Data: Making Charge: 2000, Advance Payment: 500","The confirmation page displays Total: 2000, Advance: 500, and Due: 1500. The due amount updates correctly when the advance is applied.",TC-003
+Verify that dashboard summary cards display correct counts for today's and tomorrow's deliveries,Dashboard Summary Cards,Positive,High,User is logged in and has orders scheduled for delivery today and tomorrow,"1. Navigate to the Dashboard. 2. Locate the 'Delivery Today' card. 3. Verify the count matches the number of orders due for delivery today. 4. Locate the 'Delivery Tomorrow' card. 5. Verify the count matches the number of orders due for delivery tomorrow.
+
+Test Data: Existing orders with delivery dates set for today and tomorrow",The 'Delivery Today' and 'Delivery Tomorrow' cards display the correct number of orders. Clicking on each card redirects to the respective order list filtered by the correct delivery date.,TC-004
+Verify that customer photos are displayed correctly in the customer list,Customer List with Photos,Positive,Medium,User is logged in and has customers with photos recorded,"1. Navigate to the 'All Customers' page. 2. Scroll through the customer list. 3. Verify that customer photos are displayed next to each customer's name and phone number. 4. Click on a customer with a photo to view details.
+
+Test Data: Any existing customer with a photo",Customer photos are displayed correctly next to each customer's details. Photos load without errors and match the expected customer.,TC-005
+Attempt to fetch an image with missing 'src' parameter,Image Proxy Service,Negative,High,User is logged into the application and has access to any page that loads images via the proxy,"1. Open browser developer tools and navigate to the Network tab. 2. Trigger an image load by navigating to a page that uses the image proxy (e.g., customer list or order list). 3. Manually modify the image URL in the network request to remove the 'src' parameter. 4. Send the modified request.
+
+Test Data: Image URL without 'src' parameter: /api/proxy/image","The system should return an HTTP 400 error with the message 'Missing src'. The image should not load, and an error placeholder or broken image icon should be displayed.",TC-006
+Attempt to fetch an image with malformed 'src' URL,Image Proxy Service,Negative,High,User is logged into the application and has access to any page that loads images via the proxy,"1. Open browser developer tools and navigate to the Network tab. 2. Trigger an image load by navigating to a page that uses the image proxy. 3. Manually modify the image URL to include a malformed 'src' parameter (e.g., 'src=ht%3A%2F%2Fmalformed.url'). 4. Send the modified request.
+
+Test Data: Malformed 'src' parameter: src=ht%3A%2F%2Fmalformed.url","The system should return an HTTP 400 error with the message 'Invalid src'. The image should not load, and an error placeholder or broken image icon should be displayed.",TC-007
+Attempt to fetch an image from a forbidden origin,Image Proxy Service,Negative,High,User is logged into the application and has access to any page that loads images via the proxy,"1. Open browser developer tools and navigate to the Network tab. 2. Trigger an image load by navigating to a page that uses the image proxy. 3. Manually modify the image URL to include a 'src' parameter pointing to a forbidden origin (e.g., 'src=https://external-forbidden-site.com/image.jpg'). 4. Send the modified request.
+
+Test Data: Forbidden origin 'src' parameter: src=https://external-forbidden-site.com/image.jpg","The system should return an HTTP 403 error with the message 'Forbidden origin'. The image should not load, and an error placeholder or broken image icon should be displayed.",TC-008
+Attempt to create an order without providing customer name,Order Creation,Negative,High,User is logged into the application and is on the order creation page,"1. Leave the 'Customer Name' field empty. 2. Fill in all other required fields (e.g., phone number, item type, making charge). 3. Proceed to the confirmation step. 4. Click 'Confirm Order'.
+
+Test Data: Customer Name: [empty], Phone Number: 01712345678, Item Type: Shirt, Making Charge: 500",The system should display an error message indicating that the 'Customer Name' field is required and prevent proceeding to the confirmation step.,d92b7aa-TC-001
+Attempt to create an order without providing customer phone number,Order Creation,Negative,High,User is logged into the application and is on the order creation page,"1. Fill in the 'Customer Name' field. 2. Leave the 'Phone Number' field empty. 3. Fill in all other required fields (e.g., item type, making charge). 4. Proceed to the confirmation step. 5. Click 'Confirm Order'.
+
+Test Data: Customer Name: John Doe, Phone Number: [empty], Item Type: Shirt, Making Charge: 500",The system should display an error message indicating that the 'Phone Number' field is required and prevent proceeding to the confirmation step.,d92b7aa-TC-001
+Attempt to create an order with an invalid phone number format,Order Creation,Negative,High,User is logged into the application and is on the order creation page,"1. Fill in the 'Customer Name' field. 2. Enter an invalid phone number (e.g., '123' or 'abc12345678'). 3. Fill in all other required fields (e.g., item type, making charge). 4. Proceed to the confirmation step. 5. Click 'Confirm Order'.
+
+Test Data: Customer Name: John Doe, Phone Number: abc12345678, Item Type: Shirt, Making Charge: 500",The system should display an error message indicating that the phone number is invalid and prevent proceeding to the confirmation step.,d92b7aa-TC-002
+Attempt to create an order without selecting an item type,Order Creation,Negative,High,User is logged into the application and is on the order creation 'Items' step,"1. Fill in customer details (name and phone number). 2. Skip selecting an item type. 3. Proceed to the next step. 4. Attempt to confirm the order.
+
+Test Data: Customer Name: John Doe, Phone Number: 01712345678, Item Type: [none selected]",The system should display an error message indicating that an item type must be selected and prevent proceeding to the confirmation step.,d92b7aa-TC-003
+Attempt to upload an invalid photo format during order creation,Order Creation,Negative,High,User is logged into the application and is on the order creation 'Photos' step,"1. Fill in customer details and item type. 2. On the 'Photos' step, attempt to upload a file that is not an image (e.g., a PDF or text file). 3. Proceed to the confirmation step.
+
+Test Data: File to upload: sample.pdf (or any non-image file)",The system should display an error message indicating that the uploaded file is not a valid image format and prevent proceeding to the confirmation step.,d92b7aa-TC-005
+Attempt to create an order without uploading a required photo,Order Creation,Negative,High,User is logged into the application and is on the order creation 'Photos' step,"1. Fill in customer details and item type. 2. On the 'Photos' step, skip uploading the 'Order Cloth' photo. 3. Proceed to the confirmation step. 4. Click 'Confirm Order'.
+
+Test Data: Order Cloth Photo: [not uploaded]",The system should display an error message indicating that the 'Order Cloth' photo is required and prevent proceeding to the confirmation step.,d92b7aa-TC-006
+Attempt to confirm an order with an invalid advance payment amount,Order Confirmation,Negative,Medium,User is logged into the application and is on the order confirmation page with a valid order,"1. On the confirmation page, manually modify the URL to include an invalid advance payment amount (e.g., '?advance=-100' or '?advance=abc'). 2. Press Enter to reload the page. 3. Click 'Confirm Order'.
+
+Test Data: Advance payment URL parameter: ?advance=-100 or ?advance=abc","The system should ignore the invalid advance amount, default it to 0, and proceed with the order confirmation. The due amount should reflect the total amount minus 0.",TC-009
+Attempt to confirm an order without any items added,Order Confirmation,Negative,High,User is logged into the application and has filled in customer details but no items,"1. Fill in customer details (name and phone number). 2. Skip the 'Items' step and manually navigate to the confirmation page. 3. Click 'Confirm Order'.
+
+Test Data: Customer Name: John Doe, Phone Number: 01712345678, Items: [none]",The system should redirect the user back to the 'Items' step and display an error message indicating that at least one item must be added to the order.,TC-010
+Attempt to access the order success page with an invalid order ID,Order Success Page,Negative,Medium,User is logged into the application and has just confirmed an order,"1. After confirming an order, manually modify the URL to include an invalid order ID (e.g., '?id=invalid' or '?orderId=invalid'). 2. Press Enter to reload the page.
+
+Test Data: Order ID URL parameter: ?id=invalid or ?orderId=invalid","The system should generate a valid order ID based on the shop and sequence number, ignoring the invalid parameter. The success page should display the generated order ID.",d92b7aa-TC-007
+Attempt to access the order success page without any order data in session storage,Order Success Page,Negative,Medium,User is logged into the application and has cleared session storage,"1. Clear the browser's session storage. 2. Manually navigate to the order success page. 3. Observe the page behavior.
+
+Test Data: Session storage: cleared","The system should display a generic success message with a generated order ID but no specific order details (e.g., customer name, items, amounts). The QR code should still be generated for payment.",TC-011
+Attempt to create an order without being logged in (unauthorized access),Order Creation,Negative,High,User is not logged into the application,"1. Clear all authentication tokens/cookies from the browser. 2. Manually navigate to the order creation page. 3. Attempt to fill in order details and proceed through the steps.
+
+Test Data: Authentication: none",The system should redirect the user to the login page or display an error message indicating that the user is not authorized to access the order creation feature.,d92b7aa-TC-004
+Attempt to confirm an order without being logged in (unauthorized access),Order Confirmation,Negative,High,User is not logged into the application and has a partially filled order in progress,"1. Clear all authentication tokens/cookies from the browser. 2. Manually navigate to the order confirmation page. 3. Click 'Confirm Order'.
+
+Test Data: Authentication: none",The system should redirect the user to the login page or display an error message indicating that the user is not authorized to confirm the order.,d92b7aa-TC-008
+Attempt to access the order success page without being logged in (unauthorized access),Order Success Page,Negative,High,User is not logged into the application and has just confirmed an order,"1. Clear all authentication tokens/cookies from the browser. 2. Manually navigate to the order success page. 3. Observe the page behavior.
+
+Test Data: Authentication: none",The system should redirect the user to the login page or display an error message indicating that the user is not authorized to view the order success page.,d92b7aa-TC-009
+Attempt to create an order with a malformed delivery date,Order Creation,Negative,Medium,User is logged into the application and is on the order creation 'Items' step,"1. Fill in customer details and select an item type. 2. Manually modify the delivery date input to an invalid format (e.g., '31-02-2023' or 'invalid-date'). 3. Proceed to the confirmation step. 4. Click 'Confirm Order'.
+
+Test Data: Delivery Date: 31-02-2023 or invalid-date",The system should display an error message indicating that the delivery date is invalid and prevent proceeding to the confirmation step.,TC-012
+Attempt to create an order with a negative making charge,Order Creation,Negative,Medium,User is logged into the application and is on the order creation 'Items' step,"1. Fill in customer details and select an item type. 2. Enter a negative value for the making charge (e.g., -500). 3. Proceed to the confirmation step. 4. Click 'Confirm Order'.
+
+Test Data: Making Charge: -500",The system should display an error message indicating that the making charge must be a positive number and prevent proceeding to the confirmation step.,TC-013
+Verify that the image proxy rejects requests with malicious 'src' parameter values to prevent SSRF attacks,Image Proxy Service,Security,High,User is logged in and has access to the application. The application is configured with a valid API_ORIGIN.,"1. Open the browser developer tools (Network tab).
+2. Navigate to any page that loads customer or order photos (e.g., Customers List, Orders List).
+3. Intercept the network request to the image proxy endpoint (e.g., /api/proxy/image?src=...).
+4. Modify the 'src' parameter to an external URL (e.g., 'https://malicious-site.com/image.jpg').
+5. Send the modified request.
+6. Repeat step 4 with a local file path (e.g., '/etc/passwd').
+7. Repeat step 4 with a JavaScript URI (e.g., 'javascript:alert(1)').
+
+Test Data: src=https://malicious-site.com/image.jpg, src=/etc/passwd, src=javascript:alert(1)","The system should reject all requests with a '403 Forbidden' status for external URLs and local file paths. JavaScript URIs should be rejected with a '400 Invalid src' status. No image should be displayed, and the response should not contain any sensitive data.",TC-014
+Verify that the image proxy enforces authentication and authorization for protected images,Image Proxy Service,Security,High,User is logged in with a valid access token. There exists at least one customer or order with a photo that requires authentication.,"1. Open the browser developer tools (Network tab).
+2. Navigate to a page that loads a protected image (e.g., customer photo).
+3. Copy the image URL from the 'src' attribute of the <img> tag.
+4. Log out of the application.
+5. Paste the copied image URL directly into the browser address bar and press Enter.
+6. Log in as a different user who does not have access to the original user's data.
+7. Repeat step 5.
+
+Test Data: Image URL from a protected customer/order photo","The system should reject the request with a '401 Unauthorized' status when accessed without a valid session. When accessed by a different user, the system should either return a '403 Forbidden' status or a placeholder image, but never the actual protected image.",TC-015
+Verify that the image proxy sanitizes the 'src' parameter to prevent path traversal attacks,Image Proxy Service,Security,High,User is logged in and has access to the application.,"1. Open the browser developer tools (Network tab).
+2. Navigate to any page that loads customer or order photos.
+3. Intercept the network request to the image proxy endpoint.
+4. Modify the 'src' parameter to include path traversal sequences (e.g., '/../../../etc/passwd').
+5. Send the modified request.
+6. Repeat step 4 with URL-encoded path traversal sequences (e.g., '%2F..%2F..%2Fetc%2Fpasswd').
+
+Test Data: src=/../../../etc/passwd, src=%2F..%2F..%2Fetc%2Fpasswd","The system should reject all requests with path traversal sequences with a '400 Invalid src' status. No sensitive files should be returned, and the response should not contain any internal system details.",TC-016
+Verify that the photo upload API enforces the API_ORIGIN restriction to prevent open proxy abuse,Order Creation - Photo Upload,Security,High,User is logged in and is on the 'Add Photos' step of the order creation flow.,"1. Open the browser developer tools (Network tab).
+2. Attempt to upload a valid image file.
+3. Intercept the network request to the photo upload API.
+4. Modify the 'Referer' or 'Origin' header to point to an external domain (e.g., 'https://malicious-site.com').
+5. Send the modified request.
+6. Repeat steps 4-5 with an empty or malformed 'Referer'/'Origin' header.
+
+Test Data: Referer=https://malicious-site.com, Origin=https://malicious-site.com","The system should reject all photo upload requests with a '403 Forbidden' status if the 'Referer' or 'Origin' header does not match the API_ORIGIN. The upload should not proceed, and no photo should be saved.",d92b7aa-TC-013
+Verify that the photo upload API sanitizes base64-encoded image payloads to prevent injection attacks,Order Creation - Photo Upload,Security,High,User is logged in and is on the 'Add Photos' step of the order creation flow.,"1. Open the browser developer tools (Network tab).
+2. Attempt to upload a valid image file and intercept the request.
+3. Modify the request payload to include a malicious script in the base64-encoded image data (e.g., append ';alert(1);' to the base64 string).
+4. Send the modified request.
+5. If the upload succeeds, attempt to view the uploaded photo in the application.
+
+Test Data: photo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=;alert(1);","The system should sanitize the base64 payload and either reject the upload or strip out the malicious script. The photo should either not appear in the preview, or the script should not execute when the photo is viewed. The system should not expose any error details that reveal internal processing logic.",d92b7aa-TC-012
+Verify that the order confirmation step does not expose sensitive data in error messages or logs,Order Creation - Confirmation,Security,High,User is logged in and has completed the 'Add Photos' step of the order creation flow with at least one photo uploaded.,"1. Proceed to the 'Confirm Order' step.
+2. Open the browser developer tools (Console and Network tabs).
+3. Intercept the network request to the order submission API.
+4. Modify the request payload to include invalid or malformed data (e.g., negative making charge, invalid customer phone number).
+5. Send the modified request.
+6. Observe the error message displayed to the user and any logs in the browser console.
+7. Repeat steps 4-6 with a payload that includes sensitive data (e.g., photo URLs, customer PII) in unexpected fields.
+
+Test Data: makingCharge=-1000, customerPhone=invalid, photoUrls={'orderCloth': 'http://internal-server/photos/123'}","The system should reject the invalid payload with a generic error message such as 'Invalid order data. Please try again.' No sensitive data (e.g., tokens, photo URLs, customer PII) should be exposed in the error message or browser console logs.",d92b7aa-TC-017
+Verify that authentication tokens are securely handled and not exposed in URLs or logs during order creation,Order Creation - Token Handling,Security,High,User is logged in and is on the 'Customer Details' step of the order creation flow.,"1. Open the browser developer tools (Console and Network tabs).
+2. Proceed through each step of the order creation flow (Customer Details, Add Items, Add Photos, Confirm Order).
+3. Observe all network requests and note any URLs that include tokens or sensitive data.
+4. Check the browser console for any logs that expose tokens or sensitive data.
+5. Log out of the application and verify that all tokens are cleared from storage (localStorage, sessionStorage, cookies).
+6. Attempt to navigate back to any order creation step using the browser's back button.
+
+Test Data: N/A","Authentication tokens should never appear in URLs or be logged in the browser console. Tokens should be sent securely in request headers (e.g., Authorization: Bearer <token>). After logout, all tokens should be cleared from storage, and the user should be redirected to the login page when attempting to access order creation steps.",d92b7aa-TC-018
+Verify that the photo upload API enforces rate limiting to prevent abuse,Order Creation - Photo Upload,Security,Medium,User is logged in and is on the 'Add Photos' step of the order creation flow.,"1. Open the browser developer tools (Network tab).
+2. Rapidly attempt to upload multiple large image files (e.g., 10 files in quick succession).
+3. Observe the response status and any error messages.
+4. Repeat step 2 after a short delay (e.g., 1 minute).
+
+Test Data: 10 large image files (e.g., 5MB each)",The system should allow the first few uploads but eventually throttle or block further requests with an error message such as 'Too many requests. Please try again later.' The system should not crash or become unresponsive.,d92b7aa-TC-016
+Verify that server-side photo URLs are not exposed to unauthorized users via the image proxy,Order Creation - Photo Upload,Security,High,User A is logged in and has created an order with photos. User B is logged in with a different account.,"1. As User A, navigate to the order success page and note the photo URLs displayed.
+2. Copy one of the photo URLs.
+3. Log out as User A.
+4. As User B, paste the copied photo URL into the browser address bar and press Enter.
+5. Log out as User B and attempt to access the photo URL again.
+
+Test Data: Photo URL from User A's order (e.g., /api/proxy/image?src=/photos/123)","The system should prevent User B from accessing the photo URLs directly. The browser should display an 'Access Denied' error or redirect to the login page. After logout, the system should reject the request with a '401 Unauthorized' status.",d92b7aa-TC-014
+Verify that session storage does not leak sensitive photo data after order completion or logout,Order Creation - Photo Upload,Security,Medium,User is logged in and has completed an order with photos.,"1. Complete an order with at least one photo uploaded.
+2. Open the browser developer tools (Application tab).
+3. Navigate to Session Storage and inspect the 'create-order:v4' key.
+4. Note any sensitive data stored (e.g., photo URLs, base64 data).
+5. Log out of the application.
+6. Repeat step 3 and verify that the 'create-order:v4' key is cleared or contains only non-sensitive data.
+7. Log in again and navigate to the order creation flow to verify that no residual data is present.
+
+Test Data: N/A","The session storage should not contain raw base64 photo data or server URLs after logout. The 'create-order:v4' key should either be cleared or contain only non-sensitive data (e.g., order metadata without photo references). After logging in again, the order creation flow should start fresh with no residual data.",d92b7aa-TC-015
+Verify that order IDs are not predictable or susceptible to insecure direct object reference (IDOR),Order Creation - Order ID Generation,Security,High,User A and User B are both logged in. User A has created at least one order.,"1. As User A, navigate to the order success page and note the generated order ID.
+2. Log out as User A.
+3. As User B, manually construct a URL to access User A's order using the noted order ID (e.g., /orders/create/success?id=123&orderId=SHOP-YYYYMMDD-0001).
+4. Attempt to access the constructed URL.
+5. Repeat steps 3-4 with a slightly modified order ID (e.g., incrementing the sequence number).
+
+Test Data: Order ID from User A's order (e.g., SHOP-YYYYMMDD-0001), modified Order ID (e.g., SHOP-YYYYMMDD-0002)","The system should prevent access to order details for orders not owned by the logged-in user. User B should see an 'Access Denied' error or be redirected to a safe page (e.g., dashboard). The system should not expose any sensitive order details.",d92b7aa-TC-019
+Verify that customer and order data is not accessible via insecure direct object reference (IDOR) in list views,Customer and Order Data Access,Security,High,User A and User B are both logged in. User A has at least one customer and order recorded.,"1. As User A, navigate to the Customers List or Orders List page.
+2. Note the ID of a customer or order.
+3. Log out as User A.
+4. As User B, manually construct a URL to access the customer or order details using the noted ID (e.g., /customers/all?customerId=123 or /orders/all?orderId=456).
+5. Attempt to access the constructed URL.
+6. Repeat steps 4-5 with a slightly modified ID (e.g., incrementing the ID number).
+
+Test Data: Customer ID or Order ID from User A's data (e.g., 123, 456), modified ID (e.g., 124, 457)","The system should prevent User B from accessing customer or order details for records not owned by their account. User B should see an empty list, a 'No records found' message, or be redirected to a safe page. The system should not expose any sensitive data.",TC-017
+Verify that the image proxy does not cache or expose sensitive images beyond their intended scope,Image Proxy Service,Security,High,User A is logged in and has uploaded photos for an order. User B is logged in with a different account.,"1. As User A, navigate to the order success page and note the photo URLs.
+2. Open a new incognito/private browsing window and log in as User B.
+3. In the incognito window, attempt to access the photo URLs noted in step 1.
+4. Log out as User B and attempt to access the photo URLs again in the incognito window.
+5. As User A, delete the order or photos associated with the URLs.
+6. As User B, attempt to access the photo URLs again.
+
+Test Data: Photo URLs from User A's order","The system should prevent User B from accessing User A's photos at all times. After User A deletes the order or photos, the URLs should become invalid for all users, including User A. The system should return a '404 Not Found' or '403 Forbidden' status for deleted or inaccessible photos.",TC-018

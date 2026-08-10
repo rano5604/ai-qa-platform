@@ -1,0 +1,307 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Update an existing order with status 'MEASUREMENT_DONE' and verify the changes are reflected,Order Management: Update an existing order,Positive,High,An existing order with status 'MEASUREMENT_DONE' exists in the system (orderId known),"1. Send a PUT request to /api/orders/{orderId} with the payload in testData. 2. Send a GET request to /api/orders/{orderId} to retrieve the updated order details.
+
+Test Data: {
+  ""customerName"": ""Updated Customer Name"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""customerPhotoUrl"": ""http://example.com/updated-photo.jpg"",
+  ""totalAmount"": 2500.00,
+  ""paidAmount"": 1000.00,
+  ""dueAmount"": 1500.00,
+  ""trialDate"": ""2024-12-20"",
+  ""deliveryDate"": ""2024-12-25"",
+  ""shopId"": 1,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""http://example.com/updated-measurement-photo.jpg"",
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""cm"",
+              ""value"": 95.0
+            },
+            {
+              ""name"": ""Waist"",
+              ""unit"": ""cm"",
+              ""value"": 85.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing the updated order summary. 2. HTTP 200 OK response with a JSON body containing the full order details, including updated fields: customerName='Updated Customer Name', customerPhone='5551234567', totalAmount=2500.00, paidAmount=1000.00, dueAmount=1500.00, trialDate='2024-12-20', deliveryDate='2024-12-25', and the updated measurement values.",TC-001
+Attempt to update an existing order with status other than 'MEASUREMENT_DONE' and verify the update is rejected,Order Management: Update an existing order with invalid status,Positive,High,An existing order with status other than 'MEASUREMENT_DONE' exists in the system (orderId known),"1. Send a PUT request to /api/orders/{orderId} with the payload in testData.
+
+Test Data: {
+  ""customerName"": ""Updated Customer Name"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""totalAmount"": 2500.00,
+  ""paidAmount"": 1000.00,
+  ""dueAmount"": 1500.00,
+  ""trialDate"": ""2024-12-20"",
+  ""deliveryDate"": ""2024-12-25"",
+  ""shopId"": 1,
+  ""items"": []
+}",HTTP 400 Bad Request response with an error message: 'Order update not allowed. Status is already <current status>'.,TC-002
+Retrieve the last measurement details for a customer and item combination and verify the correct measurements are returned,Order Management: Retrieve last measurement for a customer and item,Positive,High,An existing order with measurements for the given customer phone and item ID exists in the system,"1. Send a GET request to /api/orders/last-measurement with query parameters phone and itemId as specified in testData.
+
+Test Data: phone=5551234567&itemId=1","HTTP 200 OK response with a JSON body containing: {""itemName"": ""<item name>"", ""measurements"": [{""id"": <non-null number>, ""name"": ""Chest"", ""unit"": ""cm"", ""value"": 95.0}, {""id"": <non-null number>, ""name"": ""Waist"", ""unit"": ""cm"", ""value"": 85.0}]}",d9f8e47-TC-002
+Retrieve all orders for a shop filtered by order gender and verify the results are correct,Order Management: Retrieve orders by shop and order gender,Positive,Medium,Existing orders for the given shop ID and order gender exist in the system,"1. Send a GET request to /api/orders/shop/{shopId}/orderGender/{orderGender} with path variables as specified in testData.
+
+Test Data: shopId=1&orderGender=male","HTTP 200 OK response with a JSON body containing a list of order summaries for the shop with orderGender='male'. Each order summary includes: orderId, shopName, customerName, totalAmount, paidAmount, dueAmount, orderDate, trialDate, deliveryDate, and status.",TC-003
+Verify that order update enforces proper authorization (insecure direct object reference) - unauthorized user cannot update another user's order,Order Management - Order Update,Security,High,1. Two users (User A and User B) exist in the system. 2. User A has an existing order with ID 1001 and status MEASUREMENT_DONE. 3. User B is authenticated but does not own order 1001.,"1. Authenticate as User B. 2. Send a PUT request to /api/orders/1001 with the payload in testData.
+
+Test Data: {
+  ""customerName"": ""Updated Name"",
+  ""customerPhone"": ""+1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhotoUrl"": ""https://example.com/updated-photo.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 150.00,
+  ""paidAmount"": 100.00,
+  ""dueAmount"": 50.00,
+  ""trialDate"": ""2024-12-20"",
+  ""deliveryDate"": ""2024-12-25"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""https://example.com/updated-measurement-photo.jpg"",
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 40.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and the order is not updated. No order details are returned in the response body.",TC-004
+Verify that order update rejects attempts when order status is not MEASUREMENT_DONE,Order Management - Order Update,Security,High,1. User A has an existing order with ID 1002 and status PENDING (not MEASUREMENT_DONE). 2. User A is authenticated and owns order 1002.,"1. Authenticate as User A. 2. Send a PUT request to /api/orders/1002 with the payload in testData.
+
+Test Data: {
+  ""customerName"": ""Updated Name"",
+  ""customerPhone"": ""+1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhotoUrl"": ""https://example.com/updated-photo.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 150.00,
+  ""paidAmount"": 100.00,
+  ""dueAmount"": 50.00,
+  ""trialDate"": ""2024-12-20"",
+  ""deliveryDate"": ""2024-12-25"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""https://example.com/updated-measurement-photo.jpg"",
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 40.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The API responds with HTTP status 400 (Bad Request) and an error message indicating that the order update is not allowed due to its current status (e.g., 'Order update not allowed. Status is already PENDING').",TC-005
+Verify that order update does not expose sensitive system details in error messages,Order Management - Order Update,Security,High,1. No order exists with ID 999999. 2. User A is authenticated.,"1. Authenticate as User A. 2. Send a PUT request to /api/orders/999999 with the payload in testData.
+
+Test Data: {
+  ""customerName"": ""Updated Name"",
+  ""customerPhone"": ""+1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhotoUrl"": ""https://example.com/updated-photo.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 150.00,
+  ""paidAmount"": 100.00,
+  ""dueAmount"": 50.00,
+  ""trialDate"": ""2024-12-20"",
+  ""deliveryDate"": ""2024-12-25"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""https://example.com/updated-measurement-photo.jpg"",
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 40.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The API responds with HTTP status 404 (Not Found) and a generic error message (e.g., 'Order not found with ID: 999999') without revealing internal system details (e.g., stack traces, database errors).",9e06ad6-TC-020
+Verify that last measurement retrieval enforces proper authorization (insecure direct object reference) - unauthorized user cannot access another user's measurements,Order Management - Last Measurement Retrieval,Security,High,1. Two users (User A and User B) exist in the system. 2. User A has an existing order with measurements for item ID 1. 3. User B is authenticated but does not own any orders for item ID 1.,1. Authenticate as User B. 2. Send a GET request to /api/orders/last-measurement?phone=+1234567890&itemId=1 (where +1234567890 is User A's phone number).,"The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and no measurement data is returned in the response body.",ad5f663-TC-020
+Verify that last measurement retrieval rejects injection attempts via special characters in phone number input,Order Management - Last Measurement Retrieval,Security,High,1. User A is authenticated. 2. No customer exists with phone number containing special characters.,1. Authenticate as User A. 2. Send a GET request to /api/orders/last-measurement?phone=+1234567890' OR '1'='1&itemId=1.,"The API responds with HTTP status 400 (Bad Request) or 404 (Not Found), and no measurement data is returned in the response body.",ad5f663-TC-021
+Verify that last measurement retrieval does not expose sensitive system details in error messages,Order Management - Last Measurement Retrieval,Security,High,1. User A is authenticated. 2. No customer exists with phone number +9999999999. 3. No item exists with ID 999999.,1. Authenticate as User A. 2. Send a GET request to /api/orders/last-measurement?phone=+9999999999&itemId=999999.,"The API responds with HTTP status 404 (Not Found) and a generic error message (e.g., 'No last measurement found') without revealing internal system details (e.g., stack traces, database errors).",ad5f663-TC-024
+Verify that last measurement retrieval handles oversized phone number input to prevent overflow or denial of service,Order Management - Last Measurement Retrieval,Security,Medium,1. User A is authenticated.,1. Authenticate as User A. 2. Send a GET request to /api/orders/last-measurement?phone=+1234567890123456789012345678901234567890&itemId=1 (phone number exceeds 30 characters).,The API responds with HTTP status 400 (Bad Request) and an error message indicating that the phone number length exceeds the allowed limit.,TC-006
+Verify that order retrieval by shop ID and gender enforces proper authorization (insecure direct object reference) - unauthorized user cannot access another shop's orders,Order Management - Order Retrieval by Shop and Gender,Security,High,1. Two shops (Shop A and Shop B) exist in the system. 2. User A is authenticated and belongs to Shop A. 3. Shop B has existing orders with gender MALE.,1. Authenticate as User A. 2. Send a GET request to /api/orders/shop/2/orderGender/MALE (where 2 is Shop B's ID).,"The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and no order data is returned in the response body.",TC-007
+Verify that order update rejects path traversal sequences in photo URLs to prevent unauthorized file access,Order Management - Order Update,Security,High,1. User A is authenticated and owns an existing order with ID 1003 and status MEASUREMENT_DONE.,"1. Authenticate as User A. 2. Send a PUT request to /api/orders/1003 with the payload in testData (containing path traversal sequences in photoUrl).
+
+Test Data: {
+  ""customerName"": ""Updated Name"",
+  ""customerPhone"": ""+1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhotoUrl"": ""https://example.com/../../malicious.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 150.00,
+  ""paidAmount"": 100.00,
+  ""dueAmount"": 50.00,
+  ""trialDate"": ""2024-12-20"",
+  ""deliveryDate"": ""2024-12-25"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""https://example.com/../../malicious-measurement.jpg"",
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 40.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The API responds with HTTP status 400 (Bad Request) and an error message indicating invalid photo URL (e.g., 'Invalid photo URL format').",TC-008
+Verify that order update rejects malformed or excessively large measurement values to prevent overflow or injection,Order Management - Order Update,Security,High,1. User A is authenticated and owns an existing order with ID 1004 and status MEASUREMENT_DONE.,"1. Authenticate as User A. 2. Send a PUT request to /api/orders/1004 with the payload in testData (containing excessively large measurement value).
+
+Test Data: {
+  ""customerName"": ""Updated Name"",
+  ""customerPhone"": ""+1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhotoUrl"": ""https://example.com/updated-photo.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 150.00,
+  ""paidAmount"": 100.00,
+  ""dueAmount"": 50.00,
+  ""trialDate"": ""2024-12-20"",
+  ""deliveryDate"": ""2024-12-25"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""https://example.com/updated-measurement-photo.jpg"",
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 9999999999.99
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The API responds with HTTP status 400 (Bad Request) and an error message indicating invalid measurement value (e.g., 'Measurement value exceeds allowed limit').",TC-009
+Update an existing order with valid details,Order Management,Configuration,High,"An order exists with ID 123, status MEASUREMENT_DONE, and belongs to shop ID 456","1. Send a PUT request to /api/orders/123 with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""customerName"": ""Jane Smith"",
+  ""customerPhone"": ""9876543210"",
+  ""customerGender"": ""FEMALE"",
+  ""orderGender"": ""FEMALE"",
+  ""customerPhotoUrl"": ""https://example.com/photos/jane.jpg"",
+  ""totalAmount"": 1500,
+  ""paidAmount"": 750,
+  ""dueAmount"": 750,
+  ""trialDate"": ""2024-12-15"",
+  ""deliveryDate"": ""2024-12-25"",
+  ""shopId"": 456,
+  ""items"": [
+    {
+      ""itemId"": 789,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""https://example.com/measurements/jane-dress.jpg"",
+          ""measurements"": [
+            {""name"": ""Chest"", ""unit"": ""inch"", ""value"": 34},
+            {""name"": ""Waist"", ""unit"": ""inch"", ""value"": 28}
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing: {""orderId"": 123, ""shopName"": ""string"", ""customerName"": ""Jane Smith"", ""customerPhone"": ""9876543210"", ""totalAmount"": 1500, ""paidAmount"": 750, ""dueAmount"": 750, ""orderDate"": ""string"", ""trialDate"": ""2024-12-15"", ""deliveryDate"": ""2024-12-25"", ""status"": ""MEASUREMENT_DONE""}",TC-010
+Retrieve the last measurement for a customer and item combination,Order Management,Configuration,High,A customer with phone number 1234567890 has at least one order for item ID 789 with measurements recorded,1. Send a GET request to /api/orders/last-measurement?phone=1234567890&itemId=789. 2. Verify the response status and body.,"HTTP 200 OK response with a JSON body containing: {""itemName"": ""string"", ""measurements"": [{""id"": number, ""name"": ""Chest"", ""unit"": ""inch"", ""value"": 34}, {""id"": number, ""name"": ""Waist"", ""unit"": ""inch"", ""value"": 28}]}",TC-011
+Filter orders by shop and gender,Order Management,Configuration,Medium,Shop ID 456 has at least one order with orderGender FEMALE,1. Send a GET request to /api/orders/shop/456/orderGender/FEMALE. 2. Verify the response status and body.,"HTTP 200 OK response with a JSON array body containing at least one order summary with orderGender FEMALE: [{""orderId"": number, ""shopName"": ""string"", ""customerName"": ""string"", ""customerPhone"": ""string"", ""totalAmount"": number, ""paidAmount"": number, ""dueAmount"": number, ""orderDate"": ""string"", ""trialDate"": ""string"", ""deliveryDate"": ""string"", ""status"": ""string"", ""items"": [{""itemName"": ""string"", ""count"": number}]}]",TC-012
+Attempt to update an order with status other than MEASUREMENT_DONE,Order Management,Configuration,High,"An order exists with ID 456, status PENDING, and belongs to shop ID 789","1. Send a PUT request to /api/orders/456 with the payload in testData. 2. Verify the response status and error message.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhotoUrl"": ""https://example.com/photos/john.jpg"",
+  ""totalAmount"": 1000,
+  ""paidAmount"": 500,
+  ""dueAmount"": 500,
+  ""trialDate"": ""2024-12-10"",
+  ""deliveryDate"": ""2024-12-20"",
+  ""shopId"": 789,
+  ""items"": [
+    {
+      ""itemId"": 123,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""https://example.com/measurements/john-suit.jpg"",
+          ""measurements"": [
+            {""name"": ""Chest"", ""unit"": ""inch"", ""value"": 40},
+            {""name"": ""Waist"", ""unit"": ""inch"", ""value"": 34}
+          ]
+        }
+      ]
+    }
+  ]
+}",HTTP 400 Bad Request or 500 Internal Server Error response with an error message: 'Order update not allowed. Status is already PENDING',TC-013
+Verify the addition of spring-tx dependency does not break existing transactional operations or introduce conflicts,Spring Transaction Management Dependency,Configuration,High,"Application built with the updated pom.xml, all dependencies resolved, and database connection configured","1. Deploy the application with the updated configuration. 2. Trigger an operation that involves transaction management (e.g., order creation with image uploads). 3. Observe the logs for transaction-related errors or warnings. 4. Verify the operation completes successfully without rollback or unexpected behavior.
+
+Test Data: New dependency: org.springframework:spring-tx (version inherited from parent POM). Existing operations: order creation with image uploads (ID=d9f8e47-TC-013, ID=d9f8e47-TC-014).","Order creation and other transactional operations complete successfully. No transaction-related errors (e.g., 'No qualifying bean of type PlatformTransactionManager') appear in logs. Rollback behavior remains unchanged for failed operations.",TC-014
+Verify transitive dependency conflicts do not arise from the addition of spring-tx,Spring Transaction Management Dependency,Configuration,High,"Application built with the updated pom.xml, dependency tree generated (e.g., using `mvn dependency:tree`)","1. Generate the dependency tree for the project. 2. Check for version conflicts or duplicate dependencies related to Spring (e.g., spring-core, spring-beans, spring-tx). 3. Deploy the application. 4. Verify no ClassNotFoundException, NoSuchMethodError, or other runtime errors related to Spring dependencies appear in logs.
+
+Test Data: New dependency: org.springframework:spring-tx. Potential conflicts: existing Spring dependencies (e.g., spring-context, spring-web).",Dependency tree shows no version conflicts for Spring dependencies. Application starts without runtime errors related to Spring or transaction management.,TC-015
+Verify the project builds successfully with the new dependency and produces the correct artifact,Build and Packaging,Configuration,High,Clean local Maven repository or use `mvn clean install`,"1. Run `mvn clean install` on the project. 2. Verify the build completes without errors. 3. Check the target directory for the generated artifact (e.g., JAR/WAR file). 4. Verify the artifact size and contents are consistent with expectations (no unexpected dependencies or missing classes).
+
+Test Data: New dependency: org.springframework:spring-tx. Build command: `mvn clean install`.",Build completes with SUCCESS status. Artifact is generated in the target directory with no missing or unexpected dependencies. No build errors related to dependency resolution.,TC-016
+Verify order creation with image uploads remains unaffected by the spring-tx dependency addition (UPDATE existing test case),Order Creation with Image Uploads,Configuration,High,"Application deployed with the updated pom.xml, MinIO endpoint running, test image files available","1. Deploy the application with the updated configuration. 2. Send a POST request to the order creation endpoint with valid image uploads. 3. Verify the response and database state.
+
+Test Data: New dependency: org.springframework:spring-tx. Test case: order creation with image uploads (existing ID=d9f8e47-TC-013).","HTTP 201 Created response with a JSON body containing: {""orderId"": ""string"", ""shopName"": ""string"", ""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""totalAmount"": 1000, ""paidAmount"": 500, ...}. All images are uploaded successfully to MinIO, and the order is persisted in the database.",d9f8e47-TC-013
+"Verify order creation rolls back all images if any image upload fails, unaffected by spring-tx dependency (UPDATE existing test case)",Order Creation with Image Upload Failure,Configuration,High,"Application deployed with the updated pom.xml, MinIO endpoint running, invalid image file (e.g., corrupted or unsupported format) prepared","1. Deploy the application with the updated configuration. 2. Send a POST request to the order creation endpoint with an invalid image file. 3. Verify the response and system state.
+
+Test Data: New dependency: org.springframework:spring-tx. Test case: order creation with image upload failure (existing ID=d9f8e47-TC-014).","HTTP 500 Internal Server Error response with a JSON body containing an error message indicating the failure. No order is created, and no images are stored in MinIO or the database.",d9f8e47-TC-014

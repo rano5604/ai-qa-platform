@@ -1,0 +1,25 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Add shop holiday with missing shopId,Shop Holiday Management,Negative,High,Shop holiday endpoint is available,"1. Send a POST request to /api/shop-holidays/add with the payload in testData. 2. Verify the response.
+
+Test Data: {""shopId"": null, ""holidayDate"": ""2024-01-01"", ""reason"": ""New Year""}",HTTP 400 Bad Request with error message indicating shopId is required,TC-001
+Add shop holiday with invalid holidayDate,Shop Holiday Management,Negative,High,Shop holiday endpoint is available,"1. Send a POST request to /api/shop-holidays/add with the payload in testData. 2. Verify the response.
+
+Test Data: {""shopId"": 1, ""holidayDate"": ""invalid-date"", ""reason"": ""New Year""}",HTTP 400 Bad Request with error message indicating holidayDate format is invalid,TC-002
+Add shop holiday with duplicate date,Shop Holiday Management,Negative,Medium,Shop holiday endpoint is available and a holiday already exists for the shop on the given date,"1. Send a POST request to /api/shop-holidays/add with the payload in testData. 2. Verify the response.
+
+Test Data: {""shopId"": 1, ""holidayDate"": ""2024-01-01"", ""reason"": ""New Year""}",HTTP 409 Conflict with error message indicating shop already has a holiday on the given date,TC-003
+Set shop slot with missing shopId,Slot Management,Negative,High,Slot endpoint is available,"1. Send a POST request to /api/slots/set with the payload in testData. 2. Verify the response.
+
+Test Data: {""shopId"": null, ""slotType"": ""MORNING"", ""startTime"": ""08:00"", ""endTime"": ""12:00""}",HTTP 400 Bad Request with error message indicating shopId is required,TC-004
+Set shop slot with invalid startTime,Slot Management,Negative,High,Slot endpoint is available,"1. Send a POST request to /api/slots/set with the payload in testData. 2. Verify the response.
+
+Test Data: {""shopId"": 1, ""slotType"": ""MORNING"", ""startTime"": ""invalid-time"", ""endTime"": ""12:00""}",HTTP 400 Bad Request with error message indicating startTime format is invalid,TC-005
+Add worker holiday with missing workerId,Worker Holiday Management,Negative,High,Worker holiday endpoint is available,"1. Send a POST request to /api/worker-holidays/add with the payload in testData. 2. Verify the response.
+
+Test Data: {""workerId"": null, ""holidayDate"": ""2024-01-01"", ""reason"": ""New Year""}",HTTP 400 Bad Request with error message indicating workerId is required,TC-006
+Add worker holiday with invalid holidayDate,Worker Holiday Management,Negative,High,Worker holiday endpoint is available,"1. Send a POST request to /api/worker-holidays/add with the payload in testData. 2. Verify the response.
+
+Test Data: {""workerId"": 1, ""holidayDate"": ""invalid-date"", ""reason"": ""New Year""}",HTTP 400 Bad Request with error message indicating holidayDate format is invalid,TC-007
+Add worker holiday with duplicate date,Worker Holiday Management,Negative,Medium,Worker holiday endpoint is available and a holiday already exists for the worker on the given date,"1. Send a POST request to /api/worker-holidays/add with the payload in testData. 2. Verify the response.
+
+Test Data: {""workerId"": 1, ""holidayDate"": ""2024-01-01"", ""reason"": ""New Year""}",HTTP 409 Conflict with error message indicating worker already has a holiday on the given date,TC-008

@@ -1,0 +1,88 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Successfully add a new weekend day for a shop,Shop Weekend Management,Positive,High,A shop with ID 100 exists in the system,"1. Send a POST request to /api/shops/100/weekends with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""dayOfWeek"": ""SATURDAY""}","Response status code is 200. The response body contains the newly created weekend details, including 'shopId' as 100 and 'dayOfWeek' as 'SATURDAY'.",TC-001
+Successfully retrieve all weekend days for a shop,Shop Weekend Management,Positive,High,"A shop with ID 100 exists in the system and has at least one weekend day configured (e.g., SATURDAY)",1. Send a GET request to /api/shops/100/weekends. 2. Verify the response status and body.,"Response status code is 200. The response body contains a list of weekend days for the shop, including 'shopId' as 100 and 'dayOfWeek' values (e.g., 'SATURDAY').",TC-002
+Successfully update an existing weekend day for a shop to a new day (future dates only),Shop Weekend Management,Positive,High,"A shop with ID 100 exists in the system and has a weekend day configured (e.g., SATURDAY). The current day is not SATURDAY.","1. Send a PUT request to /api/shops/100/weekends with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""oldDay"": ""SATURDAY"", ""newDay"": ""SUNDAY""}","Response status code is 200. The response body contains the updated weekend details, including 'shopId' as 100 and 'dayOfWeek' as 'SUNDAY'.",TC-003
+Successfully delete an existing weekend day for a shop,Shop Weekend Management,Positive,High,"A shop with ID 100 exists in the system and has a weekend day configured (e.g., SATURDAY)","1. Send a DELETE request to /api/shops/100/weekends with the payload in testData. 2. Verify the response status.
+
+Test Data: {""dayOfWeek"": ""SATURDAY""}",Response status code is 204 (No Content).,TC-004
+Fail to add a duplicate weekend day for a shop,Shop Weekend Management,Positive,Medium,"A shop with ID 100 exists in the system and already has a weekend day configured (e.g., SATURDAY)","1. Send a POST request to /api/shops/100/weekends with the payload in testData. 2. Verify the response status and error message.
+
+Test Data: {""dayOfWeek"": ""SATURDAY""}",Response status code is 400. The response body contains an error message: 'Weekend already set for this day.',TC-005
+Attempt to retrieve weekends for a non-existent shop,Shop Weekend Management,Negative,High,No shop with the specified ID exists in the system,1. Send a GET request to /api/shops/999999/weekends.,The system should return an HTTP 404 Not Found status code with an error message indicating that the shop was not found.,TC-006
+Attempt to retrieve weekends with a non-numeric shopId,Shop Weekend Management,Negative,High,No preconditions required,1. Send a GET request to /api/shops/abc/weekends.,The system should return an HTTP 400 Bad Request status code with an error message indicating that the shopId must be a valid number.,TC-007
+Attempt to add a weekend for a non-existent shop,Shop Weekend Management,Negative,High,No shop with the specified ID exists in the system,"1. Send a POST request to /api/shops/999999/weekends with the payload in testData.
+
+Test Data: {""dayOfWeek"": ""SATURDAY""}",The system should return an HTTP 404 Not Found status code with an error message indicating that the shop was not found.,TC-008
+Attempt to add a weekend with a non-numeric shopId,Shop Weekend Management,Negative,High,No preconditions required,"1. Send a POST request to /api/shops/abc/weekends with the payload in testData.
+
+Test Data: {""dayOfWeek"": ""SATURDAY""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the shopId must be a valid number.,TC-009
+Attempt to add a weekend with missing dayOfWeek field,Shop Weekend Management,Negative,High,A valid shop exists in the system,"1. Send a POST request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the dayOfWeek field is required.,TC-010
+Attempt to add a weekend with null dayOfWeek field,Shop Weekend Management,Negative,High,A valid shop exists in the system,"1. Send a POST request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {""dayOfWeek"": null}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the dayOfWeek field cannot be null.,TC-011
+Attempt to add a weekend with an invalid dayOfWeek value,Shop Weekend Management,Negative,High,A valid shop exists in the system,"1. Send a POST request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {""dayOfWeek"": ""INVALID_DAY""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the dayOfWeek value is invalid.,TC-012
+Attempt to add a duplicate weekend for the same shop,Shop Weekend Management,Negative,High,A valid shop exists in the system and already has a weekend set for SATURDAY,"1. Send a POST request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {""dayOfWeek"": ""SATURDAY""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the weekend is already set for this day.,TC-013
+Attempt to update a weekend for a non-existent shop,Shop Weekend Management,Negative,High,No shop with the specified ID exists in the system,"1. Send a PUT request to /api/shops/999999/weekends with the payload in testData.
+
+Test Data: {""oldDay"": ""SATURDAY"", ""newDay"": ""SUNDAY""}",The system should return an HTTP 404 Not Found status code with an error message indicating that the shop was not found.,TC-014
+Attempt to update a weekend with a non-numeric shopId,Shop Weekend Management,Negative,High,No preconditions required,"1. Send a PUT request to /api/shops/abc/weekends with the payload in testData.
+
+Test Data: {""oldDay"": ""SATURDAY"", ""newDay"": ""SUNDAY""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the shopId must be a valid number.,TC-015
+Attempt to update a weekend with missing oldDay field,Shop Weekend Management,Negative,High,A valid shop and weekend exist in the system,"1. Send a PUT request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {""newDay"": ""SUNDAY""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the oldDay field is required.,TC-016
+Attempt to update a weekend with missing newDay field,Shop Weekend Management,Negative,High,A valid shop and weekend exist in the system,"1. Send a PUT request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {""oldDay"": ""SATURDAY""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the newDay field is required.,TC-017
+Attempt to update a weekend with null oldDay field,Shop Weekend Management,Negative,High,A valid shop and weekend exist in the system,"1. Send a PUT request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {""oldDay"": null, ""newDay"": ""SUNDAY""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the oldDay field cannot be null.,TC-018
+Attempt to update a weekend with null newDay field,Shop Weekend Management,Negative,High,A valid shop and weekend exist in the system,"1. Send a PUT request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {""oldDay"": ""SATURDAY"", ""newDay"": null}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the newDay field cannot be null.,TC-019
+Attempt to update a weekend with invalid oldDay value,Shop Weekend Management,Negative,High,A valid shop and weekend exist in the system,"1. Send a PUT request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {""oldDay"": ""INVALID_DAY"", ""newDay"": ""SUNDAY""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the oldDay value is invalid.,TC-020
+Attempt to update a weekend with invalid newDay value,Shop Weekend Management,Negative,High,A valid shop and weekend exist in the system,"1. Send a PUT request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {""oldDay"": ""SATURDAY"", ""newDay"": ""INVALID_DAY""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the newDay value is invalid.,TC-021
+Attempt to update a non-existent weekend for a shop,Shop Weekend Management,Negative,High,A valid shop exists in the system but has no weekend set for MONDAY,"1. Send a PUT request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {""oldDay"": ""MONDAY"", ""newDay"": ""SUNDAY""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the weekend was not found.,TC-022
+Attempt to update a weekend for today's date,Shop Weekend Management,Negative,High,"A valid shop and weekend exist in the system, and today is SATURDAY","1. Send a PUT request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {""oldDay"": ""SATURDAY"", ""newDay"": ""SUNDAY""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the weekend cannot be updated for today.,TC-023
+Attempt to delete a weekend for a non-existent shop,Shop Weekend Management,Negative,High,No shop with the specified ID exists in the system,"1. Send a DELETE request to /api/shops/999999/weekends with the payload in testData.
+
+Test Data: {""dayOfWeek"": ""SATURDAY""}",The system should return an HTTP 404 Not Found status code with an error message indicating that the shop was not found.,TC-024
+Attempt to delete a weekend with a non-numeric shopId,Shop Weekend Management,Negative,High,No preconditions required,"1. Send a DELETE request to /api/shops/abc/weekends with the payload in testData.
+
+Test Data: {""dayOfWeek"": ""SATURDAY""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the shopId must be a valid number.,TC-025
+Attempt to delete a weekend with missing dayOfWeek field,Shop Weekend Management,Negative,High,A valid shop exists in the system,"1. Send a DELETE request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the dayOfWeek field is required.,TC-026
+Attempt to delete a weekend with null dayOfWeek field,Shop Weekend Management,Negative,High,A valid shop exists in the system,"1. Send a DELETE request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {""dayOfWeek"": null}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the dayOfWeek field cannot be null.,TC-027
+Attempt to delete a weekend with an invalid dayOfWeek value,Shop Weekend Management,Negative,High,A valid shop exists in the system,"1. Send a DELETE request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {""dayOfWeek"": ""INVALID_DAY""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the dayOfWeek value is invalid.,TC-028
+Attempt to delete a non-existent weekend for a shop,Shop Weekend Management,Negative,High,A valid shop exists in the system but has no weekend set for MONDAY,"1. Send a DELETE request to /api/shops/1/weekends with the payload in testData.
+
+Test Data: {""dayOfWeek"": ""MONDAY""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the weekend was not found.,TC-029
+Attempt to add a weekend with missing shopId path variable,Shop Weekend Management,Negative,High,No preconditions required,"1. Send a POST request to /api/shops//weekends with the payload in testData.
+
+Test Data: {""dayOfWeek"": ""SATURDAY""}",The system should return an HTTP 404 Not Found status code or an HTTP 400 Bad Request status code with an error message indicating that the shopId path variable is required.,92de9f2-TC-018
+Attempt to update a weekend with missing shopId path variable,Shop Weekend Management,Negative,High,No preconditions required,"1. Send a PUT request to /api/shops//weekends with the payload in testData.
+
+Test Data: {""oldDay"": ""SATURDAY"", ""newDay"": ""SUNDAY""}",The system should return an HTTP 404 Not Found status code or an HTTP 400 Bad Request status code with an error message indicating that the shopId path variable is required.,92de9f2-TC-019

@@ -1,0 +1,40 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Attempt to record an expense with no source selected,Transaction Recording,Negative,High,User is logged in and on the 'Add Transaction' screen with an expense type selected,"1. Enter a valid amount (e.g., 500). 2. Leave the 'Source' field unselected. 3. Tap the 'Save' button.
+
+Test Data: Amount: 500, Type: Expense, Source: (none selected)",The system displays an error message 'Source is required' and does not save the transaction. The 'Save' button remains disabled until a source is selected.,TC-001
+Attempt to record a transaction with a negative amount,Transaction Recording,Negative,High,User is logged in and on the 'Add Transaction' screen,"1. Select 'Income' as the transaction type. 2. Enter a negative amount (e.g., -100). 3. Select a valid source (e.g., 'Bank'). 4. Tap the 'Save' button.
+
+Test Data: Amount: -100, Type: Income, Source: Bank",The system displays an error message 'Amount must be positive' and does not save the transaction. The amount field is highlighted in red.,TC-002
+Attempt to record an expense exceeding the available balance in the selected source,Transaction Recording,Negative,High,User has a bank balance of 1000 and is on the 'Add Transaction' screen,"1. Select 'Expense' as the transaction type. 2. Enter an amount (e.g., 1500) greater than the available bank balance. 3. Select 'Bank' as the source. 4. Tap the 'Save' button.
+
+Test Data: Amount: 1500, Type: Expense, Source: Bank, Available Balance: 1000",The system displays an amber warning banner 'This transaction exceeds your available balance. Record as Credit/Loan?' and changes the call-to-action button to 'Record as Credit/Loan'. The transaction is not saved as a regular expense.,TC-003
+Attempt to record a withdrawal exceeding the available bank balance,Transaction Recording,Negative,High,User has a bank balance of 1000 and is on the 'Add Transaction' screen,"1. Select 'Withdrawal' as the transaction type. 2. Enter an amount (e.g., 1500) greater than the available bank balance. 3. Tap the 'Save' button.
+
+Test Data: Amount: 1500, Type: Withdrawal, Available Balance: 1000",The system displays an error message 'Withdrawal amount cannot exceed bank balance' and does not save the transaction. The amount field is highlighted in red.,TC-004
+Attempt to record a transaction with a non-numeric amount,Transaction Recording,Negative,High,User is logged in and on the 'Add Transaction' screen,"1. Select 'Income' as the transaction type. 2. Enter a non-numeric value (e.g., 'abc') in the amount field. 3. Select a valid source (e.g., 'Bank'). 4. Tap the 'Save' button.
+
+Test Data: Amount: abc, Type: Income, Source: Bank",The system displays an error message 'Amount must be a valid number' and does not save the transaction. The amount field is highlighted in red.,TC-005
+Attempt to record a transaction with an invalid source for the selected type,Transaction Recording,Negative,Medium,User is logged in and on the 'Add Transaction' screen,"1. Select 'Withdrawal' as the transaction type. 2. Manually enter an invalid source (e.g., 'Cash') that is not allowed for withdrawals. 3. Enter a valid amount (e.g., 500). 4. Tap the 'Save' button.
+
+Test Data: Amount: 500, Type: Withdrawal, Source: Cash",The system displays an error message 'Invalid source for withdrawal' and does not save the transaction. The source field is highlighted in red.,TC-006
+Attempt to edit a transaction to exceed the available balance without credit flag,Transaction Recording,Negative,High,User has an existing expense transaction of 500 from 'Bank' with a current bank balance of 1000,"1. Open the existing transaction for editing. 2. Change the amount to 1500 (exceeding the available balance). 3. Ensure the 'Record as Credit/Loan' option is unchecked. 4. Tap the 'Save' button.
+
+Test Data: Original Amount: 500, New Amount: 1500, Type: Expense, Source: Bank, Available Balance: 1000",The system displays an amber warning banner 'This transaction exceeds your available balance. Record as Credit/Loan?' and changes the call-to-action button to 'Record as Credit/Loan'. The transaction is not saved as a regular expense.,TC-007
+Attempt to record a transaction with no title,Transaction Recording,Negative,Medium,User is logged in and on the 'Add Transaction' screen,"1. Leave the 'Title' field empty. 2. Enter a valid amount (e.g., 500). 3. Select a valid type (e.g., 'Expense') and source (e.g., 'Bank'). 4. Tap the 'Save' button.
+
+Test Data: Title: (empty), Amount: 500, Type: Expense, Source: Bank",The system displays an error message 'Title is required' and does not save the transaction. The title field is highlighted in red.,TC-008
+Attempt to record a transaction with a future date,Transaction Recording,Negative,Medium,User is logged in and on the 'Add Transaction' screen,"1. Enter a valid title (e.g., 'Test'). 2. Enter a valid amount (e.g., 500). 3. Select a date in the future (e.g., tomorrow). 4. Select a valid type (e.g., 'Expense') and source (e.g., 'Bank'). 5. Tap the 'Save' button.
+
+Test Data: Title: Test, Amount: 500, Date: Tomorrow, Type: Expense, Source: Bank",The system displays an error message 'Date cannot be in the future' and does not save the transaction. The date field is highlighted in red.,TC-009
+Attempt to record an income with an invalid source for income type,Transaction Recording,Negative,Medium,User is logged in and on the 'Add Transaction' screen,"1. Select 'Income' as the transaction type. 2. Manually enter an invalid source (e.g., 'Cheque' not listed in income sources). 3. Enter a valid amount (e.g., 500). 4. Tap the 'Save' button.
+
+Test Data: Amount: 500, Type: Income, Source: Cheque",The system displays an error message 'Invalid source for income' and does not save the transaction. The source field is highlighted in red.,TC-010
+Attempt to record a transaction with an extremely large amount,Transaction Recording,Negative,Low,User is logged in and on the 'Add Transaction' screen,"1. Select 'Expense' as the transaction type. 2. Enter an extremely large amount (e.g., 999999999999). 3. Select a valid source (e.g., 'Bank'). 4. Tap the 'Save' button.
+
+Test Data: Amount: 999999999999, Type: Expense, Source: Bank",The system either truncates the amount to a reasonable limit or displays an error message 'Amount is too large' and does not save the transaction. The amount field is highlighted in red.,TC-011
+Attempt to record a withdrawal with zero amount,Transaction Recording,Negative,Medium,User is logged in and on the 'Add Transaction' screen,"1. Select 'Withdrawal' as the transaction type. 2. Enter 0 in the amount field. 3. Tap the 'Save' button.
+
+Test Data: Amount: 0, Type: Withdrawal",The system displays an error message 'Amount must be greater than zero' and does not save the transaction. The amount field is highlighted in red.,TC-012
+Attempt to record a transaction with a source not listed in the dropdown,Transaction Recording,Negative,Medium,User is logged in and on the 'Add Transaction' screen,"1. Select 'Expense' as the transaction type. 2. Manually type a source not listed in the dropdown (e.g., 'PayPal'). 3. Enter a valid amount (e.g., 500). 4. Tap the 'Save' button.
+
+Test Data: Amount: 500, Type: Expense, Source: PayPal",The system displays an error message 'Invalid source selected' and does not save the transaction. The source field is highlighted in red.,TC-013

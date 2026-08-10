@@ -1,0 +1,90 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a new item and verify the new API response format,Item Management - API Response Format,Positive,High,No preconditions required,"1. Send a POST request to /api/items with the payload in testData. 2. Verify the response matches the expected format and values.
+
+Test Data: {
+  ""nameEn"": ""Formal Shirt"",
+  ""nameBn"": ""ফরমাল শার্ট"",
+  ""status"": ""ACTIVE""
+}","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Item created successfully"", ""data"": {""id"": <non-null number>, ""nameEn"": ""Formal Shirt"", ""nameBn"": ""ফরমাল শার্ট"", ""status"": ""ACTIVE""}, ""meta"": null}",57abde9-TC-001
+Update an existing item and verify the new API response format,Item Management - API Response Format,Positive,High,An item with ID 1 exists in the system,"1. Send a PUT request to /api/items/1 with the payload in testData. 2. Verify the response matches the expected format and values.
+
+Test Data: {
+  ""nameEn"": ""Casual Shirt"",
+  ""nameBn"": ""ক্যাজুয়াল শার্ট"",
+  ""status"": ""ACTIVE""
+}","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Item updated successfully"", ""data"": {""id"": 1, ""nameEn"": ""Casual Shirt"", ""nameBn"": ""ক্যাজুয়াল শার্ট"", ""status"": ""ACTIVE""}, ""meta"": null}",50aa351-TC-001
+Retrieve an item by ID and verify the new API response format,Item Management - API Response Format,Positive,High,An item with ID 1 exists in the system,1. Send a GET request to /api/items/1. 2. Verify the response matches the expected format and values.,"HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Item fetched successfully"", ""data"": {""id"": 1, ""nameEn"": ""Formal Shirt"", ""nameBn"": ""ফরমাল শার্ট"", ""status"": ""ACTIVE""}, ""meta"": null}",a9395cb-TC-001
+Retrieve an item by name and verify the new API response format,Item Management - API Response Format,Positive,High,An item with name 'Formal Shirt' exists in the system,1. Send a GET request to /api/items/by-name?name=Formal Shirt. 2. Verify the response matches the expected format and values.,"HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Item fetched successfully"", ""data"": {""id"": <non-null number>, ""nameEn"": ""Formal Shirt"", ""nameBn"": ""ফরমাল শার্ট"", ""status"": ""ACTIVE""}, ""meta"": null}",a9395cb-TC-002
+Create a new order with both numeric and boolean measurement parameters,Order Management - Measurement Parameter Types,Positive,High,"An item with ID 1 exists in the system with both numeric and boolean measuring parameters (e.g., Chest, Single Pocket)","1. Send a POST request to /api/orders (assumed endpoint for order creation) with the payload in testData. 2. Verify the response matches the expected format and values.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inch"",
+              ""value"": ""40.0"",
+              ""type"": ""NUMERIC""
+            },
+            {
+              ""nameEn"": ""Single Pocket"",
+              ""nameBn"": ""এক পকেট"",
+              ""unit"": null,
+              ""value"": ""true"",
+              ""type"": ""BOOLEAN""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order created successfully"", ""data"": {""orderId"": <non-null number>, ""customerName"": ""John Doe"", ""items"": [{""measurementGroups"": [{""measurements"": [{""nameEn"": ""Chest"", ""nameBn"": ""বুক"", ""unit"": ""inch"", ""value"": 40.0, ""booleanValue"": null}, {""nameEn"": ""Single Pocket"", ""nameBn"": ""এক পকেট"", ""unit"": null, ""value"": null, ""booleanValue"": true}]}]}]}}",TC-001
+Attempt to create an item with missing required request body,Item Management,Negative,High,None,"1. Send a POST request to /api/items with an empty request body.
+
+Test Data: {}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the request body is required and cannot be empty.,TC-002
+Attempt to update an item with a non-existent ID,Item Management,Negative,High,None,"1. Send a PUT request to /api/items/999999 with a valid ItemRequest payload.
+
+Test Data: {""nameEn"": ""Shirt"", ""nameBn"": ""শার্ট"", ""measuringParameters"": []}",The system returns an HTTP 404 Not Found status code with an error message indicating that the item with ID 999999 does not exist.,TC-003
+Attempt to update an item with a non-numeric ID,Item Management,Negative,High,None,"1. Send a PUT request to /api/items/abc with a valid ItemRequest payload.
+
+Test Data: {""nameEn"": ""Shirt"", ""nameBn"": ""শার্ট"", ""measuringParameters"": []}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the item ID must be a valid numeric value.,TC-004
+Attempt to retrieve an item with a non-numeric ID,Item Management,Negative,High,None,1. Send a GET request to /api/items/abc.,The system returns an HTTP 400 Bad Request status code with an error message indicating that the item ID must be a valid numeric value.,TC-005
+Attempt to retrieve an item with a non-existent ID,Item Management,Negative,High,None,1. Send a GET request to /api/items/999999.,The system returns an HTTP 404 Not Found status code with an error message indicating that the item with ID 999999 does not exist.,TC-006
+Attempt to retrieve an item by name with a missing name parameter,Item Management,Negative,High,None,1. Send a GET request to /api/items/by-name without the 'name' query parameter.,The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'name' query parameter is required.,TC-007
+Attempt to create an order with a measurement parameter containing missing type field,Order Measurement Management,Negative,High,None,"1. Send a POST request to /api/orders (or relevant endpoint) with a measurement parameter missing the 'type' field.
+
+Test Data: {""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": [{""measurements"": [{""nameEn"": ""Chest"", ""nameBn"": ""বুক"", ""unit"": ""inch"", ""value"": ""44.0""}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'type' field is required for measurements and cannot be blank.,TC-008
+Attempt to create an order with a measurement parameter containing an invalid type value,Order Measurement Management,Negative,High,None,"1. Send a POST request to /api/orders (or relevant endpoint) with a measurement parameter containing an invalid 'type' value.
+
+Test Data: {""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": [{""measurements"": [{""nameEn"": ""Chest"", ""nameBn"": ""বুক"", ""unit"": ""inch"", ""value"": ""44.0"", ""type"": ""INVALID_TYPE""}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'type' field must be either 'NUMERIC' or 'BOOLEAN'.,TC-009
+Attempt to create an order with a NUMERIC measurement parameter containing a non-numeric value,Order Measurement Management,Negative,High,None,"1. Send a POST request to /api/orders (or relevant endpoint) with a NUMERIC measurement parameter containing a non-numeric 'value'.
+
+Test Data: {""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": [{""measurements"": [{""nameEn"": ""Chest"", ""nameBn"": ""বুক"", ""unit"": ""inch"", ""value"": ""abc"", ""type"": ""NUMERIC""}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'value' field must be a valid number for NUMERIC measurements.,843da89-TC-007
+Attempt to create an order with a BOOLEAN measurement parameter containing an invalid boolean value,Order Measurement Management,Negative,High,None,"1. Send a POST request to /api/orders (or relevant endpoint) with a BOOLEAN measurement parameter containing an invalid 'value'.
+
+Test Data: {""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": [{""measurements"": [{""nameEn"": ""Single Pocket"", ""nameBn"": ""সিঙ্গেল পকেট"", ""unit"": null, ""value"": ""yes"", ""type"": ""BOOLEAN""}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'value' field must be either 'true' or 'false' for BOOLEAN measurements.,TC-010
+Attempt to create an order with a NUMERIC measurement parameter containing a unit field set to null for BOOLEAN type,Order Measurement Management,Negative,Medium,None,"1. Send a POST request to /api/orders (or relevant endpoint) with a BOOLEAN measurement parameter containing a non-null 'unit' field.
+
+Test Data: {""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": [{""measurements"": [{""nameEn"": ""Single Pocket"", ""nameBn"": ""সিঙ্গেল পকেট"", ""unit"": ""inch"", ""value"": ""true"", ""type"": ""BOOLEAN""}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'unit' field must be null for BOOLEAN measurements.,TC-011
+Attempt to create an order with a BOOLEAN measurement parameter containing a non-null unit field,Order Measurement Management,Negative,Medium,None,"1. Send a POST request to /api/orders (or relevant endpoint) with a NUMERIC measurement parameter containing a null 'unit' field.
+
+Test Data: {""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": [{""measurements"": [{""nameEn"": ""Chest"", ""nameBn"": ""বুক"", ""unit"": null, ""value"": ""44.0"", ""type"": ""NUMERIC""}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'unit' field is required for NUMERIC measurements and cannot be null.,TC-012
+Attempt to update an order with a measurement parameter containing missing type field,Order Measurement Management,Negative,High,An existing order with at least one measurement parameter.,"1. Send a PUT request to /api/orders/{id} (or relevant endpoint) with a measurement parameter missing the 'type' field.
+
+Test Data: {""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": [{""measurements"": [{""nameEn"": ""Chest"", ""nameBn"": ""বুক"", ""unit"": ""inch"", ""value"": ""44.0""}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'type' field is required for measurements and cannot be blank.,TC-013
+Attempt to update an order with a NUMERIC measurement parameter containing a non-numeric value,Order Measurement Management,Negative,High,An existing order with at least one measurement parameter.,"1. Send a PUT request to /api/orders/{id} (or relevant endpoint) with a NUMERIC measurement parameter containing a non-numeric 'value'.
+
+Test Data: {""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": [{""measurements"": [{""nameEn"": ""Chest"", ""nameBn"": ""বুক"", ""unit"": ""inch"", ""value"": ""abc"", ""type"": ""NUMERIC""}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'value' field must be a valid number for NUMERIC measurements.,843da89-TC-007
+Attempt to update an order with a BOOLEAN measurement parameter containing an invalid boolean value,Order Measurement Management,Negative,High,An existing order with at least one measurement parameter.,"1. Send a PUT request to /api/orders/{id} (or relevant endpoint) with a BOOLEAN measurement parameter containing an invalid 'value'.
+
+Test Data: {""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": [{""measurements"": [{""nameEn"": ""Single Pocket"", ""nameBn"": ""সিঙ্গেল পকেট"", ""unit"": null, ""value"": ""yes"", ""type"": ""BOOLEAN""}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'value' field must be either 'true' or 'false' for BOOLEAN measurements.,TC-014

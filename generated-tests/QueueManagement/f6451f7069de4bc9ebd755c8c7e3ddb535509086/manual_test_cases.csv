@@ -1,0 +1,115 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Successfully upload a photo for an existing user and verify it is stored correctly,User Photo Management,Positive,High,A user with ID 100 exists in the system. A valid JPEG image file is available for upload.,"1. Send a POST request to /api/photos/upload with the payload in testData, including the file and userId=100. 2. Send a GET request to /api/photos/user/100 to retrieve the photo data.
+
+Test Data: file: [binary JPEG file], userId: 100, workerId: null","1. Response status code is 201 (Created). The response body contains the photo details with 'id', 'contentType' as 'image/jpeg', 'userId' as 100, and 'workerId' as null. 2. Response status code is 200. The response body contains the binary photo data, and the 'Content-Type' header is 'image/jpeg'.",TC-001
+Successfully upload a photo for an existing worker and verify it is stored correctly,Worker Photo Management,Positive,High,A worker with ID 200 exists in the system. A valid JPEG image file is available for upload.,"1. Send a POST request to /api/photos/upload with the payload in testData, including the file and workerId=200. 2. Send a GET request to /api/photos/worker/200 to retrieve the photo data.
+
+Test Data: file: [binary JPEG file], userId: null, workerId: 200","1. Response status code is 201 (Created). The response body contains the photo details with 'id', 'contentType' as 'image/jpeg', 'workerId' as 200, and 'userId' as null. 2. Response status code is 200. The response body contains the binary photo data, and the 'Content-Type' header is 'image/jpeg'.",TC-002
+Fail to upload a photo when both userId and workerId are provided,Photo Association Validation,Positive,High,A valid JPEG image file is available for upload. User with ID 100 and worker with ID 200 exist in the system.,"1. Send a POST request to /api/photos/upload with the payload in testData, including the file, userId=100, and workerId=200.
+
+Test Data: file: [binary JPEG file], userId: 100, workerId: 200",Response status code is 400 (Bad Request). No photo is stored in the system.,TC-003
+Fail to upload a photo when neither userId nor workerId is provided,Photo Association Validation,Positive,High,A valid JPEG image file is available for upload.,"1. Send a POST request to /api/photos/upload with the payload in testData, including only the file.
+
+Test Data: file: [binary JPEG file], userId: null, workerId: null",Response status code is 400 (Bad Request). No photo is stored in the system.,TC-004
+Fail to retrieve a photo for a non-existent user,Photo Retrieval,Positive,Medium,No user with ID 999 exists in the system.,1. Send a GET request to /api/photos/user/999 to retrieve the photo data.,Response status code is 404 (Not Found). No photo data is returned.,TC-005
+Upload photo with both userId and workerId provided,Photo Upload Management,Negative,High,User or worker exists in the system,"1. Send a POST request to /api/photos/upload with the payload in testData, including both userId and workerId.
+
+Test Data: file: [valid image file], userId: 123, workerId: 456",The system should return an HTTP 400 Bad Request status code with no response body.,TC-006
+Upload photo with neither userId nor workerId provided,Photo Upload Management,Negative,High,No preconditions required,"1. Send a POST request to /api/photos/upload with the payload in testData, omitting both userId and workerId.
+
+Test Data: file: [valid image file]",The system should return an HTTP 400 Bad Request status code with no response body.,TC-007
+Upload photo with non-numeric userId,Photo Upload Management,Negative,High,No preconditions required,"1. Send a POST request to /api/photos/upload with the payload in testData, using a non-numeric userId.
+
+Test Data: file: [valid image file], userId: 'abc'",The system should return an HTTP 400 Bad Request status code with no response body.,TC-008
+Upload photo with non-numeric workerId,Photo Upload Management,Negative,High,No preconditions required,"1. Send a POST request to /api/photos/upload with the payload in testData, using a non-numeric workerId.
+
+Test Data: file: [valid image file], workerId: 'xyz'",The system should return an HTTP 400 Bad Request status code with no response body.,TC-009
+Upload photo with missing file parameter,Photo Upload Management,Negative,High,User or worker exists in the system,"1. Send a POST request to /api/photos/upload with the payload in testData, omitting the file parameter.
+
+Test Data: userId: 123",The system should return an HTTP 400 Bad Request status code or an HTTP 500 Internal Server Error status code due to missing file.,TC-010
+Upload photo with invalid file type (non-image),Photo Upload Management,Negative,Medium,User or worker exists in the system,"1. Send a POST request to /api/photos/upload with the payload in testData, using a non-image file.
+
+Test Data: file: [text file], userId: 123",The system should return an HTTP 400 Bad Request status code or an HTTP 500 Internal Server Error status code due to invalid file type.,TC-011
+Retrieve photo by non-numeric userId,Photo Retrieval Management,Negative,High,No preconditions required,"1. Send a GET request to /api/photos/user/{userId} with a non-numeric userId.
+
+Test Data: userId: 'abc'",The system should return an HTTP 400 Bad Request status code with no response body.,TC-012
+Retrieve photo by non-numeric workerId,Photo Retrieval Management,Negative,High,No preconditions required,"1. Send a GET request to /api/photos/worker/{workerId} with a non-numeric workerId.
+
+Test Data: workerId: 'xyz'",The system should return an HTTP 400 Bad Request status code with no response body.,TC-013
+Retrieve photo by non-existent userId,Photo Retrieval Management,Negative,Medium,No preconditions required,"1. Send a GET request to /api/photos/user/{userId} with a non-existent userId.
+
+Test Data: userId: 999999",The system should return an HTTP 404 Not Found status code with no response body.,TC-014
+Retrieve photo by non-existent workerId,Photo Retrieval Management,Negative,Medium,No preconditions required,"1. Send a GET request to /api/photos/worker/{workerId} with a non-existent workerId.
+
+Test Data: workerId: 999999",The system should return an HTTP 404 Not Found status code with no response body.,TC-015
+Upload photo with extremely large file size,Photo Upload Management,Negative,Medium,User or worker exists in the system,"1. Send a POST request to /api/photos/upload with the payload in testData, using an extremely large image file.
+
+Test Data: file: [100MB image file], userId: 123",The system should return an HTTP 400 Bad Request status code or an HTTP 500 Internal Server Error status code due to file size limits.,TC-016
+Upload a photo with both userId and workerId provided (boundary: both fields populated),Photo Upload Management,Boundary,High,A valid image file exists for upload,"1. Send a POST request to /api/photos/upload with the payload in testData.
+
+Test Data: file: valid_image.jpg, userId: 1, workerId: 1",HTTP status code 400 (Bad Request). No photo is created or updated.,TC-017
+Upload a photo with neither userId nor workerId provided (boundary: both fields missing),Photo Upload Management,Boundary,High,A valid image file exists for upload,"1. Send a POST request to /api/photos/upload with the payload in testData.
+
+Test Data: file: valid_image.jpg, userId: null, workerId: null",HTTP status code 400 (Bad Request). No photo is created or updated.,TC-018
+Upload a photo with userId exactly at minimum allowed value (boundary: userId = 1),Photo Upload Management,Boundary,High,A valid image file exists for upload and user with ID 1 exists,"1. Send a POST request to /api/photos/upload with the payload in testData.
+
+Test Data: file: valid_image.jpg, userId: 1, workerId: null",HTTP status code 201 (Created). Response body contains the created photo with userId 1 and no workerId.,TC-019
+Upload a photo with workerId exactly at minimum allowed value (boundary: workerId = 1),Photo Upload Management,Boundary,High,A valid image file exists for upload and worker with ID 1 exists,"1. Send a POST request to /api/photos/upload with the payload in testData.
+
+Test Data: file: valid_image.jpg, userId: null, workerId: 1",HTTP status code 201 (Created). Response body contains the created photo with workerId 1 and no userId.,TC-020
+Upload a photo with userId one below minimum allowed value (boundary: userId = 0),Photo Upload Management,Boundary,High,A valid image file exists for upload,"1. Send a POST request to /api/photos/upload with the payload in testData.
+
+Test Data: file: valid_image.jpg, userId: 0, workerId: null",HTTP status code 400 (Bad Request) or 404 (Not Found) if user validation occurs. No photo is created or updated.,TC-021
+Upload a photo with workerId one below minimum allowed value (boundary: workerId = 0),Photo Upload Management,Boundary,High,A valid image file exists for upload,"1. Send a POST request to /api/photos/upload with the payload in testData.
+
+Test Data: file: valid_image.jpg, userId: null, workerId: 0",HTTP status code 400 (Bad Request) or 404 (Not Found) if worker validation occurs. No photo is created or updated.,TC-022
+Upload a photo with a very large userId (boundary: large numeric input),Photo Upload Management,Boundary,Medium,A valid image file exists for upload,"1. Send a POST request to /api/photos/upload with the payload in testData.
+
+Test Data: file: valid_image.jpg, userId: 9999999999, workerId: null",HTTP status code 400 (Bad Request) or 404 (Not Found) if user validation occurs. No photo is created or updated.,TC-023
+Upload a photo with a very large workerId (boundary: large numeric input),Photo Upload Management,Boundary,Medium,A valid image file exists for upload,"1. Send a POST request to /api/photos/upload with the payload in testData.
+
+Test Data: file: valid_image.jpg, userId: null, workerId: 9999999999",HTTP status code 400 (Bad Request) or 404 (Not Found) if worker validation occurs. No photo is created or updated.,TC-024
+Upload a photo with an empty file (boundary: empty file),Photo Upload Management,Boundary,High,An empty file exists for upload,"1. Send a POST request to /api/photos/upload with the payload in testData.
+
+Test Data: file: empty_file.jpg, userId: 1, workerId: null",HTTP status code 400 (Bad Request) or 500 (Internal Server Error). No photo is created or updated.,TC-025
+Upload a photo with a very large file (boundary: large file size),Photo Upload Management,Boundary,Medium,A very large image file exists for upload,"1. Send a POST request to /api/photos/upload with the payload in testData.
+
+Test Data: file: large_image.jpg (e.g., 100MB), userId: 1, workerId: null",HTTP status code 400 (Bad Request) or 500 (Internal Server Error). No photo is created or updated.,TC-026
+Retrieve photo data for a user with userId exactly at minimum allowed value (boundary: userId = 1),Photo Retrieval Management,Boundary,High,A photo exists for user with ID 1,1. Send a GET request to /api/photos/user/1.,HTTP status code 200 (OK). Response body contains the photo data in binary format with content type 'image/jpeg'.,TC-027
+Retrieve photo data for a worker with workerId exactly at minimum allowed value (boundary: workerId = 1),Photo Retrieval Management,Boundary,High,A photo exists for worker with ID 1,1. Send a GET request to /api/photos/worker/1.,HTTP status code 200 (OK). Response body contains the photo data in binary format with content type 'image/jpeg'.,TC-028
+Retrieve photo data for a user with userId one below minimum allowed value (boundary: userId = 0),Photo Retrieval Management,Boundary,High,No photo exists for user with ID 0,1. Send a GET request to /api/photos/user/0.,HTTP status code 404 (Not Found). No photo data is returned.,TC-029
+Retrieve photo data for a worker with workerId one below minimum allowed value (boundary: workerId = 0),Photo Retrieval Management,Boundary,High,No photo exists for worker with ID 0,1. Send a GET request to /api/photos/worker/0.,HTTP status code 404 (Not Found). No photo data is returned.,TC-030
+Retrieve photo data for a user with a very large userId (boundary: large numeric input),Photo Retrieval Management,Boundary,Medium,No photo exists for user with ID 9999999999,1. Send a GET request to /api/photos/user/9999999999.,HTTP status code 404 (Not Found). No photo data is returned.,TC-031
+Retrieve photo data for a worker with a very large workerId (boundary: large numeric input),Photo Retrieval Management,Boundary,Medium,No photo exists for worker with ID 9999999999,1. Send a GET request to /api/photos/worker/9999999999.,HTTP status code 404 (Not Found). No photo data is returned.,TC-032
+Upload a photo with an unsupported content type (boundary: invalid content type),Photo Upload Management,Boundary,Medium,A file with an unsupported content type exists for upload,"1. Send a POST request to /api/photos/upload with the payload in testData.
+
+Test Data: file: unsupported_file.txt, userId: 1, workerId: null",HTTP status code 400 (Bad Request) or 500 (Internal Server Error). No photo is created or updated.,TC-033
+Upload a photo with a file name at maximum allowed length (boundary: long file name),Photo Upload Management,Boundary,Low,A valid image file with a very long name exists for upload,"1. Send a POST request to /api/photos/upload with the payload in testData.
+
+Test Data: file: very_long_file_name_that_is_at_the_maximum_allowed_length_for_file_names.jpg, userId: 1, workerId: null",HTTP status code 201 (Created). Response body contains the created photo with userId 1 and no workerId.,TC-034
+Verify that photo upload requires either userId or workerId but not both,Photo Upload and Retrieval,Security,High,User or worker exists in the system with valid IDs,"1. Send a POST request to /api/photos/upload with the payload in testData (both userId and workerId provided). 2. Send a POST request to /api/photos/upload with the payload in testData (neither userId nor workerId provided).
+
+Test Data: 1. file: [valid image file], userId: 123, workerId: 456
+2. file: [valid image file], userId: null, workerId: null",1. The API responds with HTTP status 400 Bad Request. 2. The API responds with HTTP status 400 Bad Request.,TC-035
+Verify that photo upload rejects invalid file types or excessively large files,Photo Upload and Retrieval,Security,High,User or worker exists in the system with valid IDs,"1. Send a POST request to /api/photos/upload with the payload in testData (invalid file type). 2. Send a POST request to /api/photos/upload with the payload in testData (excessively large file).
+
+Test Data: 1. file: [file with extension .exe], userId: 123, workerId: null
+2. file: [file larger than 5MB], userId: 123, workerId: null",1. The API responds with HTTP status 400 Bad Request or 500 Internal Server Error. 2. The API responds with HTTP status 400 Bad Request or 500 Internal Server Error.,TC-036
+Verify that photo retrieval by userId or workerId is restricted to authorized users (Insecure Direct Object Reference),Photo Upload and Retrieval,Security,High,User and worker exist in the system with valid IDs and associated photos,"1. Authenticate as User A (owner of userId 123). 2. Send a GET request to /api/photos/user/456 (another user's ID). 3. Authenticate as Worker B (owner of workerId 789). 4. Send a GET request to /api/photos/worker/101 (another worker's ID).
+
+Test Data: N/A",1. The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. 2. The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'.,TC-037
+Verify that photo upload and retrieval endpoints are not accessible to unauthenticated users,Photo Upload and Retrieval,Security,High,User or worker exists in the system with valid IDs,"1. Send a POST request to /api/photos/upload without authentication. 2. Send a GET request to /api/photos/user/123 without authentication. 3. Send a GET request to /api/photos/worker/456 without authentication.
+
+Test Data: 1. file: [valid image file], userId: 123, workerId: null",1. The API responds with HTTP status 401 Unauthorized or 403 Forbidden. 2. The API responds with HTTP status 401 Unauthorized or 403 Forbidden. 3. The API responds with HTTP status 401 Unauthorized or 403 Forbidden.,TC-038
+Verify that photo upload handles path traversal sequences in file names securely,Photo Upload and Retrieval,Security,High,User exists in the system with valid ID,"1. Send a POST request to /api/photos/upload with the payload in testData (file name containing path traversal sequences).
+
+Test Data: file: [file named '../../../../malicious.jpg'], userId: 123, workerId: null",The API responds with HTTP status 400 Bad Request or sanitizes the file name and processes the upload successfully without path traversal.,TC-039
+Verify that photo upload does not expose sensitive data in error responses,Photo Upload and Retrieval,Security,Medium,User exists in the system with valid ID,"1. Send a POST request to /api/photos/upload with the payload in testData (invalid file). 2. Check the error response for sensitive data exposure.
+
+Test Data: file: [invalid file], userId: 123, workerId: null","The API responds with HTTP status 400 Bad Request or 500 Internal Server Error. The error message does not expose internal details, stack traces, or file paths.",TC-040
+Verify that photo retrieval for non-existent user or worker returns appropriate status,Photo Upload and Retrieval,Security,Medium,No user or worker exists with the specified IDs,"1. Send a GET request to /api/photos/user/99999. 2. Send a GET request to /api/photos/worker/99999.
+
+Test Data: N/A",1. The API responds with HTTP status 404 Not Found. 2. The API responds with HTTP status 404 Not Found.,TC-041
+Verify that rapid successive photo uploads are rate-limited to prevent abuse,Photo Upload and Retrieval,Security,Medium,User exists in the system with valid ID,"1. Send 11 POST requests to /api/photos/upload in rapid succession with the payload in testData.
+
+Test Data: file: [valid image file], userId: 123, workerId: null",The API responds with HTTP status 429 Too Many Requests for the 11th request or rejects it with an appropriate error message. No more than 10 photos are uploaded.,TC-042

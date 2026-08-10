@@ -1,0 +1,145 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Retrieve all orders for a customer by phone number in descending order of order date,Order Management: Customer Order History Retrieval,Positive,High,"Customer with phone number '5551234567' has at least two orders recorded in the system, with different order dates",1. Send a GET request to /api/orders/by-phone with query parameter phone='5551234567'.,"HTTP 200 OK response with a JSON body containing a list of order summaries. The list is sorted by orderDate in descending order (newest first). Each order summary includes: orderId, shopName, totalAmount, paidAmount, dueAmount, orderDate, trialDate, deliveryDate, customerName, customerPhone, status (e.g., 'MEASUREMENT_DONE'), and items (a list of objects with itemName and count). Example: {""orderId"": 101, ""shopName"": ""Stitch & Style"", ""totalAmount"": 2500.00, ""status"": ""MEASUREMENT_DONE"", ""items"": [{""itemName"": ""Formal Shirt"", ""count"": 1}, {""itemName"": ""Trousers"", ""count"": 1}]}",TC-001
+Retrieve all orders for a shop by shop ID,Order Management: Shop Order History Retrieval,Positive,High,Shop with ID 1 has at least two orders recorded in the system,1. Send a GET request to /api/orders/shop/1.,"HTTP 200 OK response with a JSON body containing a list of order summaries for the shop. Each order summary includes: orderId, shopName, totalAmount, paidAmount, dueAmount, orderDate, trialDate, deliveryDate, customerName, customerPhone, status (e.g., 'MEASUREMENT_DONE'), and items (a list of objects with itemName and count). Example: [{""orderId"": 101, ""shopName"": ""Stitch & Style"", ""totalAmount"": 2500.00, ""status"": ""MEASUREMENT_DONE"", ""items"": [{""itemName"": ""Formal Shirt"", ""count"": 1}]}]",TC-002
+Create a new order and verify the status is set to 'MEASUREMENT_DONE',Order Management: Order Creation with Status,Positive,High,Shop with ID 1 exists in the system,"1. Send a POST request to /api/orders with the payload in testData. 2. Send a GET request to /api/orders/{id} using the orderId from the response in step 1.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""shopId"": 1,
+  ""trialDate"": ""2023-12-15"",
+  ""deliveryDate"": ""2023-12-25"",
+  ""totalAmount"": 1500.00,
+  ""paidAmount"": 500.00,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""cm"",
+              ""value"": ""90""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing the order summary, including status='MEASUREMENT_DONE'. 2. HTTP 200 OK response with a JSON body containing the full order details, including status='MEASUREMENT_DONE' and items with itemName (e.g., 'Formal Shirt'). Example: {""id"": 101, ""status"": ""MEASUREMENT_DONE"", ""items"": [{""itemName"": ""Formal Shirt"", ""measurementGroups"": [{""measurements"": [{""name"": ""Chest"", ""unit"": ""cm"", ""value"": ""90""}]}]}]}",76584f2-TC-001
+Retrieve an existing order with multiple items and verify item names and counts are displayed correctly,Order Management: Order Details with Multiple Items,Positive,Medium,"An order with ID 101 exists in the system, containing two items: 'Formal Shirt' (1) and 'Trousers' (2)",1. Send a GET request to /api/orders/101.,"HTTP 200 OK response with a JSON body containing the order details, including status (e.g., 'MEASUREMENT_DONE') and items with itemName and measurementGroups. The items list contains two entries: one for 'Formal Shirt' and one for 'Trousers', with correct counts. Example: {""id"": 101, ""status"": ""MEASUREMENT_DONE"", ""items"": [{""itemName"": ""Formal Shirt"", ""measurementGroups"": [...]}, {""itemName"": ""Trousers"", ""measurementGroups"": [...]}]}",d9f8e47-TC-003
+Retrieve an order summary for an order with multiple items of the same type and verify item counts are aggregated correctly,Order Management: Order Summary with Multiple Items,Positive,Medium,"An order with ID 102 exists in the system, containing three items: 'Formal Shirt' (2) and 'Trousers' (1)",1. Send a GET request to /api/orders/by-phone with query parameter phone='5559876543'. 2. Locate the order summary for orderId 102 in the response.,"HTTP 200 OK response with a JSON body containing a list of order summaries. The order summary for orderId 102 includes an items list with two entries: one for 'Formal Shirt' with count=2 and one for 'Trousers' with count=1. Example: {""orderId"": 102, ""items"": [{""itemName"": ""Formal Shirt"", ""count"": 2}, {""itemName"": ""Trousers"", ""count"": 1}]}",TC-003
+Attempt to retrieve orders by customer phone with a missing phone parameter,Order Management,Negative,High,No preconditions required,1. Send a GET request to /api/orders/by-phone without providing the 'phone' query parameter.,The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'phone' parameter is required.,TC-004
+Attempt to retrieve orders by customer phone with an empty phone parameter value,Order Management,Negative,High,No preconditions required,"1. Send a GET request to /api/orders/by-phone with the 'phone' query parameter set to an empty string.
+
+Test Data: phone=",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'phone' parameter cannot be empty.,TC-005
+Attempt to retrieve orders by customer phone with a malformed phone number (non-numeric characters),Order Management,Negative,High,No preconditions required,"1. Send a GET request to /api/orders/by-phone with the 'phone' query parameter set to a non-numeric value (e.g., 'abc123').
+
+Test Data: phone=abc123",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'phone' parameter must be a valid numeric value.,86c0b01-TC-007
+Attempt to retrieve orders by customer phone with an excessively long phone number,Order Management,Negative,High,No preconditions required,"1. Send a GET request to /api/orders/by-phone with the 'phone' query parameter set to a value exceeding the maximum allowed length (e.g., 20 digits).
+
+Test Data: phone=123456789012345678901",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'phone' parameter exceeds the maximum allowed length.,86c0b01-TC-008
+Attempt to retrieve orders by shop with a non-numeric shopId path variable,Order Management,Negative,High,No preconditions required,1. Send a GET request to /api/orders/shop/abc where 'abc' is a non-numeric shopId.,The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'shopId' must be a valid numeric value.,TC-006
+Attempt to retrieve orders by shop with a missing shopId path variable,Order Management,Negative,High,No preconditions required,1. Send a GET request to /api/orders/shop/ without providing a shopId.,The system returns an HTTP 404 Not Found status code with an error message indicating that the requested resource was not found.,TC-007
+Attempt to retrieve orders by shop with a non-existent shopId,Order Management,Negative,Medium,No preconditions required,1. Send a GET request to /api/orders/shop/999999 where 999999 is a non-existent shopId.,"The system returns an HTTP 200 OK status code with an empty list in the response body, indicating no orders were found for the specified shopId.",TC-008
+Attempt to retrieve an order by ID with a non-numeric ID value,Order Management,Negative,High,No preconditions required,1. Send a GET request to /api/orders/abc where 'abc' is a non-numeric order ID.,The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'id' must be a valid numeric value.,ad5f663-TC-004
+Attempt to retrieve an order by ID with a missing ID path variable,Order Management,Negative,High,No preconditions required,1. Send a GET request to /api/orders/ without providing an order ID.,The system returns an HTTP 404 Not Found status code with an error message indicating that the requested resource was not found.,ad5f663-TC-005
+Attempt to retrieve a non-existent order by ID,Order Management,Negative,High,No preconditions required,1. Send a GET request to /api/orders/999999 where 999999 is a non-existent order ID.,The system returns an HTTP 404 Not Found status code with an error message indicating that the order with the specified ID does not exist.,TC-009
+Retrieve orders for a customer using an empty phone number string,Order Lookup by Customer Phone,Boundary,High,At least one order exists in the system for a known customer phone number,"1. Send a GET request to /api/orders/by-phone with the query parameter 'phone' set to an empty string as in testData.
+
+Test Data: phone=",The API responds with a 400 Bad Request status code and an error message indicating that the phone number cannot be empty.,TC-010
+Retrieve orders for a customer using a phone number that matches no records,Order Lookup by Customer Phone,Boundary,High,No orders exist in the system for the phone number '9999999999',"1. Send a GET request to /api/orders/by-phone with the query parameter 'phone' set to '9999999999' as in testData.
+
+Test Data: phone=9999999999",The API responds with a 200 OK status code and an empty list in the response body.,TC-011
+Retrieve orders for a customer using a phone number with the maximum allowed length (15 characters),Order Lookup by Customer Phone,Boundary,High,At least one order exists in the system for the phone number '123456789012345',"1. Send a GET request to /api/orders/by-phone with the query parameter 'phone' set to '123456789012345' as in testData.
+
+Test Data: phone=123456789012345",The API responds with a 200 OK status code and a list containing all orders for the customer with the phone number '123456789012345'. Each order includes the 'status' field and a list of 'items' with 'itemName' and 'count'.,TC-012
+Retrieve orders for a customer using a phone number exceeding the maximum allowed length (16 characters),Order Lookup by Customer Phone,Boundary,High,No specific preconditions; system should reject invalid phone numbers,"1. Send a GET request to /api/orders/by-phone with the query parameter 'phone' set to '1234567890123456' as in testData.
+
+Test Data: phone=1234567890123456",The API responds with a 400 Bad Request status code and an error message indicating that the phone number exceeds the maximum allowed length of 15 characters.,550c1a0-TC-014
+Retrieve orders for a customer using a phone number containing non-numeric characters,Order Lookup by Customer Phone,Boundary,High,No specific preconditions; system should reject invalid phone numbers,"1. Send a GET request to /api/orders/by-phone with the query parameter 'phone' set to '123-456-7890' as in testData.
+
+Test Data: phone=123-456-7890",The API responds with a 400 Bad Request status code and an error message indicating that the phone number must contain only numeric characters.,550c1a0-TC-015
+Retrieve orders for a customer without providing the phone number query parameter,Order Lookup by Customer Phone,Boundary,High,No specific preconditions; system should require phone number,1. Send a GET request to /api/orders/by-phone without any query parameters.,The API responds with a 400 Bad Request status code and an error message indicating that the phone number parameter is required.,550c1a0-TC-016
+Retrieve orders for a customer using a phone number with leading and trailing spaces,Order Lookup by Customer Phone,Boundary,Medium,At least one order exists in the system for the phone number '1234567890',"1. Send a GET request to /api/orders/by-phone with the query parameter 'phone' set to '  1234567890  ' as in testData.
+
+Test Data: phone=  1234567890  ",The API responds with a 200 OK status code and an empty list in the response body (spaces are not trimmed).,550c1a0-TC-017
+Retrieve orders for a shop using a non-existent shop ID,Order Lookup by Shop ID,Boundary,High,No shop exists in the system with ID 9999999999,1. Send a GET request to /api/orders/shop/9999999999 as in testData.,The API responds with a 200 OK status code and an empty list in the response body.,TC-013
+Retrieve orders for a shop using the minimum valid shop ID (1),Order Lookup by Shop ID,Boundary,High,At least one order exists in the system for the shop with ID 1,1. Send a GET request to /api/orders/shop/1 as in testData.,The API responds with a 200 OK status code and a list containing all orders for the shop with ID 1. Each order includes the 'status' field and a list of 'items' with 'itemName' and 'count'.,TC-014
+Retrieve orders for a shop using a zero shop ID (0),Order Lookup by Shop ID,Boundary,High,No specific preconditions; system should handle invalid IDs,1. Send a GET request to /api/orders/shop/0 as in testData.,The API responds with a 404 Not Found status code and an error message indicating that the shop was not found.,TC-015
+Retrieve orders for a shop using a negative shop ID (-1),Order Lookup by Shop ID,Boundary,High,No specific preconditions; system should handle invalid IDs,1. Send a GET request to /api/orders/shop/-1 as in testData.,The API responds with a 404 Not Found status code and an error message indicating that the shop was not found.,TC-016
+Retrieve orders for a shop with a very large ID (9999999999),Order Lookup by Shop ID,Boundary,Medium,No shop exists in the system with ID 9999999999,1. Send a GET request to /api/orders/shop/9999999999 as in testData.,The API responds with a 200 OK status code and an empty list in the response body.,TC-017
+Create an order and verify the default status is set to 'MEASUREMENT_DONE',Order Creation and Status,Boundary,High,A valid shop with ID 1 exists in the system,"1. Send a POST request to /api/orders with the payload in testData. 2. Send a GET request to /api/orders/{id} where {id} is the ID returned in step 1.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""trialDate"": ""2023-12-01"",
+  ""deliveryDate"": ""2023-12-15"",
+  ""shopId"": 1,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 2,
+      ""measurementGroups"": []
+    }
+  ]
+}","Step 1: The API responds with a 200 OK status code and the created order details, including the 'status' field set to 'MEASUREMENT_DONE'. Step 2: The API responds with a 200 OK status code and the order details, including the 'status' field set to 'MEASUREMENT_DONE'.",TC-018
+Verify all valid order status values are correctly returned in order summaries,Order Status Validation,Boundary,High,"Orders exist in the system with each status: MEASUREMENT_DONE, CUTTING_DONE, SWING_DONE, PRESS_DONE, READY_FOR_DELIVERY","1. Send a GET request to /api/orders/by-phone with a phone number that has orders with all statuses as in testData. 2. Examine the 'status' field in each order summary returned.
+
+Test Data: phone=1234567890","The API responds with a 200 OK status code and a list of order summaries. Each order summary includes a 'status' field with one of the following values: 'MEASUREMENT_DONE', 'CUTTING_DONE', 'SWING_DONE', 'PRESS_DONE', 'READY_FOR_DELIVERY'.",TC-019
+Retrieve an order with multiple items of the same type and verify item count aggregation,Order Item Summary,Boundary,High,"An order exists with 3 items of the same type (e.g., 'Shirt') and 2 items of another type (e.g., 'Pant')",1. Send a GET request to /api/orders/{id} where {id} is the ID of the order with multiple items of the same type as in testData.,"The API responds with a 200 OK status code and the order details. The 'items' list in the response contains two entries: one with 'itemName' set to 'Shirt' and 'count' set to 3, and another with 'itemName' set to 'Pant' and 'count' set to 2.",TC-020
+Retrieve an order with a single item and verify item count is 1,Order Item Summary,Boundary,High,"An order exists with exactly one item (e.g., 'Shirt')",1. Send a GET request to /api/orders/{id} where {id} is the ID of the order with a single item as in testData.,The API responds with a 200 OK status code and the order details. The 'items' list in the response contains one entry with 'itemName' set to 'Shirt' and 'count' set to 1.,TC-021
+Retrieve an order with no items and verify items list is empty,Order Item Summary,Boundary,Medium,An order exists with no items (empty orderItems list),1. Send a GET request to /api/orders/{id} where {id} is the ID of the order with no items as in testData.,The API responds with a 200 OK status code and the order details. The 'items' list in the response is empty.,TC-022
+Retrieve an order item with a very long item name (100 characters) and verify it is displayed correctly,Order Item Name Display,Boundary,Medium,An order exists with an item named 'ThisIsAVeryLongItemNameThatIsExactlyOneHundredCharactersLongAndShouldBeDisplayedCorrectlyInTheResponse',1. Send a GET request to /api/orders/{id} where {id} is the ID of the order with the long item name as in testData.,The API responds with a 200 OK status code and the order details. The 'itemName' field in the 'items' list displays the full 100-character name without truncation.,TC-023
+Retrieve an order item with an empty item name and verify it is handled correctly,Order Item Name Display,Boundary,Medium,An order exists with an item that has an empty name,1. Send a GET request to /api/orders/{id} where {id} is the ID of the order with the empty item name as in testData.,The API responds with a 200 OK status code and the order details. The 'itemName' field in the 'items' list is an empty string.,TC-024
+Verify that order retrieval by phone number enforces proper authorization (insecure direct object reference),Order Management - Order Retrieval by Phone,Security,High,User A has an existing order with phone number '1234567890'. User B is authenticated but does not own any orders with this phone number. User C is unauthenticated.,"1. Authenticate as User B and send a GET request to /api/orders/by-phone with query parameter 'phone=1234567890'.
+2. Send a GET request to /api/orders/by-phone with query parameter 'phone=1234567890' without authentication (User C).
+3. Authenticate as User A and send a GET request to /api/orders/by-phone with query parameter 'phone=1234567890'.
+
+Test Data: Query parameter: phone=1234567890","1. The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and no order data is returned.
+2. The API responds with HTTP status 401 (Unauthorized) or 403 (Forbidden), and no order data is returned.
+3. The API responds with HTTP status 200 (OK), and the response body contains a list of orders with customerPhone '1234567890', including orderId, shopName, items, totalAmount, paidAmount, dueAmount, orderDate, trialDate, deliveryDate, customerName, customerPhone, and status.",TC-025
+Verify that order retrieval by phone number rejects injection attempts via special characters in input,Order Management - Order Retrieval by Phone,Security,High,No specific preconditions required.,"1. Send a GET request to /api/orders/by-phone with query parameter 'phone=1234567890'' OR '1'='1'.
+2. Send a GET request to /api/orders/by-phone with query parameter 'phone=1234567890; DROP TABLE orders;'.
+3. Send a GET request to /api/orders/by-phone with query parameter 'phone=<script>alert(1)</script>'.
+
+Test Data: Query parameters:
+1. phone=1234567890' OR '1'='1
+2. phone=1234567890; DROP TABLE orders;
+3. phone=<script>alert(1)</script>","1. The API responds with HTTP status 400 (Bad Request) or 404 (Not Found), and no order data is returned.
+2. The API responds with HTTP status 400 (Bad Request) or 404 (Not Found), and no order data is returned.
+3. The API responds with HTTP status 400 (Bad Request) or 404 (Not Found), and no order data is returned.",TC-026
+Verify that order retrieval by phone number does not expose sensitive system details in error messages,Order Management - Order Retrieval by Phone,Security,Medium,No existing orders with phone number '0000000000'.,"1. Send a GET request to /api/orders/by-phone with query parameter 'phone=0000000000'.
+
+Test Data: Query parameter: phone=0000000000","The API responds with HTTP status 200 (OK) and a response body containing an empty list (e.g., []), or HTTP status 404 (Not Found) with a generic error message (e.g., 'No orders found for this phone number') without revealing internal system details (e.g., stack traces, database errors).",TC-027
+Verify that order retrieval by phone number handles oversized input to prevent overflow or denial of service,Order Management - Order Retrieval by Phone,Security,Medium,No specific preconditions required.,"1. Send a GET request to /api/orders/by-phone with query parameter 'phone=' followed by 1000 characters.
+
+Test Data: Query parameter: phone=[1000-character string]",The API responds with HTTP status 400 (Bad Request) and an error message indicating that the phone number length exceeds the allowed limit.,TC-028
+Verify that order retrieval by shop ID enforces proper authorization (insecure direct object reference),Order Management - Order Retrieval by Shop,Security,High,Shop A (ID: 1) has existing orders. User A is authenticated and owns Shop A. User B is authenticated but does not own Shop A. User C is unauthenticated.,"1. Authenticate as User B and send a GET request to /api/orders/shop/1.
+2. Send a GET request to /api/orders/shop/1 without authentication (User C).
+3. Authenticate as User A and send a GET request to /api/orders/shop/1.
+
+Test Data: Path variable: shopId=1","1. The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and no order data is returned.
+2. The API responds with HTTP status 401 (Unauthorized) or 403 (Forbidden), and no order data is returned.
+3. The API responds with HTTP status 200 (OK), and the response body contains a list of orders for shopId 1, including orderId, shopName, items, totalAmount, paidAmount, dueAmount, orderDate, trialDate, deliveryDate, customerName, customerPhone, and status.",TC-029
+Verify that order retrieval by shop ID does not expose sensitive system details in error messages,Order Management - Order Retrieval by Shop,Security,Medium,No shop exists with ID 999999.,"1. Authenticate as a user who owns a different shop and send a GET request to /api/orders/shop/999999.
+
+Test Data: Path variable: shopId=999999","The API responds with HTTP status 404 (Not Found) and a generic error message (e.g., 'No orders found for this shop') without revealing internal system details (e.g., stack traces, database errors).",TC-030
+Verify that order status is not exposed to unauthorized users in order retrieval responses,Order Management - Order Status Exposure,Security,High,User A has an existing order with ID 1 and status 'MEASUREMENT_DONE'. User B is authenticated but does not own this order. User C is unauthenticated.,"1. Authenticate as User B and send a GET request to /api/orders/1.
+2. Send a GET request to /api/orders/1 without authentication (User C).
+3. Authenticate as User A and send a GET request to /api/orders/1.
+
+Test Data: Path variable: id=1","1. The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and no order data is returned.
+2. The API responds with HTTP status 401 (Unauthorized) or 403 (Forbidden), and no order data is returned.
+3. The API responds with HTTP status 200 (OK), and the response body contains the order details including the 'status' field set to 'MEASUREMENT_DONE'.",TC-031
+Verify that order status is included in order summary responses for authorized users only,Order Management - Order Status Exposure,Security,High,User A has an existing order with phone number '1234567890' and status 'MEASUREMENT_DONE'. User B is authenticated but does not own any orders with this phone number.,"1. Authenticate as User B and send a GET request to /api/orders/by-phone with query parameter 'phone=1234567890'.
+2. Authenticate as User A and send a GET request to /api/orders/by-phone with query parameter 'phone=1234567890'.
+
+Test Data: Query parameter: phone=1234567890","1. The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and no order data is returned.
+2. The API responds with HTTP status 200 (OK), and the response body contains a list of orders with the 'status' field set to 'MEASUREMENT_DONE' for each order.",TC-032

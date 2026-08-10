@@ -1,0 +1,324 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Retrieve last measurements for a customer and verify both numeric and boolean measurement parameters are displayed correctly,Order Management - Measurement Parameter Types,Positive,High,Customer has at least one previous order with both numeric and boolean measurements recorded for a specific item,"1. Send a GET request to /api/orders/last-measurement?customerPhone=<customer_phone>&itemId=<item_id> with the payload in testData.
+
+Test Data: {
+  ""customerPhone"": ""5551234567"",
+  ""itemId"": 1
+}","HTTP 200 OK response with a JSON body containing: {
+  ""itemName"": ""Formal Shirt"",
+  ""measurements"": [
+    {
+      ""id"": 1,
+      ""nameEn"": ""Waist"",
+      ""nameBn"": ""কোমর"",
+      ""unit"": ""inches"",
+      ""value"": 32.0,
+      ""booleanValue"": null,
+      ""type"": ""NUMERIC""
+    },
+    {
+      ""id"": 2,
+      ""nameEn"": ""Has Pocket"",
+      ""nameBn"": ""পকেট আছে"",
+      ""unit"": """",
+      ""value"": null,
+      ""booleanValue"": true,
+      ""type"": ""BOOLEAN""
+    }
+  ]
+}",d3da340-TC-001
+Create a new order with both numeric and boolean measurement parameters and verify they are stored and returned correctly,Order Management - Measurement Parameter Types,Positive,High,User is authenticated and has permission to create orders,"1. Send a POST request to /api/orders with the payload in testData.
+2. Send a GET request to /api/orders/{orderId} to retrieve the created order details.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""id"": 1,
+              ""nameEn"": ""Waist"",
+              ""nameBn"": ""কোমর"",
+              ""unit"": ""inches"",
+              ""value"": 32.0,
+              ""booleanValue"": null,
+              ""type"": ""NUMERIC""
+            },
+            {
+              ""id"": 2,
+              ""nameEn"": ""Has Pocket"",
+              ""nameBn"": ""পকেট আছে"",
+              ""unit"": """",
+              ""value"": null,
+              ""booleanValue"": true,
+              ""type"": ""BOOLEAN""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order created successfully"", ""data"": {""orderId"": <non-null number>}}.
+2. HTTP 200 OK response with a JSON body containing the order details, including measurements with both numeric and boolean parameters correctly displayed as in the request.",TC-001
+Update an existing order with both numeric and boolean measurement parameters and verify they are updated correctly,Order Management - Measurement Parameter Types,Positive,High,User has an existing order with measurements and is authenticated with permission to update orders,"1. Send a PUT request to /api/orders/{orderId} with the payload in testData.
+2. Send a GET request to /api/orders/{orderId} to retrieve the updated order details.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""id"": 1,
+              ""nameEn"": ""Waist"",
+              ""nameBn"": ""কোমর"",
+              ""unit"": ""inches"",
+              ""value"": 34.0,
+              ""booleanValue"": null,
+              ""type"": ""NUMERIC""
+            },
+            {
+              ""id"": 2,
+              ""nameEn"": ""Has Pocket"",
+              ""nameBn"": ""পকেট আছে"",
+              ""unit"": """",
+              ""value"": null,
+              ""booleanValue"": false,
+              ""type"": ""BOOLEAN""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order updated successfully"", ""data"": {""orderId"": <orderId>}}.
+2. HTTP 200 OK response with a JSON body containing the updated order details, including measurements with updated numeric and boolean parameters as in the request.",TC-002
+Attempt to retrieve last measurement for an item with a missing customer phone number,Order Measurement Management,Negative,High,An order exists for a specific item and customer,"1. Send a GET request to /api/orders/last-measurement with an empty customerPhone query parameter and a valid itemId.
+
+Test Data: {}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'customerPhone' query parameter is required and cannot be blank.,TC-003
+Attempt to retrieve last measurement for an item with a missing item ID,Order Measurement Management,Negative,High,An order exists for a specific customer and item,"1. Send a GET request to /api/orders/last-measurement with a valid customerPhone query parameter and an empty itemId.
+
+Test Data: {}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'itemId' query parameter is required and cannot be blank.,TC-004
+Attempt to create an order with a BOOLEAN measurement parameter containing a null booleanValue field,Order Measurement Management,Negative,High,User is authenticated and authorized to create an order,"1. Send a POST request to /api/orders with a payload containing a measurement of type BOOLEAN and a null booleanValue field.
+
+Test Data: {""items"": [{""itemId"": 1, ""measurementGroups"": [{""measurements"": [{""id"": 1, ""nameEn"": ""Has Pocket"", ""nameBn"": ""পকেট আছে"", ""type"": ""BOOLEAN"", ""booleanValue"": null}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'booleanValue' field is required for BOOLEAN measurements and cannot be null.,TC-005
+Attempt to create an order with a NUMERIC measurement parameter containing a null value field,Order Measurement Management,Negative,High,User is authenticated and authorized to create an order,"1. Send a POST request to /api/orders with a payload containing a measurement of type NUMERIC and a null value field.
+
+Test Data: {""items"": [{""itemId"": 1, ""measurementGroups"": [{""measurements"": [{""id"": 1, ""nameEn"": ""Chest"", ""nameBn"": ""বুক"", ""unit"": ""inch"", ""type"": ""NUMERIC"", ""value"": null}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'value' field is required for NUMERIC measurements and cannot be null.,TC-006
+Attempt to create an order with a measurement parameter containing an invalid type value,Order Measurement Management,Negative,High,User is authenticated and authorized to create an order,"1. Send a POST request to /api/orders with a payload containing a measurement with an invalid type value.
+
+Test Data: {""items"": [{""itemId"": 1, ""measurementGroups"": [{""measurements"": [{""id"": 1, ""nameEn"": ""Chest"", ""nameBn"": ""বুক"", ""unit"": ""inch"", ""type"": ""INVALID_TYPE"", ""value"": 40.5}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'type' field must be either 'NUMERIC' or 'BOOLEAN'.,a6c97f7-TC-009
+Attempt to create an order with a BOOLEAN measurement parameter containing a non-boolean value,Order Measurement Management,Negative,High,User is authenticated and authorized to create an order,"1. Send a POST request to /api/orders with a payload containing a BOOLEAN measurement with a non-boolean value.
+
+Test Data: {""items"": [{""itemId"": 1, ""measurementGroups"": [{""measurements"": [{""id"": 1, ""nameEn"": ""Has Pocket"", ""nameBn"": ""পকেট আছে"", ""type"": ""BOOLEAN"", ""booleanValue"": ""yes""}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'booleanValue' field must be either 'true' or 'false' for BOOLEAN measurements.,a6c97f7-TC-010
+Attempt to create an order with a NUMERIC measurement parameter containing a unit field set to null,Order Measurement Management,Negative,High,User is authenticated and authorized to create an order,"1. Send a POST request to /api/orders with a payload containing a NUMERIC measurement with a null unit field.
+
+Test Data: {""items"": [{""itemId"": 1, ""measurementGroups"": [{""measurements"": [{""id"": 1, ""nameEn"": ""Chest"", ""nameBn"": ""বুক"", ""unit"": null, ""type"": ""NUMERIC"", ""value"": 40.5}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'unit' field is required for NUMERIC measurements and cannot be null.,a6c97f7-TC-012
+Attempt to create an order with a BOOLEAN measurement parameter containing a non-null unit field,Order Measurement Management,Negative,High,User is authenticated and authorized to create an order,"1. Send a POST request to /api/orders with a payload containing a BOOLEAN measurement with a non-null unit field.
+
+Test Data: {""items"": [{""itemId"": 1, ""measurementGroups"": [{""measurements"": [{""id"": 1, ""nameEn"": ""Has Pocket"", ""nameBn"": ""পকেট আছে"", ""unit"": ""inch"", ""type"": ""BOOLEAN"", ""booleanValue"": true}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'unit' field must be null for BOOLEAN measurements.,a6c97f7-TC-011
+Attempt to update an order with a measurement parameter containing missing type field,Order Measurement Management,Negative,High,An order exists and user is authenticated and authorized to update it,"1. Send a PUT request to /api/orders/{id} with a payload containing a measurement without a type field.
+
+Test Data: {""items"": [{""itemId"": 1, ""measurementGroups"": [{""measurements"": [{""id"": 1, ""nameEn"": ""Chest"", ""nameBn"": ""বুক"", ""unit"": ""inch"", ""value"": 40.5}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'type' field is required for measurements and cannot be blank.,a6c97f7-TC-013
+Attempt to update an order with a BOOLEAN measurement parameter containing an invalid boolean value,Order Measurement Management,Negative,High,An order exists and user is authenticated and authorized to update it,"1. Send a PUT request to /api/orders/{id} with a payload containing a BOOLEAN measurement with an invalid boolean value.
+
+Test Data: {""items"": [{""itemId"": 1, ""measurementGroups"": [{""measurements"": [{""id"": 1, ""nameEn"": ""Has Pocket"", ""nameBn"": ""পকেট আছে"", ""type"": ""BOOLEAN"", ""booleanValue"": ""invalid""}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'booleanValue' field must be either 'true' or 'false' for BOOLEAN measurements.,a6c97f7-TC-014
+Attempt to retrieve last measurement for an item with a customer phone number that does not exist,Order Measurement Management,Negative,Medium,No orders exist for the provided customer phone number,"1. Send a GET request to /api/orders/last-measurement with a non-existent customerPhone query parameter and a valid itemId.
+
+Test Data: {}",The system returns an HTTP 404 Not Found status code with an error message indicating that no measurements were found for the provided customer phone number and item ID.,TC-007
+Attempt to create an order with a NUMERIC measurement parameter containing a non-numeric value,Order Measurement Management,Negative,High,User is authenticated and authorized to create an order,"1. Send a POST request to /api/orders with a payload containing a NUMERIC measurement with a non-numeric value.
+
+Test Data: {""items"": [{""itemId"": 1, ""measurementGroups"": [{""measurements"": [{""id"": 1, ""nameEn"": ""Chest"", ""nameBn"": ""বুক"", ""unit"": ""inch"", ""type"": ""NUMERIC"", ""value"": ""forty""}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'value' field must be a valid number for NUMERIC measurements.,843da89-TC-007
+Retrieve last measurement for an item with numeric value at minimum allowed (0.0),Order Measurement Data Handling,Boundary,High,An order exists for customer phone '1234567890' with an item (ID: 1) that has a measurement with a numeric value of 0.0,1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,"The API responds with a 200 OK status code. The response body contains a 'measurements' array where the numeric measurement's 'value' field is 0.0, 'booleanValue' is null, and 'type' is 'NUMERIC'.",TC-008
+Retrieve last measurement for an item with numeric value just below minimum (negative),Order Measurement Data Handling,Boundary,High,An order exists for customer phone '1234567890' with an item (ID: 1) that has a measurement with a numeric value of -0.01,1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,"The API responds with a 200 OK status code. The response body contains a 'measurements' array where the numeric measurement's 'value' field is -0.01, 'booleanValue' is null, and 'type' is 'NUMERIC'.",TC-009
+Retrieve last measurement for an item with numeric value at maximum allowed (999999.99),Order Measurement Data Handling,Boundary,High,An order exists for customer phone '1234567890' with an item (ID: 1) that has a measurement with a numeric value of 999999.99,1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,"The API responds with a 200 OK status code. The response body contains a 'measurements' array where the numeric measurement's 'value' field is 999999.99, 'booleanValue' is null, and 'type' is 'NUMERIC'.",TC-010
+Retrieve last measurement for an item with numeric value just above maximum (1000000.00),Order Measurement Data Handling,Boundary,High,An order exists for customer phone '1234567890' with an item (ID: 1) that has a measurement with a numeric value of 1000000.00,1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,"The API responds with a 200 OK status code. The response body contains a 'measurements' array where the numeric measurement's 'value' field is 1000000.00, 'booleanValue' is null, and 'type' is 'NUMERIC'.",TC-011
+Retrieve last measurement for an item with a null numeric value,Order Measurement Data Handling,Boundary,High,An order exists for customer phone '1234567890' with an item (ID: 1) that has a measurement with a null numeric value,1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,"The API responds with a 200 OK status code. The response body contains a 'measurements' array where the measurement's 'value' field is null, 'booleanValue' is null, and 'type' is 'NUMERIC'.",TC-012
+Retrieve last measurement for an item with a boolean value of true,Order Measurement Data Handling,Boundary,High,An order exists for customer phone '1234567890' with an item (ID: 1) that has a measurement with a boolean value of true,1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,"The API responds with a 200 OK status code. The response body contains a 'measurements' array where the measurement's 'booleanValue' field is true, 'value' is null, and 'type' is 'BOOLEAN'.",TC-013
+Retrieve last measurement for an item with a boolean value of false,Order Measurement Data Handling,Boundary,High,An order exists for customer phone '1234567890' with an item (ID: 1) that has a measurement with a boolean value of false,1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,"The API responds with a 200 OK status code. The response body contains a 'measurements' array where the measurement's 'booleanValue' field is false, 'value' is null, and 'type' is 'BOOLEAN'.",TC-014
+Retrieve last measurement for an item with a null boolean value,Order Measurement Data Handling,Boundary,High,An order exists for customer phone '1234567890' with an item (ID: 1) that has a measurement with a null boolean value,1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,"The API responds with a 200 OK status code. The response body contains a 'measurements' array where the measurement's 'booleanValue' field is null, 'value' is null, and 'type' is 'BOOLEAN'.",TC-015
+Retrieve last measurement for an item with an empty measurements list,Order Measurement Data Handling,Boundary,Medium,An order exists for customer phone '1234567890' with an item (ID: 1) that has no measurements,1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,The API responds with a 200 OK status code. The response body contains an empty 'measurements' array.,TC-016
+Retrieve last measurement for an item with a measurement name at maximum allowed length (255 characters),Order Measurement Data Handling,Boundary,Medium,An order exists for customer phone '1234567890' with an item (ID: 1) that has a measurement with a nameEn of 255 characters,1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,The API responds with a 200 OK status code. The response body contains a 'measurements' array where the measurement's 'nameEn' field is exactly 255 characters long.,TC-017
+Retrieve last measurement for an item with a measurement name exceeding maximum allowed length (256 characters),Order Measurement Data Handling,Boundary,Medium,An order exists for customer phone '1234567890' with an item (ID: 1) that has a measurement with a nameEn of 256 characters,1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,The API responds with a 200 OK status code. The response body contains a 'measurements' array where the measurement's 'nameEn' field is truncated to 255 characters.,TC-018
+Retrieve last measurement for an item with a unit at maximum allowed length (50 characters),Order Measurement Data Handling,Boundary,Medium,An order exists for customer phone '1234567890' with an item (ID: 1) that has a measurement with a unit of 50 characters,1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,The API responds with a 200 OK status code. The response body contains a 'measurements' array where the measurement's 'unit' field is exactly 50 characters long.,TC-019
+Retrieve last measurement for an item with a unit exceeding maximum allowed length (51 characters),Order Measurement Data Handling,Boundary,Medium,An order exists for customer phone '1234567890' with an item (ID: 1) that has a measurement with a unit of 51 characters,1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,The API responds with a 200 OK status code. The response body contains a 'measurements' array where the measurement's 'unit' field is truncated to 50 characters.,TC-020
+Retrieve last measurement for an item with a very large numeric value (scientific notation),Order Measurement Data Handling,Boundary,Low,An order exists for customer phone '1234567890' with an item (ID: 1) that has a measurement with a numeric value of 1.7976931348623157E+308,1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,"The API responds with a 200 OK status code. The response body contains a 'measurements' array where the numeric measurement's 'value' field is 1.7976931348623157E+308, 'booleanValue' is null, and 'type' is 'NUMERIC'.",TC-021
+Retrieve last measurement for an item with duplicate measurement entries,Order Measurement Data Handling,Boundary,Medium,"An order exists for customer phone '1234567890' with an item (ID: 1) that has duplicate measurements (same nameEn, nameBn, unit, and type)",1. Send a GET request to /api/orders/last-measurement?customerPhone=1234567890&itemId=1.,The API responds with a 200 OK status code. The response body contains a 'measurements' array with duplicate entries as provided in the database.,TC-022
+Verify that last measurement retrieval correctly handles and exposes measurement type (NUMERIC/BOOLEAN) without leaking internal details,Order Management - Last Measurement Retrieval,Security,High,User has at least one order with measurements recorded for a specific item. User is authenticated and authorized to access their own measurements.,"1. Send a GET request to /api/orders/last-measurement?phone=<valid_phone>&itemId=<valid_item_id> with the payload in testData. 2. Observe the response body for measurement data.
+
+Test Data: {
+  ""phone"": ""+8801712345678"",
+  ""itemId"": 1
+}","The API responds with HTTP status 200 (OK) and a response body containing 'status: success'. The 'data.measurements' array includes objects with 'type' field set to either 'NUMERIC' or 'BOOLEAN', and the corresponding 'value' or 'booleanValue' field populated. No internal system details, Bengali names, or raw database fields are exposed.",TC-023
+Verify that last measurement retrieval rejects null or malformed measurement type values to prevent injection or misrepresentation,Order Management - Last Measurement Retrieval,Security,High,User has at least one order with measurements recorded for a specific item. User is authenticated and authorized to access their own measurements.,"1. (Backend injection simulation) Assume a malicious user attempts to inject a null or invalid 'type' value for a measurement. 2. Send a GET request to /api/orders/last-measurement?phone=<valid_phone>&itemId=<valid_item_id> expecting the system to handle the malformed data gracefully.
+
+Test Data: {
+  ""phone"": ""+8801712345678"",
+  ""itemId"": 1
+}",The API responds with HTTP status 200 (OK) and a response body containing 'status: success'. The 'data.measurements' array includes only valid measurements with 'type' set to either 'NUMERIC' or 'BOOLEAN'. No measurements with null or invalid 'type' are returned. No error messages expose internal system details.,TC-024
+Verify that last measurement retrieval does not expose boolean measurement values as numeric or vice versa (type safety),Order Management - Last Measurement Retrieval,Security,High,User has at least one order with both NUMERIC and BOOLEAN measurements recorded for a specific item. User is authenticated and authorized to access their own measurements.,"1. Send a GET request to /api/orders/last-measurement?phone=<valid_phone>&itemId=<valid_item_id> with the payload in testData. 2. Observe the response body for measurement data, specifically the 'value' and 'booleanValue' fields.
+
+Test Data: {
+  ""phone"": ""+8801712345678"",
+  ""itemId"": 1
+}","The API responds with HTTP status 200 (OK) and a response body containing 'status: success'. For measurements with 'type: NUMERIC', the 'value' field is populated and 'booleanValue' is null. For measurements with 'type: BOOLEAN', the 'booleanValue' field is populated and 'value' is null. No measurement exposes both fields simultaneously.",TC-025
+Verify that last measurement retrieval enforces proper authorization for boolean-type measurements (insecure direct object reference),Order Management - Last Measurement Retrieval,Security,High,Two users exist: User A and User B. User A has an order with boolean-type measurements. User B is authenticated but not authorized to access User A's data.,"1. Authenticate as User B. 2. Send a GET request to /api/orders/last-measurement?phone=<user_a_phone>&itemId=<valid_item_id> attempting to access User A's boolean-type measurements.
+
+Test Data: {
+  ""phone"": ""+8801712345679"",
+  ""itemId"": 1
+}","The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and the response body contains 'status: error' or 'status: fail' with no measurement data returned in the 'data' field.",57abde9-TC-010
+Verify that order creation rejects malformed measurement type values to prevent injection or misrepresentation,Order Management - Order Creation/Update,Security,High,User is authenticated and authorized to create orders. User has a valid shop ID and customer details.,"1. Send a POST request to /api/orders with the payload in testData, including a measurement with an invalid 'type' value. 2. Observe the response.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+8801712345678"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""id"": 1,
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inch"",
+              ""value"": 40.5,
+              ""booleanValue"": null,
+              ""type"": ""INVALID_TYPE""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The API responds with HTTP status 400 (Bad Request) and an error message indicating invalid measurement type (e.g., 'Measurement type must be either NUMERIC or BOOLEAN'). No order is created, and no internal system details are exposed.",TC-026
+Verify that order update rejects malformed measurement type values to prevent injection or misrepresentation,Order Management - Order Creation/Update,Security,High,User is authenticated and authorized to update an existing order. The order has at least one measurement group.,"1. Send a PUT request to /api/orders/<valid_order_id> with the payload in testData, including a measurement with an invalid 'type' value. 2. Observe the response.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+8801712345678"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""id"": 1,
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inch"",
+              ""value"": 40.5,
+              ""booleanValue"": null,
+              ""type"": ""INVALID_TYPE""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The API responds with HTTP status 400 (Bad Request) and an error message indicating invalid measurement type (e.g., 'Measurement type must be either NUMERIC or BOOLEAN'). The order is not updated, and no internal system details are exposed.",TC-027
+"Verify that order creation enforces type consistency for measurements (NUMERIC must have value, BOOLEAN must have booleanValue)",Order Management - Order Creation/Update,Security,High,User is authenticated and authorized to create orders. User has a valid shop ID and customer details.,"1. Send a POST request to /api/orders with the payload in testData, including a NUMERIC measurement with null 'value' and a BOOLEAN measurement with null 'booleanValue'. 2. Observe the response.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+8801712345678"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""id"": 1,
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inch"",
+              ""value"": null,
+              ""booleanValue"": null,
+              ""type"": ""NUMERIC""
+            },
+            {
+              ""id"": 2,
+              ""nameEn"": ""Has Pocket"",
+              ""nameBn"": ""পকেট আছে"",
+              ""unit"": """",
+              ""value"": null,
+              ""booleanValue"": null,
+              ""type"": ""BOOLEAN""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The API responds with HTTP status 400 (Bad Request) and an error message indicating that NUMERIC measurements require a 'value' and BOOLEAN measurements require a 'booleanValue'. No order is created, and no internal system details are exposed.",TC-028
+"Verify that order update enforces type consistency for measurements (NUMERIC must have value, BOOLEAN must have booleanValue)",Order Management - Order Creation/Update,Security,High,User is authenticated and authorized to update an existing order. The order has at least one measurement group.,"1. Send a PUT request to /api/orders/<valid_order_id> with the payload in testData, including a NUMERIC measurement with null 'value' and a BOOLEAN measurement with null 'booleanValue'. 2. Observe the response.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+8801712345678"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""id"": 1,
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inch"",
+              ""value"": null,
+              ""booleanValue"": null,
+              ""type"": ""NUMERIC""
+            },
+            {
+              ""id"": 2,
+              ""nameEn"": ""Has Pocket"",
+              ""nameBn"": ""পকেট আছে"",
+              ""unit"": """",
+              ""value"": null,
+              ""booleanValue"": null,
+              ""type"": ""BOOLEAN""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The API responds with HTTP status 400 (Bad Request) and an error message indicating that NUMERIC measurements require a 'value' and BOOLEAN measurements require a 'booleanValue'. The order is not updated, and no internal system details are exposed.",TC-029
+"Verify that last measurement retrieval does not expose measurement type in unauthorized contexts (e.g., Bengali-only users)",Order Management - Last Measurement Retrieval,Security,Medium,User is authenticated and authorized to access last measurements but is configured to view Bengali-only content. User has at least one order with measurements recorded for a specific item.,"1. Send a GET request to /api/orders/last-measurement?phone=<valid_phone>&itemId=<valid_item_id> with the payload in testData. 2. Observe the response body for measurement data, specifically the 'type' field.
+
+Test Data: {
+  ""phone"": ""+8801712345678"",
+  ""itemId"": 1
+}","The API responds with HTTP status 200 (OK) and a response body containing 'status: success'. The 'data.measurements' array includes measurement objects with 'nameBn' populated, but the 'type' field is either omitted or set to a value that does not expose internal system details (e.g., not 'NUMERIC' or 'BOOLEAN').",TC-030

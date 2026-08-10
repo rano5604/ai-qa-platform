@@ -1,0 +1,165 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a new order with all required fields and valid values,Order Management - Order Creation Validation,Positive,High,"A valid shop ID exists in the system, and at least one item is available for order","1. Send a POST request to /api/orders with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+8801712345678"",
+  ""customerGender"": ""MALE"",
+  ""paidAmount"": 500.00,
+  ""deliveryDate"": ""2024-12-31"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": 200.00,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inch"",
+              ""type"": ""NUMBER"",
+              ""value"": ""40""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Order created successfully"",
+  ""data"": {
+    ""orderId"": ""<non-null string>"",
+    ""customerName"": ""John Doe"",
+    ""totalAmount"": 700.00,
+    ""dueAmount"": 200.00
+  }
+}",TC-001
+Update an existing order with all required fields and valid values,Order Management - Order Update Validation,Positive,High,An existing order with ID 1-20240515-0001 is present in the system,"1. Send a PUT request to /api/orders/1-20240515-0001 with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe Updated"",
+  ""customerPhone"": ""+8801712345678"",
+  ""customerGender"": ""MALE"",
+  ""paidAmount"": 600.00,
+  ""deliveryDate"": ""2024-12-31"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": 250.00,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inch"",
+              ""type"": ""NUMBER"",
+              ""value"": ""42""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Order updated successfully"",
+  ""data"": {
+    ""orderId"": ""1-20240515-0001"",
+    ""customerName"": ""John Doe Updated"",
+    ""totalAmount"": 850.00,
+    ""dueAmount"": 250.00
+  }
+}",TC-002
+Attempt to create an order with missing required fields and verify validation errors,Order Management - Input Validation for Order Creation,Positive,High,None,"1. Send a POST request to /api/orders with the payload in testData. 2. Verify the response status and error messages.
+
+Test Data: {
+  ""shopId"": null,
+  ""customerName"": """",
+  ""customerPhone"": ""123"",
+  ""customerGender"": null,
+  ""paidAmount"": -100.00,
+  ""deliveryDate"": """",
+  ""items"": []
+}","HTTP 400 Bad Request response with a JSON body containing: {
+  ""status"": ""error"",
+  ""message"": ""Validation failed"",
+  ""data"": {
+    ""shopId"": ""Shop ID is required"",
+    ""customerName"": ""Customer name is required"",
+    ""customerPhone"": ""Invalid phone number format"",
+    ""customerGender"": ""Customer gender is required"",
+    ""paidAmount"": ""Paid amount cannot be negative"",
+    ""deliveryDate"": ""Delivery date is required"",
+    ""items"": ""At least one item is required""
+  }
+}",TC-003
+Create an order with missing required fields in measurement groups and verify validation errors,Order Management - Input Validation for Measurement Groups,Positive,High,"A valid shop ID exists in the system, and at least one item is available for order","1. Send a POST request to /api/orders with the payload in testData. 2. Verify the response status and error messages.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+8801712345678"",
+  ""customerGender"": ""MALE"",
+  ""paidAmount"": 500.00,
+  ""deliveryDate"": ""2024-12-31"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": -10.00,
+          ""measurements"": []
+        }
+      ]
+    }
+  ]
+}","HTTP 400 Bad Request response with a JSON body containing: {
+  ""status"": ""error"",
+  ""message"": ""Validation failed"",
+  ""data"": {
+    ""items[0].measurementGroups[0].makingCharge"": ""Making charge must be >= 0"",
+    ""items[0].measurementGroups[0].measurements"": ""At least one measurement is required""
+  }
+}",TC-004
+Create a new order without specifying a trial date and verify it is handled correctly,Order Management - Optional Trial Date Handling,Positive,Medium,"A valid shop ID exists in the system, and at least one item is available for order","1. Send a POST request to /api/orders with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""Jane Smith"",
+  ""customerPhone"": ""+8801812345678"",
+  ""customerGender"": ""FEMALE"",
+  ""paidAmount"": 300.00,
+  ""deliveryDate"": ""2024-12-31"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": 150.00,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Waist"",
+              ""nameBn"": ""কোমর"",
+              ""unit"": ""inch"",
+              ""type"": ""NUMBER"",
+              ""value"": ""32""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Order created successfully"",
+  ""data"": {
+    ""orderId"": ""<non-null string>"",
+    ""customerName"": ""Jane Smith"",
+    ""trialDate"": null
+  }
+}",TC-005

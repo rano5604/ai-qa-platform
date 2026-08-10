@@ -1,0 +1,304 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Successful user sign-in with valid credentials returns standardized API response format,Authentication,Positive,High,User exists in the system with username 'testuser' and password 'password123',"1. Send a POST request to /api/auth/signin with the payload in testData.
+2. Verify the response status and body format.
+
+Test Data: {
+  ""username"": ""testuser"",
+  ""password"": ""password123""
+}","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""User signed in successfully"",
+  ""data"": {
+    ""id"": <non-null number>,
+    ""username"": ""testuser"",
+    ""email"": ""testuser@example.com"",
+    ""roles"": [""ROLE_USER""]
+  },
+  ""meta"": null
+}
+The 'Authorization' header contains a valid JWT token starting with 'Bearer '.",TC-001
+Retrieve paginated list of items with default pagination parameters,Item Management,Positive,High,At least one item exists in the system,"1. Send a GET request to /api/items with default query parameters (page=0, limit=10).
+2. Verify the response status and body format.","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Orders retrieved successfully"",
+  ""data"": {
+    ""content"": [<list of items>],
+    ""totalElements"": <total number of items>,
+    ""totalPages"": <total pages>,
+    ""pageable"": {
+      ""pageNumber"": 0,
+      ""pageSize"": 10
+    }
+  },
+  ""meta"": {
+    ""total"": <total number of items>,
+    ""page"": 0,
+    ""pages"": <total pages>
+  }
+}",57abde9-TC-001
+Retrieve paginated list of items with custom pagination parameters,Item Management,Positive,Medium,At least 15 items exist in the system,"1. Send a GET request to /api/items with query parameters page=1 and limit=5.
+2. Verify the response status and body format.","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Orders retrieved successfully"",
+  ""data"": {
+    ""content"": [<list of 5 items>],
+    ""totalElements"": <total number of items>,
+    ""totalPages"": <total pages>,
+    ""pageable"": {
+      ""pageNumber"": 1,
+      ""pageSize"": 5
+    }
+  },
+  ""meta"": {
+    ""total"": <total number of items>,
+    ""page"": 1,
+    ""pages"": <total pages>
+  }
+}",TC-002
+Create a new order with valid input returns standardized API response format,Order Management,Positive,High,Shop and item exist in the system with valid IDs,"1. Send a POST request to /api/orders with the payload in testData.
+2. Verify the response status and body format.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""totalAmount"": 1500.00,
+  ""paidAmount"": 500.00,
+  ""dueAmount"": 1000.00,
+  ""trialDate"": ""2023-12-15"",
+  ""deliveryDate"": ""2023-12-25"",
+  ""urgent"": false,
+  ""shopId"": 1,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inches"",
+              ""type"": ""NUMBER"",
+              ""value"": ""40""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Order created successfully"",
+  ""data"": {
+    ""orderId"": <non-null number>,
+    ""shopName"": ""<shop name>"",
+    ""customerName"": ""John Doe"",
+    ""customerPhone"": ""5551234567"",
+    ""totalAmount"": 1500.00,
+    ""paidAmount"": 500.00,
+    ""dueAmount"": 1000.00,
+    ""status"": ""MEASUREMENT_DONE"",
+    ""urgent"": false,
+    ""items"": [<list of items with counts>]
+  },
+  ""meta"": null
+}",0393c6e-TC-001
+Update an existing order with valid input returns standardized API response format,Order Management,Positive,High,An order exists in the system with ID 1 and status 'MEASUREMENT_DONE',"1. Send a PUT request to /api/orders/1 with the payload in testData.
+2. Verify the response status and body format.
+
+Test Data: {
+  ""customerName"": ""John Doe Updated"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""totalAmount"": 1600.00,
+  ""paidAmount"": 600.00,
+  ""dueAmount"": 1000.00,
+  ""trialDate"": ""2023-12-16"",
+  ""deliveryDate"": ""2023-12-26"",
+  ""urgent"": true,
+  ""shopId"": 1,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inches"",
+              ""type"": ""NUMBER"",
+              ""value"": ""42""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing: {
+  ""status"": ""success"",
+  ""message"": ""Order updated successfully"",
+  ""data"": {
+    ""orderId"": 1,
+    ""shopName"": ""<shop name>"",
+    ""customerName"": ""John Doe Updated"",
+    ""customerPhone"": ""5551234567"",
+    ""totalAmount"": 1600.00,
+    ""paidAmount"": 600.00,
+    ""dueAmount"": 1000.00,
+    ""status"": ""MEASUREMENT_DONE"",
+    ""urgent"": true,
+    ""items"": [<list of items with counts>]
+  },
+  ""meta"": null
+}",d3da340-TC-002
+Attempt to sign in with missing username field,Authentication,Negative,High,User exists in the system with valid credentials,"1. Send a POST request to /api/auth/signin with the payload in testData.
+
+Test Data: {""password"": ""ValidPass123!""}",The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the 'username' field is required.,TC-003
+Attempt to sign in with missing password field,Authentication,Negative,High,User exists in the system with valid credentials,"1. Send a POST request to /api/auth/signin with the payload in testData.
+
+Test Data: {""username"": ""validUser""}",The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the 'password' field is required.,TC-004
+Attempt to sign in with invalid credentials (wrong password),Authentication,Negative,High,User exists in the system with username 'validUser' and password 'ValidPass123!',"1. Send a POST request to /api/auth/signin with the payload in testData.
+
+Test Data: {""username"": ""validUser"", ""password"": ""WrongPass123!""}",The system returns an HTTP 401 Unauthorized status code with a response body containing status 'error' and a message indicating invalid credentials.,TC-005
+Attempt to sign in with non-existent username,Authentication,Negative,High,No user exists with the username 'nonExistentUser',"1. Send a POST request to /api/auth/signin with the payload in testData.
+
+Test Data: {""username"": ""nonExistentUser"", ""password"": ""AnyPass123!""}",The system returns an HTTP 401 Unauthorized status code with a response body containing status 'error' and a message indicating invalid credentials.,TC-006
+Attempt to create an order with missing required customer phone field,Order Management,Negative,High,User is authenticated and authorized to create orders,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": [{""itemId"": 1, ""quantity"": 2, ""measurementGroups"": []}]}",The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the 'customerPhone' field is required.,TC-007
+Attempt to create an order with invalid customer phone format,Order Management,Negative,High,User is authenticated and authorized to create orders,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""invalid-phone"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": [{""itemId"": 1, ""quantity"": 2, ""measurementGroups"": []}]}",The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the 'customerPhone' field must be a valid phone number format.,TC-008
+Attempt to create an order with missing items list,Order Management,Negative,High,User is authenticated and authorized to create orders,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE""}",The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the 'items' field is required.,TC-009
+Attempt to create an order with an empty items list,Order Management,Negative,High,User is authenticated and authorized to create orders,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": []}",The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the 'items' list cannot be empty.,TC-010
+Attempt to create an order with a non-existent item ID,Order Management,Negative,High,User is authenticated and authorized to create orders,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": [{""itemId"": 999999, ""quantity"": 2, ""measurementGroups"": []}]}",The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the item with ID 999999 does not exist.,TC-011
+Attempt to create an order with a negative quantity,Order Management,Negative,High,User is authenticated and authorized to create orders; item with ID 1 exists,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": [{""itemId"": 1, ""quantity"": -1, ""measurementGroups"": []}]}",The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the 'quantity' field must be a positive number.,TC-012
+Attempt to update an order with a non-existent order ID,Order Management,Negative,High,User is authenticated and authorized to update orders,"1. Send a PUT request to /api/orders/999999 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": [{""itemId"": 1, ""quantity"": 2, ""measurementGroups"": []}]}",The system returns an HTTP 404 Not Found status code with a response body containing status 'error' and a message indicating that the order with ID 999999 does not exist.,TC-013
+Attempt to update an order with a non-numeric order ID,Order Management,Negative,High,User is authenticated and authorized to update orders,"1. Send a PUT request to /api/orders/invalid-id with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": [{""itemId"": 1, ""quantity"": 2, ""measurementGroups"": []}]}",The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the order ID must be a valid numeric value.,TC-014
+Attempt to update an order with missing required customer phone field,Order Management,Negative,High,User is authenticated and authorized to update orders; order with ID 1 exists,"1. Send a PUT request to /api/orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": [{""itemId"": 1, ""quantity"": 2, ""measurementGroups"": []}]}",The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the 'customerPhone' field is required.,TC-015
+Attempt to retrieve all items with invalid page number (negative value),Item Management,Negative,Medium,User is authenticated and authorized to retrieve items,1. Send a GET request to /api/items?page=-1&limit=10.,The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the 'page' parameter must be a non-negative integer.,TC-016
+Attempt to retrieve all items with invalid limit (zero value),Item Management,Negative,Medium,User is authenticated and authorized to retrieve items,1. Send a GET request to /api/items?page=0&limit=0.,The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the 'limit' parameter must be a positive integer.,TC-017
+Attempt to retrieve all items with invalid limit (negative value),Item Management,Negative,Medium,User is authenticated and authorized to retrieve items,1. Send a GET request to /api/items?page=0&limit=-10.,The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the 'limit' parameter must be a positive integer.,TC-018
+Attempt to retrieve an item with a non-numeric ID (UPDATE existing case),Item Management,Negative,High,User is authenticated and authorized to retrieve items,1. Send a GET request to /api/items/invalid-id.,The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the item ID must be a valid numeric value.,a6c97f7-TC-005
+Attempt to create an order with a measurement parameter containing missing value field for NUMERIC type (UPDATE existing case),Order Measurement Management,Negative,High,User is authenticated and authorized to create orders; item with ID 1 exists,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": [{""itemId"": 1, ""quantity"": 2, ""measurementGroups"": [{""measurements"": [{""nameEn"": ""Chest"", ""nameBn"": ""বুক"", ""unit"": ""inch"", ""type"": ""NUMERIC""}]}]}]}",The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the 'value' field is required for NUMERIC measurements and cannot be null.,313179b-TC-006
+Attempt to create an order with a measurement parameter containing missing booleanValue field for BOOLEAN type (UPDATE existing case),Order Measurement Management,Negative,High,User is authenticated and authorized to create orders; item with ID 1 exists,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": [{""itemId"": 1, ""quantity"": 2, ""measurementGroups"": [{""measurements"": [{""nameEn"": ""Has Pocket"", ""nameBn"": ""পকেট আছে"", ""unit"": null, ""type"": ""BOOLEAN""}]}]}]}",The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the 'booleanValue' field is required for BOOLEAN measurements and cannot be null.,313179b-TC-005
+Attempt to update order status with a non-existent order ID,Order Management,Negative,High,User is authenticated and authorized to update order statuses,"1. Send a PATCH request to /api/orders/999999/status with the payload in testData.
+
+Test Data: {""newStatus"": ""DELIVERED""}",The system returns an HTTP 404 Not Found status code with a response body containing status 'error' and a message indicating that the order with ID 999999 does not exist.,TC-019
+Attempt to update order status with an invalid status value,Order Management,Negative,High,User is authenticated and authorized to update order statuses; order with ID 1 exists,"1. Send a PATCH request to /api/orders/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""INVALID_STATUS""}",The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the 'newStatus' field must be a valid order status value.,TC-020
+Attempt to update order item status with a non-existent order item ID (UPDATE existing case),Order Item Status Management,Negative,High,User is authenticated and authorized to update order item statuses,"1. Send a PUT request to /api/orders/items/999999/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}",The system returns an HTTP 404 Not Found status code with a response body containing status 'error' and a message indicating that the order item with ID 999999 does not exist.,113f2a9-TC-011
+Sign in with empty username and password,User Authentication,Boundary,High,No preconditions required,"1. Send a POST request to /api/auth/signin with the payload in testData.
+
+Test Data: {""username"": """", ""password"": """"}","The API responds with a 400 Bad Request status code, a status of 'error', and a message indicating invalid credentials.",TC-021
+Sign in with null username and password,User Authentication,Boundary,High,No preconditions required,"1. Send a POST request to /api/auth/signin with the payload in testData.
+
+Test Data: {""username"": null, ""password"": null}","The API responds with a 400 Bad Request status code, a status of 'error', and a message indicating invalid credentials.",TC-022
+Sign in with maximum allowed length for username and password (255 characters),User Authentication,Boundary,High,No preconditions required,"1. Send a POST request to /api/auth/signin with the payload in testData.
+
+Test Data: {""username"": ""a23456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"", ""password"": ""b23456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890""}","The API responds with a 200 OK status code, a status of 'success', and a JWT token in the 'Authorization' header.",TC-023
+Sign in with username and password exceeding maximum allowed length (256 characters),User Authentication,Boundary,High,No preconditions required,"1. Send a POST request to /api/auth/signin with the payload in testData.
+
+Test Data: {""username"": ""a234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"", ""password"": ""b234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901""}","The API responds with a 400 Bad Request status code, a status of 'error', and a message indicating invalid input length.",TC-024
+Retrieve all items with zero page number and zero limit,Item Management,Boundary,High,At least one item exists in the system,"1. Send a GET request to /api/items?page=0&limit=0 with the payload in testData.
+
+Test Data: No payload required",The API responds with a 404 Not Found status code as no items are returned for zero limit.,TC-025
+Retrieve all items with negative page number and negative limit,Item Management,Boundary,High,At least one item exists in the system,"1. Send a GET request to /api/items?page=-1&limit=-1 with the payload in testData.
+
+Test Data: No payload required",The API responds with a 400 Bad Request status code and an error message indicating invalid page or limit values.,TC-026
+Retrieve all items with maximum allowed limit (1000),Item Management,Boundary,Medium,At least 1000 items exist in the system,"1. Send a GET request to /api/items?page=0&limit=1000 with the payload in testData.
+
+Test Data: No payload required","The API responds with a 200 OK status code, a status of 'success', and a paginated list of 1000 items in the 'data.content' field.",TC-027
+Retrieve all items with limit exceeding maximum allowed (1001),Item Management,Boundary,Medium,At least one item exists in the system,"1. Send a GET request to /api/items?page=0&limit=1001 with the payload in testData.
+
+Test Data: No payload required",The API responds with a 400 Bad Request status code and an error message indicating limit exceeds maximum allowed value.,TC-028
+Create an order with an empty items list,Order Management,Boundary,High,User is authenticated,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": []}","The API responds with a 400 Bad Request status code, a status of 'error', and a message indicating that the items list cannot be empty.",TC-029
+Create an order with a null items list,Order Management,Boundary,High,User is authenticated,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": null}","The API responds with a 400 Bad Request status code, a status of 'error', and a message indicating that the items list cannot be null.",TC-030
+Create an order with a customer phone number of zero length,Order Management,Boundary,High,User is authenticated,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": """", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": []}]}","The API responds with a 400 Bad Request status code, a status of 'error', and a message indicating that the customer phone number cannot be empty.",0393c6e-TC-008
+Update an order with a customer phone number of zero length,Order Management,Boundary,High,An order with ID 1 exists in the system,"1. Send a PUT request to /api/orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": """", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": []}]}","The API responds with a 400 Bad Request status code, a status of 'error', and a message indicating that the customer phone number cannot be empty.",0393c6e-TC-012
+Update an order with a non-existent order ID (zero),Order Management,Boundary,High,No preconditions required,"1. Send a PUT request to /api/orders/0 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": []}]}","The API responds with a 404 Not Found status code, a status of 'error', and a message indicating that the order was not found.",TC-031
+Update an order with a non-existent order ID (negative),Order Management,Boundary,High,No preconditions required,"1. Send a PUT request to /api/orders/-1 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": []}]}","The API responds with a 404 Not Found status code, a status of 'error', and a message indicating that the order was not found.",TC-032
+Update an order with a very large order ID (9999999999),Order Management,Boundary,Medium,No preconditions required,"1. Send a PUT request to /api/orders/9999999999 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": []}]}","The API responds with a 404 Not Found status code, a status of 'error', and a message indicating that the order was not found.",TC-033
+Retrieve an order with a non-existent order ID (zero),Order Management,Boundary,High,No preconditions required,"1. Send a GET request to /api/orders/0 with the payload in testData.
+
+Test Data: No payload required","The API responds with a 404 Not Found status code, a status of 'error', and a message indicating that the order was not found.",0393c6e-TC-013
+Update order item status with a non-existent orderItemId (zero),Order Management,Boundary,High,No preconditions required,"1. Send a PUT request to /api/orders/items/0/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}","The API responds with a 404 Not Found status code, a status of 'error', and a message indicating that the order item was not found.",113f2a9-TC-033
+Verify that sign-in with invalid credentials returns a generic error message without exposing system details,Authentication - Sign In,Security,High,User account exists with username 'testuser' and password 'correctpassword',"1. Send a POST request to /api/auth/signin with the payload in testData (invalid credentials). 2. Observe the response.
+
+Test Data: {""username"": ""testuser"", ""password"": ""wrongpassword""}","The API responds with HTTP status 401 (Unauthorized) and a response body containing 'status: error', 'message: Invalid credentials', and no sensitive system details (e.g., stack traces, database errors).",TC-034
+Verify that sign-in with valid credentials returns a JWT token and user details without exposing raw credentials or internal system details,Authentication - Sign In,Security,High,User account exists with username 'testuser' and password 'correctpassword',"1. Send a POST request to /api/auth/signin with the payload in testData (valid credentials). 2. Observe the response.
+
+Test Data: {""username"": ""testuser"", ""password"": ""correctpassword""}","The API responds with HTTP status 200 (OK) and a response body containing 'status: success', 'message: User signed in successfully', and a 'data' field with user details (id, username, email, roles). The 'Authorization' header contains a valid JWT token. No raw credentials or internal system details are exposed.",TC-035
+Verify that order creation with invalid request data returns a generic error message without exposing system details,Order Management - Order Creation,Security,High,User is authenticated and has a valid JWT token,"1. Send a POST request to /api/orders with the payload in testData (invalid request). 2. Observe the response.
+
+Test Data: {""customerName"": """", ""customerPhone"": ""1234567890"", ""items"": []}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid order request', and no sensitive system details (e.g., stack traces, database errors).",TC-036
+Verify that order creation with unexpected server error returns a generic error message without exposing system details,Order Management - Order Creation,Security,High,"User is authenticated and has a valid JWT token. Backend is configured to simulate an unexpected error (e.g., database failure).","1. Send a POST request to /api/orders with a valid payload. 2. Observe the response.
+
+Test Data: {""customerName"": ""Test User"", ""customerPhone"": ""1234567890"", ""items"": [{""itemId"": 1, ""quantity"": 1}]}","The API responds with HTTP status 500 (Internal Server Error) and a response body containing 'status: error', 'message: An unexpected error occurred', and no sensitive system details (e.g., stack traces, database errors).",TC-037
+Verify that order update with invalid request data returns a generic error message without exposing system details,Order Management - Order Update,Security,High,"User is authenticated, has a valid JWT token, and an existing order with ID 1","1. Send a PUT request to /api/orders/1 with the payload in testData (invalid request). 2. Observe the response.
+
+Test Data: {""customerName"": """", ""customerPhone"": ""1234567890"", ""items"": []}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid order request', and no sensitive system details (e.g., stack traces, database errors).",TC-038
+Verify that order update with non-existent order ID returns a generic error message without exposing system details,Order Management - Order Update,Security,High,User is authenticated and has a valid JWT token,"1. Send a PUT request to /api/orders/999999 with a valid payload. 2. Observe the response.
+
+Test Data: {""customerName"": ""Test User"", ""customerPhone"": ""1234567890"", ""items"": [{""itemId"": 1, ""quantity"": 1}]}","The API responds with HTTP status 404 (Not Found) and a response body containing 'status: error', 'message: Order not found with ID: 999999', and no sensitive system details (e.g., stack traces, database errors).",d3da340-TC-019
+Verify that paginated item retrieval does not expose raw database details in meta field,Item Management - Item Retrieval,Security,Medium,"User is authenticated, has a valid JWT token, and at least one item exists in the system",1. Send a GET request to /api/items with query parameters page=0 and limit=10. 2. Observe the response.,"The API responds with HTTP status 200 (OK) and a response body containing 'status: success', 'message: Orders retrieved successfully', and a 'data' array with item records. The 'meta' field contains only pagination details (totalElements, page, totalPages) and no raw database or system details.",TC-039
+Verify that item retrieval with non-existent ID returns a generic error message without exposing system details,Item Management - Item Retrieval,Security,High,User is authenticated and has a valid JWT token,1. Send a GET request to /api/items/999999. 2. Observe the response.,"The API responds with HTTP status 404 (Not Found) and a response body containing 'status: error', 'message: Item not found', and no sensitive system details (e.g., stack traces, database errors).",TC-040
+Verify that order retrieval with non-existent ID returns a generic error message without exposing system details,Order Management - Order Retrieval by ID,Security,High,User is authenticated and has a valid JWT token,1. Send a GET request to /api/orders/999999. 2. Observe the response.,"The API responds with HTTP status 404 (Not Found) and a response body containing 'status: error', 'message: Order not found with ID: 999999', and no sensitive system details (e.g., stack traces, database errors).",d3da340-TC-019
+Verify that updating an order item status with a non-existent order item ID returns a generic error message without exposing system details,Order Management - Order Item Status Update,Security,High,User is authenticated and has a valid JWT token,"1. Send a PUT request to /api/orders/items/999999/status with the payload in testData. 2. Observe the response.
+
+Test Data: {""newStatus"": ""MEASUREMENT_DONE""}","The API responds with HTTP status 404 (Not Found) and a response body containing 'status: error', 'message: Order item not found', and no sensitive system details (e.g., stack traces, database errors).",113f2a9-TC-038
+Verify that order creation with injection attempts via special characters in customer name rejects the request and returns a generic error message,Order Management - Order Creation,Security,High,User is authenticated and has a valid JWT token,"1. Send a POST request to /api/orders with the payload in testData (injection attempt in customerName). 2. Observe the response.
+
+Test Data: {""customerName"": ""<script>alert('xss')</script>"", ""customerPhone"": ""1234567890"", ""items"": [{""itemId"": 1, ""quantity"": 1}]}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid order request', and no sensitive system details (e.g., stack traces, database errors). No order is created.",TC-041
+Verify that order update with injection attempts via special characters in customer name rejects the request and returns a generic error message,Order Management - Order Update,Security,High,"User is authenticated, has a valid JWT token, and an existing order with ID 1","1. Send a PUT request to /api/orders/1 with the payload in testData (injection attempt in customerName). 2. Observe the response.
+
+Test Data: {""customerName"": ""<script>alert('xss')</script>"", ""customerPhone"": ""1234567890"", ""items"": [{""itemId"": 1, ""quantity"": 1}]}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid order request', and no sensitive system details (e.g., stack traces, database errors). The order is not updated.",TC-042
+Verify that item creation with injection attempts via special characters in name fields rejects the request and returns a generic error message,Item Management - Item Creation,Security,High,User is authenticated and has a valid JWT token,"1. Send a POST request to /api/items with the payload in testData (injection attempt in nameEn and nameBn). 2. Observe the response.
+
+Test Data: {""nameEn"": ""<script>alert('xss')</script>"", ""nameBn"": ""<script>alert('xss')</script>"", ""status"": ""ACTIVE""}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid item request', and no sensitive system details (e.g., stack traces, database errors). No item is created.",50aa351-TC-016
+Verify that item update with injection attempts via special characters in name fields rejects the request and returns a generic error message,Item Management - Item Update,Security,High,"User is authenticated, has a valid JWT token, and an existing item with ID 1","1. Send a PUT request to /api/items/1 with the payload in testData (injection attempt in nameEn and nameBn). 2. Observe the response.
+
+Test Data: {""nameEn"": ""<script>alert('xss')</script>"", ""nameBn"": ""<script>alert('xss')</script>"", ""status"": ""ACTIVE""}","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid item request', and no sensitive system details (e.g., stack traces, database errors). The item is not updated.",50aa351-TC-018

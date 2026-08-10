@@ -1,0 +1,28 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Delete an image with a missing object name,Image Deletion,Negative,High,No preconditions,"1. Send a DELETE request to /api/images/{objectName} with an empty objectName.
+
+Test Data: {""objectName"": """"}",HTTP 400 Bad Request status code with an error message indicating that the 'objectName' parameter is required.,TC-001
+Delete an image with a non-existent object name,Image Deletion,Negative,High,No preconditions,"1. Send a DELETE request to /api/images/{objectName} with a non-existent objectName.
+
+Test Data: {""objectName"": ""non-existent-object""}",HTTP 404 Not Found status code with an error message indicating that the specified object does not exist.,TC-002
+Delete an image with an invalid object name format,Image Deletion,Negative,Medium,No preconditions,"1. Send a DELETE request to /api/images/{objectName} with an objectName containing invalid characters.
+
+Test Data: {""objectName"": ""invalid-object-name""}",HTTP 400 Bad Request status code with an error message indicating that the 'objectName' parameter has an invalid format.,TC-003
+Create an order with a missing customer photo,Order Creation,Negative,High,No preconditions,"1. Send a POST request to /api/orders with a request body containing a missing customer photo.
+
+Test Data: {""customerPhoto"": null}",HTTP 400 Bad Request status code with an error message indicating that the 'customerPhoto' field is required.,TC-004
+Create an order with an invalid customer photo format,Order Creation,Negative,High,No preconditions,"1. Send a POST request to /api/orders with a request body containing an invalid customer photo format.
+
+Test Data: {""customerPhoto"": ""invalid-base64-string""}",HTTP 400 Bad Request status code with an error message indicating that the 'customerPhoto' field contains an invalid base64 string.,TC-005
+Update an order with a missing customer photo,Order Update,Negative,High,An existing order,"1. Send a PUT request to /api/orders/{orderId} with a request body containing a missing customer photo.
+
+Test Data: {""customerPhoto"": null}",HTTP 400 Bad Request status code with an error message indicating that the 'customerPhoto' field is required.,TC-006
+Update an order with an invalid customer photo format,Order Update,Negative,High,An existing order,"1. Send a PUT request to /api/orders/{orderId} with a request body containing an invalid customer photo format.
+
+Test Data: {""customerPhoto"": ""invalid-base64-string""}",HTTP 400 Bad Request status code with an error message indicating that the 'customerPhoto' field contains an invalid base64 string.,TC-007
+Create an order as a non-owner of the shop,Order Access Control,Negative,High,A non-owner user of the shop,"1. Send a POST request to /api/orders as a non-owner user of the shop.
+
+Test Data: {}",HTTP 403 Forbidden status code with an error message indicating that the user is not authorized to create orders for this shop.,TC-008
+Update an order as a non-owner of the shop,Order Access Control,Negative,High,An existing order and a non-owner user of the shop,"1. Send a PUT request to /api/orders/{orderId} as a non-owner user of the shop.
+
+Test Data: {}",HTTP 403 Forbidden status code with an error message indicating that the user is not authorized to update orders for this shop.,TC-009

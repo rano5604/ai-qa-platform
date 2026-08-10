@@ -1,0 +1,58 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create appointment reservation with empty customer name (boundary: empty string),Appointment Reservation Management,Boundary,High,User is authenticated and has a valid shopId,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {""customerName"": """", ""customerPhone"": ""1234567890"", ""appointmentDate"": ""2024-12-31T10:00:00"", ""serviceId"": 1, ""workerId"": 1}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the customer name cannot be empty.,TC-001
+Create appointment reservation with customer name at maximum allowed length (boundary: max length),Appointment Reservation Management,Boundary,High,User is authenticated and has a valid shopId,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {""customerName"": ""ThisIsExactlyFiftyCharactersLongNameForTestingMaxLength"", ""customerPhone"": ""1234567890"", ""appointmentDate"": ""2024-12-31T10:00:00"", ""serviceId"": 1, ""workerId"": 1}",HTTP status code 201 (Created). Response body contains the created appointment reservation with the provided customer name.,TC-002
+Create appointment reservation with customer name exceeding maximum allowed length (boundary: one above max),Appointment Reservation Management,Boundary,High,User is authenticated and has a valid shopId,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {""customerName"": ""ThisIsFiftyOneCharactersLongNameExceedingMaxLengthForTesting"", ""customerPhone"": ""1234567890"", ""appointmentDate"": ""2024-12-31T10:00:00"", ""serviceId"": 1, ""workerId"": 1}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the customer name exceeds the maximum allowed length.,TC-003
+Retrieve appointments by shop and date with page number at maximum allowed value (boundary: max page number),Appointment Reservation Management,Boundary,Medium,"User is authenticated, has a valid shopId, and at least one appointment exists for the shop on the specified date","1. Send a GET request to /api/shops/1/appointments?date=2024-12-31&page=999999&limit=10 with the query parameters in testData.
+
+Test Data: date=2024-12-31, page=999999, limit=10","HTTP status code 200 (OK). Response body contains an empty paginated list (no appointments) with pagination metadata (totalElements=0, totalPages=100000, size=10, number=999999).",TC-004
+Retrieve appointments by shop and date with limit at maximum allowed value (boundary: max limit),Appointment Reservation Management,Boundary,Medium,"User is authenticated, has a valid shopId, and at least 100 appointments exist for the shop on the specified date","1. Send a GET request to /api/shops/1/appointments?date=2024-12-31&page=0&limit=100 with the query parameters in testData.
+
+Test Data: date=2024-12-31, page=0, limit=100","HTTP status code 200 (OK). Response body contains a paginated list of up to 100 appointments with pagination metadata (totalElements=100+, totalPages=1+, size=100, number=0).",TC-005
+Retrieve appointments by shop and date with limit exceeding maximum allowed value (boundary: one above max),Appointment Reservation Management,Boundary,High,User is authenticated and has a valid shopId,"1. Send a GET request to /api/shops/1/appointments?date=2024-12-31&page=0&limit=101 with the query parameters in testData.
+
+Test Data: date=2024-12-31, page=0, limit=101",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the limit exceeds the maximum allowed value.,TC-006
+Retrieve customer appointments with username at maximum allowed length (boundary: max length),Appointment Reservation Management,Boundary,Medium,User is authenticated and has at least one appointment recorded,"1. Send a GET request to /api/appointments?username=ThisIsExactlyFiftyCharactersLongUsername&page=0&limit=10 with the query parameters in testData.
+
+Test Data: username=ThisIsExactlyFiftyCharactersLongUsername, page=0, limit=10","HTTP status code 200 (OK). Response body contains a paginated list of appointments for the user with pagination metadata (totalElements=1+, totalPages=1, size=10, number=0).",TC-007
+Retrieve customer appointments with username exceeding maximum allowed length (boundary: one above max),Appointment Reservation Management,Boundary,High,User is authenticated,"1. Send a GET request to /api/appointments?username=ThisIsFiftyOneCharactersLongUsernameExceedingMaxLength&page=0&limit=10 with the query parameters in testData.
+
+Test Data: username=ThisIsFiftyOneCharactersLongUsernameExceedingMaxLength, page=0, limit=10",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the username exceeds the maximum allowed length.,TC-008
+Add an area with name at maximum allowed length (boundary: max length) - UPDATE,Area Management,Boundary,High,User is authenticated,"1. Send a POST request to /api/areas with the payload in testData.
+
+Test Data: {""name"": ""ThisIsExactlyFiftyCharactersLongNameForTestingMaxLength"", ""description"": ""Test Description""}","HTTP status code 200 (OK). Response body contains the created area with the provided name and description, and a success message 'Area created successfully'.",3c56bc5-TC-015
+Add an area with name exceeding maximum allowed length (boundary: one above max) - UPDATE,Area Management,Boundary,High,User is authenticated,"1. Send a POST request to /api/areas with the payload in testData.
+
+Test Data: {""name"": ""ThisIsFiftyOneCharactersLongNameExceedingMaxLengthForTesting"", ""description"": ""Test Description""}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the name exceeds the maximum allowed length.,3c56bc5-TC-016
+Retrieve area by ID with a very large ID (boundary: large numeric input) - UPDATE,Area Management,Boundary,Medium,User is authenticated,"1. Send a GET request to /api/areas/999999999999 with the path variable in testData.
+
+Test Data: id=999999999999",HTTP status code 200 (OK). Response body contains a success message 'Area retrieved successfully' and an empty data field (no area found).,3c56bc5-TC-013
+Retrieve all service profiles by shop with page number at maximum allowed value (boundary: max page number),Service Profile Management,Boundary,Medium,User is authenticated and has a valid shopId,"1. Send a GET request to /api/shops/1/profiles?page=999999&limit=10 with the query parameters in testData.
+
+Test Data: page=999999, limit=10","HTTP status code 200 (OK). Response body contains an empty paginated list (no service profiles) with pagination metadata (totalElements=0, totalPages=100000, size=10, number=999999).",TC-009
+Retrieve all service profiles by shop with limit at maximum allowed value (boundary: max limit),Service Profile Management,Boundary,Medium,"User is authenticated, has a valid shopId, and at least 100 service profiles exist for the shop","1. Send a GET request to /api/shops/1/profiles?page=0&limit=100 with the query parameters in testData.
+
+Test Data: page=0, limit=100","HTTP status code 200 (OK). Response body contains a paginated list of up to 100 service profiles with pagination metadata (totalElements=100+, totalPages=1+, size=100, number=0).",TC-010
+Retrieve all service profiles by shop with limit exceeding maximum allowed value (boundary: one above max),Service Profile Management,Boundary,High,User is authenticated and has a valid shopId,"1. Send a GET request to /api/shops/1/profiles?page=0&limit=101 with the query parameters in testData.
+
+Test Data: page=0, limit=101",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the limit exceeds the maximum allowed value.,TC-011
+Add a service profile with service name at maximum allowed length (boundary: max length),Service Profile Management,Boundary,High,User is authenticated and has a valid shopId,"1. Send a POST request to /api/shops/1/profiles with the payload in testData.
+
+Test Data: {""serviceName"": ""ThisIsExactlyFiftyCharactersLongServiceNameForTesting"", ""price"": 100.0, ""duration"": 60, ""shopId"": 1}",HTTP status code 200 (OK). Response body contains the created service profile with the provided service name and a success message 'Service profile created successfully'.,TC-012
+Add a service profile with service name exceeding maximum allowed length (boundary: one above max),Service Profile Management,Boundary,High,User is authenticated and has a valid shopId,"1. Send a POST request to /api/shops/1/profiles with the payload in testData.
+
+Test Data: {""serviceName"": ""ThisIsFiftyOneCharactersLongServiceNameExceedingMaxLength"", ""price"": 100.0, ""duration"": 60, ""shopId"": 1}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the service name exceeds the maximum allowed length.,TC-013
+Update a service profile with price at minimum allowed value (boundary: zero price) - UPDATE,Service Profile Management,Boundary,High,"User is authenticated, has a valid shopId, and a service profile exists with ID 1","1. Send a PUT request to /api/shops/1/profiles/1 with the payload in testData.
+
+Test Data: {""serviceName"": ""Test Service"", ""price"": 0.0, ""duration"": 60, ""shopId"": 1}",HTTP status code 200 (OK). Response body contains the updated service profile with price set to 0.0 and a success message 'Service profile updated successfully'.,eac017c-TC-010
+Update a service profile with price just below minimum allowed value (boundary: negative price),Service Profile Management,Boundary,High,"User is authenticated, has a valid shopId, and a service profile exists with ID 1","1. Send a PUT request to /api/shops/1/profiles/1 with the payload in testData.
+
+Test Data: {""serviceName"": ""Test Service"", ""price"": -0.01, ""duration"": 60, ""shopId"": 1}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the price cannot be negative.,TC-014
+Retrieve service profile by ID with a very large ID (boundary: large numeric input),Service Profile Management,Boundary,Medium,User is authenticated and has a valid shopId,"1. Send a GET request to /api/shops/1/profiles/999999999999 with the path variable in testData.
+
+Test Data: id=999999999999",HTTP status code 404 (Not Found). Response body is empty or contains an error message indicating that the service profile was not found.,TC-015

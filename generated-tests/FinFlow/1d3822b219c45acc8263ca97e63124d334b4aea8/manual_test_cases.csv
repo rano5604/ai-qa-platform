@@ -1,0 +1,16 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify the app builds and runs with the updated compile SDK version,Android Compile SDK Version Configuration,Configuration,High,The app is set up with the updated build.gradle.kts file,"1. Build the app with the updated compile SDK version. 2. Run the app on a device or emulator. 3. Verify the app runs without errors.
+
+Test Data: Old compile SDK version: flutter.compileSdkVersion, New compile SDK version: 35",The app builds and runs successfully with the updated compile SDK version,TC-001
+Verify the app behaves correctly with the updated target SDK version,Android Target SDK Version Configuration,Configuration,High,The app is set up with the updated build.gradle.kts file,"1. Build the app with the updated target SDK version. 2. Run the app on a device or emulator. 3. Verify the app behaves as expected.
+
+Test Data: Old target SDK version: flutter.targetSdkVersion, New target SDK version: 35",The app behaves correctly with the updated target SDK version,TC-002
+Verify the app builds and runs with the updated Gradle JVM arguments,Gradle JVM Arguments Configuration,Configuration,Medium,The app is set up with the updated gradle.properties file,"1. Build the app with the updated Gradle JVM arguments. 2. Run the app on a device or emulator. 3. Verify the app runs without errors.
+
+Test Data: Old Gradle JVM arguments: -Xmx8G -XX:MaxMetaspaceSize=4G -XX:ReservedCodeCacheSize=512m -XX:+HeapDumpOnOutOfMemoryError, New Gradle JVM arguments: -Xmx4096m -XX:+HeapDumpOnOutOfMemoryError",The app builds and runs successfully with the updated Gradle JVM arguments,TC-003
+Verify the app builds and runs with Kotlin incremental compilation disabled,Kotlin Incremental Compilation Configuration,Configuration,Medium,The app is set up with the updated gradle.properties file,"1. Build the app with Kotlin incremental compilation disabled. 2. Run the app on a device or emulator. 3. Verify the app runs without errors.
+
+Test Data: Old Kotlin incremental compilation: enabled, New Kotlin incremental compilation: disabled",The app builds and runs successfully with Kotlin incremental compilation disabled,TC-004
+Verify the app builds and runs with the updated printing dependency version,Printing Dependency Version Configuration,Configuration,Medium,The app is set up with the updated pubspec.yaml file,"1. Build the app with the updated printing dependency version. 2. Run the app on a device or emulator. 3. Verify the app runs without errors.
+
+Test Data: Old printing dependency version: ^5.12.0, New printing dependency version: ^5.11.0",The app builds and runs successfully with the updated printing dependency version,TC-005

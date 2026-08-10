@@ -1,0 +1,34 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Retrieve a file with an empty folder name in the path,File Retrieval via MinIO Proxy,Boundary,High,A file named 'test.jpg' exists in the 'tailor-photos' bucket under a folder named 'valid-folder',"1. Send a GET request to /{folder}/{fileName} with the path variables set to empty string for folder and 'test.jpg' for fileName.
+
+Test Data: folder: """", fileName: ""test.jpg""","The API responds with a 404 Not Found status code, and no file is returned.",TC-001
+Retrieve a file with an empty file name in the path,File Retrieval via MinIO Proxy,Boundary,High,A file named 'test.jpg' exists in the 'tailor-photos' bucket under a folder named 'valid-folder',"1. Send a GET request to /{folder}/{fileName} with the path variables set to 'valid-folder' for folder and empty string for fileName.
+
+Test Data: folder: ""valid-folder"", fileName: """"","The API responds with a 404 Not Found status code, and no file is returned.",TC-002
+Retrieve a file with a folder name exceeding the maximum allowed length (255 characters),File Retrieval via MinIO Proxy,Boundary,Medium,A file named 'test.jpg' exists in the 'tailor-photos' bucket under a folder named 'a' (1 character),"1. Send a GET request to /{folder}/{fileName} with the path variables set to a 256-character string for folder and 'test.jpg' for fileName.
+
+Test Data: folder: ""a"" repeated 256 times, fileName: ""test.jpg""","The API responds with a 404 Not Found status code, and no file is returned.",TC-003
+Retrieve a file with a file name exceeding the maximum allowed length (255 characters),File Retrieval via MinIO Proxy,Boundary,Medium,A file named 'a.jpg' (1 character) exists in the 'tailor-photos' bucket under a folder named 'valid-folder',"1. Send a GET request to /{folder}/{fileName} with the path variables set to 'valid-folder' for folder and a 256-character string for fileName ending with '.jpg'.
+
+Test Data: folder: ""valid-folder"", fileName: ""a"" repeated 250 times + "".jpg""","The API responds with a 404 Not Found status code, and no file is returned.",TC-004
+Retrieve a file with a folder name exactly at the maximum allowed length (255 characters),File Retrieval via MinIO Proxy,Boundary,High,A file named 'test.jpg' exists in the 'tailor-photos' bucket under a folder named 'a' repeated 255 times,"1. Send a GET request to /{folder}/{fileName} with the path variables set to a 255-character string for folder and 'test.jpg' for fileName.
+
+Test Data: folder: ""a"" repeated 255 times, fileName: ""test.jpg""","The API responds with a 200 OK status code, and the file 'test.jpg' is returned with content type 'application/octet-stream'.",TC-005
+Retrieve a file with a file name exactly at the maximum allowed length (255 characters),File Retrieval via MinIO Proxy,Boundary,High,A file named 'a' repeated 250 times + '.jpg' exists in the 'tailor-photos' bucket under a folder named 'valid-folder',"1. Send a GET request to /{folder}/{fileName} with the path variables set to 'valid-folder' for folder and a 255-character string for fileName.
+
+Test Data: folder: ""valid-folder"", fileName: ""a"" repeated 250 times + "".jpg""","The API responds with a 200 OK status code, and the file is returned with content type 'application/octet-stream'.",TC-006
+Retrieve a non-existent file with valid folder and file names,File Retrieval via MinIO Proxy,Boundary,High,No file named 'nonexistent.jpg' exists in the 'tailor-photos' bucket under any folder,"1. Send a GET request to /{folder}/{fileName} with the path variables set to 'valid-folder' for folder and 'nonexistent.jpg' for fileName.
+
+Test Data: folder: ""valid-folder"", fileName: ""nonexistent.jpg""","The API responds with a 404 Not Found status code, and no file is returned.",TC-007
+Retrieve a file with a folder name containing special characters and Unicode symbols,File Retrieval via MinIO Proxy,Boundary,Medium,A file named 'test.jpg' exists in the 'tailor-photos' bucket under a folder named 'folder-特殊@#$%',"1. Send a GET request to /{folder}/{fileName} with the path variables set to 'folder-特殊@#$%' for folder and 'test.jpg' for fileName.
+
+Test Data: folder: ""folder-特殊@#$%"", fileName: ""test.jpg""","The API responds with a 200 OK status code, and the file 'test.jpg' is returned with content type 'application/octet-stream'.",TC-008
+Retrieve a file with a file name containing special characters and Unicode symbols,File Retrieval via MinIO Proxy,Boundary,Medium,A file named '特殊@#$%.jpg' exists in the 'tailor-photos' bucket under a folder named 'valid-folder',"1. Send a GET request to /{folder}/{fileName} with the path variables set to 'valid-folder' for folder and '特殊@#$%.jpg' for fileName.
+
+Test Data: folder: ""valid-folder"", fileName: ""特殊@#$%.jpg""","The API responds with a 200 OK status code, and the file '特殊@#$%.jpg' is returned with content type 'application/octet-stream'.",TC-009
+Retrieve a file with a folder name set to null (simulated via malformed request),File Retrieval via MinIO Proxy,Boundary,Medium,A file named 'test.jpg' exists in the 'tailor-photos' bucket under a folder named 'valid-folder',"1. Attempt to send a GET request to /{folder}/{fileName} with the folder path variable omitted or malformed to simulate null.
+
+Test Data: folder: [malformed], fileName: ""test.jpg""","The API responds with a 404 Not Found status code or 400 Bad Request status code, and no file is returned.",TC-010
+Retrieve a file with a file name set to null (simulated via malformed request),File Retrieval via MinIO Proxy,Boundary,Medium,A file named 'test.jpg' exists in the 'tailor-photos' bucket under a folder named 'valid-folder',"1. Attempt to send a GET request to /{folder}/{fileName} with the fileName path variable omitted or malformed to simulate null.
+
+Test Data: folder: ""valid-folder"", fileName: [malformed]","The API responds with a 404 Not Found status code or 400 Bad Request status code, and no file is returned.",TC-011

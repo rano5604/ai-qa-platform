@@ -1,0 +1,97 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify that measurement group photos are uploaded and displayed correctly in a new order using configured MinIO credentials,Order Management - Photo Upload and Display,Positive,High,User is logged in as a shop owner with valid MinIO credentials configured. At least one customer and item exist in the system.,"1. Navigate to the 'Create New Order' page. 
+2. Select an existing customer from the dropdown. 
+3. Select an item (e.g., 'Shirt') from the item list. 
+4. In the measurement group section, click 'Upload Cloth Photo' and select a valid image file (e.g., JPG or PNG). 
+5. Click 'Upload Pattern Cloth Photo' and select another valid image file. 
+6. Fill in all required fields (e.g., delivery date, making charge). 
+7. Click 'Create Order'. 
+8. Navigate to the 'Order Details' page for the newly created order. 
+9. Locate the measurement group section and verify the uploaded photos are displayed.
+
+Test Data: Customer: 'John Doe', Item: 'Shirt', Cloth Photo: 'cloth_sample.jpg', Pattern Cloth Photo: 'pattern_sample.png', Delivery Date: 7 days from today, Making Charge: 500.00","1. The order is created successfully with a confirmation message: 'Order created successfully'. 
+2. The measurement group section in the order details page displays both the cloth photo and pattern cloth photo without any errors or broken image icons.",0f2eade-TC-002
+Verify that existing measurement group photos are updated and displayed correctly when modified in an order,Order Management - Photo Upload and Display,Positive,High,User is logged in as a shop owner with valid MinIO credentials configured. An existing order with at least one measurement group and uploaded photos exists in the system.,"1. Navigate to the 'Order List' page and select an existing order with uploaded photos. 
+2. Click 'Edit Order' to open the order update page. 
+3. In the measurement group section, click 'Change Cloth Photo' and upload a new image file. 
+4. Click 'Change Pattern Cloth Photo' and upload another new image file. 
+5. Update any other required fields if necessary (e.g., making charge). 
+6. Click 'Update Order'. 
+7. Navigate back to the 'Order Details' page for the updated order. 
+8. Locate the measurement group section and verify the new photos are displayed.
+
+Test Data: Order ID: '1-20240515-0001', New Cloth Photo: 'new_cloth_sample.jpg', New Pattern Cloth Photo: 'new_pattern_sample.png', Updated Making Charge: 600.00","1. The order is updated successfully with a confirmation message: 'Order updated successfully'. 
+2. The measurement group section in the order details page displays the new cloth photo and new pattern cloth photo without any errors or broken image icons.",0f2eade-TC-003
+Verify that measurement group photos are retained and displayed correctly after updating other order details (non-photo fields),Order Management - Photo Upload and Display,Positive,Medium,User is logged in as a shop owner with valid MinIO credentials configured. An existing order with at least one measurement group and uploaded photos exists in the system.,"1. Navigate to the 'Order List' page and select an existing order with uploaded photos. 
+2. Click 'Edit Order' to open the order update page. 
+3. Update a non-photo field (e.g., change the making charge or add special instructions). 
+4. Do NOT change or upload any new photos. 
+5. Click 'Update Order'. 
+6. Navigate back to the 'Order Details' page for the updated order. 
+7. Locate the measurement group section and verify the original photos are still displayed correctly.
+
+Test Data: Order ID: '1-20240515-0002', Updated Making Charge: 700.00, Special Instructions: 'Extra stitching required'","1. The order is updated successfully with a confirmation message: 'Order updated successfully'. 
+2. The measurement group section in the order details page displays the original cloth photo and pattern cloth photo without any errors or broken image icons.",TC-001
+Attempt to upload a file with invalid MinIO credentials (access key or secret key missing),File Storage (MinIO Configuration),Negative,High,"User is logged in and on the file upload screen (e.g., order attachment or customer document upload). MinIO server is running but configured with incorrect credentials.","1. Navigate to the file upload section (e.g., 'Add Attachment' for an order).
+2. Select a valid file to upload.
+3. Click the 'Upload' button.
+
+Test Data: Any valid file (e.g., image or PDF).",The system displays an error message indicating that the file could not be uploaded due to invalid storage credentials. The file is not saved or associated with the order/customer.,TC-002
+Attempt to upload a file with malformed MinIO endpoint URL (invalid format),File Storage (MinIO Configuration),Negative,High,"User is logged in and on the file upload screen. MinIO server is misconfigured with an invalid endpoint URL (e.g., 'htp://invalid-url').","1. Navigate to the file upload section (e.g., 'Add Attachment' for an order).
+2. Select a valid file to upload.
+3. Click the 'Upload' button.
+
+Test Data: Any valid file (e.g., image or PDF).",The system displays an error message indicating that the file could not be uploaded due to a connection error. The file is not saved or associated with the order/customer.,TC-003
+Attempt to upload a file without proper authentication (unauthorized user),File Storage (MinIO Configuration),Negative,High,"Unauthenticated user or user without permissions accesses the file upload screen (e.g., via direct URL).","1. Open the file upload screen directly via URL (e.g., '/orders/123/attachments/upload').
+2. Select a valid file to upload.
+3. Click the 'Upload' button.
+
+Test Data: Any valid file (e.g., image or PDF).",The system displays an error message indicating that the user is not authorized to perform this action. The file is not uploaded or saved.,TC-004
+Attempt to upload a file with an empty or null access key in MinIO configuration,File Storage (MinIO Configuration),Negative,High,User is logged in and on the file upload screen. MinIO server is configured with an empty or null access key.,"1. Navigate to the file upload section (e.g., 'Add Attachment' for an order).
+2. Select a valid file to upload.
+3. Click the 'Upload' button.
+
+Test Data: Any valid file (e.g., image or PDF).",The system displays an error message indicating that the file could not be uploaded due to invalid storage credentials. The file is not saved or associated with the order/customer.,TC-005
+Attempt to upload a file with an empty or null secret key in MinIO configuration,File Storage (MinIO Configuration),Negative,High,User is logged in and on the file upload screen. MinIO server is configured with an empty or null secret key.,"1. Navigate to the file upload section (e.g., 'Add Attachment' for an order).
+2. Select a valid file to upload.
+3. Click the 'Upload' button.
+
+Test Data: Any valid file (e.g., image or PDF).",The system displays an error message indicating that the file could not be uploaded due to invalid storage credentials. The file is not saved or associated with the order/customer.,TC-006
+Attempt to upload a file when MinIO server is unreachable (endpoint down or incorrect),File Storage (MinIO Configuration),Negative,High,User is logged in and on the file upload screen. MinIO server is down or unreachable.,"1. Navigate to the file upload section (e.g., 'Add Attachment' for an order).
+2. Select a valid file to upload.
+3. Click the 'Upload' button.
+
+Test Data: Any valid file (e.g., image or PDF).",The system displays an error message indicating that the file could not be uploaded due to a connection error. The file is not saved or associated with the order/customer.,TC-007
+Authenticate with MinIO using empty access key and valid secret key,File Storage Configuration via MinIO,Boundary,High,MinIO server is running and accessible. User has access to the application's file storage configuration.,"1. Navigate to the application's file storage configuration settings. 2. Enter an empty string as the access key. 3. Enter a valid secret key (e.g., 'minioadmin'). 4. Attempt to save the configuration. 5. Verify the system's response when trying to retrieve a file from MinIO.
+
+Test Data: Access Key: '' (empty string), Secret Key: 'minioadmin'",The system fails to authenticate with MinIO and displays an error message indicating that the access key cannot be empty. No files can be retrieved or stored until valid credentials are provided.,TC-008
+Authenticate with MinIO using valid access key and empty secret key,File Storage Configuration via MinIO,Boundary,High,MinIO server is running and accessible. User has access to the application's file storage configuration.,"1. Navigate to the application's file storage configuration settings. 2. Enter a valid access key (e.g., 'minioadmin'). 3. Enter an empty string as the secret key. 4. Attempt to save the configuration. 5. Verify the system's response when trying to retrieve a file from MinIO.
+
+Test Data: Access Key: 'minioadmin', Secret Key: '' (empty string)",The system fails to authenticate with MinIO and displays an error message indicating that the secret key cannot be empty. No files can be retrieved or stored until valid credentials are provided.,TC-009
+Authenticate with MinIO using null access key and valid secret key (simulated via malformed request),File Storage Configuration via MinIO,Boundary,High,MinIO server is running and accessible. User has access to the application's file storage configuration or API.,"1. Use the application's API or configuration tool to simulate a request with a null access key. 2. Enter a valid secret key (e.g., 'minioadmin'). 3. Attempt to retrieve a file from MinIO. 4. Observe the system's response.
+
+Test Data: Access Key: null, Secret Key: 'minioadmin'",The system fails to authenticate with MinIO and responds with a 400 Bad Request or 500 Internal Server Error status code. No file is retrieved.,TC-010
+Authenticate with MinIO using valid access key and null secret key (simulated via malformed request),File Storage Configuration via MinIO,Boundary,High,MinIO server is running and accessible. User has access to the application's file storage configuration or API.,"1. Use the application's API or configuration tool to simulate a request with a null secret key. 2. Enter a valid access key (e.g., 'minioadmin'). 3. Attempt to retrieve a file from MinIO. 4. Observe the system's response.
+
+Test Data: Access Key: 'minioadmin', Secret Key: null",The system fails to authenticate with MinIO and responds with a 400 Bad Request or 500 Internal Server Error status code. No file is retrieved.,TC-011
+Authenticate with MinIO using access key and secret key exactly at the minimum allowed length (1 character),File Storage Configuration via MinIO,Boundary,Medium,MinIO server is running and accessible. User has access to the application's file storage configuration.,"1. Navigate to the application's file storage configuration settings. 2. Enter a single character as the access key (e.g., 'a'). 3. Enter a single character as the secret key (e.g., 'b'). 4. Save the configuration. 5. Attempt to retrieve a file from MinIO. 6. Observe the system's response.
+
+Test Data: Access Key: 'a', Secret Key: 'b'",The system successfully authenticates with MinIO and retrieves the file if it exists. The file is returned with a 200 OK status code.,TC-012
+Authenticate with MinIO using access key and secret key one character below the minimum allowed length (0 characters),File Storage Configuration via MinIO,Boundary,High,MinIO server is running and accessible. User has access to the application's file storage configuration.,"1. Navigate to the application's file storage configuration settings. 2. Enter an empty string as the access key. 3. Enter an empty string as the secret key. 4. Attempt to save the configuration. 5. Observe the system's response.
+
+Test Data: Access Key: '' (empty string), Secret Key: '' (empty string)",The system fails to authenticate with MinIO and displays an error message indicating that both access key and secret key cannot be empty. No files can be retrieved or stored.,TC-013
+Authenticate with MinIO using access key and secret key exceeding the maximum allowed length (256 characters if max is 255),File Storage Configuration via MinIO,Boundary,Medium,MinIO server is running and accessible. User has access to the application's file storage configuration.,"1. Navigate to the application's file storage configuration settings. 2. Enter a 256-character string as the access key. 3. Enter a 256-character string as the secret key. 4. Attempt to save the configuration. 5. Observe the system's response when trying to retrieve a file from MinIO.
+
+Test Data: Access Key: 'a' repeated 256 times, Secret Key: 'b' repeated 256 times","The system either truncates the credentials to 255 characters and successfully authenticates with MinIO, or displays an error message indicating that the credentials exceed the maximum allowed length. If truncated, file retrieval succeeds; otherwise, it fails.",TC-014
+Authenticate with MinIO using access key and secret key exactly at the maximum allowed length (255 characters),File Storage Configuration via MinIO,Boundary,Medium,MinIO server is running and accessible. User has access to the application's file storage configuration.,"1. Navigate to the application's file storage configuration settings. 2. Enter a 255-character string as the access key. 3. Enter a 255-character string as the secret key. 4. Save the configuration. 5. Attempt to retrieve a file from MinIO. 6. Observe the system's response.
+
+Test Data: Access Key: 'a' repeated 255 times, Secret Key: 'b' repeated 255 times",The system successfully authenticates with MinIO and retrieves the file if it exists. The file is returned with a 200 OK status code.,TC-015
+Retrieve a file using MinIO credentials with special characters and Unicode symbols in access key and secret key,File Retrieval via MinIO Proxy,Boundary,Medium,"MinIO server is running and accessible. User has access to the application's file storage configuration. A file exists in MinIO at a known path (e.g., 'test/test.jpg').","1. Navigate to the application's file storage configuration settings. 2. Enter an access key containing special characters and Unicode symbols (e.g., '特殊@#$%admin'). 3. Enter a secret key containing special characters and Unicode symbols (e.g., '特殊@#$%admin'). 4. Save the configuration. 5. Attempt to retrieve the file 'test/test.jpg' via the application's file retrieval interface. 6. Observe the system's response.
+
+Test Data: Access Key: '特殊@#$%admin', Secret Key: '特殊@#$%admin', File Path: 'test/test.jpg'",The system successfully authenticates with MinIO and retrieves the file 'test/test.jpg' with a 200 OK status code.,TC-016
+Update existing test case for file retrieval with folder name exactly at maximum length to include MinIO credential validation,File Retrieval via MinIO Proxy,Boundary,Medium,"MinIO server is running and accessible. A file exists in MinIO at a path with a folder name of 255 characters (e.g., 'a' repeated 255 times + '/test.jpg').","1. Navigate to the application's file storage configuration settings. 2. Ensure valid MinIO credentials are configured (e.g., 'minioadmin'/'minioadmin'). 3. Use the application's file retrieval interface to request the file at the path with a 255-character folder name. 4. Observe the system's response.
+
+Test Data: Folder Name: 'a' repeated 255 times, File Name: 'test.jpg'",The system successfully authenticates with MinIO and retrieves the file with a 200 OK status code and content type 'application/octet-stream'.,d743d3c-TC-005
+Update existing test case for file retrieval with file name exactly at maximum length to include MinIO credential validation,File Retrieval via MinIO Proxy,Boundary,Medium,"MinIO server is running and accessible. A file exists in MinIO at a path with a file name of 255 characters (e.g., 'test/' + 'a' repeated 255 times).","1. Navigate to the application's file storage configuration settings. 2. Ensure valid MinIO credentials are configured (e.g., 'minioadmin'/'minioadmin'). 3. Use the application's file retrieval interface to request the file at the path with a 255-character file name. 4. Observe the system's response.
+
+Test Data: Folder Name: 'test', File Name: 'a' repeated 255 times",The system successfully authenticates with MinIO and retrieves the file with a 200 OK status code and content type 'application/octet-stream'.,d743d3c-TC-006

@@ -1,0 +1,19 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Generate a transaction report with income and expense transactions,Transaction Report Generation,Configuration,High,User has at least one income and one expense transaction recorded,"1. Add an income transaction of 1000. 2. Add an expense transaction of 500. 3. Open the transaction report generation feature.
+
+Test Data: Income transaction amount: 1000, Expense transaction amount: 500",A transaction report is generated with the total income and total expense amounts displayed correctly,TC-001
+Generate a transaction report with multiple income and expense transactions,Transaction Report Generation,Configuration,Medium,User has multiple income and expense transactions recorded,"1. Add multiple income transactions with different amounts. 2. Add multiple expense transactions with different amounts. 3. Open the transaction report generation feature.
+
+Test Data: Multiple income transactions with amounts: 1000, 2000, 3000. Multiple expense transactions with amounts: 500, 1000, 1500",A transaction report is generated with the total income and total expense amounts displayed correctly,TC-002
+Generate a transaction report with no transactions,Transaction Report Generation,Configuration,Low,User has no transactions recorded,"1. Open the transaction report generation feature with no transactions recorded.
+
+Test Data: No transactions recorded",A transaction report is generated with zero total income and zero total expense amounts displayed,TC-003
+Verify new permissions do not cause issues with app functionality,Android Permission Configuration,Configuration,High,The app is installed on an Android device with the updated AndroidManifest.xml,"1. Deploy the app with the updated AndroidManifest.xml. 2. Run the app and perform actions that require the new permissions (MANAGE_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE). 3. Observe if the app behaves as expected and if any permission-related errors occur.
+
+Test Data: New permissions: android.permission.MANAGE_EXTERNAL_STORAGE, android.permission.WRITE_EXTERNAL_STORAGE (maxSdkVersion=28)",The app should function correctly and not crash due to permission issues. The app should be able to manage external storage and write to external storage on devices with SDK version 28 or lower.,TC-004
+Verify file paths are correctly resolved after configuration change,File Paths Configuration,Configuration,Medium,The app is installed on an Android device with the updated file_paths.xml,"1. Deploy the app with the updated file_paths.xml. 2. Run the app and perform actions that involve file operations (e.g., downloading files). 3. Observe if the app can correctly resolve file paths and if any file-related errors occur.
+
+Test Data: Updated file path: <external-path name=""external_storage"" path=""."" />",The app should be able to correctly resolve file paths and perform file operations without errors. The app should use the new external storage path.,TC-005
+Verify the app can access external storage after permission change,External Storage Access,Configuration,High,The app is installed on an Android device with the updated AndroidManifest.xml and file_paths.xml,"1. Deploy the app with the updated configurations. 2. Run the app and attempt to access external storage. 3. Observe if the app can successfully access external storage and if any errors occur.
+
+Test Data: New permission: android.permission.WRITE_EXTERNAL_STORAGE (maxSdkVersion=28), Updated file path: <external-path name=""external_storage"" path=""."" />",The app should be able to access external storage without errors on devices with SDK version 28 or lower.,TC-006

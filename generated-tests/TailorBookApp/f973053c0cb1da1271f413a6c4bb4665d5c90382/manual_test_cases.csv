@@ -1,0 +1,81 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a new order with text measurement parameters and verify they are stored and returned correctly,Order Management - Measurement Parameter Types,Positive,High,A shop and an item with text measurement parameters are already created in the system,"1. Send a POST request to /api/orders with the payload in testData. 2. Send a GET request to /api/orders/{orderId} using the orderId from the response in step 1.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+8801712345678"",
+  ""customerGender"": ""MALE"",
+  ""items"": [
+    {
+      ""itemId"": 101,
+      ""measurementGroups"": [
+        {
+          ""specialInstruction"": ""Urgent tailoring required"",
+          ""measurements"": [
+            {
+              ""nameEn"": ""Special Notes"",
+              ""nameBn"": ""বিশেষ নোট"",
+              ""type"": ""TEXT"",
+              ""textValue"": ""Extra stitching on collar""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order created successfully"", ""data"": {""orderId"": ""<non-null string>"", ""customerName"": ""John Doe""}}. 2. HTTP 200 OK response with a JSON body containing the measurement parameter with textValue: {""nameEn"": ""Special Notes"", ""nameBn"": ""বিশেষ নোট"", ""type"": ""TEXT"", ""textValue"": ""Extra stitching on collar""}.",TC-001
+Update an existing order with new text measurement parameters and verify they are updated correctly,Order Management - Measurement Parameter Types,Positive,High,An existing order with at least one item and measurement group is already created in the system,"1. Send a PUT request to /api/orders/{orderId} with the payload in testData. 2. Send a GET request to /api/orders/{orderId} using the same orderId.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+8801712345678"",
+  ""customerGender"": ""MALE"",
+  ""items"": [
+    {
+      ""itemId"": 101,
+      ""measurementGroups"": [
+        {
+          ""specialInstruction"": ""Urgent tailoring required"",
+          ""measurements"": [
+            {
+              ""nameEn"": ""Special Notes"",
+              ""nameBn"": ""বিশেষ নোট"",
+              ""type"": ""TEXT"",
+              ""textValue"": ""Extra stitching on sleeves""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order updated successfully"", ""data"": {""orderId"": ""<string orderId>""}}. 2. HTTP 200 OK response with a JSON body containing the updated measurement parameter with textValue: {""nameEn"": ""Special Notes"", ""nameBn"": ""বিশেষ নোট"", ""type"": ""TEXT"", ""textValue"": ""Extra stitching on sleeves""}.",313179b-TC-002
+Verify that error messages in API responses include detailed error information,Order Management - Error Handling,Positive,Medium,A shop and an item are already created in the system,"1. Send a POST request to /api/orders with an invalid itemId in the payload (e.g., an itemId that does not exist).
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+8801712345678"",
+  ""customerGender"": ""MALE"",
+  ""items"": [
+    {
+      ""itemId"": 99999,
+      ""measurementGroups"": []
+    }
+  ]
+}","HTTP 400 or 500 error response with a JSON body containing: {""status"": ""error"", ""message"": ""An unexpected error occurred:Item not found with ID: 99999""}.",TC-002
+Create a new order with measurement cloth photo and verify it is stored and returned correctly,Order Management - Photo Upload,Positive,High,A shop and an item are already created in the system,"1. Send a POST request to /api/orders with the payload in testData. 2. Send a GET request to /api/orders/{orderId} using the orderId from the response in step 1.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+8801712345678"",
+  ""customerGender"": ""MALE"",
+  ""measurementClothPhoto"": ""data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP..."",
+  ""items"": [
+    {
+      ""itemId"": 101,
+      ""measurementGroups"": []
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order created successfully"", ""data"": {""orderId"": ""<non-null string>"", ""customerName"": ""John Doe""}}. 2. HTTP 200 OK response with a JSON body containing a non-null and valid URL in the field 'measurementClothPhoto'.",TC-003

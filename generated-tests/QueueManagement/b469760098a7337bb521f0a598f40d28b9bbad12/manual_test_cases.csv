@@ -1,0 +1,58 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Request OTP with an empty phone number (boundary: empty string),User Authentication - OTP Request,Boundary,High,No preconditions required. The system should handle OTP requests for any phone number input.,"1. Send a POST request to /api/auth/request-otp with the query parameter in testData.
+
+Test Data: phoneNumber=",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the phone number cannot be empty.,TC-001
+Request OTP with a phone number of exactly 1 character (boundary: minimum length),User Authentication - OTP Request,Boundary,Medium,No preconditions required.,"1. Send a POST request to /api/auth/request-otp with the query parameter in testData.
+
+Test Data: phoneNumber=1",HTTP status code 200 (OK). Response body contains the message: 'OTP sent to your phone number'.,TC-002
+Request OTP with a phone number at maximum allowed length (boundary: max length),User Authentication - OTP Request,Boundary,Medium,No preconditions required.,"1. Send a POST request to /api/auth/request-otp with the query parameter in testData.
+
+Test Data: phoneNumber=1234567890123456",HTTP status code 200 (OK). Response body contains the message: 'OTP sent to your phone number'.,TC-003
+Request OTP with a phone number exceeding maximum allowed length (boundary: one above max),User Authentication - OTP Request,Boundary,High,No preconditions required.,"1. Send a POST request to /api/auth/request-otp with the query parameter in testData.
+
+Test Data: phoneNumber=12345678901234567",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the phone number exceeds the maximum allowed length.,TC-004
+Verify OTP with an empty phone number (boundary: empty string),User Authentication - OTP Verification,Boundary,High,An OTP must have been requested and generated for a valid phone number.,"1. Send a POST request to /api/auth/verify-otp with the payload in testData.
+
+Test Data: {""phoneNumber"": """", ""otp"": ""123456""}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the phone number cannot be empty.,TC-005
+Verify OTP with an empty OTP (boundary: empty string),User Authentication - OTP Verification,Boundary,High,An OTP must have been requested and generated for a valid phone number.,"1. Send a POST request to /api/auth/verify-otp with the payload in testData.
+
+Test Data: {""phoneNumber"": ""1234567890"", ""otp"": """"}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the OTP cannot be empty.,TC-006
+Verify OTP with an expired OTP (boundary: exactly expired),User Authentication - OTP Verification,Boundary,High,An OTP must have been requested and generated for phone number '1234567890' exactly 2 minutes ago.,"1. Send a POST request to /api/auth/verify-otp with the payload in testData.
+
+Test Data: {""phoneNumber"": ""1234567890"", ""otp"": ""123456""}",HTTP status code 400 (Bad Request). Response body contains the message: 'Invalid or expired OTP'.,TC-007
+Verify OTP with a non-existent phone number (boundary: invalid phone number),User Authentication - OTP Verification,Boundary,High,No OTP should exist for the phone number in testData.,"1. Send a POST request to /api/auth/verify-otp with the payload in testData.
+
+Test Data: {""phoneNumber"": ""0000000000"", ""otp"": ""123456""}",HTTP status code 400 (Bad Request). Response body contains the message: 'Invalid or expired OTP'.,TC-008
+Set PIN with an empty phone number (boundary: empty string),User Authentication - PIN Setup,Boundary,High,A valid OTP must have been generated and verified for a phone number.,"1. Send a POST request to /api/auth/set-pin with the payload in testData.
+
+Test Data: {""phoneNumber"": """", ""otp"": ""123456"", ""pin"": ""1234"", ""ConfirmPin"": ""1234""}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the phone number cannot be empty.,TC-009
+Set PIN with an empty OTP (boundary: empty string),User Authentication - PIN Setup,Boundary,High,A valid OTP must have been generated for a phone number.,"1. Send a POST request to /api/auth/set-pin with the payload in testData.
+
+Test Data: {""phoneNumber"": ""1234567890"", ""otp"": """", ""pin"": ""1234"", ""ConfirmPin"": ""1234""}",HTTP status code 400 (Bad Request). Response body contains the message: 'Invalid or expired OTP'.,TC-010
+Set PIN with mismatched PIN and Confirm PIN (boundary: off-by-one mismatch),User Authentication - PIN Setup,Boundary,High,A valid OTP must have been generated and verified for phone number '1234567890'.,"1. Send a POST request to /api/auth/set-pin with the payload in testData.
+
+Test Data: {""phoneNumber"": ""1234567890"", ""otp"": ""123456"", ""pin"": ""1234"", ""ConfirmPin"": ""1235""}",HTTP status code 400 (Bad Request). Response body contains the message: 'PIN and Confirm PIN do not match'.,TC-011
+Set PIN with a PIN of exactly 1 character (boundary: minimum length),User Authentication - PIN Setup,Boundary,Medium,A valid OTP must have been generated and verified for phone number '1234567890'.,"1. Send a POST request to /api/auth/set-pin with the payload in testData.
+
+Test Data: {""phoneNumber"": ""1234567890"", ""otp"": ""123456"", ""pin"": ""1"", ""ConfirmPin"": ""1""}",HTTP status code 200 (OK). Response body contains the message: 'PIN set successfully'.,TC-012
+Set PIN with a PIN at maximum allowed length (boundary: max length),User Authentication - PIN Setup,Boundary,Medium,A valid OTP must have been generated and verified for phone number '1234567890'.,"1. Send a POST request to /api/auth/set-pin with the payload in testData.
+
+Test Data: {""phoneNumber"": ""1234567890"", ""otp"": ""123456"", ""pin"": ""123456"", ""ConfirmPin"": ""123456""}",HTTP status code 200 (OK). Response body contains the message: 'PIN set successfully'.,TC-013
+Login with an empty username (boundary: empty string),User Authentication - PIN Login,Boundary,High,A user must have a PIN set for their phone number.,"1. Send a POST request to /api/auth/login with the payload in testData.
+
+Test Data: {""username"": """", ""pin"": ""1234""}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the username cannot be empty.,TC-014
+Login with an empty PIN (boundary: empty string),User Authentication - PIN Login,Boundary,High,A user must have a PIN set for their phone number.,"1. Send a POST request to /api/auth/login with the payload in testData.
+
+Test Data: {""username"": ""1234567890"", ""pin"": """"}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the PIN cannot be empty.,TC-015
+Login with a non-existent username (boundary: invalid username),User Authentication - PIN Login,Boundary,High,No user should exist with the username in testData.,"1. Send a POST request to /api/auth/login with the payload in testData.
+
+Test Data: {""username"": ""0000000000"", ""pin"": ""1234""}",HTTP status code 401 (Unauthorized). Response body contains an error message indicating invalid credentials.,TC-016
+Login with an incorrect PIN (boundary: off-by-one error),User Authentication - PIN Login,Boundary,High,A user must have a PIN '1234' set for phone number '1234567890'.,"1. Send a POST request to /api/auth/login with the payload in testData.
+
+Test Data: {""username"": ""1234567890"", ""pin"": ""1235""}",HTTP status code 401 (Unauthorized). Response body contains an error message indicating invalid credentials.,TC-017
+Verify createdBy and updatedBy fields are populated for a new entity (boundary: initial creation),Entity Auditing,Boundary,High,A user must be authenticated and have a valid JWT token.,"1. Authenticate and obtain a JWT token for user 'testuser'. 2. Send a POST request to /api/areas with the payload in testData and the JWT token in the Authorization header. 3. Send a GET request to /api/areas/{id} where {id} is the ID returned in step 2.
+
+Test Data: {""name"": ""Test Area"", ""description"": ""Test Description""}",HTTP status code 200 (OK) for both requests. Response body from step 3 contains the area with 'createdBy' and 'updatedBy' fields set to 'testuser'.,TC-018
+Verify updatedBy field is updated for an existing entity (boundary: update operation),Entity Auditing,Boundary,High,An area must exist with ID 1 and a user must be authenticated with a valid JWT token for user 'testuser'.,"1. Authenticate and obtain a JWT token for user 'testuser'. 2. Send a PUT request to /api/areas/1 with the payload in testData and the JWT token in the Authorization header. 3. Send a GET request to /api/areas/1.
+
+Test Data: {""name"": ""Updated Area"", ""description"": ""Updated Description""}",HTTP status code 200 (OK) for both requests. Response body from step 3 contains the area with 'updatedBy' field set to 'testuser' and 'createdBy' field unchanged.,TC-019

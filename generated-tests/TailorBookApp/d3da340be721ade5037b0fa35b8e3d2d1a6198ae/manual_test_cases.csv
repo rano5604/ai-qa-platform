@@ -1,0 +1,156 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a new order with valid input,Order Management,Positive,High,User has a valid shop and customer details,"1. Send a POST request to /api/orders with the payload in testData. 2. Verify the response status code is 200 OK.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""Male"", ""orderGender"": ""Male"", ""totalAmount"": 1000.0, ""paidAmount"": 500.0, ""dueAmount"": 500.0, ""orderDate"": ""2022-01-01"", ""trialDate"": ""2022-01-15"", ""deliveryDate"": ""2022-02-01"", ""items"": [{""itemId"": 1, ""itemName"": ""Shirt"", ""quantity"": 2, ""measurementGroups"": [{""measurementId"": 1, ""name"": ""Chest"", ""unit"": ""cm"", ""value"": 95.0}]}]}","HTTP 200 OK response with a JSON body containing the order summary, including status='MEASUREMENT_DONE'",TC-001
+Update an existing order with valid input,Order Management,Positive,High,"User has a valid shop and customer details, and an existing order","1. Send a PUT request to /api/orders/{orderId} with the payload in testData. 2. Verify the response status code is 200 OK.
+
+Test Data: {""customerName"": ""Jane Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""Female"", ""orderGender"": ""Female"", ""totalAmount"": 1200.0, ""paidAmount"": 600.0, ""dueAmount"": 600.0, ""orderDate"": ""2022-01-01"", ""trialDate"": ""2022-01-15"", ""deliveryDate"": ""2022-02-01"", ""items"": [{""itemId"": 1, ""itemName"": ""Shirt"", ""quantity"": 2, ""measurementGroups"": [{""measurementId"": 1, ""name"": ""Chest"", ""unit"": ""cm"", ""value"": 95.0}]}]}","HTTP 200 OK response with a JSON body containing the updated order summary, including status='MEASUREMENT_DONE'",TC-002
+Retrieve an order by ID,Order Management,Positive,Medium,"User has a valid shop and customer details, and an existing order",1. Send a GET request to /api/orders/{id}. 2. Verify the response status code is 200 OK.,"HTTP 200 OK response with a JSON body containing the order details, including status='MEASUREMENT_DONE'",TC-003
+Retrieve orders by customer phone number,Order Management,Positive,Medium,User has a valid shop and customer details,"1. Send a GET request to /api/orders/by-phone with query parameters phone, page, and limit. 2. Verify the response status code is 200 OK.
+
+Test Data: {""phone"": ""1234567890"", ""page"": 0, ""limit"": 10}","HTTP 200 OK response with a JSON body containing a list of order summaries, including status='MEASUREMENT_DONE'",TC-004
+Update an order status,Order Management,Positive,High,"User has a valid shop and customer details, and an existing order","1. Send a PATCH request to /api/orders/{orderId}/status with the payload in testData. 2. Verify the response status code is 200 OK.
+
+Test Data: {""status"": ""CUTTING_DONE""}",HTTP 200 OK response with a JSON body containing a success message,TC-005
+Create an order with an empty customer phone number,Order Creation,Boundary,High,None,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": """",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhoto"": ""http://example.com/photo.jpg"",
+  ""totalAmount"": 1000,
+  ""paidAmount"": 500,
+  ""dueAmount"": 500,
+  ""orderDate"": ""2023-10-01"",
+  ""trialDate"": ""2023-10-05"",
+  ""deliveryDate"": ""2023-10-10"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 2,
+      ""measurementGroups"": []
+    }
+  ]
+}",The API responds with a 400 Bad Request status code and an error message indicating that the customer phone number cannot be empty.,TC-006
+Create an order with a customer phone number exceeding the maximum allowed length (16 characters),Order Creation,Boundary,High,None,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""12345678901234567"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhoto"": ""http://example.com/photo.jpg"",
+  ""totalAmount"": 1000,
+  ""paidAmount"": 500,
+  ""dueAmount"": 500,
+  ""orderDate"": ""2023-10-01"",
+  ""trialDate"": ""2023-10-05"",
+  ""deliveryDate"": ""2023-10-10"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 2,
+      ""measurementGroups"": []
+    }
+  ]
+}",The API responds with a 400 Bad Request status code and an error message indicating that the customer phone number exceeds the maximum allowed length.,TC-007
+Create an order with a customer phone number at the maximum allowed length (15 characters),Order Creation,Boundary,High,None,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""123456789012345"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhoto"": ""http://example.com/photo.jpg"",
+  ""totalAmount"": 1000,
+  ""paidAmount"": 500,
+  ""dueAmount"": 500,
+  ""orderDate"": ""2023-10-01"",
+  ""trialDate"": ""2023-10-05"",
+  ""deliveryDate"": ""2023-10-10"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 2,
+      ""measurementGroups"": []
+    }
+  ]
+}","The API responds with a 200 OK status code, a status of 'success', a message 'Order created successfully', and the created order details in the 'data' field.",9f19f61-TC-012
+Retrieve orders for a customer using an empty phone number string with pagination,Order Lookup by Customer Phone,Boundary,High,None,1. Send a GET request to /api/orders/by-phone?phone=&page=0&limit=10.,The API responds with a 400 Bad Request status code and an error message indicating that the phone number cannot be empty.,9f19f61-TC-010
+Retrieve orders for a customer using a phone number that matches no records with pagination,Order Lookup by Customer Phone,Boundary,High,None,1. Send a GET request to /api/orders/by-phone?phone=0000000000&page=0&limit=10.,"The API responds with a 200 OK status code, a status of 'success', a message 'Order fetched successfully', and an empty 'data.content' list. The 'meta' field contains pagination details with 'totalElements' set to 0.",9f19f61-TC-011
+Retrieve orders for a customer using a negative page number,Order Lookup by Customer Phone,Boundary,Medium,Customer has at least one order recorded with phone number '1234567890'.,1. Send a GET request to /api/orders/by-phone?phone=1234567890&page=-1&limit=10.,The API responds with a 400 Bad Request status code and an error message indicating that the page number must be a non-negative integer.,TC-008
+Retrieve orders for a customer using a zero limit value,Order Lookup by Customer Phone,Boundary,Medium,Customer has at least one order recorded with phone number '1234567890'.,1. Send a GET request to /api/orders/by-phone?phone=1234567890&page=0&limit=0.,The API responds with a 400 Bad Request status code and an error message indicating that the limit must be a positive integer.,TC-009
+Retrieve orders for a customer using a very large limit value (1000),Order Lookup by Customer Phone,Boundary,Medium,Customer has at least 500 orders recorded with phone number '1234567890'.,1. Send a GET request to /api/orders/by-phone?phone=1234567890&page=0&limit=1000.,"The API responds with a 200 OK status code, a status of 'success', a message 'Order fetched successfully', and a 'data.content' list containing up to 1000 orders. The 'meta' field contains pagination details with 'totalElements' reflecting the total number of orders for the customer.",TC-010
+Retrieve orders for a customer using a page number beyond the available pages,Order Lookup by Customer Phone,Boundary,High,Customer has 5 orders recorded with phone number '1234567890'.,1. Send a GET request to /api/orders/by-phone?phone=1234567890&page=2&limit=2.,"The API responds with a 200 OK status code, a status of 'success', a message 'Order fetched successfully', and an empty 'data.content' list. The 'meta' field contains pagination details with 'totalPages' set to 3 and 'totalElements' set to 5.",TC-011
+Retrieve orders for a customer using a phone number with leading/trailing spaces,Order Lookup by Customer Phone,Boundary,Medium,Customer has at least one order recorded with phone number '1234567890'.,1. Send a GET request to /api/orders/by-phone?phone= 1234567890 &page=0&limit=10.,"The API responds with a 200 OK status code, a status of 'success', a message 'Order fetched successfully', and a 'data.content' list containing all orders for the customer with phone number '1234567890'.",TC-012
+Retrieve an order using a non-existent ID,Order Retrieval by ID,Boundary,High,None,1. Send a GET request to /api/orders/9999999999.,"The API responds with a 404 Not Found status code, a status of 'error', and an error message 'Order not found with ID: 9999999999'.",9f19f61-TC-012
+Retrieve an order using a zero ID,Order Retrieval by ID,Boundary,High,None,1. Send a GET request to /api/orders/0.,"The API responds with a 404 Not Found status code, a status of 'error', and an error message 'Order not found with ID: 0'.",TC-013
+Retrieve an order using a negative ID,Order Retrieval by ID,Boundary,High,None,1. Send a GET request to /api/orders/-1.,"The API responds with a 404 Not Found status code, a status of 'error', and an error message 'Order not found with ID: -1'.",TC-014
+Update an order with an empty customer phone number,Order Update,Boundary,High,An order exists with ID 1.,"1. Send a PUT request to /api/orders/1 with the payload in testData.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": """",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhoto"": ""http://example.com/photo.jpg"",
+  ""totalAmount"": 1000,
+  ""paidAmount"": 500,
+  ""dueAmount"": 500,
+  ""orderDate"": ""2023-10-01"",
+  ""trialDate"": ""2023-10-05"",
+  ""deliveryDate"": ""2023-10-10"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 2,
+      ""measurementGroups"": []
+    }
+  ]
+}",The API responds with a 400 Bad Request status code and an error message indicating that the customer phone number cannot be empty.,TC-015
+Update an order with a non-existent ID,Order Update,Boundary,High,None,"1. Send a PUT request to /api/orders/9999999999 with the payload in testData.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhoto"": ""http://example.com/photo.jpg"",
+  ""totalAmount"": 1000,
+  ""paidAmount"": 500,
+  ""dueAmount"": 500,
+  ""orderDate"": ""2023-10-01"",
+  ""trialDate"": ""2023-10-05"",
+  ""deliveryDate"": ""2023-10-10"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 2,
+      ""measurementGroups"": []
+    }
+  ]
+}","The API responds with a 404 Not Found status code, a status of 'error', and an error message 'Order not found with ID: 9999999999'.",TC-016
+Verify that order retrieval by phone number enforces proper authorization (insecure direct object reference) - unauthorized user cannot access another user's orders,Order Management - Order Retrieval by Phone,Security,High,1. Two users exist in the system: User A (phone: '1234567890') and User B (phone: '0987654321'). 2. User A has at least one order recorded. 3. User B is authenticated but does not have access to User A's data.,"1. Authenticate as User B. 2. Send a GET request to /api/orders/by-phone with the query parameters: phone='1234567890', page=0, limit=10.
+
+Test Data: Query parameters: { ""phone"": ""1234567890"", ""page"": 0, ""limit"": 10 }","The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and the response body contains 'status: error' or 'status: fail' with no order data returned in the 'data' field.",9f19f61-TC-025
+Verify that order retrieval by phone number rejects injection attempts via special characters in input,Order Management - Order Retrieval by Phone,Security,High,User is authenticated and has valid orders associated with their phone number.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/by-phone with the query parameters: phone='1234567890'' OR '1'='1', page=0, limit=10.
+
+Test Data: Query parameters: { ""phone"": ""1234567890' OR '1'='1"", ""page"": 0, ""limit"": 10 }","The API responds with HTTP status 400 (Bad Request) or 404 (Not Found), and the response body contains 'status: error' or 'status: fail' with no order data returned in the 'data' field.",9f19f61-TC-026
+Verify that order retrieval by phone number does not expose sensitive system details in error messages,Order Management - Order Retrieval by Phone,Security,Medium,User is authenticated and no orders exist for the provided phone number.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/by-phone with the query parameters: phone='0000000000', page=0, limit=10.
+
+Test Data: Query parameters: { ""phone"": ""0000000000"", ""page"": 0, ""limit"": 10 }","The API responds with HTTP status 200 (OK) and a response body containing 'status: success', 'message: No orders found for this phone number', and an empty 'data' array. No internal system details (e.g., stack traces, database errors) are exposed.",9f19f61-TC-027
+Verify that order retrieval by phone number handles oversized input to prevent overflow or denial of service,Order Management - Order Retrieval by Phone,Security,High,User is authenticated.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/by-phone with the query parameters: phone='1234567890123456789012345678901234567890', page=0, limit=10.
+
+Test Data: Query parameters: { ""phone"": ""1234567890123456789012345678901234567890"", ""page"": 0, ""limit"": 10 }","The API responds with HTTP status 400 (Bad Request) and an error message indicating that the phone number length exceeds the allowed limit (e.g., 'Phone number must not exceed 15 characters').",9f19f61-TC-028
+Verify that order creation response does not expose sensitive system details in error messages,Order Management - Order Creation,Security,Medium,User is authenticated and has valid shop access.,"1. Authenticate as a valid user. 2. Send a POST request to /api/orders with a payload containing invalid data (e.g., negative totalAmount).
+
+Test Data: Request payload: { ""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""customerPhoto"": ""https://example.com/photo.jpg"", ""totalAmount"": -1000, ""paidAmount"": 500, ""dueAmount"": 500, ""orderDate"": ""2023-10-01"", ""trialDate"": ""2023-10-10"", ""deliveryDate"": ""2023-10-20"", ""items"": [{ ""itemId"": 1, ""quantity"": 1, ""measurementGroups"": [{ ""name"": ""Chest"", ""measurements"": [{ ""name"": ""Width"", ""unit"": ""cm"", ""value"": ""50"" }] }] }] }","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error' and a generic error message (e.g., 'Total amount must be a positive value') without exposing internal system details (e.g., stack traces, database errors).",TC-017
+Verify that order update response does not expose sensitive system details in error messages,Order Management - Order Update,Security,Medium,1. User is authenticated and has a valid order with ID 1. 2. Order status is MEASUREMENT_DONE.,"1. Authenticate as a valid user. 2. Send a PUT request to /api/orders/1 with a payload containing invalid data (e.g., negative totalAmount).
+
+Test Data: Request payload: { ""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""customerPhoto"": ""https://example.com/photo.jpg"", ""totalAmount"": -1000, ""paidAmount"": 500, ""dueAmount"": 500, ""orderDate"": ""2023-10-01"", ""trialDate"": ""2023-10-10"", ""deliveryDate"": ""2023-10-20"", ""items"": [{ ""itemId"": 1, ""quantity"": 1, ""measurementGroups"": [{ ""name"": ""Chest"", ""measurements"": [{ ""name"": ""Width"", ""unit"": ""cm"", ""value"": ""50"" }] }] }] }","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error' and a generic error message (e.g., 'Total amount must be a positive value') without exposing internal system details (e.g., stack traces, database errors).",TC-018
+Verify that order retrieval by ID does not expose sensitive system details in error messages,Order Management - Order Retrieval by ID,Security,Medium,User is authenticated.,1. Authenticate as a valid user. 2. Send a GET request to /api/orders/999999 (non-existent order ID).,"The API responds with HTTP status 404 (Not Found) and a response body containing 'status: error' and a generic error message (e.g., 'Order not found with ID: 999999') without exposing internal system details (e.g., stack traces, database errors).",TC-019
+Verify that paginated order retrieval by phone number does not expose raw database details in meta field,Order Management - Order Retrieval by Phone,Security,Medium,User is authenticated and has at least one order associated with their phone number.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/by-phone with the query parameters: phone='1234567890', page=0, limit=10.
+
+Test Data: Query parameters: { ""phone"": ""1234567890"", ""page"": 0, ""limit"": 10 }","The API responds with HTTP status 200 (OK) and a response body containing 'status: success', 'message: Orders fetched successfully', and a 'data' array with order records. The 'meta' field contains only pagination details (e.g., totalElements, totalPages, size, number) and no raw database or internal system details.",TC-020

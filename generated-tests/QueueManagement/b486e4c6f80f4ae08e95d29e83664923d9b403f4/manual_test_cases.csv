@@ -1,0 +1,70 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Retrieve all service categories with page number at minimum allowed value (boundary: zero page),Service Category Management - Pagination,Boundary,High,At least one service category exists in the system,"1. Send a GET request to /api/categories with query parameters: page=0, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of up to 10 service categories, with pagination metadata (totalElements, totalPages, size=10, number=0).",TC-001
+Retrieve all service categories with page number at maximum allowed value (boundary: max page number),Service Category Management - Pagination,Boundary,High,"Service categories exist in the system, total pages exceed 1000","1. Send a GET request to /api/categories with query parameters: page=999999, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains an empty paginated list (no service categories) with pagination metadata (totalElements=X, totalPages=Y, size=10, number=999999).",TC-002
+Retrieve all service categories with limit at minimum allowed value (boundary: one item per page),Service Category Management - Pagination,Boundary,High,At least one service category exists in the system,"1. Send a GET request to /api/categories with query parameters: page=0, limit=1.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of 1 service category, with pagination metadata (totalElements=X, totalPages=Y, size=1, number=0).",TC-003
+Retrieve all service categories with limit at maximum allowed value (boundary: max limit),Service Category Management - Pagination,Boundary,High,At least 100 service categories exist in the system,"1. Send a GET request to /api/categories with query parameters: page=0, limit=100.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of up to 100 service categories, with pagination metadata (totalElements=100+, totalPages=1+, size=100, number=0).",2c7a11d-TC-010
+Retrieve all service categories with limit exceeding maximum allowed value (boundary: one above max),Service Category Management - Pagination,Boundary,High,None,"1. Send a GET request to /api/categories with query parameters: page=0, limit=101.
+
+Test Data: {}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the limit exceeds the maximum allowed value.,2c7a11d-TC-011
+Retrieve service category by ID with ID of zero (boundary: zero ID),Service Category Management - Retrieve by ID,Boundary,High,None,"1. Send a GET request to /api/categories/0.
+
+Test Data: {}",HTTP status code 404 (Not Found). Response body is empty or contains an error message indicating that the service category was not found.,TC-004
+Retrieve service category by ID with a very large ID (boundary: large numeric input),Service Category Management - Retrieve by ID,Boundary,High,None,"1. Send a GET request to /api/categories/999999999999.
+
+Test Data: {}",HTTP status code 404 (Not Found). Response body is empty or contains an error message indicating that the service category was not found.,2c7a11d-TC-015
+Add a service category with name at minimum allowed length (boundary: one character),Service Category Management - Add Service Category,Boundary,High,None,"1. Send a POST request to /api/categories with the payload in testData.
+
+Test Data: {""name"": ""A"", ""description"": ""Test description""}",HTTP status code 200 (OK). Response body contains the created service category with name 'A' and a success message 'Service Category retrieved successfully'.,TC-005
+Add a service category with name at maximum allowed length (boundary: max length),Service Category Management - Add Service Category,Boundary,High,None,"1. Send a POST request to /api/categories with the payload in testData.
+
+Test Data: {""name"": ""This is a very long service category name that reaches the maximum allowed length of 100 characters exactly..."", ""description"": ""Test description""}",HTTP status code 200 (OK). Response body contains the created service category with the provided name and a success message 'Service Category retrieved successfully'.,2c7a11d-TC-012
+Add a service category with name exceeding maximum allowed length (boundary: one above max),Service Category Management - Add Service Category,Boundary,High,None,"1. Send a POST request to /api/categories with the payload in testData.
+
+Test Data: {""name"": ""This is a very long service category name that exceeds the maximum allowed length of 100 characters by one extra character."", ""description"": ""Test description""}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the name exceeds the maximum allowed length.,2c7a11d-TC-013
+Add a service category with an empty name (boundary: empty string),Service Category Management - Add Service Category,Boundary,High,None,"1. Send a POST request to /api/categories with the payload in testData.
+
+Test Data: {""name"": """", ""description"": ""Test description""}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the name cannot be empty.,TC-006
+Retrieve service profile by ID with shop ID of zero (boundary: zero shop ID),Service Profile Management - Retrieve by ID,Boundary,High,None,"1. Send a GET request to /api/shops/0/profiles/1.
+
+Test Data: {}",HTTP status code 404 (Not Found). Response body contains an error message indicating that the shop was not found.,TC-007
+Retrieve service profile by ID with a very large shop ID (boundary: large numeric input),Service Profile Management - Retrieve by ID,Boundary,High,None,"1. Send a GET request to /api/shops/999999999999/profiles/1.
+
+Test Data: {}",HTTP status code 404 (Not Found). Response body contains an error message indicating that the shop was not found.,TC-008
+Retrieve all service profiles for a shop with page number at minimum allowed value (boundary: zero page),Service Profile Management - Pagination,Boundary,High,At least one service profile exists for the shop,"1. Send a GET request to /api/shops/1/profiles with query parameters: page=0, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of up to 10 service profiles, with pagination metadata (totalElements, totalPages, size=10, number=0).",TC-009
+Retrieve all service profiles for a shop with limit at minimum allowed value (boundary: one item per page),Service Profile Management - Pagination,Boundary,High,At least one service profile exists for the shop,"1. Send a GET request to /api/shops/1/profiles with query parameters: page=0, limit=1.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of 1 service profile, with pagination metadata (totalElements=X, totalPages=Y, size=1, number=0).",TC-010
+Retrieve all holidays for a shop with page number at minimum allowed value (boundary: zero page),Shop Holiday Management - Pagination,Boundary,High,At least one holiday exists for the shop,"1. Send a GET request to /api/shop-holidays/1 with query parameters: page=0, limit=10.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of up to 10 holidays, with pagination metadata (totalElements, totalPages, size=10, number=0).",TC-011
+Retrieve all holidays for a shop with limit at minimum allowed value (boundary: one item per page),Shop Holiday Management - Pagination,Boundary,High,At least one holiday exists for the shop,"1. Send a GET request to /api/shop-holidays/1 with query parameters: page=0, limit=1.
+
+Test Data: {}","HTTP status code 200 (OK). Response body contains a paginated list of 1 holiday, with pagination metadata (totalElements=X, totalPages=Y, size=1, number=0).",TC-012
+Add a holiday for a shop with an empty list of holidays (boundary: empty list),Shop Holiday Management - Add Holiday,Boundary,High,None,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData.
+
+Test Data: []",HTTP status code 200 (OK). Response body contains a success message 'Holiday added successfully'.,TC-013
+Add a holiday for a shop with a duplicate holiday date (boundary: duplicate date),Shop Holiday Management - Add Holiday,Boundary,High,A holiday already exists for the shop on 2023-12-25,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData.
+
+Test Data: [{""holidayDate"": ""2023-12-25"", ""reason"": ""Christmas""}]",HTTP status code 409 (Conflict). Response body contains an error message indicating that the shop already has a holiday on this date.,TC-014
+Add a holiday for a shop with a date far in the past (boundary: far past date),Shop Holiday Management - Add Holiday,Boundary,Medium,None,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData.
+
+Test Data: [{""holidayDate"": ""1900-01-01"", ""reason"": ""Historical Holiday""}]",HTTP status code 200 (OK). Response body contains a success message 'Holiday added successfully'.,TC-015
+Add a holiday for a shop with a date far in the future (boundary: far future date),Shop Holiday Management - Add Holiday,Boundary,Medium,None,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData.
+
+Test Data: [{""holidayDate"": ""2100-12-31"", ""reason"": ""Future Holiday""}]",HTTP status code 200 (OK). Response body contains a success message 'Holiday added successfully'.,TC-016
+Create payment intent with appointment ID of zero (boundary: zero ID),Payment Management,Boundary,High,None,"1. Send a POST request to /api/payments?appointmentId=0.
+
+Test Data: {}",HTTP status code 404 (Not Found) or 400 (Bad Request). Response body contains an error message indicating that the appointment was not found.,TC-017
+Create payment intent with a very large appointment ID (boundary: large numeric input),Payment Management,Boundary,High,None,"1. Send a POST request to /api/payments?appointmentId=999999999999.
+
+Test Data: {}",HTTP status code 404 (Not Found) or 400 (Bad Request). Response body contains an error message indicating that the appointment was not found.,TC-018

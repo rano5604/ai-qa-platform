@@ -1,0 +1,85 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Adding a new item,Item Management,Positive,High,User is logged in and has permission to add items,"1. Navigate to the item management page. 2. Click the 'Add Item' button. 3. Fill in the item details. 4. Click the 'Save' button.
+
+Test Data: Item name: Test Item, Item description: This is a test item",The item is successfully added and displayed in the item list,TC-001
+Viewing item details,Item Management,Positive,Medium,"User is logged in and has permission to view items, at least one item exists","1. Navigate to the item management page. 2. Click on an item in the list. 3. View the item details
+
+Test Data: Item name: Test Item",The item details are displayed correctly,TC-002
+Adding a new measuring parameter,Measuring Parameter Management,Positive,High,User is logged in and has permission to add measuring parameters,"1. Navigate to the measuring parameter management page. 2. Click the 'Add Measuring Parameter' button. 3. Fill in the measuring parameter details. 4. Click the 'Save' button.
+
+Test Data: Measuring parameter name: Test Parameter, Measuring parameter description: This is a test parameter",The measuring parameter is successfully added and displayed in the measuring parameter list,TC-003
+Viewing measuring parameter details,Measuring Parameter Management,Positive,Medium,"User is logged in and has permission to view measuring parameters, at least one measuring parameter exists","1. Navigate to the measuring parameter management page. 2. Click on a measuring parameter in the list. 3. View the measuring parameter details
+
+Test Data: Measuring parameter name: Test Parameter",The measuring parameter details are displayed correctly,TC-004
+Associating a measuring parameter with an item,Item Management,Positive,Medium,"User is logged in and has permission to edit items, at least one item and one measuring parameter exist","1. Navigate to the item management page. 2. Click on an item in the list. 3. Click the 'Add Measuring Parameter' button. 4. Select a measuring parameter. 5. Click the 'Save' button.
+
+Test Data: Item name: Test Item, Measuring parameter name: Test Parameter",The measuring parameter is successfully associated with the item,TC-005
+Attempt to create an item without required fields,Item Management,Negative,High,User is logged in and on the 'Create New Item' screen,"1. Leave all required fields blank. 2. Click the 'Save' button.
+
+Test Data: No data entered in any field",System displays an error message indicating that required fields are missing and prevents the item from being saved.,TC-006
+Attempt to create an item with invalid data types in required fields,Item Management,Negative,High,User is logged in and on the 'Create New Item' screen,"1. Enter text in a field that expects a numeric value (e.g., 'abc' in a 'Quantity' field). 2. Click the 'Save' button.
+
+Test Data: Quantity: 'abc'",System displays an error message indicating that the field must be a valid number and prevents the item from being saved.,TC-007
+Attempt to create an item with malformed format in date fields,Item Management,Negative,Medium,User is logged in and on the 'Create New Item' screen,"1. Enter an invalid date format (e.g., '31/02/2023') in a date field. 2. Click the 'Save' button.
+
+Test Data: Date: '31/02/2023'",System displays an error message indicating that the date format is invalid and prevents the item from being saved.,TC-008
+Attempt to create a duplicate item,Item Management,Negative,High,"User is logged in, an item with the same unique identifier (e.g., barcode or SKU) already exists in the system, and user is on the 'Create New Item' screen","1. Enter the exact same unique identifier (e.g., barcode or SKU) as an existing item. 2. Fill in other fields with valid data. 3. Click the 'Save' button.
+
+Test Data: Barcode/SKU: '1234567890' (already exists)",System displays an error message indicating that the item already exists and prevents the duplicate item from being saved.,TC-009
+Attempt to update an item without required fields,Item Management,Negative,High,"User is logged in, an item exists in the system, and user is on the 'Edit Item' screen for that item","1. Clear all required fields. 2. Click the 'Save' button.
+
+Test Data: No data entered in any required field",System displays an error message indicating that required fields are missing and prevents the item from being updated.,TC-010
+Attempt to update an item to an invalid status transition,Item Management,Negative,Medium,"User is logged in, an item exists in the system with a status of 'Finalized', and user is on the 'Edit Item' screen for that item","1. Attempt to change the item status from 'Finalized' to 'Draft'. 2. Click the 'Save' button.
+
+Test Data: Status: Change from 'Finalized' to 'Draft'",System displays an error message indicating that the status transition is not allowed and prevents the update.,TC-011
+Attempt to create or update an item without proper authorization,Item Management,Negative,High,"User is not logged in or does not have the required role (e.g., 'Tailor' or 'Admin') to create/update items","1. Navigate to the 'Create New Item' or 'Edit Item' screen. 2. Attempt to fill in and save item details.
+
+Test Data: Any valid or invalid data","System redirects the user to the login page or displays an 'Access Denied' error message, preventing any changes.",TC-012
+Attempt to create a measuring parameter without required fields,Measuring Parameter Management,Negative,High,User is logged in and on the 'Create New Measuring Parameter' screen,"1. Leave all required fields blank. 2. Click the 'Save' button.
+
+Test Data: No data entered in any field",System displays an error message indicating that required fields are missing and prevents the measuring parameter from being saved.,TC-013
+Attempt to create a measuring parameter with invalid data types,Measuring Parameter Management,Negative,High,User is logged in and on the 'Create New Measuring Parameter' screen,"1. Enter text in a field that expects a numeric value (e.g., 'abc' in a 'Value' field). 2. Click the 'Save' button.
+
+Test Data: Value: 'abc'",System displays an error message indicating that the field must be a valid number and prevents the measuring parameter from being saved.,TC-014
+Attempt to update a measuring parameter without required fields,Measuring Parameter Management,Negative,High,"User is logged in, a measuring parameter exists in the system, and user is on the 'Edit Measuring Parameter' screen for that parameter","1. Clear all required fields. 2. Click the 'Save' button.
+
+Test Data: No data entered in any required field",System displays an error message indicating that required fields are missing and prevents the measuring parameter from being updated.,TC-015
+Attempt to create or update a measuring parameter without proper authorization,Measuring Parameter Management,Negative,High,"User is not logged in or does not have the required role (e.g., 'Tailor' or 'Admin') to create/update measuring parameters","1. Navigate to the 'Create New Measuring Parameter' or 'Edit Measuring Parameter' screen. 2. Attempt to fill in and save parameter details.
+
+Test Data: Any valid or invalid data","System redirects the user to the login page or displays an 'Access Denied' error message, preventing any changes.",TC-016
+Create an item with empty name,Item Creation,Boundary,High,User is logged in and on the 'Add New Item' screen,"1. Leave the 'Item Name' field blank. 2. Enter a valid description (e.g., 'Test description'). 3. Enter valid values for all other required fields. 4. Click 'Save'.
+
+Test Data: Item Name: (empty string), Description: 'Test description'",System displays an error message: 'Item Name cannot be empty'. Item is not created.,TC-017
+Create an item with name at maximum allowed length,Item Creation,Boundary,High,User is logged in and on the 'Add New Item' screen,"1. Enter an item name exactly 100 characters long. 2. Enter a valid description. 3. Enter valid values for all other required fields. 4. Click 'Save'.
+
+Test Data: Item Name: 'A' repeated 100 times, Description: 'Test description'",Item is successfully created with the 100-character name.,TC-018
+Create an item with name exceeding maximum allowed length,Item Creation,Boundary,High,User is logged in and on the 'Add New Item' screen,"1. Enter an item name of 101 characters. 2. Enter a valid description. 3. Enter valid values for all other required fields. 4. Click 'Save'.
+
+Test Data: Item Name: 'A' repeated 101 times, Description: 'Test description'",System displays an error message: 'Item Name cannot exceed 100 characters'. Item is not created.,TC-019
+Create an item with empty description,Item Creation,Boundary,Medium,User is logged in and on the 'Add New Item' screen,"1. Enter a valid item name (e.g., 'Test Item'). 2. Leave the 'Description' field blank. 3. Enter valid values for all other required fields. 4. Click 'Save'.
+
+Test Data: Item Name: 'Test Item', Description: (empty string)",Item is successfully created with an empty description.,TC-020
+Create an item with description at maximum allowed length,Item Creation,Boundary,High,User is logged in and on the 'Add New Item' screen,"1. Enter a valid item name. 2. Enter a description exactly 500 characters long. 3. Enter valid values for all other required fields. 4. Click 'Save'.
+
+Test Data: Item Name: 'Test Item', Description: 'A' repeated 500 times",Item is successfully created with the 500-character description.,TC-021
+Create an item with description exceeding maximum allowed length,Item Creation,Boundary,High,User is logged in and on the 'Add New Item' screen,"1. Enter a valid item name. 2. Enter a description of 501 characters. 3. Enter valid values for all other required fields. 4. Click 'Save'.
+
+Test Data: Item Name: 'Test Item', Description: 'A' repeated 501 times",System displays an error message: 'Description cannot exceed 500 characters'. Item is not created.,TC-022
+Create a measuring parameter with zero value,Measuring Parameter Creation,Boundary,High,User is logged in and on the 'Add Measuring Parameter' screen for an existing item,"1. Select an existing item. 2. Enter '0' as the value for a measuring parameter (e.g., 'Chest Width'). 3. Click 'Save'.
+
+Test Data: Parameter Value: 0",Measuring parameter is successfully created with a value of 0.,TC-023
+Create a measuring parameter with negative value,Measuring Parameter Creation,Boundary,High,User is logged in and on the 'Add Measuring Parameter' screen for an existing item,"1. Select an existing item. 2. Enter '-1' as the value for a measuring parameter (e.g., 'Chest Width'). 3. Click 'Save'.
+
+Test Data: Parameter Value: -1",System displays an error message: 'Measuring parameter value must be a positive number'. Parameter is not created.,TC-024
+Create a measuring parameter with value at maximum allowed limit,Measuring Parameter Creation,Boundary,High,User is logged in and on the 'Add Measuring Parameter' screen for an existing item,"1. Select an existing item. 2. Enter '300' as the value for a measuring parameter (e.g., 'Chest Width'). 3. Click 'Save'.
+
+Test Data: Parameter Value: 300",Measuring parameter is successfully created with a value of 300.,TC-025
+Create a measuring parameter with value exceeding maximum allowed limit,Measuring Parameter Creation,Boundary,High,User is logged in and on the 'Add Measuring Parameter' screen for an existing item,"1. Select an existing item. 2. Enter '301' as the value for a measuring parameter (e.g., 'Chest Width'). 3. Click 'Save'.
+
+Test Data: Parameter Value: 301",System displays an error message: 'Measuring parameter value cannot exceed 300'. Parameter is not created.,TC-026
+Create a measuring parameter with non-numeric value,Measuring Parameter Creation,Boundary,High,User is logged in and on the 'Add Measuring Parameter' screen for an existing item,"1. Select an existing item. 2. Enter 'abc' as the value for a measuring parameter (e.g., 'Chest Width'). 3. Click 'Save'.
+
+Test Data: Parameter Value: 'abc'",System displays an error message: 'Measuring parameter value must be a number'. Parameter is not created.,TC-027
+Create a measuring parameter with duplicate name for the same item,Measuring Parameter Creation,Boundary,Medium,"User is logged in, on the 'Add Measuring Parameter' screen, and an item with a measuring parameter named 'Chest Width' already exists","1. Select the same item as the existing 'Chest Width' parameter. 2. Enter 'Chest Width' as the parameter name. 3. Enter a valid value. 4. Click 'Save'.
+
+Test Data: Parameter Name: 'Chest Width', Parameter Value: 50",System displays an error message: 'A measuring parameter with this name already exists for this item'. Parameter is not created.,TC-028

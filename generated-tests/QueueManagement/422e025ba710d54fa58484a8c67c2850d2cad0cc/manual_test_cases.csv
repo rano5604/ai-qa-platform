@@ -1,0 +1,143 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Successfully set advance booking money for a shop and verify it is stored correctly,Advance Booking Money Management,Positive,High,A shop with ID 100 exists in the system. The user has shop owner permissions for this shop.,"1. Send a POST request to /api/booking-money/shop/100 with the payload in testData. 2. Send a GET request to /api/booking-money/shop/100 to retrieve the stored booking money.
+
+Test Data: {""amount"": 20}",1. Response status code is 201 (Created). The response body contains the created booking money details with 'shopId' as 100 and 'amount' as 20. 2. Response status code is 200. The response body contains the booking money details with 'shopId' as 100 and 'amount' as 20.,TC-001
+Successfully update advance booking money for a shop and verify the change,Advance Booking Money Management,Positive,High,A shop with ID 100 exists in the system and has an existing advance booking money record with amount 20. The user has shop owner permissions for this shop.,"1. Send a PUT request to /api/booking-money/shop/100 with the payload in testData. 2. Send a GET request to /api/booking-money/shop/100 to retrieve the updated booking money.
+
+Test Data: {""amount"": 30}",1. Response status code is 200. The response body contains the updated booking money details with 'shopId' as 100 and 'amount' as 30. 2. Response status code is 200. The response body contains the booking money details with 'shopId' as 100 and 'amount' as 30.,TC-002
+Successfully create an appointment reservation with advance booking money applied to reservation amount,Appointment Reservation Creation,Positive,High,"A shop with ID 100 exists in the system and has an advance booking money set to 20. The shop has a configured slot type (e.g., MORNING) and a worker available. The user has customer permissions.","1. Send a POST request to /api/appointments/shop/100 with the payload in testData. 2. Verify the reservation amount in the response matches the expected advance booking money calculation.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""+1234567890"", ""appointmentDate"": ""2023-12-25"", ""slotType"": ""MORNING"", ""serviceProfileIds"": [1, 2]}","Response status code is 201 (Created). The response body contains the created appointment reservation details with 'reservationAmount' calculated as 20% of 'totalAmount' (e.g., if 'totalAmount' is 100, 'reservationAmount' is 20).",d159982-TC-001
+Successfully create a payment intent for an appointment with advance booking money applied,Appointment Payment Processing,Positive,High,"A shop with ID 100 exists in the system and has an advance booking money set to 20. An active, unpaid appointment reservation exists for this shop with ID 200 and totalAmount 100. The user has customer permissions for this appointment.",1. Send a POST request to /api/payments/appointment/200 with no request body. 2. Verify the payment intent amount matches the expected advance booking money calculation.,Response status code is 201 (Created). The response body contains the payment details with 'amount' as 20 (20% of the appointment's 'totalAmount').,d159982-TC-003
+Customer successfully retrieves their own appointment reservation details,Appointment Reservation Access Control,Positive,High,"A shop with ID 100 exists in the system. An appointment reservation exists for this shop with ID 200, customerPhone set to the logged-in user's phone number, and status 'ACTIVE'. The user has customer permissions and is logged in with the same phone number as the appointment's customer.",1. Send a GET request to /api/appointments/shop/100/200.,"Response status code is 200. The response body contains the appointment reservation details for ID 200, including 'id', 'customerName', 'customerPhone', 'status', and 'serviceStatus'.",695863a-TC-001
+Create booking money with missing required field (amount),Advance Booking Money Management,Negative,High,A valid shop with ID 123 exists in the system,"1. Send a POST request to /api/booking-money/shop/123 with the payload in testData.
+
+Test Data: {""shopId"": 123}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the 'amount' field is required.,TC-003
+Create booking money with null amount field,Advance Booking Money Management,Negative,High,A valid shop with ID 123 exists in the system,"1. Send a POST request to /api/booking-money/shop/123 with the payload in testData.
+
+Test Data: {""shopId"": 123, ""amount"": null}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the 'amount' field cannot be null.,TC-004
+Create booking money with non-integer amount field,Advance Booking Money Management,Negative,High,A valid shop with ID 123 exists in the system,"1. Send a POST request to /api/booking-money/shop/123 with the payload in testData.
+
+Test Data: {""shopId"": 123, ""amount"": ""invalid""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the 'amount' field must be a valid integer.,TC-005
+Create booking money with negative amount value,Advance Booking Money Management,Negative,High,A valid shop with ID 123 exists in the system,"1. Send a POST request to /api/booking-money/shop/123 with the payload in testData.
+
+Test Data: {""shopId"": 123, ""amount"": -100}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the 'amount' field must be a positive integer.,TC-006
+Create booking money for a non-existent shop,Advance Booking Money Management,Negative,High,No shop with ID 999 exists in the system,"1. Send a POST request to /api/booking-money/shop/999 with the payload in testData.
+
+Test Data: {""shopId"": 999, ""amount"": 100}",The system should return an HTTP 404 Not Found status code with an error message indicating that the shop was not found.,TC-007
+Update booking money with missing required field (amount),Advance Booking Money Management,Negative,High,A valid shop with ID 123 and existing booking money exists in the system,"1. Send a PUT request to /api/booking-money/shop/123 with the payload in testData.
+
+Test Data: {""shopId"": 123}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the 'amount' field is required.,TC-008
+Update booking money for a non-existent shop,Advance Booking Money Management,Negative,High,No shop with ID 999 exists in the system,"1. Send a PUT request to /api/booking-money/shop/999 with the payload in testData.
+
+Test Data: {""shopId"": 999, ""amount"": 100}",The system should return an HTTP 404 Not Found status code with an error message indicating that the shop was not found.,TC-009
+Update booking money for a shop with no existing booking money,Advance Booking Money Management,Negative,High,A valid shop with ID 123 exists but has no booking money set,"1. Send a PUT request to /api/booking-money/shop/123 with the payload in testData.
+
+Test Data: {""shopId"": 123, ""amount"": 100}",The system should return an HTTP 400 Bad Request status code with an error message indicating that booking money was not set for this shop.,TC-010
+Get booking money for a non-existent shop,Advance Booking Money Management,Negative,High,No shop with ID 999 exists in the system,1. Send a GET request to /api/booking-money/shop/999.,The system should return an HTTP 404 Not Found status code with an error message indicating that the shop was not found.,TC-011
+Create booking money with malformed shop ID (non-numeric),Advance Booking Money Management,Negative,High,A valid shop exists in the system,"1. Send a POST request to /api/booking-money/shop/invalid with the payload in testData.
+
+Test Data: {""shopId"": ""invalid"", ""amount"": 100}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the shop ID must be a valid number.,TC-012
+Update booking money with malformed shop ID (non-numeric),Advance Booking Money Management,Negative,High,A valid shop exists in the system,"1. Send a PUT request to /api/booking-money/shop/invalid with the payload in testData.
+
+Test Data: {""shopId"": ""invalid"", ""amount"": 100}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the shop ID must be a valid number.,TC-013
+Get booking money with malformed shop ID (non-numeric),Advance Booking Money Management,Negative,High,A valid shop exists in the system,1. Send a GET request to /api/booking-money/shop/invalid.,The system should return an HTTP 400 Bad Request status code with an error message indicating that the shop ID must be a valid number.,TC-014
+Create appointment reservation with shop that has no booking money set,Appointment Reservation,Negative,High,A valid shop with ID 123 exists but has no booking money set,"1. Send a POST request to /api/appointments/shop/123 with a valid appointment reservation payload.
+
+Test Data: {""workerId"": 456, ""customerPhone"": ""+1234567890"", ""appointmentDate"": ""2023-12-31"", ""slot"": ""MORNING"", ""serviceProfileIds"": [789]}",The system should return an HTTP 500 Internal Server Error status code with an error message indicating that booking money is not set for this shop.,TC-015
+Create payment intent for appointment from a shop with no booking money set,Appointment Payment,Negative,High,A valid appointment with ID 123 exists for a shop with no booking money set,"1. Send a POST request to /api/payments/appointment/123 with a valid payment intent payload.
+
+Test Data: {}",The system should return an HTTP 500 Internal Server Error status code with an error message indicating that booking money is not set for this shop.,TC-016
+"Retrieve appointment by ID as unauthorized user (non-owner, non-customer)",Appointment Reservation,Negative,High,"A valid appointment with ID 123 exists for shop ID 456, and the logged-in user is neither the owner of shop 456 nor the customer of appointment 123",1. Send a GET request to /api/appointments/shop/456/123.,The system should return an HTTP 403 Forbidden status code with an error message indicating that the user does not have permission to view this appointment.,695863a-TC-009
+Create booking money for a shop with zero amount,Advance Booking Money Management,Boundary,High,A shop with ID 1 exists in the system,"1. Send a POST request to /api/booking-money/shop/1 with the payload in testData.
+
+Test Data: {""amount"": 0}",HTTP status code 201 (Created). Response body contains the created booking money with amount 0.,TC-017
+Create booking money for a shop with negative amount,Advance Booking Money Management,Boundary,High,A shop with ID 1 exists in the system,"1. Send a POST request to /api/booking-money/shop/1 with the payload in testData.
+
+Test Data: {""amount"": -1}",HTTP status code 400 (Bad Request) with an error message indicating that the amount cannot be negative.,TC-018
+Create booking money for a shop with maximum allowed amount,Advance Booking Money Management,Boundary,High,A shop with ID 1 exists in the system,"1. Send a POST request to /api/booking-money/shop/1 with the payload in testData.
+
+Test Data: {""amount"": 100}",HTTP status code 201 (Created). Response body contains the created booking money with amount 100.,TC-019
+Create booking money for a shop with amount one above maximum allowed,Advance Booking Money Management,Boundary,High,A shop with ID 1 exists in the system,"1. Send a POST request to /api/booking-money/shop/1 with the payload in testData.
+
+Test Data: {""amount"": 101}",HTTP status code 400 (Bad Request) with an error message indicating that the amount exceeds the maximum allowed value.,TC-020
+Create booking money for a non-existent shop,Advance Booking Money Management,Boundary,High,No shop with ID 999 exists in the system,"1. Send a POST request to /api/booking-money/shop/999 with the payload in testData.
+
+Test Data: {""amount"": 50}",HTTP status code 404 (Not Found) with an error message indicating that the shop was not found.,TC-021
+Update booking money for a shop with zero amount,Advance Booking Money Management,Boundary,High,A shop with ID 1 exists and has existing booking money set,"1. Send a PUT request to /api/booking-money/shop/1 with the payload in testData.
+
+Test Data: {""amount"": 0}",HTTP status code 200 (OK). Response body contains the updated booking money with amount 0.,TC-022
+Update booking money for a shop with negative amount,Advance Booking Money Management,Boundary,High,A shop with ID 1 exists and has existing booking money set,"1. Send a PUT request to /api/booking-money/shop/1 with the payload in testData.
+
+Test Data: {""amount"": -1}",HTTP status code 400 (Bad Request) with an error message indicating that the amount cannot be negative.,TC-023
+Update booking money for a shop without existing booking money,Advance Booking Money Management,Boundary,High,A shop with ID 1 exists but has no booking money set,"1. Send a PUT request to /api/booking-money/shop/1 with the payload in testData.
+
+Test Data: {""amount"": 50}",HTTP status code 400 (Bad Request) with an error message indicating that booking money is not set for this shop.,TC-024
+Update booking money for a non-existent shop,Advance Booking Money Management,Boundary,High,No shop with ID 999 exists in the system,"1. Send a PUT request to /api/booking-money/shop/999 with the payload in testData.
+
+Test Data: {""amount"": 50}",HTTP status code 404 (Not Found) with an error message indicating that the shop was not found.,TC-025
+Get booking money for a shop with existing booking money,Advance Booking Money Management,Boundary,High,A shop with ID 1 exists and has booking money set to 50,1. Send a GET request to /api/booking-money/shop/1.,HTTP status code 200 (OK). Response body contains the booking money with amount 50.,TC-026
+Get booking money for a shop without existing booking money,Advance Booking Money Management,Boundary,Medium,A shop with ID 1 exists but has no booking money set,1. Send a GET request to /api/booking-money/shop/1.,HTTP status code 404 (Not Found) or 200 (OK) with null/empty response if no booking money is set.,TC-027
+Get booking money for a non-existent shop,Advance Booking Money Management,Boundary,High,No shop with ID 999 exists in the system,1. Send a GET request to /api/booking-money/shop/999.,HTTP status code 404 (Not Found) with an error message indicating that the shop was not found.,TC-028
+Create payment for appointment with booking money set to 0%,Appointment Payment,Boundary,High,"A shop with ID 1 exists, has booking money set to 0, and an active unpaid appointment with totalAmount 100 exists",1. Send a POST request to /api/payments/appointments/1/pay (assuming this endpoint exists based on context).,"HTTP status code 200 (OK). Response body contains payment details with amount 0. Reservation payment status is updated to 'PAID', and due amount is set to 100.",d159982-TC-031
+Create payment for appointment with booking money set to 100%,Appointment Payment,Boundary,High,"A shop with ID 1 exists, has booking money set to 100, and an active unpaid appointment with totalAmount 100 exists",1. Send a POST request to /api/payments/appointments/1/pay (assuming this endpoint exists based on context).,"HTTP status code 200 (OK). Response body contains payment details with amount 100. Reservation payment status is updated to 'PAID', and due amount is set to 0.",TC-029
+Create payment for appointment with booking money set to 50% (exact boundary),Appointment Payment,Boundary,High,"A shop with ID 1 exists, has booking money set to 50, and an active unpaid appointment with totalAmount 100 exists",1. Send a POST request to /api/payments/appointments/1/pay (assuming this endpoint exists based on context).,"HTTP status code 200 (OK). Response body contains payment details with amount 50. Reservation payment status is updated to 'PAID', and due amount is set to 50.",c8399ba-TC-011
+Create payment for appointment with booking money set to 50% and total amount one cent below boundary,Appointment Payment,Boundary,High,"A shop with ID 1 exists, has booking money set to 50, and an active unpaid appointment with totalAmount 99.99 exists",1. Send a POST request to /api/payments/appointments/1/pay (assuming this endpoint exists based on context).,"HTTP status code 200 (OK). Response body contains payment details with amount 49.99. Reservation payment status is updated to 'PAID', and due amount is set to 50.00.",c8399ba-TC-012
+Create payment for appointment with booking money set to 50% and total amount one cent above boundary,Appointment Payment,Boundary,High,"A shop with ID 1 exists, has booking money set to 50, and an active unpaid appointment with totalAmount 100.01 exists",1. Send a POST request to /api/payments/appointments/1/pay (assuming this endpoint exists based on context).,"HTTP status code 200 (OK). Response body contains payment details with amount 50.00. Reservation payment status is updated to 'PAID', and due amount is set to 50.01.",c8399ba-TC-013
+Create appointment reservation with booking money set to 0%,Appointment Reservation,Boundary,High,"A shop with ID 1 exists, has booking money set to 0, and valid service profiles/workers/slots are available","1. Send a POST request to /api/appointments/reservations (assuming this endpoint exists based on context) with the payload in testData.
+
+Test Data: {""shopId"": 1, ""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""appointmentDate"": ""2023-12-31"", ""slot"": ""MORNING"", ""serviceProfileIds"": [1], ""workerId"": 1}",HTTP status code 201 (Created). Response body contains reservation details with reservationAmount 0 and dueAmount equal to totalAmount.,d159982-TC-016
+Create appointment reservation with booking money set to 100%,Appointment Reservation,Boundary,High,"A shop with ID 1 exists, has booking money set to 100, and valid service profiles/workers/slots are available","1. Send a POST request to /api/appointments/reservations (assuming this endpoint exists based on context) with the payload in testData.
+
+Test Data: {""shopId"": 1, ""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""appointmentDate"": ""2023-12-31"", ""slot"": ""MORNING"", ""serviceProfileIds"": [1], ""workerId"": 1}",HTTP status code 201 (Created). Response body contains reservation details with reservationAmount equal to totalAmount and dueAmount 0.,TC-030
+Create appointment reservation with booking money set to 50% (exact boundary),Appointment Reservation,Boundary,High,"A shop with ID 1 exists, has booking money set to 50, and valid service profiles/workers/slots are available","1. Send a POST request to /api/appointments/reservations (assuming this endpoint exists based on context) with the payload in testData.
+
+Test Data: {""shopId"": 1, ""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""appointmentDate"": ""2023-12-31"", ""slot"": ""MORNING"", ""serviceProfileIds"": [1], ""workerId"": 1}",HTTP status code 201 (Created). Response body contains reservation details with reservationAmount equal to 50% of totalAmount and dueAmount equal to the remaining 50%.,TC-031
+Retrieve appointment reservation by ID as customer with matching phone number and booking money set,Appointment Reservation,Boundary,High,"A shop with ID 1 exists, has booking money set, and an appointment with customerPhone matching the logged-in user exists",1. Send a GET request to /api/appointments/reservations/1/shop/1 (assuming this endpoint exists based on context).,HTTP status code 200 (OK). Response body contains the appointment details with reservationAmount and dueAmount calculated based on booking money.,695863a-TC-014
+Verify that an unauthorized user cannot create advance booking money for a shop,Advance Booking Money Management,Security,High,A valid shop ID exists in the system. The user is not authenticated or does not have the 'owner' role for the shop.,"1. Send a POST request to /api/booking-money/shop/{shopId} with the payload in testData. Use a valid shopId for which the user does not have ownership.
+
+Test Data: {
+  ""amount"": 100
+}",The API responds with HTTP status 401 Unauthorized (if unauthenticated) or 403 Forbidden (if authenticated but unauthorized) and an error message 'Access Denied'. The advance booking money is not created.,TC-032
+Verify that an unauthorized user cannot update advance booking money for a shop,Advance Booking Money Management,Security,High,A valid shop ID and existing advance booking money record exist in the system. The user is not authenticated or does not have the 'owner' role for the shop.,"1. Send a PUT request to /api/booking-money/shop/{shopId} with the payload in testData. Use a valid shopId for which the user does not have ownership.
+
+Test Data: {
+  ""amount"": 200
+}",The API responds with HTTP status 401 Unauthorized (if unauthenticated) or 403 Forbidden (if authenticated but unauthorized) and an error message 'Access Denied'. The advance booking money is not updated.,TC-033
+Verify that an unauthorized user cannot retrieve advance booking money for a shop,Advance Booking Money Management,Security,High,A valid shop ID and existing advance booking money record exist in the system. The user is not authenticated or does not have the 'owner' role for the shop.,1. Send a GET request to /api/booking-money/shop/{shopId}. Use a valid shopId for which the user does not have ownership.,The API responds with HTTP status 401 Unauthorized (if unauthenticated) or 403 Forbidden (if authenticated but unauthorized) and an error message 'Access Denied'. No advance booking money details are returned.,TC-034
+Verify that a customer cannot access advance booking money for a shop they do not own,Advance Booking Money Management,Security,High,A valid shop ID and existing advance booking money record exist in the system. The user is authenticated as a customer (not an owner).,1. Send a GET request to /api/booking-money/shop/{shopId}. Use a valid shopId for which the user is not the owner.,The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. No advance booking money details are returned.,TC-035
+Verify that creating advance booking money with negative amount is rejected,Advance Booking Money Management,Security,High,A valid shop ID exists in the system. The user is authenticated and has the 'owner' role for the shop.,"1. Send a POST request to /api/booking-money/shop/{shopId} with the payload in testData.
+
+Test Data: {
+  ""amount"": -100
+}",The API responds with HTTP status 400 Bad Request and an error message indicating invalid amount. The advance booking money is not created.,TC-036
+Verify that updating advance booking money with negative amount is rejected,Advance Booking Money Management,Security,High,A valid shop ID and existing advance booking money record exist in the system. The user is authenticated and has the 'owner' role for the shop.,"1. Send a PUT request to /api/booking-money/shop/{shopId} with the payload in testData.
+
+Test Data: {
+  ""amount"": -200
+}",The API responds with HTTP status 400 Bad Request and an error message indicating invalid amount. The advance booking money is not updated.,TC-037
+Verify that creating advance booking money with excessively large amount is rejected,Advance Booking Money Management,Security,Medium,A valid shop ID exists in the system. The user is authenticated and has the 'owner' role for the shop.,"1. Send a POST request to /api/booking-money/shop/{shopId} with the payload in testData.
+
+Test Data: {
+  ""amount"": 999999999
+}",The API responds with HTTP status 400 Bad Request and an error message indicating invalid amount. The advance booking money is not created.,TC-038
+Verify that creating advance booking money for a non-existent shop returns appropriate status,Advance Booking Money Management,Security,High,The user is authenticated and has the 'owner' role. A non-existent shop ID is used.,"1. Send a POST request to /api/booking-money/shop/{shopId} with the payload in testData. Use a non-existent shopId.
+
+Test Data: {
+  ""amount"": 100
+}",The API responds with HTTP status 404 Not Found and an error message 'Shop not found'. The advance booking money is not created.,TC-039
+Verify that updating advance booking money for a non-existent shop returns appropriate status,Advance Booking Money Management,Security,High,The user is authenticated and has the 'owner' role. A non-existent shop ID is used.,1. Send a PUT request to /api/booking-money/shop/{shopId} with the payload in testData. Use a non-existent shopId.,The API responds with HTTP status 404 Not Found and an error message 'Shop not found'. The advance booking money is not updated.,TC-040
+Verify that retrieving advance booking money for a non-existent shop returns appropriate status,Advance Booking Money Management,Security,High,The user is authenticated and has the 'owner' role. A non-existent shop ID is used.,1. Send a GET request to /api/booking-money/shop/{shopId}. Use a non-existent shopId.,The API responds with HTTP status 404 Not Found and an error message 'Shop not found'. No advance booking money details are returned.,TC-041
+Verify that a customer can access only their own appointment reservation details (updated for advance booking money),Appointment Reservation - Access Control,Security,High,A valid appointment reservation exists in the system for a customer. The user is authenticated as the customer.,1. Send a GET request to /api/appointments/shop/{shopId}/reservations/{id} using the shopId and appointment ID of the customer's reservation.,"The API responds with HTTP status 200 OK and the appointment reservation details in the response body, including the correct reservationAmount calculated using the advance booking money percentage.",d159982-TC-034
+Verify that a customer cannot access another customer's appointment reservation by guessing the ID (updated for advance booking money),Appointment Reservation - Access Control,Security,High,Two valid appointment reservations exist in the system for different customers. The user is authenticated as one customer.,1. Send a GET request to /api/appointments/shop/{shopId}/reservations/{id} using the shopId and appointment ID of another customer's reservation.,The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. The details of the other customer's appointment reservation are not returned.,695863a-TC-022
+Verify that reservation amount is correctly calculated using advance booking money percentage,Appointment Reservation - Payment Calculation,Security,High,"A valid shop ID, advance booking money record (e.g., 20%), and appointment reservation exist in the system. The user is authenticated as the customer or shop owner.",1. Send a GET request to /api/appointments/shop/{shopId}/reservations/{id} using the shopId and appointment ID.,The API responds with HTTP status 200 OK and the appointment reservation details in the response body. The reservationAmount field is correctly calculated as (totalAmount * advanceBookingMoneyPercentage / 100).,TC-042
+Verify that payment intent is correctly created using advance booking money percentage,Appointment Reservation - Payment Calculation,Security,High,"A valid shop ID, advance booking money record (e.g., 20%), and unpaid appointment reservation exist in the system. The user is authenticated as the customer.",1. Send a POST request to /api/payments/appointments/{appointmentId} using the appointment ID.,The API responds with HTTP status 201 Created and the payment intent details in the response body. The payment amount is correctly calculated as (totalAmount * advanceBookingMoneyPercentage).,TC-043
+Verify that creating an appointment reservation fails when advance booking money is not set for the shop,Appointment Reservation - Error Handling,Security,High,"A valid shop ID exists in the system, but no advance booking money record is set. The user is authenticated as a customer.","1. Send a POST request to /api/appointments/shop/{shopId}/reservations with a valid payload.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""appointmentDate"": ""2023-12-25"",
+  ""slotType"": ""MORNING"",
+  ""serviceProfileIds"": [1, 2]
+}",The API responds with HTTP status 500 Internal Server Error and an error message indicating that booking money is not set for the shop. The appointment reservation is not created.,TC-044

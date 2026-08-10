@@ -1,0 +1,61 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+User successfully requests OTP and receives it in the response header,User Authentication via OTP,Positive,High,User has a valid phone number registered in the system,"1. Send a POST request to /api/auth/request-otp with the phone number as a query parameter using the payload in testData. 2. Observe the response status code and headers.
+
+Test Data: phoneNumber: ""+1234567890""",Response status code is 200. The response body contains the message 'OTP Sent to Your Phone Number'. The 'OTP' header contains the generated OTP value.,b469760-TC-001
+Request OTP with phone number containing non-numeric characters,User Authentication - OTP Request,Negative,High,No preconditions required,"1. Send a POST request to /api/auth/request-otp with the phoneNumber query parameter set to a value containing non-numeric characters as shown in testData.
+
+Test Data: phoneNumber=+123-456-7890",The system should return an HTTP 400 Bad Request status code with an error message indicating that the phone number format is invalid.,TC-001
+Request OTP with empty phone number,User Authentication - OTP Request,Negative,High,No preconditions required,"1. Send a POST request to /api/auth/request-otp with the phoneNumber query parameter set to an empty string as shown in testData.
+
+Test Data: phoneNumber=",The system should return an HTTP 400 Bad Request status code with an error message indicating that the phone number is required.,b469760-TC-006
+Request OTP with phone number exceeding maximum allowed length,User Authentication - OTP Request,Negative,Medium,No preconditions required,"1. Send a POST request to /api/auth/request-otp with the phoneNumber query parameter set to a value exceeding 15 characters as shown in testData.
+
+Test Data: phoneNumber=1234567890123456",The system should return an HTTP 400 Bad Request status code with an error message indicating that the phone number format is invalid.,TC-002
+Verify OTP with phone number containing non-numeric characters,User Authentication - OTP Verification,Negative,High,No preconditions required,"1. Send a POST request to /api/auth/verify-otp with the payload in testData.
+
+Test Data: {""phoneNumber"": ""+123-456-7890"", ""otp"": ""123456""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the phone number format is invalid.,TC-003
+Verify OTP with OTP code containing non-numeric characters,User Authentication - OTP Verification,Negative,High,No preconditions required,"1. Send a POST request to /api/auth/verify-otp with the payload in testData.
+
+Test Data: {""phoneNumber"": ""1234567890"", ""otp"": ""12A456""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the OTP is invalid or expired.,TC-004
+Verify OTP with OTP code exceeding maximum allowed length,User Authentication - OTP Verification,Negative,Medium,No preconditions required,"1. Send a POST request to /api/auth/verify-otp with the payload in testData.
+
+Test Data: {""phoneNumber"": ""1234567890"", ""otp"": ""1234567""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the OTP is invalid or expired.,TC-005
+Set PIN with PIN containing non-numeric characters,User Authentication - Set PIN,Negative,High,A valid OTP has been requested and verified for the phone number,"1. Send a POST request to /api/auth/set-pin with the payload in testData.
+
+Test Data: {""phoneNumber"": ""1234567890"", ""otp"": ""123456"", ""pin"": ""12A4"", ""confirmPin"": ""12A4""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the PIN must be numeric.,TC-006
+Set PIN with PIN shorter than minimum required length,User Authentication - Set PIN,Negative,High,A valid OTP has been requested and verified for the phone number,"1. Send a POST request to /api/auth/set-pin with the payload in testData.
+
+Test Data: {""phoneNumber"": ""1234567890"", ""otp"": ""123456"", ""pin"": ""123"", ""confirmPin"": ""123""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the PIN must be at least 4 digits.,TC-007
+Set PIN with PIN longer than maximum allowed length,User Authentication - Set PIN,Negative,Medium,A valid OTP has been requested and verified for the phone number,"1. Send a POST request to /api/auth/set-pin with the payload in testData.
+
+Test Data: {""phoneNumber"": ""1234567890"", ""otp"": ""123456"", ""pin"": ""123456"", ""confirmPin"": ""123456""}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the PIN must be at most 4 digits.,TC-008
+Request OTP and verify the OTP header is not exposed in the response when OTP generation fails,User Authentication - OTP Request,Negative,Medium,No preconditions required,"1. Mock the OTP generation service to throw an exception. 2. Send a POST request to /api/auth/request-otp with a valid phoneNumber query parameter as shown in testData. 3. Verify the response does not contain an 'OTP' header.
+
+Test Data: phoneNumber=1234567890","The system should return an HTTP 500 Internal Server Error status code, and the response should not contain an 'OTP' header.",TC-009
+Verify OTP response includes OTP in the header for valid phone number,Authentication,Boundary,High,User has a valid phone number registered in the system,"1. Send a POST request to /api/auth/request-otp with the query parameter phoneNumber set to a valid phone number (e.g., '+1234567890').
+
+Test Data: Query parameter: phoneNumber = '+1234567890'",HTTP status code 200. Response body contains the message 'OTP Sent to Your Phone Number'. Response header 'OTP' contains the generated OTP value.,b469760-TC-021
+Verify OTP response does not include OTP in the header for empty phone number,Authentication,Boundary,High,None,"1. Send a POST request to /api/auth/request-otp with the query parameter phoneNumber set to an empty string.
+
+Test Data: Query parameter: phoneNumber = ''",HTTP status code 400 (Bad Request) with an error message indicating that the phone number cannot be empty.,TC-010
+Verify OTP response does not include OTP in the header for null phone number,Authentication,Boundary,High,None,"1. Send a POST request to /api/auth/request-otp without the phoneNumber query parameter.
+
+Test Data: No query parameter provided",HTTP status code 400 (Bad Request) with an error message indicating that the phone number is required.,TC-011
+Verify OTP response does not include OTP in the header for invalid phone number format,Authentication,Boundary,Medium,None,"1. Send a POST request to /api/auth/request-otp with the query parameter phoneNumber set to an invalid format (e.g., '123').
+
+Test Data: Query parameter: phoneNumber = '123'",HTTP status code 400 (Bad Request) with an error message indicating that the phone number format is invalid.,TC-012
+Verify OTP response includes OTP in the header for phone number with maximum allowed length,Authentication,Boundary,Medium,User has a phone number with the maximum allowed length registered in the system,"1. Send a POST request to /api/auth/request-otp with the query parameter phoneNumber set to a phone number of maximum allowed length (e.g., '+123456789012345').
+
+Test Data: Query parameter: phoneNumber = '+123456789012345'",HTTP status code 200. Response body contains the message 'OTP Sent to Your Phone Number'. Response header 'OTP' contains the generated OTP value.,TC-013
+Verify OTP response does not include OTP in the header for phone number exceeding maximum allowed length,Authentication,Boundary,Medium,None,"1. Send a POST request to /api/auth/request-otp with the query parameter phoneNumber set to a phone number exceeding the maximum allowed length (e.g., '+1234567890123456').
+
+Test Data: Query parameter: phoneNumber = '+1234567890123456'",HTTP status code 400 (Bad Request) with an error message indicating that the phone number exceeds the maximum allowed length.,TC-014
+Verify OTP value is not exposed in the response header after OTP request,OTP Authentication Flow,Security,High,A valid phone number is available for testing,"1. Send a POST request to /api/auth/request-otp with the phoneNumber query parameter set to a valid phone number (e.g., +1234567890). 2. Inspect the response headers and body for the OTP value.
+
+Test Data: phoneNumber: ""+1234567890""",The API responds with HTTP status 200 (OK) and the body 'OTP Sent to Your Phone Number'. The OTP value is NOT included in any response header or body.,b469760-TC-041
+Verify OTP value is not logged or exposed in error responses during OTP verification,OTP Authentication Flow,Security,High,A valid phone number and an OTP have been requested and generated,"1. Send a POST request to /api/auth/verify-otp with an incorrect OTP value. 2. Inspect the response body and logs for the OTP value. 3. Repeat with an expired OTP (if applicable).
+
+Test Data: {""phoneNumber"": ""+1234567890"", ""otp"": ""000000""}",The API responds with HTTP status 400 (Bad Request) and the message 'Invalid or expired OTP'. The OTP value is NOT included in the response body or logs.,TC-015
+Verify brute force protection for OTP verification attempts,OTP Authentication Flow,Security,High,A valid phone number and the correct OTP are available for testing,"1. Send 10 consecutive POST requests to /api/auth/verify-otp with incorrect OTP values for the same phone number. 2. On the 11th attempt, send the correct OTP. 3. Observe the response for each attempt.
+
+Test Data: {""phoneNumber"": ""+1234567890"", ""otp"": ""000000""} (incorrect OTP for first 10 attempts, correct OTP for 11th attempt)","The API responds with HTTP status 400 (Bad Request) for all incorrect attempts. The correct OTP on the 11th attempt may be rejected or rate-limited (e.g., HTTP status 429 Too Many Requests).",TC-016

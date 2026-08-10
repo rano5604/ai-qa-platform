@@ -1,0 +1,371 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a new order and verify the generated order ID follows the expected format and QR code is retrievable,Order Management - Order ID Generation and QR Code,Positive,High,A shop with ID 1 exists in the system,"1. Send a POST request to /api/orders with the payload in testData. 2. Note the orderId from the response. 3. Send a GET request to /api/orders/{orderId}/qrcode using the orderId from step 2.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""totalAmount"": 2000.00,
+  ""paidAmount"": 500.00,
+  ""dueAmount"": 1500.00,
+  ""orderDate"": ""2023-10-01"",
+  ""trialDate"": ""2023-10-05"",
+  ""deliveryDate"": ""2023-10-15"",
+  ""urgent"": false,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""photoUrl"": ""http://example.com/photo1.jpg"",
+      ""measurementGroups"": [
+        {
+          ""quantity"": 1,
+          ""photoUrl"": ""http://example.com/measurement1.jpg"",
+          ""urgent"": false,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inches"",
+              ""type"": ""NUMBER"",
+              ""value"": ""40""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order created successfully"", ""data"": {""orderId"": ""1-20231001-0001"", ""shopName"": ""<shop name>"", ""customerName"": ""John Doe"", ""totalAmount"": 2000.00}}. 2. HTTP 200 OK response with a JSON body containing: {""qrCode"": ""data:image/png;base64,<base64-encoded-string>""}",TC-001
+Retrieve an existing order and verify the order ID is returned in string format (not numeric),Order Management - Order ID Format in Responses,Positive,High,An order with ID 1 exists in the system,1. Send a GET request to /api/orders/1.,"HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order retrieved successfully"", ""data"": {""orderId"": ""1-20231001-0001"", ""id"": 1, ""customerName"": ""<customer name>"", ""customerPhone"": ""<phone>""}}",d3da340-TC-003
+Retrieve order history for a customer and verify order IDs are returned in string format,Order Management - Order Summary with String Order ID,Positive,High,A customer with phone number '5551234567' has at least one order in the system,1. Send a GET request to /api/orders/by-phone?phone=5551234567&page=0&limit=10.,"HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Orders retrieved successfully"", ""data"": {""content"": [{""orderId"": ""1-20231001-0001"", ""shopName"": ""<shop name>"", ""totalAmount"": 2000.00}]}}",9f19f61-TC-001
+Generate a QR code for an order and verify it contains all expected business information,Order Management - QR Code Content Validation,Positive,Medium,An order with ID 1 exists in the system with multiple items and measurement groups,1. Send a GET request to /api/orders/1/qrcode. 2. Decode the base64 QR code image and verify the content matches the expected structure.,"1. HTTP 200 OK response with a JSON body containing: {""qrCode"": ""data:image/png;base64,<base64-encoded-string>""}. 2. The decoded QR code content contains: {""orderId"": ""1-20231001-0001"", ""customerName"": ""<customer name>"", ""shopName"": ""<shop name>"", ""totalAmount"": 2000.00, ""dueAmount"": 1500.00, ""deliveryDate"": ""2023-10-15"", ""items"": [{""group"": ""Group-1"", ""itemName"": ""Formal Shirt"", ""deliveryDate"": ""2023-10-15""}]}",TC-002
+Create multiple orders for the same shop on the same day and verify order IDs are unique and sequential,Order Management - Order ID Uniqueness and Sequence,Positive,High,A shop with ID 1 exists in the system,"1. Send a POST request to /api/orders with the payload in testData (first order). 2. Send a POST request to /api/orders with the payload in testData (second order). 3. Compare the orderId values from both responses.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""Jane Smith"",
+  ""customerPhone"": ""5557654321"",
+  ""customerGender"": ""female"",
+  ""orderGender"": ""female"",
+  ""totalAmount"": 1500.00,
+  ""paidAmount"": 500.00,
+  ""dueAmount"": 1000.00,
+  ""orderDate"": ""2023-10-01"",
+  ""trialDate"": ""2023-10-05"",
+  ""deliveryDate"": ""2023-10-15"",
+  ""urgent"": false,
+  ""items"": [
+    {
+      ""itemId"": 2,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""quantity"": 1,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Waist"",
+              ""nameBn"": ""কোমর"",
+              ""unit"": ""inches"",
+              ""type"": ""NUMBER"",
+              ""value"": ""32""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. First order response contains orderId: ""1-20231001-0001"". 2. Second order response contains orderId: ""1-20231001-0002"". 3. Both order IDs are unique and sequential for the same shop and date.",TC-003
+Attempt to generate a QR code for a non-existent order ID,Order QR Code Generation,Negative,High,No preconditions required,1. Send a GET request to /api/orders/999999/qrcode.,The system returns an HTTP 404 status code with a response body containing an error message indicating that the order with ID 999999 does not exist.,TC-004
+Attempt to generate a QR code with a non-numeric order ID,Order QR Code Generation,Negative,High,No preconditions required,1. Send a GET request to /api/orders/invalid-id/qrcode.,The system returns an HTTP 400 Bad Request status code with a response body containing an error message indicating that the order ID must be a valid numeric value.,TC-005
+Attempt to create an order with a non-existent shop ID,Order Creation,Negative,High,No preconditions required,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {
+  ""shopId"": 999999,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""totalAmount"": 100.00,
+  ""paidAmount"": 50.00,
+  ""dueAmount"": 50.00,
+  ""orderDate"": ""2023-10-01"",
+  ""trialDate"": ""2023-10-05"",
+  ""deliveryDate"": ""2023-10-10"",
+  ""urgent"": false,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""photoUrl"": ""http://example.com/photo.jpg"",
+      ""measurementGroups"": [
+        {
+          ""urgent"": false,
+          ""deliveryDate"": ""2023-10-10"",
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""type"": ""NUMERIC"",
+              ""value"": ""40"",
+              ""unit"": ""inch""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}",The system returns an HTTP 400 Bad Request status code with a response body containing an error message indicating that the shop with ID 999999 does not exist.,TC-006
+Attempt to create an order with a missing shop ID field,Order Creation,Negative,High,No preconditions required,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""totalAmount"": 100.00,
+  ""paidAmount"": 50.00,
+  ""dueAmount"": 50.00,
+  ""orderDate"": ""2023-10-01"",
+  ""trialDate"": ""2023-10-05"",
+  ""deliveryDate"": ""2023-10-10"",
+  ""urgent"": false,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""photoUrl"": ""http://example.com/photo.jpg"",
+      ""measurementGroups"": [
+        {
+          ""urgent"": false,
+          ""deliveryDate"": ""2023-10-10"",
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""type"": ""NUMERIC"",
+              ""value"": ""40"",
+              ""unit"": ""inch""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}",The system returns an HTTP 400 Bad Request status code with a response body containing an error message indicating that the 'shopId' field is required.,TC-007
+Attempt to generate a QR code for an order with missing delivery date,Order QR Code Generation,Negative,Medium,An order exists without a delivery date set,"1. Send a GET request to /api/orders/{orderId}/qrcode, replacing {orderId} with the ID of an order that has no delivery date.",The system returns an HTTP 500 Internal Server Error status code with a response body containing an error message indicating a failure in generating the QR code due to missing delivery date.,TC-008
+Attempt to retrieve an order with a non-numeric ID (UPDATE existing case),Order Retrieval,Negative,High,No preconditions required,1. Send a GET request to /api/orders/invalid-id.,The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the order ID must be a valid numeric value.,0399124-TC-014
+Attempt to update an order with a non-numeric order ID (UPDATE existing case),Order Update,Negative,High,No preconditions required,"1. Send a PUT request to /api/orders/invalid-id with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""totalAmount"": 100.00,
+  ""paidAmount"": 50.00,
+  ""dueAmount"": 50.00,
+  ""orderDate"": ""2023-10-01"",
+  ""trialDate"": ""2023-10-05"",
+  ""deliveryDate"": ""2023-10-10"",
+  ""urgent"": false,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""photoUrl"": ""http://example.com/photo.jpg"",
+      ""measurementGroups"": [
+        {
+          ""urgent"": false,
+          ""deliveryDate"": ""2023-10-10"",
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""type"": ""NUMERIC"",
+              ""value"": ""40"",
+              ""unit"": ""inch""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}",The system returns an HTTP 400 Bad Request status code with a response body containing status 'error' and a message indicating that the order ID must be a valid numeric value.,0399124-TC-014
+Attempt to create an order with a negative total amount,Order Creation,Negative,High,No preconditions required,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""totalAmount"": -100.00,
+  ""paidAmount"": 50.00,
+  ""dueAmount"": 50.00,
+  ""orderDate"": ""2023-10-01"",
+  ""trialDate"": ""2023-10-05"",
+  ""deliveryDate"": ""2023-10-10"",
+  ""urgent"": false,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""photoUrl"": ""http://example.com/photo.jpg"",
+      ""measurementGroups"": [
+        {
+          ""urgent"": false,
+          ""deliveryDate"": ""2023-10-10"",
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""type"": ""NUMERIC"",
+              ""value"": ""40"",
+              ""unit"": ""inch""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}",The system returns an HTTP 400 Bad Request status code with a response body containing an error message indicating that the 'totalAmount' field must be a non-negative value.,TC-009
+Attempt to create an order with due amount exceeding total amount,Order Creation,Negative,High,No preconditions required,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""totalAmount"": 100.00,
+  ""paidAmount"": 50.00,
+  ""dueAmount"": 150.00,
+  ""orderDate"": ""2023-10-01"",
+  ""trialDate"": ""2023-10-05"",
+  ""deliveryDate"": ""2023-10-10"",
+  ""urgent"": false,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""photoUrl"": ""http://example.com/photo.jpg"",
+      ""measurementGroups"": [
+        {
+          ""urgent"": false,
+          ""deliveryDate"": ""2023-10-10"",
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""type"": ""NUMERIC"",
+              ""value"": ""40"",
+              ""unit"": ""inch""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}",The system returns an HTTP 400 Bad Request status code with a response body containing an error message indicating that the 'dueAmount' cannot exceed the 'totalAmount'.,TC-010
+Attempt to update an order with a due amount exceeding total amount,Order Update,Negative,High,An existing order with ID 1,"1. Send a PUT request to /api/orders/1 with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""totalAmount"": 100.00,
+  ""paidAmount"": 50.00,
+  ""dueAmount"": 150.00,
+  ""orderDate"": ""2023-10-01"",
+  ""trialDate"": ""2023-10-05"",
+  ""deliveryDate"": ""2023-10-10"",
+  ""urgent"": false,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""photoUrl"": ""http://example.com/photo.jpg"",
+      ""measurementGroups"": [
+        {
+          ""urgent"": false,
+          ""deliveryDate"": ""2023-10-10"",
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""type"": ""NUMERIC"",
+              ""value"": ""40"",
+              ""unit"": ""inch""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}",The system returns an HTTP 400 Bad Request status code with a response body containing an error message indicating that the 'dueAmount' cannot exceed the 'totalAmount'.,TC-011
+Verify that QR code generation for an order enforces proper authorization (insecure direct object reference) - unauthorized user cannot generate QR code for another user's order,Order Management - QR Code Generation,Security,High,Two users exist: User A (authorized for order 1001) and User B (not authorized for order 1001). Order 1001 exists and belongs to User A.,1. Authenticate as User B. 2. Send a GET request to /api/orders/1001/qrcode.,"The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and the response body contains a generic error message (e.g., 'Order not found' or 'Access denied'). No QR code or order details are returned.",TC-012
+Verify that QR code generation for a non-existent order returns a generic error message without exposing system details,Order Management - QR Code Generation,Security,High,No order exists with ID 999999.,1. Authenticate as a valid user. 2. Send a GET request to /api/orders/999999/qrcode.,"The API responds with HTTP status 404 (Not Found) and a response body containing 'error: Order not found with ID: 999999'. No stack traces, database errors, or internal system details are exposed.",TC-013
+Verify that QR code generation response does not expose sensitive system details in error messages,Order Management - QR Code Generation,Security,High,"An order exists with ID 1001, but the QR code generation service is intentionally broken (e.g., by mocking a failure).",1. Authenticate as a valid user. 2. Send a GET request to /api/orders/1001/qrcode.,"The API responds with HTTP status 500 (Internal Server Error) and a response body containing 'error: An error occurred while generating the QR code'. No stack traces, database errors, or internal system details (e.g., exception class names) are exposed.",TC-014
+Verify that QR code contains only authorized order data and no sensitive internal details,Order Management - QR Code Generation,Security,High,"An order exists with ID 1001, containing customer name, shop name, total amount, due amount, delivery date, and items with measurement groups.",1. Authenticate as a valid user. 2. Send a GET request to /api/orders/1001/qrcode. 3. Decode the Base64 QR code image and inspect the embedded JSON data.,"The decoded QR code contains only the following fields: orderId, customerName, shopName, totalAmount, dueAmount, deliveryDate, and items (with group, itemName, and deliveryDate). No internal IDs (e.g., database IDs), Bengali names, or other unauthorized fields are exposed.",TC-015
+Verify that order ID generation does not expose internal shop ID or sequence logic in responses,Order Management - Order ID Generation,Security,Medium,"A shop exists with ID 50, and no orders exist for today.","1. Authenticate as a valid user. 2. Send a POST request to /api/orders with a valid OrderRequest payload for shop ID 50. 3. Inspect the response body for the order ID.
+
+Test Data: {""shopId"": 50, ""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""customerGender"": ""MALE"", ""orderGender"": ""MALE"", ""totalAmount"": 1000, ""paidAmount"": 500, ""dueAmount"": 500, ""orderDate"": ""2023-10-01"", ""trialDate"": ""2023-10-05"", ""deliveryDate"": ""2023-10-10"", ""urgent"": false, ""items"": []}","The API responds with HTTP status 200 (OK) and a response body containing the order details, including an orderId in the format '50-20231001-0001'. The orderId does not expose internal logic or raw database IDs beyond the shop ID and date.",TC-016
+Verify that order ID is exposed in order responses and summaries without leaking internal database IDs,Order Management - Order ID Generation,Security,Medium,An order exists with ID 1001 and orderId '50-20231001-0001'.,1. Authenticate as a valid user. 2. Send a GET request to /api/orders/1001. 3. Inspect the response body for the orderId field. 4. Send a GET request to /api/orders/shop/50?page=0&limit=10. 5. Inspect the response body for the orderId field in the order summaries.,"The API responds with HTTP status 200 (OK) for both requests. The response bodies contain the orderId field (e.g., '50-20231001-0001') but do not expose the internal database ID (e.g., 1001) in any field other than 'id' (which is expected).",45ca61c-TC-007
+Verify that QR code generation enforces rate limiting to prevent abuse,Order Management - QR Code Generation,Security,Medium,"An order exists with ID 1001, and the user is authorized to access it.",1. Authenticate as a valid user. 2. Send 10 GET requests to /api/orders/1001/qrcode in rapid succession (within 1 second).,"The API responds with HTTP status 200 (OK) for the first few requests, then starts responding with HTTP status 429 (Too Many Requests) and a response body containing 'error: Too many requests. Please try again later.' for subsequent requests.",TC-017
+Verify a QR code is generated for an existing order with valid details,Order QR Code Generation,Configuration,High,"An order exists with ID 12345, customer name 'John Doe', shop name 'Tailor Shop', total amount 1000, due amount 200, delivery date '2024-12-31', and at least one item with measurements",1. Send a GET request to /api/orders/12345/qrcode.,"HTTP 200 OK response with a JSON body containing: {""qrCode"": ""data:image/png;base64,<base64-encoded-string>""}. The QR code, when decoded, contains the order details: orderId, customerName, shopName, totalAmount, dueAmount, deliveryDate, and items with their delivery dates.",TC-018
+"Verify a new order is created with a valid, unique order ID",Order ID Generation,Configuration,High,"A shop exists with ID 1, and the current date is '2024-12-01'","1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""Jane Smith"",
+  ""customerPhone"": ""9876543210"",
+  ""customerGender"": ""FEMALE"",
+  ""orderGender"": ""FEMALE"",
+  ""customerPhotoUrl"": ""http://example.com/photo.jpg"",
+  ""totalAmount"": 1500,
+  ""paidAmount"": 500,
+  ""dueAmount"": 1000,
+  ""orderDate"": ""2024-12-01"",
+  ""trialDate"": ""2024-12-10"",
+  ""deliveryDate"": ""2024-12-31"",
+  ""status"": ""MEASUREMENT_DONE"",
+  ""urgent"": false,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""photoUrl"": ""http://example.com/item.jpg"",
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""urgent"": false,
+          ""deliveryDate"": ""2024-12-31"",
+          ""measurements"": [
+            {""nameEn"": ""Length"", ""nameBn"": ""দৈর্ঘ্য"", ""unit"": ""cm"", ""value"": ""100"", ""type"": ""NUMBER""}
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 201 Created response with a JSON body containing: {""orderId"": ""1-20241201-0001"", ""shopName"": ""Tailor Shop"", ""customerName"": ""Jane Smith"", ...}. The orderId follows the format: <shopId>-<date>-<sequence>.",TC-019
+Verify an existing order is retrieved with the correct orderId field,Order Retrieval,Configuration,High,An order exists with ID 12345 and orderId '1-20241201-0001',1. Send a GET request to /api/orders/12345.,"HTTP 200 OK response with a JSON body containing: {""orderId"": ""1-20241201-0001"", ""id"": 12345, ""customerName"": ""John Doe"", ...}. The orderId field is a string and matches the expected format.",2c3f63d-TC-010
+Verify an order summary is retrieved with the correct orderId field,Order Summary Retrieval,Configuration,Medium,An order exists with ID 12345 and orderId '1-20241201-0001',1. Send a GET request to /api/orders/shop/1?page=0&limit=10.,"HTTP 200 OK response with a JSON body containing a paginated list of orders. Each order in the list has an orderId field (e.g., {""orderId"": ""1-20241201-0001"", ""shopName"": ""Tailor Shop"", ...}). The orderId field is a string and matches the expected format.",TC-020
+Verify the new ZXing dependencies for QR code generation are correctly resolved and do not cause build or runtime issues,QR Code Generation Dependency,Configuration,High,"Project source code is available, Maven is installed, and the updated pom.xml is in place","1. Run 'mvn clean install' to build the project. 2. Check the build logs for any dependency resolution errors or warnings. 3. Deploy the application and trigger a QR code generation operation (e.g., via an API endpoint or UI action). 4. Observe the application logs for any runtime errors related to ZXing or QR code generation.
+
+Test Data: New dependencies: com.google.zxing:core:3.4.1, com.google.zxing:javase:3.4.1","Build completes with SUCCESS status. No dependency resolution errors or warnings appear in logs. QR code generation operations complete successfully without runtime errors, and the generated QR codes are valid and scannable.",TC-021
+Verify the explicit Maven Central repository configuration does not break dependency resolution or introduce conflicts,Maven Repository Configuration,Configuration,Medium,"Project source code is available, Maven is installed, and the updated pom.xml is in place","1. Run 'mvn dependency:tree' to generate the dependency tree. 2. Check for any version conflicts or resolution errors in the output. 3. Run 'mvn clean install' to build the project. 4. Verify no errors related to repository access or dependency resolution appear in the build logs.
+
+Test Data: New repository: Maven Central (https://repo1.maven.org/maven2/)",Dependency tree shows no version conflicts. Build completes with SUCCESS status. No errors related to repository access or dependency resolution appear in logs.,TC-022
+Verify the project builds successfully with the new dependencies and produces the correct artifact,Build and Packaging,Configuration,High,"Project source code is available, Maven is installed, and the updated pom.xml is in place","1. Run 'mvn clean package'. 2. Check the target directory for the generated artifact (e.g., JAR/WAR file). 3. Verify the artifact includes the new ZXing dependencies (e.g., by inspecting the JAR contents or running 'mvn dependency:list').
+
+Test Data: New dependencies: com.google.zxing:core:3.4.1, com.google.zxing:javase:3.4.1",Build completes with SUCCESS status. Artifact is generated in the target directory with the correct name and includes the new ZXing dependencies. No missing or unexpected dependencies are present.,2c3f63d-TC-016
+Verify the application can generate QR codes using the new ZXing libraries without errors,QR Code Generation Functionality,Configuration,High,"Application is deployed with the updated dependencies, and a QR code generation feature is available (e.g., API endpoint or UI action)","1. Trigger a QR code generation operation (e.g., via an API call or UI action). 2. Observe the response or output for the generated QR code. 3. Scan the QR code using a QR code reader to verify its validity and correctness. 4. Check application logs for any errors or warnings related to QR code generation.
+
+Test Data: Sample input for QR code generation (e.g., a URL or text string)","QR code generation completes without errors. The generated QR code is valid, scannable, and contains the correct input data. No errors or warnings related to QR code generation appear in logs.",TC-023
+Verify the addition of ZXing dependencies does not introduce transitive dependency conflicts,Transitive Dependency Conflicts,Configuration,Medium,"Project source code is available, Maven is installed, and the updated pom.xml is in place","1. Run 'mvn dependency:tree' to generate the dependency tree. 2. Check for any version conflicts or duplicate dependencies in the output. 3. Run 'mvn clean install' to build the project. 4. Verify no runtime errors related to dependency conflicts appear during application startup or operation.
+
+Test Data: New dependencies: com.google.zxing:core:3.4.1, com.google.zxing:javase:3.4.1",Dependency tree shows no version conflicts or duplicate dependencies. Build completes with SUCCESS status. Application starts and operates without runtime errors related to dependency conflicts.,TC-024

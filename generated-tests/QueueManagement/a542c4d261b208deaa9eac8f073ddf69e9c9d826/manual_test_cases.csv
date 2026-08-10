@@ -1,0 +1,185 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Successfully retrieve a specific slot configuration for a shop by slot type,Slot Configuration Management,Positive,High,Shop with ID 1 exists and has a configured slot of type MORNING with startTime 09:00 and endTime 12:00,1. Send a GET request to /api/slots/1/type/MORNING.,"Response status code is 200. The response body contains the slot details with 'id', 'startTime' as '09:00', 'endTime' as '12:00', 'slotType' as 'MORNING', and 'isActive' as true.",TC-001
+Successfully create a new appointment reservation using a configured slot type,Appointment Reservation Creation,Positive,High,"Shop with ID 1 exists, has a configured slot of type MORNING with startTime 09:00 and endTime 12:00, and the appointment date is a future date with no conflicting reservations","1. Send a POST request to /api/appointments/reserve with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""appointmentDate"": ""2024-12-25"",
+  ""slotType"": ""MORNING"",
+  ""durationMinutes"": 30,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""serviceProfileIds"": [1, 2]
+}","Response status code is 201 (Created). The response body contains the created appointment reservation details, including 'id', 'customerName' as 'John Doe', 'customerPhone' as '+1234567890', 'status' as 'ACTIVE', 'serviceStatus' as 'PENDING', 'appointmentDate' as '2024-12-25', 'slot' as 'MORNING', and 'startInMinutes' within the MORNING slot time range.",d159982-TC-001
+Fail to retrieve a slot configuration for a non-existent slot type,Slot Configuration Management,Positive,Medium,Shop with ID 1 exists but has no configured slot of type AFTERNOON,1. Send a GET request to /api/slots/1/type/AFTERNOON.,Response status code is 404 (Not Found). The response body contains an error message: 'Slot not found for shop with type AFTERNOON'.,TC-002
+Fail to create an appointment reservation for a slot type not configured for the shop,Appointment Reservation Creation,Positive,Medium,Shop with ID 1 exists but has no configured slot of type EVENING,"1. Send a POST request to /api/appointments/reserve with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""appointmentDate"": ""2024-12-25"",
+  ""slotType"": ""EVENING"",
+  ""durationMinutes"": 30,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""serviceProfileIds"": [1, 2]
+}",Response status code is 400 (Bad Request). The response body contains an error message: 'Slot type EVENING is not configured for this shop'.,TC-003
+Retrieve slot by type with non-existent shop ID,Slot Management,Negative,High,No shop with the specified ID exists in the system,1. Send a GET request to /api/slots/99999/type/MORNING (where 99999 is a non-existent shop ID).,The system should return an HTTP 404 Not Found status code with an error message indicating that no slot was found for the specified shop and slot type.,TC-004
+Retrieve slot by type with invalid slot type value,Slot Management,Negative,High,A valid shop ID exists in the system,1. Send a GET request to /api/slots/1/type/INVALID_SLOT_TYPE (where INVALID_SLOT_TYPE is not a valid slot type).,The system should return an HTTP 400 Bad Request status code with an error message indicating that the slot type is invalid.,TC-005
+Retrieve slot by type with malformed shop ID (non-numeric),Slot Management,Negative,High,None,1. Send a GET request to /api/slots/abc/type/MORNING (where 'abc' is a non-numeric shop ID).,The system should return an HTTP 400 Bad Request status code with an error message indicating that the shop ID must be a valid number.,TC-006
+Retrieve slot by type for a shop with no slots configured,Slot Management,Negative,Medium,"A valid shop ID exists in the system, but no slots are configured for it",1. Send a GET request to /api/slots/1/type/MORNING (where 1 is a valid shop ID with no slots).,The system should return an HTTP 404 Not Found status code with an error message indicating that no slot was found for the specified shop and slot type.,TC-007
+Create appointment reservation with invalid slot type (non-existent slot for shop),Appointment Reservation,Negative,High,"A valid shop ID exists in the system, but the specified slot type is not configured for it","1. Send a POST request to /api/appointments/1/reserve with the payload in testData.
+
+Test Data: {
+  ""workerId"": 1,
+  ""customerPhone"": ""+1234567890"",
+  ""appointmentDate"": ""2024-12-31"",
+  ""slot"": ""INVALID_SLOT"",
+  ""serviceProfileIds"": [1, 2]
+}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the slot type is invalid or not configured for the shop.,d159982-TC-008
+Create appointment reservation with slot type not available for the shop,Appointment Reservation,Negative,High,"A valid shop ID exists in the system, but the specified slot type (e.g., EVENING) is not configured for it","1. Send a POST request to /api/appointments/1/reserve with the payload in testData.
+
+Test Data: {
+  ""workerId"": 1,
+  ""customerPhone"": ""+1234567890"",
+  ""appointmentDate"": ""2024-12-31"",
+  ""slot"": ""EVENING"",
+  ""serviceProfileIds"": [1, 2]
+}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the slot type is not available for the specified shop.,TC-008
+Retrieve slot by type for a shop with non-existent slot type,Slot Management,Boundary,High,A shop with ID 1 exists in the system. No slot of type 'INVALID_TYPE' exists for the shop.,1. Send a GET request to /api/slots/1/type/INVALID_TYPE.,HTTP status code 404 (Not Found). Response body is empty or contains an error message indicating that the slot was not found.,TC-009
+Retrieve slot by type for a non-existent shop,Slot Management,Boundary,High,No shop with ID 99999 exists in the system.,1. Send a GET request to /api/slots/99999/type/MORNING.,HTTP status code 404 (Not Found). Response body is empty or contains an error message indicating that the shop was not found.,TC-010
+Retrieve slot by type for a shop with valid slot type (MORNING),Slot Management,Boundary,High,A shop with ID 1 exists in the system. A slot of type 'MORNING' exists for the shop with start time 09:00 and end time 12:00.,1. Send a GET request to /api/slots/1/type/MORNING.,"HTTP status code 200 (OK). Response body contains the slot details with slotType 'MORNING', startTime '09:00', and endTime '12:00'.",TC-011
+Retrieve slot by type for a shop with valid slot type (DAY),Slot Management,Boundary,High,A shop with ID 1 exists in the system. A slot of type 'DAY' exists for the shop with start time 12:00 and end time 17:00.,1. Send a GET request to /api/slots/1/type/DAY.,"HTTP status code 200 (OK). Response body contains the slot details with slotType 'DAY', startTime '12:00', and endTime '17:00'.",TC-012
+Retrieve slot by type for a shop with valid slot type (EVENING),Slot Management,Boundary,High,A shop with ID 1 exists in the system. A slot of type 'EVENING' exists for the shop with start time 17:00 and end time 20:00.,1. Send a GET request to /api/slots/1/type/EVENING.,"HTTP status code 200 (OK). Response body contains the slot details with slotType 'EVENING', startTime '17:00', and endTime '20:00'.",TC-013
+Create appointment reservation with slot start time exactly at the boundary (00:00),Appointment Reservation,Boundary,High,A shop with ID 1 exists. A slot of type 'MORNING' exists with start time 00:00 and end time 12:00. No overlapping reservations exist for the slot on the target date.,"1. Send a POST request to /api/appointments/reserve with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""appointmentDate"": ""2023-12-31"",
+  ""slot"": ""MORNING"",
+  ""durationMinutes"": 60,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""serviceProfileIds"": [1]
+}",HTTP status code 201 (Created). Response body contains the created appointment reservation with start time '00:00' and end time '01:00'.,TC-014
+Create appointment reservation with slot end time exactly at the boundary (23:59),Appointment Reservation,Boundary,High,A shop with ID 1 exists. A slot of type 'EVENING' exists with start time 22:00 and end time 23:59. No overlapping reservations exist for the slot on the target date.,"1. Send a POST request to /api/appointments/reserve with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""appointmentDate"": ""2023-12-31"",
+  ""slot"": ""EVENING"",
+  ""durationMinutes"": 60,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""serviceProfileIds"": [1]
+}",HTTP status code 201 (Created). Response body contains the created appointment reservation with start time '22:59' and end time '23:59'.,TC-015
+Create appointment reservation with slot start time one minute before the boundary (23:59),Appointment Reservation,Boundary,High,A shop with ID 1 exists. A slot of type 'EVENING' exists with start time 23:00 and end time 23:59. No overlapping reservations exist for the slot on the target date.,"1. Send a POST request to /api/appointments/reserve with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""appointmentDate"": ""2023-12-31"",
+  ""slot"": ""EVENING"",
+  ""durationMinutes"": 60,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""serviceProfileIds"": [1]
+}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the appointment time is outside the slot boundaries.,TC-016
+Create appointment reservation with slot end time one minute after the boundary (00:00),Appointment Reservation,Boundary,High,A shop with ID 1 exists. A slot of type 'MORNING' exists with start time 00:00 and end time 12:00. No overlapping reservations exist for the slot on the target date.,"1. Send a POST request to /api/appointments/reserve with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""appointmentDate"": ""2023-12-31"",
+  ""slot"": ""MORNING"",
+  ""durationMinutes"": 1441,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""serviceProfileIds"": [1]
+}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the appointment duration exceeds the slot boundaries.,TC-017
+Create appointment reservation with slot duration exactly matching the slot boundaries,Appointment Reservation,Boundary,High,A shop with ID 1 exists. A slot of type 'DAY' exists with start time 12:00 and end time 17:00. No overlapping reservations exist for the slot on the target date.,"1. Send a POST request to /api/appointments/reserve with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""appointmentDate"": ""2023-12-31"",
+  ""slot"": ""DAY"",
+  ""durationMinutes"": 300,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""serviceProfileIds"": [1]
+}",HTTP status code 201 (Created). Response body contains the created appointment reservation with start time '12:00' and end time '17:00'.,TC-018
+Create appointment reservation with slot duration one minute less than the slot boundaries,Appointment Reservation,Boundary,Medium,A shop with ID 1 exists. A slot of type 'DAY' exists with start time 12:00 and end time 17:00. No overlapping reservations exist for the slot on the target date.,"1. Send a POST request to /api/appointments/reserve with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""appointmentDate"": ""2023-12-31"",
+  ""slot"": ""DAY"",
+  ""durationMinutes"": 299,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""serviceProfileIds"": [1]
+}",HTTP status code 201 (Created). Response body contains the created appointment reservation with start time '12:00' and end time '16:59'.,TC-019
+Create appointment reservation with slot duration one minute more than the slot boundaries,Appointment Reservation,Boundary,High,A shop with ID 1 exists. A slot of type 'DAY' exists with start time 12:00 and end time 17:00. No overlapping reservations exist for the slot on the target date.,"1. Send a POST request to /api/appointments/reserve with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""appointmentDate"": ""2023-12-31"",
+  ""slot"": ""DAY"",
+  ""durationMinutes"": 301,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""serviceProfileIds"": [1]
+}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the appointment duration exceeds the slot boundaries.,TC-020
+Create appointment reservation with zero duration,Appointment Reservation,Boundary,High,A shop with ID 1 exists. A slot of type 'MORNING' exists for the shop.,"1. Send a POST request to /api/appointments/reserve with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""appointmentDate"": ""2023-12-31"",
+  ""slot"": ""MORNING"",
+  ""durationMinutes"": 0,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""serviceProfileIds"": [1]
+}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the duration must be greater than zero.,TC-021
+Create appointment reservation with negative duration,Appointment Reservation,Boundary,High,A shop with ID 1 exists. A slot of type 'MORNING' exists for the shop.,"1. Send a POST request to /api/appointments/reserve with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""appointmentDate"": ""2023-12-31"",
+  ""slot"": ""MORNING"",
+  ""durationMinutes"": -1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""serviceProfileIds"": [1]
+}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the duration must be a positive number.,TC-022
+Create appointment reservation with very large duration (exceeds slot boundaries),Appointment Reservation,Boundary,Medium,A shop with ID 1 exists. A slot of type 'MORNING' exists with start time 09:00 and end time 12:00.,"1. Send a POST request to /api/appointments/reserve with the payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""appointmentDate"": ""2023-12-31"",
+  ""slot"": ""MORNING"",
+  ""durationMinutes"": 10000,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""serviceProfileIds"": [1]
+}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the appointment duration exceeds the slot boundaries.,TC-023
+Verify that an unauthorized user cannot retrieve slot details by type for a shop,Slot Management - Access Control,Security,High,A shop with ID 1 exists and has slots configured. The user is not authenticated or does not own the shop.,1. Send a GET request to /api/slots/1/type/MORNING without authentication or with a valid JWT token for a user who does not own the shop.,The API responds with HTTP status 401 Unauthorized (if unauthenticated) or 403 Forbidden (if authenticated but unauthorized) and an error message 'Access Denied'. No slot details are returned.,TC-024
+Verify that a user cannot retrieve slot details by type for a shop they do not own,Slot Management - Insecure Direct Object Reference,Security,High,Two shops exist (IDs 1 and 2). The authenticated user owns shop 2 but not shop 1. Shop 1 has a slot of type MORNING configured.,1. Authenticate as a user who owns shop 2. 2. Send a GET request to /api/slots/1/type/MORNING with the valid JWT token.,The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. No slot details for shop 1 are returned.,TC-025
+Verify that retrieving slot details by type rejects invalid slot type values,Slot Management - Input Validation,Security,Medium,A shop with ID 1 exists and has slots configured. The user is authenticated and owns the shop.,1. Send a GET request to /api/slots/1/type/INVALID_TYPE with a valid JWT token for the shop owner.,The API responds with HTTP status 400 Bad Request and an error message indicating invalid slot type.,TC-026
+Verify that retrieving slot details by type for a non-existent shop returns appropriate status,Slot Management - Non-existent Resource,Security,Medium,No shop with ID 999 exists. The user is authenticated and owns another shop.,1. Send a GET request to /api/slots/999/type/MORNING with a valid JWT token for the authenticated user.,The API responds with HTTP status 404 Not Found and an error message 'Shop not found'. No slot details are returned.,TC-027
+Verify that retrieving slot details by type for a shop with no slots of the requested type returns appropriate status,Slot Management - Non-existent Resource,Security,Medium,"A shop with ID 1 exists and has slots configured, but no slot of type EVENING. The user is authenticated and owns the shop.",1. Send a GET request to /api/slots/1/type/EVENING with a valid JWT token for the shop owner.,The API responds with HTTP status 404 Not Found and an error message 'Slot not found'. No slot details are returned.,TC-028
+Verify that creating an appointment reservation with an invalid slot type is rejected,Appointment Reservation - Slot Type Validation,Security,High,A shop with ID 1 exists and has slots configured. The user is authenticated as a customer.,"1. Send a POST request to /api/appointments/reserve with a valid JWT token and a payload containing an invalid slot type (e.g., 'INVALID_TYPE') for shopId 1.
+
+Test Data: {""shopId"": 1, ""workerId"": 1, ""serviceProfileIds"": [1], ""customerName"": ""John Doe"", ""customerPhone"": ""+1234567890"", ""appointmentDate"": ""2023-12-25"", ""slot"": ""INVALID_TYPE"", ""durationMinutes"": 30}",The API responds with HTTP status 400 Bad Request and an error message indicating invalid slot type.,TC-029
+Verify that a shop owner cannot create an appointment reservation for a slot type belonging to another shop,Appointment Reservation - Insecure Direct Object Reference,Security,High,Two shops exist (IDs 1 and 2). The authenticated user owns shop 2 but not shop 1. Shop 1 has a slot of type MORNING configured.,"1. Authenticate as a user who owns shop 2. 2. Send a POST request to /api/appointments/reserve with a valid JWT token and a payload containing shopId 1 and slot type MORNING.
+
+Test Data: {""shopId"": 1, ""workerId"": 1, ""serviceProfileIds"": [1], ""customerName"": ""John Doe"", ""customerPhone"": ""+1234567890"", ""appointmentDate"": ""2023-12-25"", ""slot"": ""MORNING"", ""durationMinutes"": 30}",The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. The appointment reservation is not created.,TC-030
+Verify that the removal of shop operating hours does not break scheduling logic or default to incorrect values,Shop Operating Hours Configuration,Configuration,High,Application is deployed with the updated application.properties file. No environment variables override the removed shop.* properties.,"1. Trigger an appointment booking flow that previously relied on shop.morning.start.time, shop.morning.end.time, shop.day.start.time, shop.day.end.time, shop.evening.start.time, or shop.evening.end.time (e.g., via API or UI).
+2. Observe the application's behavior during scheduling (e.g., available time slots, validation errors).
+3. Check application logs for errors or warnings related to missing shop.* properties.
+4. Verify that the appointment.buffer.time.minutes property (unchanged) still functions as expected.
+
+Test Data: Removed properties: shop.morning.start.time=8, shop.morning.end.time=13, shop.day.start.time=13, shop.day.end.time=15, shop.evening.start.time=17, shop.evening.end.time=21. Unchanged property: appointment.buffer.time.minutes=5.","The application does not throw errors or warnings related to missing shop.* properties. Scheduling logic either defaults to a fallback behavior (e.g., 24/7 availability) or gracefully handles the absence of these properties (e.g., disables time-based validation). The appointment.buffer.time.minutes property continues to work as before (e.g., 5-minute buffer between appointments).",TC-031
+Verify that placeholder references and property resolution remain intact after removing shop.* properties,Property Resolution and Defaults,Configuration,High,"Application is built and deployed with the updated application.properties file. No external overrides (e.g., environment variables) are present for the removed properties.","1. Deploy the application and start it.
+2. Check application logs for errors during startup related to unresolved properties or placeholders.
+3. If the application uses property placeholders (e.g., ${shop.morning.start.time}) in other configurations (e.g., XML, YAML), verify those configurations do not fail to load.
+4. Trigger a feature that might indirectly reference the removed properties (e.g., a report or dashboard showing shop hours).
+
+Test Data: Removed properties: shop.morning.start.time, shop.morning.end.time, shop.day.start.time, shop.day.end.time, shop.evening.start.time, shop.evening.end.time.",The application starts without errors or warnings related to unresolved properties or placeholders. Features that do not directly rely on shop.* properties continue to work as expected. No runtime errors occur due to missing property references.,TC-032

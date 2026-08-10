@@ -1,0 +1,156 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Update order item status from MEASUREMENT_DONE to CUTTING_DONE,Order Item Status Management,Positive,High,An order exists with at least one item in status MEASUREMENT_DONE,"1. Send a PUT request to /api/orders/items/{orderItemId}/status with the payload in testData, replacing {orderItemId} with the actual order item ID. 2. Verify the response status and body.
+
+Test Data: {
+  ""newStatus"": ""CUTTING_DONE""
+}",HTTP 200 OK response with a body containing: 'Order item status updated successfully.',TC-001
+Update order item status from CUTTING_DONE to SEWING_DONE,Order Item Status Management,Positive,High,An order exists with at least one item in status CUTTING_DONE,"1. Send a PUT request to /api/orders/items/{orderItemId}/status with the payload in testData, replacing {orderItemId} with the actual order item ID. 2. Verify the response status and body.
+
+Test Data: {
+  ""newStatus"": ""SEWING_DONE""
+}",HTTP 200 OK response with a body containing: 'Order item status updated successfully.',TC-002
+Update order item status to CANCELLED from MEASUREMENT_DONE,Order Item Status Management,Positive,Medium,An order exists with at least one item in status MEASUREMENT_DONE,"1. Send a PUT request to /api/orders/items/{orderItemId}/status with the payload in testData, replacing {orderItemId} with the actual order item ID. 2. Verify the response status and body.
+
+Test Data: {
+  ""newStatus"": ""CANCELLED""
+}",HTTP 200 OK response with a body containing: 'Order item status updated successfully.',TC-003
+"Attempt to update order item status with invalid transition (e.g., MEASUREMENT_DONE to PRESS_DONE)",Order Item Status Management,Positive,High,An order exists with at least one item in status MEASUREMENT_DONE,"1. Send a PUT request to /api/orders/items/{orderItemId}/status with the payload in testData, replacing {orderItemId} with the actual order item ID. 2. Verify the response status and error message.
+
+Test Data: {
+  ""newStatus"": ""PRESS_DONE""
+}",HTTP 400 Bad Request response with an error message: 'Invalid status transition from MEASUREMENT_DONE to PRESS_DONE',9e5d511-TC-003
+Update order item status to READY_FOR_DELIVERY as final step before delivery,Order Item Status Management,Positive,High,An order exists with at least one item in status PRESS_DONE,"1. Send a PUT request to /api/orders/items/{orderItemId}/status with the payload in testData, replacing {orderItemId} with the actual order item ID. 2. Verify the response status and body.
+
+Test Data: {
+  ""newStatus"": ""READY_FOR_DELIVERY""
+}",HTTP 200 OK response with a body containing: 'Order item status updated successfully.',TC-004
+Attempt to update order item status with a non-existent order item ID,Order Item Status Management,Negative,High,No order item with ID 999999 exists in the system,"1. Send a PUT request to /api/orders/items/999999/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}",The system returns an HTTP 404 Not Found status code with an error message indicating that the order item with ID 999999 does not exist.,TC-005
+Attempt to update order item status with a missing request body,Order Item Status Management,Negative,High,An order item with ID 1 exists in the system,1. Send a PUT request to /api/orders/items/1/status with no request body.,The system returns an HTTP 400 Bad Request status code with an error message indicating that the request body is required.,TC-006
+Attempt to update order item status with a null status value,Order Item Status Management,Negative,High,An order item with ID 1 exists in the system and is in MEASUREMENT_DONE status,"1. Send a PUT request to /api/orders/items/1/status with the payload in testData.
+
+Test Data: {""newStatus"": null}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the status value cannot be null.,TC-007
+Attempt to update order item status with an empty request body field,Order Item Status Management,Negative,High,An order item with ID 1 exists in the system and is in MEASUREMENT_DONE status,"1. Send a PUT request to /api/orders/items/1/status with the payload in testData.
+
+Test Data: {}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the newStatus field is required.,TC-008
+Attempt to update order item status with an invalid status transition (skipping a step),Order Item Status Management,Negative,High,An order item with ID 1 exists in the system and is in MEASUREMENT_DONE status,"1. Send a PUT request to /api/orders/items/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""SEWING_DONE""}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the status transition from MEASUREMENT_DONE to SEWING_DONE is invalid.,TC-009
+Attempt to update order item status after it has reached the final status,Order Item Status Management,Negative,High,An order item with ID 1 exists in the system and is in DELIVERED status,"1. Send a PUT request to /api/orders/items/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}",The system returns an HTTP 400 Bad Request status code with an error message indicating that no further status updates are allowed after DELIVERED.,TC-010
+Attempt to update order item status with a non-numeric order item ID,Order Item Status Management,Negative,High,An order item exists in the system,"1. Send a PUT request to /api/orders/items/abc/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the order item ID must be a valid numeric value.,TC-011
+Attempt to update order item status with an invalid status value,Order Item Status Management,Negative,High,An order item with ID 1 exists in the system and is in MEASUREMENT_DONE status,"1. Send a PUT request to /api/orders/items/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""INVALID_STATUS""}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the status value is invalid.,TC-012
+Attempt to update order item status with a status transition that is not the immediate next step (CUTTING_DONE to READY_FOR_DELIVERY),Order Item Status Management,Negative,High,An order item with ID 1 exists in the system and is in CUTTING_DONE status,"1. Send a PUT request to /api/orders/items/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""READY_FOR_DELIVERY""}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the status transition from CUTTING_DONE to READY_FOR_DELIVERY is invalid.,TC-013
+Attempt to update order item status when the order item is already cancelled,Order Item Status Management,Negative,High,An order item with ID 1 exists in the system and is in CANCELLED status,"1. Send a PUT request to /api/orders/items/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}",The system returns an HTTP 400 Bad Request status code with an error message indicating that no further status updates are allowed after CANCELLED.,TC-014
+Attempt to update order item status with a status transition from DELIVERED to CANCELLED,Order Item Status Management,Negative,Medium,An order item with ID 1 exists in the system and is in DELIVERED status,"1. Send a PUT request to /api/orders/items/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CANCELLED""}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the status transition from DELIVERED to CANCELLED is invalid.,TC-015
+Attempt to update order status with a status transition from MEASUREMENT_DONE to CANCELLED (UPDATE existing case for new allowed transition),Order Status Management,Negative,High,An order with ID 1 exists in the system and is in MEASUREMENT_DONE status,"1. Send a PATCH request to /api/orders/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CANCELLED""}",The system returns an HTTP 200 OK status code indicating the order status was updated successfully to CANCELLED.,9e5d511-TC-009
+Attempt to update order item status with a status transition from MEASUREMENT_DONE to CANCELLED (allowed transition),Order Item Status Management,Negative,Medium,An order item with ID 1 exists in the system and is in MEASUREMENT_DONE status,"1. Send a PUT request to /api/orders/items/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CANCELLED""}",The system returns an HTTP 200 OK status code with the message 'Order item status updated successfully.',TC-016
+Update order item status from MEASUREMENT_DONE to CUTTING_DONE (valid transition),Order Item Status Management,Boundary,High,An order item exists with ID 123 and current status MEASUREMENT_DONE,"1. Send a PUT request to /api/orders/items/123/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}",The API responds with a 200 OK status code and the message 'Order item status updated successfully.',TC-017
+Update order item status from CUTTING_DONE to SEWING_DONE (valid transition),Order Item Status Management,Boundary,High,An order item exists with ID 123 and current status CUTTING_DONE,"1. Send a PUT request to /api/orders/items/123/status with the payload in testData.
+
+Test Data: {""newStatus"": ""SEWING_DONE""}",The API responds with a 200 OK status code and the message 'Order item status updated successfully.',TC-018
+Update order item status from SEWING_DONE to PRESS_DONE (valid transition),Order Item Status Management,Boundary,High,An order item exists with ID 123 and current status SEWING_DONE,"1. Send a PUT request to /api/orders/items/123/status with the payload in testData.
+
+Test Data: {""newStatus"": ""PRESS_DONE""}",The API responds with a 200 OK status code and the message 'Order item status updated successfully.',TC-019
+Update order item status from PRESS_DONE to READY_FOR_DELIVERY (valid transition),Order Item Status Management,Boundary,High,An order item exists with ID 123 and current status PRESS_DONE,"1. Send a PUT request to /api/orders/items/123/status with the payload in testData.
+
+Test Data: {""newStatus"": ""READY_FOR_DELIVERY""}",The API responds with a 200 OK status code and the message 'Order item status updated successfully.',TC-020
+Update order item status from READY_FOR_DELIVERY to DELIVERED (valid transition),Order Item Status Management,Boundary,High,An order item exists with ID 123 and current status READY_FOR_DELIVERY,"1. Send a PUT request to /api/orders/items/123/status with the payload in testData.
+
+Test Data: {""newStatus"": ""DELIVERED""}",The API responds with a 200 OK status code and the message 'Order item status updated successfully.',TC-021
+Update order item status from MEASUREMENT_DONE to CANCELLED (valid transition),Order Item Status Management,Boundary,High,An order item exists with ID 123 and current status MEASUREMENT_DONE,"1. Send a PUT request to /api/orders/items/123/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CANCELLED""}",The API responds with a 200 OK status code and the message 'Order item status updated successfully.',TC-022
+Update order item status from MEASUREMENT_DONE to SEWING_DONE (invalid transition),Order Item Status Management,Boundary,High,An order item exists with ID 123 and current status MEASUREMENT_DONE,"1. Send a PUT request to /api/orders/items/123/status with the payload in testData.
+
+Test Data: {""newStatus"": ""SEWING_DONE""}",The API responds with a 400 Bad Request status code and an error message: 'Invalid status transition from MEASUREMENT_DONE to SEWING_DONE'.,TC-023
+Update order item status with a null newStatus value,Order Item Status Management,Boundary,High,An order item exists with ID 123,"1. Send a PUT request to /api/orders/items/123/status with the payload in testData.
+
+Test Data: {}",The API responds with a 400 Bad Request status code and an error message indicating that newStatus cannot be null.,TC-024
+Update order item status for a non-existent orderItemId,Order Item Status Management,Boundary,High,No order item exists with ID 999999,"1. Send a PUT request to /api/orders/items/999999/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}",The API responds with a 404 Not Found status code and an error message: 'Order not found with ID: 999999'.,TC-025
+Update order item status with an invalid status value,Order Item Status Management,Boundary,High,An order item exists with ID 123,"1. Send a PUT request to /api/orders/items/123/status with the payload in testData.
+
+Test Data: {""newStatus"": ""INVALID_STATUS""}",The API responds with a 400 Bad Request status code and an error message indicating that newStatus is invalid.,TC-026
+Update order item status from null to MEASUREMENT_DONE (valid initial transition),Order Item Status Management,Boundary,High,An order item exists with ID 123 and current status null,"1. Send a PUT request to /api/orders/items/123/status with the payload in testData.
+
+Test Data: {""newStatus"": ""MEASUREMENT_DONE""}",The API responds with a 200 OK status code and the message 'Order item status updated successfully.',TC-027
+Update order item status from null to CUTTING_DONE (invalid initial transition),Order Item Status Management,Boundary,High,An order item exists with ID 123 and current status null,"1. Send a PUT request to /api/orders/items/123/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}",The API responds with a 400 Bad Request status code and an error message: 'Invalid status transition from null to CUTTING_DONE'.,TC-028
+Update order item status with an empty request body,Order Item Status Management,Boundary,High,An order item exists with ID 123,"1. Send a PUT request to /api/orders/items/123/status with an empty request body.
+
+Test Data: {}",The API responds with a 400 Bad Request status code and an error message indicating that newStatus is required.,9e5d511-TC-022
+Update order status from MEASUREMENT_DONE to CANCELLED (valid transition),Order Status Transition Validation,Boundary,High,An order exists with ID 123 and current status MEASUREMENT_DONE,"1. Send a PATCH request to /api/orders/123/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CANCELLED""}",The API responds with a 200 OK status code and the message 'Order status updated successfully.',9e5d511-TC-018
+Update order status from READY_FOR_DELIVERY to DELIVERED (valid transition),Order Status Transition Validation,Boundary,High,An order exists with ID 123 and current status READY_FOR_DELIVERY,"1. Send a PATCH request to /api/orders/123/status with the payload in testData.
+
+Test Data: {""newStatus"": ""DELIVERED""}",The API responds with a 200 OK status code and the message 'Order status updated successfully.',TC-029
+Verify delivery date is set to exactly today for an urgent order item,Order Item Delivery Date Management,Boundary,Medium,An order item exists with ID 123 and isUrgent set to true,1. Send a GET request to /api/orders/123 to retrieve the order details.,The API responds with a 200 OK status code and the order details. The 'deliveryDate' field for the order item with ID 123 is set to today's date.,TC-030
+Verify delivery date is set to a future date for a non-urgent order item,Order Item Delivery Date Management,Boundary,Medium,An order item exists with ID 123 and isUrgent set to false,1. Send a GET request to /api/orders/123 to retrieve the order details.,"The API responds with a 200 OK status code and the order details. The 'deliveryDate' field for the order item with ID 123 is set to a date in the future (e.g., 7 days from today).",TC-031
+Verify delivery date is not set (null) for a cancelled order item,Order Item Delivery Date Management,Boundary,Medium,An order item exists with ID 123 and status CANCELLED,1. Send a GET request to /api/orders/123 to retrieve the order details.,The API responds with a 200 OK status code and the order details. The 'deliveryDate' field for the order item with ID 123 is null.,TC-032
+Update order item status with a zero orderItemId,Order Item Status Management,Boundary,Medium,No order item exists with ID 0,"1. Send a PUT request to /api/orders/items/0/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}",The API responds with a 404 Not Found status code and an error message: 'Order not found with ID: 0'.,TC-033
+Update order item status with a negative orderItemId,Order Item Status Management,Boundary,Medium,No order item exists with ID -1,"1. Send a PUT request to /api/orders/items/-1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}",The API responds with a 404 Not Found status code and an error message: 'Order not found with ID: -1'.,TC-034
+Update order item status with a very large orderItemId (9999999999),Order Item Status Management,Boundary,Medium,No order item exists with ID 9999999999,"1. Send a PUT request to /api/orders/items/9999999999/status with the payload in testData.
+
+Test Data: {""newStatus"": ""CUTTING_DONE""}",The API responds with a 404 Not Found status code and an error message: 'Order not found with ID: 9999999999'.,TC-035
+Verify that updating an order item status enforces proper authorization (insecure direct object reference) - unauthorized user cannot update another user's order item status,Order Management - Order Item Status Update,Security,High,An order item with ID 123 exists and belongs to a different user than the one making the request. The requesting user is authenticated but not authorized to modify this order item.,"1. Send a PUT request to /api/orders/items/123/status with the payload in testData.
+2. Observe the response status and body.
+
+Test Data: {
+  ""newStatus"": ""CUTTING_DONE""
+}","The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and the response body contains an error message indicating no access to the resource. The order item status remains unchanged.",TC-036
+Verify that updating an order item status rejects invalid status transitions,Order Management - Order Item Status Update,Security,High,An order item with ID 123 exists and has the current status MEASUREMENT_DONE.,"1. Send a PUT request to /api/orders/items/123/status with the payload in testData.
+2. Observe the response status and body.
+
+Test Data: {
+  ""newStatus"": ""DELIVERED""
+}","The API responds with HTTP status 400 (Bad Request) and an error message indicating an invalid status transition (e.g., 'Invalid status transition from MEASUREMENT_DONE to DELIVERED'). The order item status remains MEASUREMENT_DONE.",TC-037
+Verify that updating an order item status with a non-existent order item ID returns an appropriate error,Order Management - Order Item Status Update,Security,High,No order item exists with ID 999999.,"1. Send a PUT request to /api/orders/items/999999/status with the payload in testData.
+2. Observe the response status and body.
+
+Test Data: {
+  ""newStatus"": ""CUTTING_DONE""
+}","The API responds with HTTP status 404 (Not Found) and an error message indicating the order item was not found (e.g., 'Order not found with ID: 999999').",TC-038
+Verify that updating an order item status does not expose sensitive system details in error messages,Order Management - Order Item Status Update,Security,Medium,No order item exists with ID 999999.,"1. Send a PUT request to /api/orders/items/999999/status with the payload in testData.
+2. Observe the response status and body for any internal system details.
+
+Test Data: {
+  ""newStatus"": ""CUTTING_DONE""
+}","The API responds with HTTP status 404 (Not Found) and a generic error message (e.g., 'Order not found with ID: 999999') without revealing internal system details such as stack traces or database errors.",TC-039
+Verify that updating an order item status rejects injection attempts via special characters in the status field,Order Management - Order Item Status Update,Security,High,An order item with ID 123 exists and has the current status MEASUREMENT_DONE.,"1. Send a PUT request to /api/orders/items/123/status with the payload in testData.
+2. Observe the response status and body.
+
+Test Data: {
+  ""newStatus"": ""<script>alert(1)</script>""
+}",The API responds with HTTP status 400 (Bad Request) and an error message indicating an invalid status value. The order item status remains unchanged.,TC-040
+Verify that updating an order item status enforces rate limiting to prevent abuse,Order Management - Order Item Status Update,Security,Medium,An order item with ID 123 exists and has the current status MEASUREMENT_DONE. The user is authorized to update this order item.,"1. Rapidly send 10 PUT requests to /api/orders/items/123/status with the payload in testData within a short timeframe (e.g., 1 second).
+2. Observe the response status and body of each request.
+
+Test Data: {
+  ""newStatus"": ""CUTTING_DONE""
+}","The API responds with HTTP status 200 (OK) for the first few requests, then starts responding with HTTP status 429 (Too Many Requests) for subsequent requests, indicating rate limiting is enforced.",TC-041

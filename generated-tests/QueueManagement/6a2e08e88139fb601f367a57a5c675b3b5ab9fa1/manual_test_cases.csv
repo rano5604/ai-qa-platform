@@ -1,0 +1,97 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+User successfully requests OTP and receives it via email in the response header,User Authentication via OTP,Positive,High,User has a valid email address registered in the system,"1. Send a POST request to /api/auth/request-otp with the query parameter 'email' set to a valid registered email address.
+
+Test Data: {""email"": ""user@example.com""}",Response status code is 200. The response body contains the message 'OTP Sent to Your Email'. The 'OTP' header contains the generated OTP value.,b469760-TC-001
+User requests OTP with an unregistered email address,User Authentication via OTP,Positive,Medium,User provides an email address not registered in the system,"1. Send a POST request to /api/auth/request-otp with the query parameter 'email' set to an unregistered email address.
+
+Test Data: {""email"": ""unregistered@example.com""}",Response status code is 200. The response body contains the message 'OTP Sent to Your Email'. The 'OTP' header contains the generated OTP value (note: OTP may still be generated but not linked to any user).,TC-001
+User requests OTP with a malformed email address,User Authentication via OTP,Positive,Medium,User provides an invalid email format,"1. Send a POST request to /api/auth/request-otp with the query parameter 'email' set to an invalid email format.
+
+Test Data: {""email"": ""invalid-email-format""}",Response status code is 400. The response body contains an error message indicating invalid email format.,TC-002
+Request OTP with missing email parameter,User Authentication - OTP Request,Negative,High,None,"1. Send a POST request to /api/auth/request-otp without the email query parameter.
+
+Test Data: None",The system should return an HTTP 400 Bad Request status code with an error message indicating that the email parameter is required.,TC-003
+Request OTP with empty email parameter,User Authentication - OTP Request,Negative,High,None,"1. Send a POST request to /api/auth/request-otp with the email query parameter set to an empty string.
+
+Test Data: { ""email"": """" }",The system should return an HTTP 400 Bad Request status code with an error message indicating that the email cannot be empty.,TC-004
+Request OTP with malformed email format,User Authentication - OTP Request,Negative,High,None,"1. Send a POST request to /api/auth/request-otp with the email query parameter set to an invalid email format (e.g., 'invalid-email').
+
+Test Data: { ""email"": ""invalid-email"" }",The system should return an HTTP 400 Bad Request status code with an error message indicating that the email format is invalid.,TC-005
+Request OTP with an email that does not exist in the system,User Authentication - OTP Request,Negative,Medium,None,"1. Send a POST request to /api/auth/request-otp with the email query parameter set to an email not registered in the system (e.g., 'nonexistent@example.com').
+
+Test Data: { ""email"": ""nonexistent@example.com"" }",The system should return an HTTP 404 Not Found status code with an error message indicating that the email is not registered.,TC-006
+Request OTP with a null email parameter,User Authentication - OTP Request,Negative,High,None,"1. Send a POST request to /api/auth/request-otp with the email query parameter set to null.
+
+Test Data: { ""email"": null }",The system should return an HTTP 400 Bad Request status code with an error message indicating that the email parameter cannot be null.,TC-007
+Request OTP with an extremely long email address,User Authentication - OTP Request,Negative,Medium,None,"1. Send a POST request to /api/auth/request-otp with the email query parameter set to an extremely long string (e.g., 300 characters).
+
+Test Data: { ""email"": ""a-very-long-email-address-that-exceeds-the-maximum-allowed-length-for-an-email-address-in-the-system-and-should-trigger-a-validation-error@example.com"" }",The system should return an HTTP 400 Bad Request status code with an error message indicating that the email length exceeds the allowed limit.,TC-008
+Request OTP with an email containing special characters not allowed in email format,User Authentication - OTP Request,Negative,Medium,None,"1. Send a POST request to /api/auth/request-otp with the email query parameter set to an email containing invalid special characters (e.g., 'user@name@domain.com').
+
+Test Data: { ""email"": ""user@name@domain.com"" }",The system should return an HTTP 400 Bad Request status code with an error message indicating that the email format is invalid.,TC-009
+UPDATE: Request OTP with phoneNumber parameter (deprecated field),User Authentication - OTP Request,Negative,High,None,"1. Send a POST request to /api/auth/request-otp with the phoneNumber query parameter instead of email.
+
+Test Data: { ""phoneNumber"": ""+1234567890"" }",The system should return an HTTP 400 Bad Request status code with an error message indicating that the phoneNumber parameter is no longer supported and email is required.,TC-010
+Request OTP with an empty email address,User Authentication - OTP Request,Boundary,High,User is on the OTP request page or API endpoint,"1. Send a POST request to /api/auth/request-otp with the payload in testData.
+
+Test Data: {""email"": """"}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the email cannot be empty.,TC-011
+Request OTP with a null email address,User Authentication - OTP Request,Boundary,High,User is on the OTP request page or API endpoint,"1. Send a POST request to /api/auth/request-otp with the payload in testData.
+
+Test Data: {""email"": null}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the email cannot be null.,TC-012
+Request OTP with a malformed email address (missing @ symbol),User Authentication - OTP Request,Boundary,High,User is on the OTP request page or API endpoint,"1. Send a POST request to /api/auth/request-otp with the payload in testData.
+
+Test Data: {""email"": ""userexample.com""}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the email is invalid.,TC-013
+Request OTP with a very long email address (exceeding maximum allowed length),User Authentication - OTP Request,Boundary,Medium,User is on the OTP request page or API endpoint,"1. Send a POST request to /api/auth/request-otp with the payload in testData.
+
+Test Data: {""email"": ""userwithaverylongemailaddressover255characterslonguserwithaverylongemailaddressover255characterslonguserwithaverylongemailaddressover255characterslonguserwithaverylongemailaddressover255characterslong@example.com""}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the email exceeds the maximum allowed length.,TC-014
+Request OTP with an email address exactly at maximum allowed length,User Authentication - OTP Request,Boundary,Medium,User is on the OTP request page or API endpoint,"1. Send a POST request to /api/auth/request-otp with the payload in testData.
+
+Test Data: {""email"": ""userwith255characterslongemailaddressuserwith255characterslongemailaddressuserwith255characterslongemailaddressuser@example.com""}",HTTP status code 200 (OK). Response body contains the message: 'OTP Sent to Your Email'. Response header includes the OTP.,TC-015
+Request OTP with a duplicate email address (same email sent twice in quick succession),User Authentication - OTP Request,Boundary,Medium,User has already requested an OTP for the same email address within a short time frame,"1. Send a POST request to /api/auth/request-otp with the payload in testData. 2. Immediately send another POST request to /api/auth/request-otp with the same payload.
+
+Test Data: {""email"": ""user@example.com""}",HTTP status code 200 (OK) for both requests. Response body contains the message: 'OTP Sent to Your Email' for both requests. Response header includes the OTP for both requests (may be the same or different based on OTP generation logic).,TC-016
+Request OTP with a non-existent email address (valid format but not registered),User Authentication - OTP Request,Boundary,Low,User is on the OTP request page or API endpoint,"1. Send a POST request to /api/auth/request-otp with the payload in testData.
+
+Test Data: {""email"": ""nonexistentuser@example.com""}",HTTP status code 200 (OK). Response body contains the message: 'OTP Sent to Your Email'. Response header includes the OTP (system may still send OTP regardless of registration status).,TC-017
+Request OTP without providing an email address (missing parameter),User Authentication - OTP Request,Boundary,High,User is on the OTP request page or API endpoint,"1. Send a POST request to /api/auth/request-otp without any query parameters.
+
+Test Data: {}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the email is required.,TC-018
+Request OTP with a valid email address (exact boundary for valid input),User Authentication - OTP Request,Boundary,High,User is on the OTP request page or API endpoint,"1. Send a POST request to /api/auth/request-otp with the payload in testData.
+
+Test Data: {""email"": ""validuser@example.com""}",HTTP status code 200 (OK). Response body contains the message: 'OTP Sent to Your Email'. Response header includes the OTP.,67212e2-TC-005
+Verify that OTP request with an invalid email format is rejected,User Authentication - OTP Delivery,Security,High,None,"1. Send a POST request to /api/auth/request-otp with the query parameter 'email' set to an invalid email format (e.g., 'invalid-email').
+
+Test Data: email=invalid-email",The API responds with HTTP status 400 Bad Request and an error message indicating invalid email format. No OTP is sent.,TC-019
+Verify that OTP request with an excessively long email is rejected,User Authentication - OTP Delivery,Security,High,None,"1. Send a POST request to /api/auth/request-otp with the query parameter 'email' set to an excessively long string (e.g., 255+ characters).
+
+Test Data: email=a-very-long-email-address-that-exceeds-the-maximum-allowed-length-for-an-email-address-which-is-typically-around-255-characters-this-is-used-to-test-the-validation-of-the-email-field-in-the-request-otp-endpoint@test.com",The API responds with HTTP status 400 Bad Request and an error message indicating invalid email length. No OTP is sent.,TC-020
+"Verify that OTP request with a malformed email (e.g., containing script tags) is sanitized or rejected",User Authentication - OTP Delivery,Security,High,None,"1. Send a POST request to /api/auth/request-otp with the query parameter 'email' set to a malformed value containing script tags (e.g., 'user<script>alert(1)</script>@test.com').
+
+Test Data: email=user<script>alert(1)</script>@test.com",The API responds with HTTP status 400 Bad Request or sanitizes the input and processes the request without executing the script. No OTP is sent to a malformed address.,TC-021
+Verify that OTP request exposes no sensitive data in the response or logs,User Authentication - OTP Delivery,Security,High,None,"1. Send a POST request to /api/auth/request-otp with a valid email (e.g., 'user@test.com'). 2. Inspect the response body, headers, and server logs (if accessible).
+
+Test Data: email=user@test.com","The API responds with HTTP status 200 OK and the body 'OTP Sent to Your Email'. The response does not include the OTP in the body, and the OTP is not logged or exposed in any other way (e.g., logs, headers beyond the 'OTP' header).",TC-022
+"Verify that OTP request rate limiting prevents abuse (e.g., rapid successive requests)",User Authentication - OTP Delivery,Security,Medium,None,"1. Send 11 rapid successive POST requests to /api/auth/request-otp with the same valid email (e.g., 'user@test.com').
+
+Test Data: email=user@test.com",The API responds with HTTP status 429 Too Many Requests for the 11th request or rejects it with an appropriate error message. No more than 10 OTPs are sent to the email within a short timeframe.,TC-023
+Verify that OTP request with a null or empty email is rejected,User Authentication - OTP Delivery,Security,High,None,"1. Send a POST request to /api/auth/request-otp with the query parameter 'email' set to null or an empty string.
+
+Test Data: email=",The API responds with HTTP status 400 Bad Request and an error message indicating that the email parameter is required or invalid.,TC-024
+Verify that OTP is not sent to an unverified or non-existent email address,User Authentication - OTP Delivery,Security,Medium,None,"1. Send a POST request to /api/auth/request-otp with a non-existent email (e.g., 'nonexistent@test.com').
+
+Test Data: email=nonexistent@test.com","The API responds with HTTP status 200 OK and the body 'OTP Sent to Your Email'. However, no email is actually delivered to the non-existent address (verify via email logs or SMTP server).",TC-025
+Verify the new Spring Boot Mail Starter dependency is resolved and does not break the build or introduce transitive conflicts,Maven Dependency: Spring Boot Mail Starter,Configuration,High,Maven build environment is set up and the updated pom.xml is available,"1. Run `mvn clean install` to build the project with the updated dependencies. 2. Check the build logs for errors or warnings related to dependency resolution. 3. Run `mvn dependency:tree` to inspect the dependency tree for conflicts or duplicates. 4. Start the application and observe logs for runtime errors related to the new dependency.
+
+Test Data: New dependency: org.springframework.boot:spring-boot-starter-mail (version managed by Spring Boot parent POM)",The build completes successfully without errors or warnings. The dependency tree shows no conflicts or duplicate dependencies. The application starts without runtime errors related to the new mail starter dependency.,TC-026
+Verify the new Spring Boot Mail Starter dependency does not break existing functionality or alter packaging,Maven Dependency: Spring Boot Mail Starter Integration,Configuration,High,Application is built with the updated pom.xml and deployed in a test environment,"1. Deploy the application with the updated configuration. 2. Execute existing test cases for core functionalities (e.g., REST APIs, database operations). 3. Verify that the generated artifact (JAR/WAR) has no unexpected changes in name, type, or size. 4. Check logs for errors or warnings related to the new dependency during application startup and operation.
+
+Test Data: New dependency: org.springframework.boot:spring-boot-starter-mail","Existing functionalities continue to work as before. The artifact is generated with the correct name, type, and size. No errors or warnings related to the new dependency are observed in the logs.",9cb5cba-TC-015
+Verify the application can connect to the SMTP server using the new mail configuration and send emails successfully,Mail Configuration: SMTP Settings,Configuration,High,Application is deployed with the updated application.properties and mail dependency is resolved,"1. Deploy the application with the updated mail configuration. 2. Trigger an operation that sends an email (e.g., password reset, notification). 3. Check the application logs for connection errors or SMTP-related failures. 4. Verify that the email is successfully sent and received by the recipient.
+
+Test Data: New properties: spring.mail.host=smtp.gmail.com, spring.mail.port=465, spring.mail.username=noqueue.club, spring.mail.password=jodxeinpkdogqsfu, spring.mail.properties.mail.smtp.*",The application connects to the SMTP server without errors. The email is successfully sent and received by the recipient. No connection errors or authentication failures are observed in the logs.,TC-027
+Verify the SMTP timeout settings are applied correctly and do not cause premature connection failures,Mail Configuration: SMTP Timeout Settings,Configuration,Medium,Application is deployed with the updated application.properties and mail dependency is resolved,"1. Deploy the application with the updated mail configuration. 2. Trigger an email operation under conditions where the SMTP server response is delayed (e.g., simulate network latency). 3. Observe the application logs for timeout errors. 4. Verify that the email operation completes successfully within the configured timeout period (20000ms).
+
+Test Data: New properties: spring.mail.properties.mail.smtp.connectiontimeout=20000, spring.mail.properties.mail.smtp.timeout=20000, spring.mail.properties.mail.smtp.writetimeout=20000","The email operation completes successfully without premature timeout errors. The application logs show no timeout-related failures, and the email is sent within the 20000ms timeout period.",TC-028
+Verify that the new mail properties are correctly resolved and do not contain unresolved placeholders or syntax errors,Property Resolution: Mail Configuration,Configuration,High,Application is built with the updated application.properties,"1. Start the application with the updated configuration. 2. Check the application logs for errors or warnings related to property resolution. 3. Verify that the mail properties are correctly loaded by triggering a mail operation and observing the logs for property values.
+
+Test Data: New properties: spring.mail.host, spring.mail.port, spring.mail.username, spring.mail.password, spring.mail.properties.mail.smtp.*",The application starts without errors or warnings related to unresolved properties or placeholders. The mail properties are correctly loaded and used during mail operations.,TC-029

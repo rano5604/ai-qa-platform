@@ -1,0 +1,104 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a new order with valid customer and item details,Order Management,Positive,High,"Customer phone number exists in the system, shop ID is valid, and item details are available","1. Send a POST request to /api/orders with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""shopId"": 1,
+  ""items"": [
+    {
+      ""itemId"": 101,
+      ""itemName"": ""Formal Shirt"",
+      ""quantity"": 1,
+      ""price"": 1500.00,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {""name"": ""Chest"", ""value"": 40},
+            {""name"": ""Waist"", ""value"": 34}
+          ]
+        }
+      ]
+    }
+  ],
+  ""totalAmount"": 1500.00,
+  ""paidAmount"": 500.00,
+  ""dueAmount"": 1000.00
+}","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order created successfully"", ""data"": {""orderId"": <non-null number>, ""customerName"": ""John Doe"", ""customerPhone"": ""5551234567"", ""orderGender"": ""male"", ""status"": ""MEASUREMENT_DONE"", ""totalAmount"": 1500.00, ""paidAmount"": 500.00, ""dueAmount"": 1000.00}}",TC-001
+Update an existing order with valid details and verify changes are reflected,Order Management,Positive,High,An existing order with ID exists in the system and has status 'MEASUREMENT_DONE',"1. Send a PUT request to /api/orders/{orderId} with the payload in testData, replacing {orderId} with the actual order ID. 2. Verify the response status and body. 3. Send a GET request to /api/orders/{orderId} to confirm the update.
+
+Test Data: {
+  ""customerName"": ""John Doe Updated"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""shopId"": 1,
+  ""items"": [
+    {
+      ""itemId"": 101,
+      ""itemName"": ""Formal Shirt"",
+      ""quantity"": 1,
+      ""price"": 1600.00,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {""name"": ""Chest"", ""value"": 42},
+            {""name"": ""Waist"", ""value"": 36}
+          ]
+        }
+      ]
+    }
+  ],
+  ""totalAmount"": 1600.00,
+  ""paidAmount"": 600.00,
+  ""dueAmount"": 1000.00
+}","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order updated successfully"", ""data"": {""orderId"": <orderId>, ""customerName"": ""John Doe Updated"", ""totalAmount"": 1600.00, ""status"": ""MEASUREMENT_DONE""}}. 2. HTTP 200 OK response with a JSON body containing the full order details, including updated fields.",2c3f63d-TC-001
+Update order status from MEASUREMENT_DONE to CUTTING_DONE,Order Status Management,Positive,High,An existing order with ID exists in the system and has status 'MEASUREMENT_DONE',"1. Send a PATCH request to /api/orders/{orderId}/status with the payload in testData, replacing {orderId} with the actual order ID. 2. Verify the response status and body.
+
+Test Data: {
+  ""newStatus"": ""CUTTING_DONE""
+}","HTTP 200 OK response with a JSON body containing: {""message"": ""Order status updated successfully.""}",TC-002
+Retrieve paginated orders for a shop filtered by order gender,Order Management,Positive,Medium,Shop with ID exists in the system and has at least one order with the specified gender,"1. Send a GET request to /api/orders/shop/{shopId}/orderGender/{orderGender}?page=0&limit=10, replacing {shopId} and {orderGender} with actual values. 2. Verify the response status and body.
+
+Test Data: shopId=1, orderGender=male, page=0, limit=10","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Orders retrieved successfully"", ""data"": {""content"": [<list of order summaries>], ""pageable"": {""pageNumber"": 0, ""pageSize"": 10}, ""totalElements"": <non-zero number>, ""totalPages"": <number>}}. The 'content' array contains orders with orderGender='male'.",2c3f63d-TC-003
+Update order item status from MEASUREMENT_DONE to CUTTING_DONE,Order Item Status Management,Positive,High,An existing order item with ID exists in the system and has status 'MEASUREMENT_DONE',"1. Send a PUT request to /api/orders/items/{orderItemId}/status with the payload in testData, replacing {orderItemId} with the actual order item ID. 2. Verify the response status and body.
+
+Test Data: {
+  ""newStatus"": ""CUTTING_DONE""
+}",HTTP 200 OK response with a body containing: 'Order item status updated successfully.',TC-003
+Update order status with an empty newStatus value,Order Status Transition,Boundary,High,An existing order with ID 12345 exists in the system,"1. Send a PATCH request to /api/orders/12345/status with the payload in testData.
+
+Test Data: {""newStatus"": """"}",The API responds with a 400 Bad Request status code and an error message indicating that newStatus cannot be empty.,TC-004
+Update order status with a newStatus value exceeding maximum allowed length,Order Status Transition,Boundary,High,An existing order with ID 12345 exists in the system,"1. Send a PATCH request to /api/orders/12345/status with the payload in testData.
+
+Test Data: {""newStatus"": ""THIS_IS_AN_EXTREMELY_LONG_STATUS_VALUE_THAT_EXCEEDS_THE_MAXIMUM_ALLOWED_LENGTH""}",The API responds with a 400 Bad Request status code and an error message indicating that newStatus exceeds the maximum allowed length.,TC-005
+Update order item status with an empty newStatus value,Order Item Status Management,Boundary,High,An existing order item with ID 67890 exists in the system,"1. Send a PUT request to /api/orders/items/67890/status with the payload in testData.
+
+Test Data: {""newStatus"": """"}",The API responds with a 400 Bad Request status code and an error message indicating that newStatus cannot be empty.,113f2a9-TC-022
+Update order item status with a newStatus value exceeding maximum allowed length,Order Item Status Management,Boundary,High,An existing order item with ID 67890 exists in the system,"1. Send a PUT request to /api/orders/items/67890/status with the payload in testData.
+
+Test Data: {""newStatus"": ""THIS_IS_AN_EXTREMELY_LONG_STATUS_VALUE_THAT_EXCEEDS_THE_MAXIMUM_ALLOWED_LENGTH""}",The API responds with a 400 Bad Request status code and an error message indicating that newStatus exceeds the maximum allowed length.,TC-006
+Retrieve orders for a customer using a phone number with exactly 16 characters (maximum allowed length),Order Lookup by Customer Phone,Boundary,Medium,A customer with phone number '1234567890123456' has at least one order in the system,1. Send a GET request to /api/orders/by-phone?phone=1234567890123456&page=0&limit=10.,"The API responds with a 200 OK status code, a status of 'success', a message 'Order fetched successfully', and a 'data.content' list containing all orders for the customer with phone number '1234567890123456'.",d3da340-TC-007
+Retrieve orders for a customer using a phone number with 17 characters (one above maximum allowed length),Order Lookup by Customer Phone,Boundary,High,None,1. Send a GET request to /api/orders/by-phone?phone=12345678901234567&page=0&limit=10.,The API responds with a 400 Bad Request status code and an error message indicating that the customer phone number exceeds the maximum allowed length of 16 characters.,TC-007
+Retrieve orders for a customer using a phone number with exactly 1 character (minimum allowed length),Order Lookup by Customer Phone,Boundary,Medium,A customer with phone number '1' has at least one order in the system,1. Send a GET request to /api/orders/by-phone?phone=1&page=0&limit=10.,"The API responds with a 200 OK status code, a status of 'success', a message 'Order fetched successfully', and a 'data.content' list containing all orders for the customer with phone number '1'.",TC-008
+Retrieve orders for a customer using a phone number with 0 characters (empty string),Order Lookup by Customer Phone,Boundary,High,None,1. Send a GET request to /api/orders/by-phone?phone=&page=0&limit=10.,The API responds with a 400 Bad Request status code and an error message indicating that the customer phone number cannot be empty.,d3da340-TC-006
+Retrieve orders for a shop using an empty orderGender value,Order Lookup by Shop and Order Gender,Boundary,High,A shop with ID 1 exists in the system,1. Send a GET request to /api/orders/shop/1/orderGender/?page=0&limit=10.,The API responds with a 400 Bad Request status code and an error message indicating that orderGender cannot be empty.,TC-009
+Retrieve orders for a shop using an orderGender value exceeding maximum allowed length,Order Lookup by Shop and Order Gender,Boundary,High,A shop with ID 1 exists in the system,1. Send a GET request to /api/orders/shop/1/orderGender/THIS_IS_A_VERY_LONG_GENDER_VALUE?page=0&limit=10.,The API responds with a 400 Bad Request status code and an error message indicating that orderGender exceeds the maximum allowed length.,TC-010
+Create an order with a customer phone number of exactly 1 character (minimum allowed length),Order Creation,Boundary,Medium,None,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {""customerPhone"": ""1"", ""shopId"": 1, ""orderItems"": [{""itemId"": 1, ""quantity"": 1, ""measurements"": {""chest"": 32, ""waist"": 28, ""hips"": 36}}]}","The API responds with a 200 OK status code, a status of 'success', and the created order details in the 'data' field.",TC-011
+Create an order with a customer phone number of exactly 16 characters (maximum allowed length),Order Creation,Boundary,Medium,None,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {""customerPhone"": ""1234567890123456"", ""shopId"": 1, ""orderItems"": [{""itemId"": 1, ""quantity"": 1, ""measurements"": {""chest"": 32, ""waist"": 28, ""hips"": 36}}]}","The API responds with a 200 OK status code, a status of 'success', and the created order details in the 'data' field.",d3da340-TC-007
+Update an order with a customer phone number of exactly 1 character (minimum allowed length),Order Update,Boundary,Medium,An existing order with ID 12345 exists in the system,"1. Send a PUT request to /api/orders/12345 with the payload in testData.
+
+Test Data: {""customerPhone"": ""1"", ""shopId"": 1, ""orderItems"": [{""itemId"": 1, ""quantity"": 1, ""measurements"": {""chest"": 32, ""waist"": 28, ""hips"": 36}}]}","The API responds with a 200 OK status code, a status of 'success', and the updated order details in the 'data' field.",TC-012
+Update an order with a customer phone number of exactly 16 characters (maximum allowed length),Order Update,Boundary,Medium,An existing order with ID 12345 exists in the system,"1. Send a PUT request to /api/orders/12345 with the payload in testData.
+
+Test Data: {""customerPhone"": ""1234567890123456"", ""shopId"": 1, ""orderItems"": [{""itemId"": 1, ""quantity"": 1, ""measurements"": {""chest"": 32, ""waist"": 28, ""hips"": 36}}]}","The API responds with a 200 OK status code, a status of 'success', and the updated order details in the 'data' field.",d3da340-TC-015
+Retrieve an order using the minimum possible ID value (1),Order Retrieval by ID,Boundary,Medium,An order with ID 1 exists in the system,1. Send a GET request to /api/orders/1.,"The API responds with a 200 OK status code, a status of 'success', and the order details in the 'data' field.",TC-013
+Update order item status with the minimum possible orderItemId value (1),Order Item Status Management,Boundary,Medium,An order item with ID 1 exists in the system,"1. Send a PUT request to /api/orders/items/1/status with the payload in testData.
+
+Test Data: {""newStatus"": ""MEASUREMENT_DONE""}",The API responds with a 200 OK status code and the message 'Order item status updated successfully.',TC-014

@@ -1,0 +1,90 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a new order with measurement group photos and verify they are stored and returned in the response,Order Management: Order Creation with Measurement Group Photos,Positive,High,A shop exists in the system. Items with IDs 1 (Shirt) and 2 (Pant) are available. Customer details are ready for input.,"1. Send a POST request to /api/orders with the payload in testData. 2. Send a GET request to /api/orders/{id} using the order ID returned in step 1.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""customerPhoto"": ""customers/john_doe.jpg"",
+  ""totalAmount"": 2500.00,
+  ""paidAmount"": 1000.00,
+  ""dueAmount"": 1500.00,
+  ""trialDate"": ""2023-12-15"",
+  ""deliveryDate"": ""2023-12-20"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""orders/measurement_shirt_123.jpg"",
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""cm"",
+              ""value"": 90
+            },
+            {
+              ""name"": ""Waist"",
+              ""unit"": ""cm"",
+              ""value"": 80
+            }
+          ]
+        }
+      ]
+    },
+    {
+      ""itemId"": 2,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""orders/measurement_pant_123.jpg"",
+          ""measurements"": [
+            {
+              ""name"": ""Waist"",
+              ""unit"": ""cm"",
+              ""value"": 85
+            },
+            {
+              ""name"": ""Length"",
+              ""unit"": ""cm"",
+              ""value"": 105
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing the order summary with fields: orderId (non-null number), shopName, customerName, customerPhone, totalAmount, paidAmount, dueAmount, itemCount (2), and itemName. 2. HTTP 200 OK response with a JSON body containing the full order details, including measurementGroups with photoUrl fields populated (e.g., 'orders/measurement_shirt_123.jpg' and 'orders/measurement_pant_123.jpg') for each measurement group.",TC-001
+Retrieve an existing order and verify measurement group photos are displayed correctly,Order Management: Order Retrieval with Measurement Group Photos,Positive,High,"An order with ID 123 exists in the system, containing at least one item with measurement groups that include photo URLs.",1. Send a GET request to /api/orders/123.,"HTTP 200 OK response with a JSON body containing the order details, including items with measurementGroups. Each measurementGroup must include an id and photoUrl field (e.g., 'orders/measurement_12345.jpg') that is non-null and accessible.",d9f8e47-TC-003
+Create a new order without measurement group photos and verify no photo URLs are returned,Order Management: Order Creation with Missing Measurement Group Photos,Positive,Medium,A shop exists in the system. Items with IDs 1 (Shirt) and 2 (Pant) are available. Customer details are ready for input.,"1. Send a POST request to /api/orders with the payload in testData. 2. Send a GET request to /api/orders/{id} using the order ID returned in step 1.
+
+Test Data: {
+  ""customerName"": ""Jane Smith"",
+  ""customerPhone"": ""5559876543"",
+  ""customerGender"": ""female"",
+  ""orderGender"": ""female"",
+  ""totalAmount"": 2000.00,
+  ""paidAmount"": 2000.00,
+  ""dueAmount"": 0.00,
+  ""trialDate"": ""2023-12-16"",
+  ""deliveryDate"": ""2023-12-22"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""cm"",
+              ""value"": 85
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing the order summary. 2. HTTP 200 OK response with a JSON body containing the full order details, including measurementGroups with photoUrl fields either null or absent for each measurement group.",86c0b01-TC-002

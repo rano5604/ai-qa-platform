@@ -1,0 +1,46 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Set a new slot for a shop with start time exactly at midnight (boundary: minimum time value),Shop Slot Management,Boundary,High,User is logged in as a shop admin. Shop with ID 1 exists and has no existing slots of type 'REGULAR'.,"1. Navigate to the 'Manage Slots' section for Shop ID 1. 2. Select slot type 'REGULAR'. 3. Set start time to '00:00'. 4. Set end time to '01:00'. 5. Click 'Save Slot'.
+
+Test Data: shopId = 1, slotType = REGULAR, startTime = 00:00, endTime = 01:00",Slot is successfully saved. A confirmation message 'Slot configuration saved for REGULAR period.' is displayed.,TC-001
+Set a new slot for a shop with end time exactly at midnight (boundary: maximum time value),Shop Slot Management,Boundary,High,User is logged in as a shop admin. Shop with ID 1 exists and has no existing slots of type 'REGULAR'.,"1. Navigate to the 'Manage Slots' section for Shop ID 1. 2. Select slot type 'REGULAR'. 3. Set start time to '23:00'. 4. Set end time to '00:00' (next day). 5. Click 'Save Slot'.
+
+Test Data: shopId = 1, slotType = REGULAR, startTime = 23:00, endTime = 00:00",Error message 'Slot end time should be after start time' is displayed. Slot is not saved.,TC-002
+Set a new slot for a shop with start time one minute before end time (boundary: off-by-one),Shop Slot Management,Boundary,High,User is logged in as a shop admin. Shop with ID 1 exists and has no existing slots of type 'REGULAR'.,"1. Navigate to the 'Manage Slots' section for Shop ID 1. 2. Select slot type 'REGULAR'. 3. Set start time to '10:00'. 4. Set end time to '10:01'. 5. Click 'Save Slot'.
+
+Test Data: shopId = 1, slotType = REGULAR, startTime = 10:00, endTime = 10:01",Slot is successfully saved. A confirmation message 'Slot configuration saved for REGULAR period.' is displayed.,TC-003
+Set a new slot for a shop with start time equal to end time (boundary: zero duration),Shop Slot Management,Boundary,High,User is logged in as a shop admin. Shop with ID 1 exists and has no existing slots of type 'REGULAR'.,"1. Navigate to the 'Manage Slots' section for Shop ID 1. 2. Select slot type 'REGULAR'. 3. Set start time to '10:00'. 4. Set end time to '10:00'. 5. Click 'Save Slot'.
+
+Test Data: shopId = 1, slotType = REGULAR, startTime = 10:00, endTime = 10:00",Error message 'Slot end time should be after start time' is displayed. Slot is not saved.,TC-004
+Set a new slot for a shop with a duplicate slot type (boundary: duplicate entry),Shop Slot Management,Boundary,High,User is logged in as a shop admin. Shop with ID 1 exists and already has a slot of type 'REGULAR' configured.,"1. Navigate to the 'Manage Slots' section for Shop ID 1. 2. Select slot type 'REGULAR'. 3. Set start time to '11:00'. 4. Set end time to '12:00'. 5. Click 'Save Slot'.
+
+Test Data: shopId = 1, slotType = REGULAR, startTime = 11:00, endTime = 12:00",Error message 'Error: A slot with type REGULAR already exists for this shop.' is displayed. Slot is not saved.,TC-005
+Set a new slot for a shop that overlaps with an existing slot (boundary: time overlap),Shop Slot Management,Boundary,High,User is logged in as a shop admin. Shop with ID 1 exists and has an existing slot from '09:00' to '11:00' of type 'PREMIUM'.,"1. Navigate to the 'Manage Slots' section for Shop ID 1. 2. Select slot type 'REGULAR'. 3. Set start time to '10:00'. 4. Set end time to '12:00'. 5. Click 'Save Slot'.
+
+Test Data: shopId = 1, slotType = REGULAR, startTime = 10:00, endTime = 12:00",Error message 'Error: The slot overlaps with an existing slot of type PREMIUM' is displayed. Slot is not saved.,TC-006
+Set a new slot for a non-existent shop (boundary: invalid shop ID),Shop Slot Management,Boundary,High,User is logged in as a shop admin. No shop with ID 999999 exists.,"1. Navigate to the 'Manage Slots' section for Shop ID 999999. 2. Select slot type 'REGULAR'. 3. Set start time to '10:00'. 4. Set end time to '11:00'. 5. Click 'Save Slot'.
+
+Test Data: shopId = 999999, slotType = REGULAR, startTime = 10:00, endTime = 11:00",Error message 'Shop not found' is displayed. Slot is not saved.,TC-007
+Update an existing slot with start time exactly at midnight (boundary: minimum time value),Shop Slot Management,Boundary,High,User is logged in as a shop admin. Shop with ID 1 exists and has an active slot with ID 1 of type 'REGULAR' from '09:00' to '10:00'.,"1. Navigate to the 'Manage Slots' section for Shop ID 1. 2. Select the slot with ID 1. 3. Update start time to '00:00'. 4. Update end time to '01:00'. 5. Click 'Update Slot'.
+
+Test Data: slotId = 1, startTime = 00:00, endTime = 01:00",Slot is successfully updated. A confirmation message 'Slot updated successfully.' is displayed.,TC-008
+Update an existing slot with end time exactly at midnight (boundary: maximum time value),Shop Slot Management,Boundary,High,User is logged in as a shop admin. Shop with ID 1 exists and has an active slot with ID 1 of type 'REGULAR' from '09:00' to '10:00'.,"1. Navigate to the 'Manage Slots' section for Shop ID 1. 2. Select the slot with ID 1. 3. Update start time to '23:00'. 4. Update end time to '00:00' (next day). 5. Click 'Update Slot'.
+
+Test Data: slotId = 1, startTime = 23:00, endTime = 00:00",Error message 'Slot end time should be after start time' is displayed. Slot is not updated.,TC-009
+Update an existing slot with start time equal to end time (boundary: zero duration),Shop Slot Management,Boundary,High,User is logged in as a shop admin. Shop with ID 1 exists and has an active slot with ID 1 of type 'REGULAR' from '09:00' to '10:00'.,"1. Navigate to the 'Manage Slots' section for Shop ID 1. 2. Select the slot with ID 1. 3. Update start time to '10:00'. 4. Update end time to '10:00'. 5. Click 'Update Slot'.
+
+Test Data: slotId = 1, startTime = 10:00, endTime = 10:00",Error message 'Slot end time should be after start time' is displayed. Slot is not updated.,TC-010
+Update an existing slot to overlap with another active slot (boundary: time overlap),Shop Slot Management,Boundary,High,"User is logged in as a shop admin. Shop with ID 1 exists and has two active slots: Slot ID 1 (REGULAR, 09:00-10:00) and Slot ID 2 (PREMIUM, 11:00-12:00).","1. Navigate to the 'Manage Slots' section for Shop ID 1. 2. Select the slot with ID 1. 3. Update start time to '10:30'. 4. Update end time to '11:30'. 5. Click 'Update Slot'.
+
+Test Data: slotId = 1, startTime = 10:30, endTime = 11:30",Error message 'Error: The updated slot time overlaps with an existing active slot.' is displayed. Slot is not updated.,TC-011
+Update a non-existent slot (boundary: invalid slot ID),Shop Slot Management,Boundary,High,User is logged in as a shop admin. No slot with ID 999999 exists.,"1. Navigate to the 'Manage Slots' section for any shop. 2. Attempt to select slot ID 999999. 3. Update start time to '10:00'. 4. Update end time to '11:00'. 5. Click 'Update Slot'.
+
+Test Data: slotId = 999999, startTime = 10:00, endTime = 11:00",Error message 'Slot not found' is displayed. Slot is not updated.,TC-012
+Update an inactive slot (boundary: inactive slot),Shop Slot Management,Boundary,High,User is logged in as a shop admin. Shop with ID 1 exists and has an inactive slot with ID 1 of type 'REGULAR'.,"1. Navigate to the 'Manage Slots' section for Shop ID 1. 2. Select the slot with ID 1. 3. Update start time to '10:00'. 4. Update end time to '11:00'. 5. Click 'Update Slot'.
+
+Test Data: slotId = 1, startTime = 10:00, endTime = 11:00",Error message 'Inactive slots cannot be resumed.' is displayed. Slot is not updated.,TC-013
+Deactivate an already inactive slot (boundary: duplicate deactivation),Shop Slot Management,Boundary,Medium,User is logged in as a shop admin. Shop with ID 1 exists and has an inactive slot with ID 1 of type 'REGULAR'.,"1. Navigate to the 'Manage Slots' section for Shop ID 1. 2. Select the slot with ID 1. 3. Click 'Deactivate Slot'.
+
+Test Data: slotId = 1",Message 'Slot is already inactive.' is displayed. Slot remains inactive.,TC-014
+Deactivate a non-existent slot (boundary: invalid slot ID),Shop Slot Management,Boundary,High,User is logged in as a shop admin. No slot with ID 999999 exists.,"1. Navigate to the 'Manage Slots' section for any shop. 2. Attempt to select slot ID 999999. 3. Click 'Deactivate Slot'.
+
+Test Data: slotId = 999999",Error message 'Slot not found' is displayed. No action is taken.,TC-015

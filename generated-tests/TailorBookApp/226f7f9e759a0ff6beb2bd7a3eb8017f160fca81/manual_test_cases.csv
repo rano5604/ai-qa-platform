@@ -1,0 +1,117 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Request OTP and verify OTP,Authentication and Authorization,Positive,High,User has a valid email address,"1. Send a POST request to /api/auth/request-otp with the email address as a query parameter. 2. Send a POST request to /api/auth/verify-otp with the OTP verification request body.
+
+Test Data: {""email"": ""user@example.com"", ""otp"": ""123456""}",HTTP 200 OK response with a JSON body containing a success message,TC-001
+Retrieve all shops,Shop Management,Positive,Medium,There are shops available in the system,"1. Send a GET request to /api/areas/{areaId}/shops with the area ID as a path variable and page and limit as query parameters.
+
+Test Data: {""areaId"": 1, ""page"": 1, ""limit"": 10}",HTTP 200 OK response with a JSON body containing a list of shops and pagination metadata,TC-002
+Update an existing shop,Shop Management,Positive,Medium,There is an existing shop in the system,"1. Send a PUT request to /api/areas/{areaId}/shops/{id} with the area ID and shop ID as path variables and the updated shop details in the request body.
+
+Test Data: {""areaId"": 1, ""id"": 1, ""shop"": {""name"": ""Updated Shop Name""}}",HTTP 200 OK response with a JSON body containing the updated shop details,TC-003
+Login with valid credentials,Authentication and Authorization,Positive,High,User has a valid email address and password,"1. Send a POST request to /api/auth/login with the login request body.
+
+Test Data: {""email"": ""user@example.com"", ""password"": ""password123""}",HTTP 200 OK response with a JSON body containing a JWT token,TC-004
+Request OTP with valid email address,Authentication and Authorization,Positive,High,User has a valid email address,"1. Send a POST request to /api/auth/request-otp with the email address as a query parameter.
+
+Test Data: {""email"": ""user@example.com""}",HTTP 200 OK response with a JSON body containing a success message and the OTP,TC-005
+Attempt to request OTP with a missing email parameter,Authentication,Negative,High,User is not authenticated,"1. Send a POST request to /api/auth/request-otp without providing the email query parameter.
+
+Test Data: N/A (no email provided)",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'email' parameter is required.,TC-006
+Attempt to request OTP with an invalid email format,Authentication,Negative,High,User is not authenticated,"1. Send a POST request to /api/auth/request-otp with the email query parameter set to an invalid format (e.g., 'invalid-email').
+
+Test Data: { 'email': 'invalid-email' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'email' format is invalid.,TC-007
+Attempt to verify OTP with a missing phoneNumber field,Authentication,Negative,High,User has requested an OTP but not yet verified it,"1. Send a POST request to /api/auth/verify-otp with a payload missing the 'phoneNumber' field.
+
+Test Data: { 'otp': '123456' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'phoneNumber' field is required.,TC-008
+Attempt to verify OTP with a missing otp field,Authentication,Negative,High,User has requested an OTP but not yet verified it,"1. Send a POST request to /api/auth/verify-otp with a payload missing the 'otp' field.
+
+Test Data: { 'phoneNumber': '+1234567890' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'otp' field is required.,TC-009
+Attempt to verify OTP with an invalid otp format (non-numeric),Authentication,Negative,High,User has requested an OTP but not yet verified it,"1. Send a POST request to /api/auth/verify-otp with the 'otp' field set to a non-numeric value (e.g., 'abcdef').
+
+Test Data: { 'phoneNumber': '+1234567890', 'otp': 'abcdef' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'otp' must be a valid numeric value.,TC-010
+Attempt to set PIN with a missing phoneNumber field,Authentication,Negative,High,User has verified OTP but not yet set a PIN,"1. Send a POST request to /api/auth/set-pin with a payload missing the 'phoneNumber' field.
+
+Test Data: { 'otp': '123456', 'pin': '1234', 'confirmPin': '1234' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'phoneNumber' field is required.,TC-011
+Attempt to set PIN with a missing otp field,Authentication,Negative,High,User has verified OTP but not yet set a PIN,"1. Send a POST request to /api/auth/set-pin with a payload missing the 'otp' field.
+
+Test Data: { 'phoneNumber': '+1234567890', 'pin': '1234', 'confirmPin': '1234' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'otp' field is required.,TC-012
+Attempt to set PIN with a missing pin field,Authentication,Negative,High,User has verified OTP but not yet set a PIN,"1. Send a POST request to /api/auth/set-pin with a payload missing the 'pin' field.
+
+Test Data: { 'phoneNumber': '+1234567890', 'otp': '123456', 'confirmPin': '1234' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'pin' field is required.,TC-013
+Attempt to set PIN with a missing confirmPin field,Authentication,Negative,High,User has verified OTP but not yet set a PIN,"1. Send a POST request to /api/auth/set-pin with a payload missing the 'confirmPin' field.
+
+Test Data: { 'phoneNumber': '+1234567890', 'otp': '123456', 'pin': '1234' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'confirmPin' field is required.,TC-014
+Attempt to set PIN with mismatched pin and confirmPin fields,Authentication,Negative,High,User has verified OTP but not yet set a PIN,"1. Send a POST request to /api/auth/set-pin with the 'pin' and 'confirmPin' fields set to different values (e.g., '1234' and '5678').
+
+Test Data: { 'phoneNumber': '+1234567890', 'otp': '123456', 'pin': '1234', 'confirmPin': '5678' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'pin' and 'confirmPin' fields must match.,TC-015
+Attempt to retrieve shops with an invalid areaId (non-numeric),Shop Management,Negative,High,User is authenticated and has access to shop data,"1. Send a GET request to /api/areas/invalid-id/shops with valid query parameters for page and limit.
+
+Test Data: N/A (path variable: areaId = 'invalid-id')",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'areaId' must be a valid numeric value.,TC-016
+Attempt to retrieve a shop with an invalid id (non-numeric),Shop Management,Negative,High,User is authenticated and has access to shop data,"1. Send a GET request to /api/areas/1/shops/invalid-id.
+
+Test Data: N/A (path variable: id = 'invalid-id')",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'id' must be a valid numeric value.,TC-017
+Attempt to add a shop with missing required fields,Shop Management,Negative,High,User is authenticated and has permission to add shops,"1. Send a POST request to /api/areas/1/shops with a payload missing required fields (e.g., 'name', 'phone').
+
+Test Data: { 'address': '123 Main St' }",The system returns an HTTP 400 Bad Request status code with an error message indicating which required fields are missing.,TC-018
+Attempt to add a shop with an invalid areaId (non-numeric),Shop Management,Negative,High,User is authenticated and has permission to add shops,"1. Send a POST request to /api/areas/invalid-id/shops with a valid Shop payload.
+
+Test Data: { 'name': 'Test Shop', 'phone': '+1234567890', 'address': '123 Main St' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'areaId' must be a valid numeric value.,TC-019
+Attempt to update a shop with missing required fields,Shop Management,Negative,High,"User is authenticated, has permission to update shops, and a shop with ID 1 exists in area 1","1. Send a PUT request to /api/areas/1/shops/1 with a payload missing required fields (e.g., 'name', 'phone').
+
+Test Data: { 'address': '456 Elm St' }",The system returns an HTTP 400 Bad Request status code with an error message indicating which required fields are missing.,TC-020
+Attempt to update a shop with an invalid id (non-numeric),Shop Management,Negative,High,User is authenticated and has permission to update shops,"1. Send a PUT request to /api/areas/1/shops/invalid-id with a valid Shop payload.
+
+Test Data: { 'name': 'Updated Shop', 'phone': '+1234567890', 'address': '456 Elm St' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'id' must be a valid numeric value.,TC-021
+Attempt to update a shop with an invalid areaId (non-numeric),Shop Management,Negative,High,User is authenticated and has permission to update shops,"1. Send a PUT request to /api/areas/invalid-id/shops/1 with a valid Shop payload.
+
+Test Data: { 'name': 'Updated Shop', 'phone': '+1234567890', 'address': '456 Elm St' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'areaId' must be a valid numeric value.,TC-022
+Attempt to delete a shop with an invalid id (non-numeric),Shop Management,Negative,High,User is authenticated and has permission to delete shops,"1. Send a DELETE request to /api/areas/1/shops/invalid-id.
+
+Test Data: N/A (path variable: id = 'invalid-id')",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'id' must be a valid numeric value.,TC-023
+Attempt to delete a shop with an invalid areaId (non-numeric),Shop Management,Negative,High,User is authenticated and has permission to delete shops,"1. Send a DELETE request to /api/areas/invalid-id/shops/1.
+
+Test Data: N/A (path variable: areaId = 'invalid-id')",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'areaId' must be a valid numeric value.,TC-024
+Attempt to sign in with missing username field,Authentication,Negative,High,User is not authenticated,"1. Send a POST request to /api/auth/signin with a payload missing the 'username' field.
+
+Test Data: { 'password': 'password123' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'username' field is required.,TC-025
+Attempt to sign in with missing password field,Authentication,Negative,High,User is not authenticated,"1. Send a POST request to /api/auth/signin with a payload missing the 'password' field.
+
+Test Data: { 'username': 'testuser' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'password' field is required.,TC-026
+Attempt to login with missing username field,Authentication,Negative,High,User is not authenticated,"1. Send a POST request to /api/auth/login with a payload missing the 'username' field.
+
+Test Data: { 'pin': '1234' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'username' field is required.,TC-027
+Attempt to login with missing pin field,Authentication,Negative,High,User is not authenticated,"1. Send a POST request to /api/auth/login with a payload missing the 'pin' field.
+
+Test Data: { 'username': 'testuser' }",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'pin' field is required.,TC-028
+Verify that OTP value is not exposed in the API response,Authentication - OTP Request,Security,High,User has a valid registered email address,"1. Send a POST request to /api/auth/request-otp with the query parameter 'email' set to a valid registered email address.
+
+Test Data: email=testuser@example.com","The API responds with HTTP status 200 (OK), a success message 'OTP sent to your email', and the 'data' field in the response body is null or empty (OTP value is not returned).",TC-029
+Verify that OTP is not leaked in logs or error messages during OTP request,Authentication - OTP Request,Security,High,User has a valid registered email address,"1. Send a POST request to /api/auth/request-otp with the query parameter 'email' set to a valid registered email address. 2. Check server logs and error responses for any exposure of the OTP value.
+
+Test Data: email=testuser@example.com","The API responds with HTTP status 200 (OK), and no OTP value is visible in server logs, error messages, or any part of the response other than the email delivery system.",TC-030
+Verify that OTP verification enforces rate limiting to prevent brute-force attacks,Authentication - OTP Verification,Security,High,User has a valid registered email address and a valid OTP has been generated,"1. Send 10 consecutive POST requests to /api/auth/verify-otp with invalid OTP values in rapid succession. 2. On the 11th request, send a valid OTP.
+
+Test Data: {""phoneNumber"": ""+1234567890"", ""otp"": ""0000""} (repeat with different invalid OTPs)","The API responds with HTTP status 429 (Too Many Requests) after exceeding the rate limit threshold, and the valid OTP request is rejected until the rate limit window resets.",TC-031
+Verify that OTP verification rejects replayed OTPs after successful use,Authentication - OTP Verification,Security,High,User has a valid registered email address and a valid OTP has been generated and used successfully,"1. Send a POST request to /api/auth/verify-otp with a valid OTP. 2. Repeat the same request with the same OTP.
+
+Test Data: {""phoneNumber"": ""+1234567890"", ""otp"": ""123456""}","The first request succeeds with HTTP status 200 (OK). The second request fails with HTTP status 401 (Unauthorized) or 403 (Forbidden), indicating the OTP has already been used or expired.",TC-032
+Verify that OTP verification rejects expired OTPs,Authentication - OTP Verification,Security,High,User has a valid registered email address and an expired OTP has been generated,"1. Wait until the OTP expires (e.g., 5 minutes after generation). 2. Send a POST request to /api/auth/verify-otp with the expired OTP.
+
+Test Data: {""phoneNumber"": ""+1234567890"", ""otp"": ""123456""}","The API responds with HTTP status 401 (Unauthorized) or 403 (Forbidden), indicating the OTP has expired.",TC-033
+Verify that error messages during shop profile retrieval do not leak sensitive system details,Shop Management - Shop Profile Retrieval,Security,Medium,User is authenticated and has access to shop profiles,1. Send a GET request to /api/areas/999999/shops (where 999999 is a non-existent area ID). 2. Inspect the error response for any internal system details.,"The API responds with HTTP status 404 (Not Found) and a generic error message (e.g., 'Area not found') without revealing internal system details (e.g., stack traces, database errors, or SQL queries).",TC-034
+Verify that shop profile retrieval enforces proper authorization (insecure direct object reference),Shop Management - Shop Profile Retrieval,Security,High,Two users are registered: User A (has access to Shop ID 1) and User B (has no access to Shop ID 1),1. Authenticate as User B. 2. Send a GET request to /api/areas/{areaId}/shops/1 (where areaId is valid for Shop ID 1).,"The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and no shop details are returned.",TC-035
+Verify OTP is returned in the API response when requested for a valid email,User Authentication - OTP Request,Configuration,High,User has a registered email address in the system,"1. Send a POST request to /api/auth/request-otp with the query parameter 'email' set to a valid registered email address.
+
+Test Data: Query parameter: email=user@example.com","HTTP 200 OK response with status 'success', message 'OTP sent to your email', and a non-null OTP value in the 'data' field of the response body.",TC-036
+Verify the correct success message is returned when retrieving shop profiles,Shop Profile Retrieval,Configuration,High,At least one shop exists in the specified area,"1. Send a GET request to /api/areas/{areaId}/shops with valid path variable 'areaId' and query parameters 'page' and 'limit'.
+
+Test Data: Path variable: areaId=1, Query parameters: page=0, limit=10","HTTP 200 OK response with status 'success', message 'Shop profile retrieved successfully', and a paginated list of shops in the 'data' field of the response body.",TC-037
+Verify the application connects to the new MinIO endpoint successfully,MinIO Endpoint Configuration,Configuration,High,"Application deployed with the updated configuration, MinIO server running at http://109.123.239.27:9000 with credentials minioadmin/minioadmin and bucket 'tailor-photos' created","1. Deploy the application with the updated application.properties. 2. Trigger an operation that uploads or retrieves a file from MinIO (e.g., upload a photo). 3. Check application logs for connection errors. 4. Verify the file is successfully stored/retrieved in the MinIO bucket.
+
+Test Data: Old endpoint: http://localhost:9000, New endpoint: http://109.123.239.27:9000","The application successfully connects to the new MinIO endpoint, and file operations (upload/download) complete without errors.",TC-038
+Verify removal of Hibernate SQL formatting and debug logging does not break application functionality,Hibernate SQL Formatting and Debug Logging,Configuration,Medium,"Application deployed with the updated configuration, database connection established","1. Deploy the application with the updated application.properties. 2. Perform database operations (e.g., create, read, update, or delete records). 3. Check application logs to confirm SQL statements are no longer formatted or logged at DEBUG level for org.hibernate.SQL.
+
+Test Data: Removed properties: spring.jpa.properties.hibernate.format_sql=true, logging.level.org.hibernate.SQL=DEBUG","Database operations complete successfully, and logs no longer show formatted SQL or DEBUG-level Hibernate SQL statements.",TC-039
+Verify placeholder references in JWT and mail configurations resolve correctly,JWT and Mail Configuration Placeholder Resolution,Configuration,High,"Application deployed with the updated configuration, environment variables (if any) set for placeholders","1. Deploy the application with the updated application.properties. 2. Trigger operations that use JWT (e.g., user login) and mail (e.g., send a test email). 3. Check application logs for errors related to unresolved placeholders or misconfigured properties.
+
+Test Data: JWT secret: jwt.secret=test-secret, Mail properties: spring.mail.host, spring.mail.port, etc.",JWT authentication and mail operations complete successfully without errors related to unresolved placeholders or misconfigured properties.,TC-040

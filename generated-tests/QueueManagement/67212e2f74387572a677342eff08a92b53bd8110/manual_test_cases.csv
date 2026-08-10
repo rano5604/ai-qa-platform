@@ -1,0 +1,236 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Successfully add a new holiday for a shop using request body payload,Shop Holiday Management,Positive,High,A shop with ID 100 exists in the system,"1. Send a POST request to /api/shop-holidays/add?shopId=100 with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""holidayDate"": ""2024-12-25"", ""reason"": ""Christmas Day""}",Response status code is 200. The response body contains the message: 'Holiday added successfully for shop [shop name]'.,d750aff-TC-001
+Fail to add a duplicate holiday for the same shop and date using request body payload,Shop Holiday Management,Positive,High,A shop with ID 100 exists in the system and already has a holiday on 2024-12-25,"1. Send a POST request to /api/shop-holidays/add?shopId=100 with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""holidayDate"": ""2024-12-25"", ""reason"": ""Christmas Holiday""}",Response status code is 409. The response body contains the message: 'Shop already has a holiday on 2024-12-25'.,d750aff-TC-002
+Successfully update an existing holiday for a shop using request body payload,Shop Holiday Management,Positive,High,A shop with ID 100 exists in the system and has an existing holiday with ID 50 on 2024-12-25,"1. Send a PUT request to /api/shop-holidays/50 with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""holidayDate"": ""2024-12-26"", ""reason"": ""Boxing Day""}",Response status code is 200. The response body contains the message: 'Holiday updated successfully for shop [shop name]'.,TC-001
+Successfully configure a new slot for a shop using request body payload,Slot Configuration Management,Positive,High,A shop with ID 100 exists in the system and has no existing MORNING slot,"1. Send a POST request to /api/slots/set?shopId=100 with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""startTime"": ""09:00:00"", ""endTime"": ""12:00:00"", ""slotType"": ""MORNING"", ""isActive"": true}",Response status code is 200. The response body contains the message: 'Slot configuration saved for MORNING period.'.,d750aff-TC-004
+Successfully update an existing slot's time range using request body payload,Slot Configuration Management,Positive,High,A shop with ID 100 exists in the system and has an existing MORNING slot with ID 200,"1. Send a PUT request to /api/slots/200?slotId=200 with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""startTime"": ""10:00:00"", ""endTime"": ""13:00:00"", ""slotType"": ""MORNING"", ""isActive"": true}",Response status code is 200. The response body contains the message: 'Slot updated successfully.'.,01b5363-TC-003
+Successfully add a new holiday for a worker using request body payload,Worker Holiday Management,Positive,High,A worker with ID 300 exists in the system,"1. Send a POST request to /api/worker-holidays/add?workerId=300 with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""holidayDate"": ""2024-12-25"", ""reason"": ""Christmas Day""}",Response status code is 200. The response body contains the message: 'Holiday added successfully for worker [worker name]'.,d750aff-TC-006
+Successfully update an existing holiday for a worker using request body payload,Worker Holiday Management,Positive,High,A worker with ID 300 exists in the system and has an existing holiday with ID 400 on 2024-12-25,"1. Send a PUT request to /api/worker-holidays/400 with the payload in testData. 2. Verify the response status and body.
+
+Test Data: {""holidayDate"": ""2024-12-26"", ""reason"": ""Boxing Day""}",Response status code is 200. The response body contains the message: 'Holiday updated successfully for worker [worker name]'.,TC-002
+Add a shop holiday with a date that already exists for the same shop,Shop Holiday Management,Boundary,High,A shop with ID 1 exists and already has a holiday on 2023-12-25,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData.
+
+Test Data: {
+  ""holidayDate"": ""2023-12-25"",
+  ""reason"": ""Christmas""
+}",HTTP status code 409 (Conflict). Response body contains the message: 'Shop already has a holiday on 2023-12-25'.,TC-003
+Add a shop holiday with a null holiday date,Shop Holiday Management,Boundary,High,A shop with ID 1 exists,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData.
+
+Test Data: {
+  ""holidayDate"": null,
+  ""reason"": ""Maintenance""
+}",HTTP status code 400 (Bad Request) with an error message indicating that holiday date cannot be null.,TC-004
+Add a shop holiday with an empty reason,Shop Holiday Management,Boundary,Medium,A shop with ID 1 exists,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData.
+
+Test Data: {
+  ""holidayDate"": ""2023-12-31"",
+  ""reason"": """"
+}",HTTP status code 200 (OK). Response body contains the message: 'Holiday added successfully for shop [shop name]'.,TC-005
+Add a shop holiday with a date in the far past,Shop Holiday Management,Boundary,Medium,A shop with ID 1 exists,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData.
+
+Test Data: {
+  ""holidayDate"": ""1990-01-01"",
+  ""reason"": ""Retro Day""
+}",HTTP status code 200 (OK). Response body contains the message: 'Holiday added successfully for shop [shop name]'.,TC-006
+Add a shop holiday with a date in the far future,Shop Holiday Management,Boundary,Medium,A shop with ID 1 exists,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData.
+
+Test Data: {
+  ""holidayDate"": ""2099-12-31"",
+  ""reason"": ""Future Holiday""
+}",HTTP status code 200 (OK). Response body contains the message: 'Holiday added successfully for shop [shop name]'.,TC-007
+Update a shop holiday to a date that already exists for the same shop,Shop Holiday Management,Boundary,High,A shop with ID 1 exists and has holidays on 2023-12-25 and 2023-12-31. The holiday ID for 2023-12-31 is 10.,"1. Send a PUT request to /api/shop-holidays/10 with the payload in testData.
+
+Test Data: {
+  ""holidayDate"": ""2023-12-25"",
+  ""reason"": ""Christmas""
+}",HTTP status code 409 (Conflict). Response body contains the message: 'Shop already has a holiday on 2023-12-25'.,TC-008
+Update a shop holiday with a null holiday date,Shop Holiday Management,Boundary,High,A shop with ID 1 exists and has a holiday with ID 10.,"1. Send a PUT request to /api/shop-holidays/10 with the payload in testData.
+
+Test Data: {
+  ""holidayDate"": null,
+  ""reason"": ""Maintenance""
+}",HTTP status code 400 (Bad Request) with an error message indicating that holiday date cannot be null.,TC-009
+Update a shop holiday with an empty reason,Shop Holiday Management,Boundary,Medium,A shop with ID 1 exists and has a holiday with ID 10.,"1. Send a PUT request to /api/shop-holidays/10 with the payload in testData.
+
+Test Data: {
+  ""holidayDate"": ""2023-12-31"",
+  ""reason"": """"
+}",HTTP status code 200 (OK). Response body contains the message: 'Holiday updated successfully for shop [shop name]'.,TC-010
+Add a worker holiday with a date that already exists for the same worker,Worker Holiday Management,Boundary,High,A worker with ID 1 exists and already has a holiday on 2023-12-25,"1. Send a POST request to /api/worker-holidays/add?workerId=1 with the payload in testData.
+
+Test Data: {
+  ""holidayDate"": ""2023-12-25"",
+  ""reason"": ""Christmas""
+}",HTTP status code 200 (OK). Response body contains the message: 'Worker already has a holiday on 2023-12-25'.,TC-011
+Add a worker holiday with a null holiday date,Worker Holiday Management,Boundary,High,A worker with ID 1 exists,"1. Send a POST request to /api/worker-holidays/add?workerId=1 with the payload in testData.
+
+Test Data: {
+  ""holidayDate"": null,
+  ""reason"": ""Sick Leave""
+}",HTTP status code 400 (Bad Request) with an error message indicating that holiday date cannot be null.,TC-012
+Update a worker holiday to a date that already exists for the same worker,Worker Holiday Management,Boundary,High,A worker with ID 1 exists and has holidays on 2023-12-25 and 2023-12-31. The holiday ID for 2023-12-31 is 10.,"1. Send a PUT request to /api/worker-holidays/10 with the payload in testData.
+
+Test Data: {
+  ""holidayDate"": ""2023-12-25"",
+  ""reason"": ""Christmas""
+}",HTTP status code 200 (OK). Response body contains the message: 'Worker already has a holiday on 2023-12-25'.,TC-013
+Update a worker holiday with a null holiday date,Worker Holiday Management,Boundary,High,A worker with ID 1 exists and has a holiday with ID 10.,"1. Send a PUT request to /api/worker-holidays/10 with the payload in testData.
+
+Test Data: {
+  ""holidayDate"": null,
+  ""reason"": ""Sick Leave""
+}",HTTP status code 400 (Bad Request) with an error message indicating that holiday date cannot be null.,TC-014
+Set a shop slot with start time equal to end time,Slot Management,Boundary,High,A shop with ID 1 exists,"1. Send a POST request to /api/slots/set?shopId=1 with the payload in testData.
+
+Test Data: {
+  ""slotType"": ""MORNING"",
+  ""startTime"": ""09:00"",
+  ""endTime"": ""09:00""
+}",HTTP status code 400 (Bad Request) with an error message indicating that slot end time should be after start time.,TC-015
+Set a shop slot with start time after end time,Slot Management,Boundary,High,A shop with ID 1 exists,"1. Send a POST request to /api/slots/set?shopId=1 with the payload in testData.
+
+Test Data: {
+  ""slotType"": ""MORNING"",
+  ""startTime"": ""10:00"",
+  ""endTime"": ""09:00""
+}",HTTP status code 400 (Bad Request) with an error message indicating that slot end time should be after start time.,TC-016
+Set a shop slot with overlapping time with an existing slot,Slot Management,Boundary,High,A shop with ID 1 exists and already has a MORNING slot from 09:00 to 12:00,"1. Send a POST request to /api/slots/set?shopId=1 with the payload in testData.
+
+Test Data: {
+  ""slotType"": ""DAY"",
+  ""startTime"": ""11:00"",
+  ""endTime"": ""13:00""
+}",HTTP status code 200 (OK). Response body contains the message: 'Error: The slot overlaps with an existing slot of type MORNING'.,TC-017
+Update a slot with start time equal to end time,Slot Management,Boundary,High,A shop with ID 1 exists and has a slot with ID 10,"1. Send a PUT request to /api/slots/10 with the payload in testData.
+
+Test Data: {
+  ""startTime"": ""09:00"",
+  ""endTime"": ""09:00""
+}",HTTP status code 400 (Bad Request) with an error message indicating that slot end time should be after start time.,TC-018
+Update a slot with start time after end time,Slot Management,Boundary,High,A shop with ID 1 exists and has a slot with ID 10,"1. Send a PUT request to /api/slots/10 with the payload in testData.
+
+Test Data: {
+  ""startTime"": ""10:00"",
+  ""endTime"": ""09:00""
+}",HTTP status code 400 (Bad Request) with an error message indicating that slot end time should be after start time.,TC-019
+Set a shop slot with a very large time difference (23:59 to 00:01 next day),Slot Management,Boundary,Medium,A shop with ID 1 exists,"1. Send a POST request to /api/slots/set?shopId=1 with the payload in testData.
+
+Test Data: {
+  ""slotType"": ""NIGHT"",
+  ""startTime"": ""23:59"",
+  ""endTime"": ""00:01""
+}",HTTP status code 400 (Bad Request) with an error message indicating that slot end time should be after start time.,TC-020
+Set a shop slot with a duplicate slot type,Slot Management,Boundary,High,A shop with ID 1 exists and already has a MORNING slot,"1. Send a POST request to /api/slots/set?shopId=1 with the payload in testData.
+
+Test Data: {
+  ""slotType"": ""MORNING"",
+  ""startTime"": ""08:00"",
+  ""endTime"": ""11:00""
+}",HTTP status code 200 (OK). Response body contains the message: 'Error: A slot with type MORNING already exists for this shop.'.,TC-021
+Verify that adding a shop holiday with an invalid date format is rejected,Shop Holiday Management - Input Validation,Security,High,User is authenticated and has permission to manage holidays for the shop (shopId=1),"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""holidayDate"": ""invalid-date-format"",
+  ""reason"": ""Public Holiday""
+}",The API responds with HTTP status 400 Bad Request and an error message indicating invalid date format. The holiday is not added.,d750aff-TC-008
+Verify that a user cannot update a shop holiday for a shop they do not own,Shop Holiday Management - Insecure Direct Object Reference,Security,High,User is authenticated and owns Shop A (shopId=1). Shop B (shopId=2) exists with a holiday (holidayId=100) owned by another user.,"1. Send a PUT request to /api/shop-holidays/100 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""holidayDate"": ""2023-12-26"",
+  ""reason"": ""Updated Holiday""
+}",The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. The holiday is not updated.,TC-022
+Verify that shop holiday reason is not exposed in conflict error responses,Shop Holiday Management - Sensitive Data Exposure,Security,High,User is authenticated and owns a shop (shopId=1). A holiday already exists for the shop on 2023-12-25.,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""holidayDate"": ""2023-12-25"",
+  ""reason"": ""Sensitive Internal Reason""
+}",The API responds with HTTP status 409 Conflict and the message 'Shop already has a holiday on 2023-12-25'. The reason 'Sensitive Internal Reason' is NOT included in the response body.,d750aff-TC-025
+Verify that adding a worker holiday with an invalid date format is rejected,Worker Holiday Management - Input Validation,Security,High,User is authenticated and has permission to manage holidays for the worker (workerId=1),"1. Send a POST request to /api/worker-holidays/add?workerId=1 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""holidayDate"": ""invalid-date-format"",
+  ""reason"": ""Personal Leave""
+}",The API responds with HTTP status 400 Bad Request and an error message indicating invalid date format. The holiday is not added.,d750aff-TC-013
+Verify that a user cannot update a worker holiday for a worker they do not manage,Worker Holiday Management - Insecure Direct Object Reference,Security,High,User is authenticated and manages Worker A (workerId=1). Worker B (workerId=2) exists with a holiday (holidayId=100) managed by another user.,"1. Send a PUT request to /api/worker-holidays/100 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""holidayDate"": ""2023-12-26"",
+  ""reason"": ""Updated Leave""
+}",The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. The holiday is not updated.,TC-023
+Verify that worker holiday reason is not exposed in conflict error responses,Worker Holiday Management - Sensitive Data Exposure,Security,High,User is authenticated and manages a worker (workerId=1). A holiday already exists for the worker on 2023-12-25.,"1. Send a POST request to /api/worker-holidays/add?workerId=1 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""holidayDate"": ""2023-12-25"",
+  ""reason"": ""Sensitive Personal Reason""
+}",The API responds with HTTP status 200 OK and the message 'Worker already has a holiday on 2023-12-25'. The reason 'Sensitive Personal Reason' is NOT included in the response body.,d750aff-TC-026
+Verify that configuring a slot with invalid time format (end time before start time) is rejected,Slot Management - Input Validation,Security,High,User is authenticated and owns a shop (shopId=1).,"1. Send a POST request to /api/slots/set?shopId=1 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""slotType"": ""MORNING"",
+  ""startTime"": ""14:00:00"",
+  ""endTime"": ""12:00:00""
+}",The API responds with HTTP status 400 Bad Request and an error message indicating that the slot end time should be after the start time. The slot is not configured.,d750aff-TC-018
+Verify that a user cannot update a slot for a shop they do not own,Slot Management - Insecure Direct Object Reference,Security,High,User is authenticated and owns Shop A (shopId=1). Shop B (shopId=2) exists with a slot (slotId=100) owned by another user.,"1. Send a PUT request to /api/slots/100 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""slotType"": ""MORNING"",
+  ""startTime"": ""09:00:00"",
+  ""endTime"": ""12:00:00""
+}",The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. The slot is not updated.,01b5363-TC-007
+Verify that updating a slot with invalid time format (end time before start time) is rejected,Slot Management - Input Validation,Security,High,User is authenticated and owns a shop (shopId=1) with an existing slot (slotId=1).,"1. Send a PUT request to /api/slots/1 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""slotType"": ""MORNING"",
+  ""startTime"": ""14:00:00"",
+  ""endTime"": ""12:00:00""
+}",The API responds with HTTP status 400 Bad Request and an error message indicating that the slot end time should be after the start time. The slot is not updated.,d750aff-TC-020
+Verify that a duplicate shop holiday cannot be added for the same date,Shop Holiday Management - Duplicate Holiday Prevention,Security,High,User is authenticated and owns a shop (shopId=1). A holiday already exists for the shop on 2023-12-25.,"1. Send a POST request to /api/shop-holidays/add?shopId=1 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""holidayDate"": ""2023-12-25"",
+  ""reason"": ""Public Holiday""
+}",The API responds with HTTP status 409 Conflict and the message 'Shop already has a holiday on 2023-12-25'. The duplicate holiday is not added.,d750aff-TC-010
+Verify that a duplicate worker holiday cannot be added for the same date,Worker Holiday Management - Duplicate Holiday Prevention,Security,High,User is authenticated and manages a worker (workerId=1). A holiday already exists for the worker on 2023-12-25.,"1. Send a POST request to /api/worker-holidays/add?workerId=1 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""holidayDate"": ""2023-12-25"",
+  ""reason"": ""Personal Leave""
+}",The API responds with HTTP status 200 OK and the message 'Worker already has a holiday on 2023-12-25'. The duplicate holiday is not added.,d750aff-TC-015
+Verify that a user cannot configure a slot with overlapping time for their own shop,Slot Management - Overlapping Slot Prevention,Security,High,User is authenticated and owns a shop (shopId=1) with an existing MORNING slot from 09:00 to 12:00.,"1. Send a POST request to /api/slots/set?shopId=1 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""slotType"": ""AFTERNOON"",
+  ""startTime"": ""11:00:00"",
+  ""endTime"": ""14:00:00""
+}",The API responds with HTTP status 200 OK and the message 'Error: The slot overlaps with an existing slot of type MORNING'. The new slot is not configured.,01b5363-TC-005
+Verify that a user cannot configure a slot with the same type for their own shop,Slot Management - Duplicate Slot Type Prevention,Security,High,User is authenticated and owns a shop (shopId=1) with an existing MORNING slot.,"1. Send a POST request to /api/slots/set?shopId=1 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""slotType"": ""MORNING"",
+  ""startTime"": ""13:00:00"",
+  ""endTime"": ""16:00:00""
+}",The API responds with HTTP status 200 OK and the message 'Error: A slot with type MORNING already exists for this shop'. The new slot is not configured.,01b5363-TC-006
+Verify that a shop holiday cannot be added for a non-existent shop,Shop Holiday Management - Non-existent Shop,Security,High,User is authenticated. Shop with ID 999 does not exist.,"1. Send a POST request to /api/shop-holidays/add?shopId=999 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""holidayDate"": ""2023-12-25"",
+  ""reason"": ""Public Holiday""
+}",The API responds with HTTP status 404 Not Found and an error message 'Shop not found'. The holiday is not added.,d750aff-TC-009
+Verify that a worker holiday cannot be added for a non-existent worker,Worker Holiday Management - Non-existent Worker,Security,High,User is authenticated. Worker with ID 999 does not exist.,"1. Send a POST request to /api/worker-holidays/add?workerId=999 with the payload in testData. 2. Observe the response.
+
+Test Data: {
+  ""holidayDate"": ""2023-12-25"",
+  ""reason"": ""Personal Leave""
+}",The API responds with HTTP status 404 Not Found and an error message 'Worker not found'. The holiday is not added.,d750aff-TC-014

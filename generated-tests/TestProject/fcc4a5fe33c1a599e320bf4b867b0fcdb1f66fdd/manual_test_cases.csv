@@ -1,0 +1,116 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Classify a positive number,Number Classification,Positive,High,The application is running and waiting for user input,"1. Enter a positive integer when prompted. 2. Press Enter to submit the input.
+
+Test Data: Example input: 5",The application displays 'Positive number',TC-001
+Classify a negative number,Number Classification,Positive,High,The application is running and waiting for user input,"1. Enter a negative integer when prompted. 2. Press Enter to submit the input.
+
+Test Data: Example input: -3",The application displays 'Negative number',TC-002
+Classify zero,Number Classification,Positive,Medium,The application is running and waiting for user input,"1. Enter 0 when prompted. 2. Press Enter to submit the input.
+
+Test Data: Example input: 0",The application displays 'Zero',TC-003
+Handle non-integer input,Number Classification,Positive,High,The application is running and waiting for user input,"1. Enter a non-integer value when prompted. 2. Press Enter to submit the input.
+
+Test Data: Example input: abc",The application displays 'Enter only integer number',TC-004
+Verify system rejects non-integer input when classifying a number,Number Classification,Negative,High,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type a non-integer value (e.g., 'abc').
+2. Press Enter.
+
+Test Data: abc",System displays the error message 'Enter only integer number' and does not classify the input.,TC-005
+Verify system rejects decimal numbers when classifying a number,Number Classification,Negative,High,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type a decimal number (e.g., '3.14').
+2. Press Enter.
+
+Test Data: 3.14",System displays the error message 'Enter only integer number' and does not classify the input.,TC-006
+Verify system rejects empty input when classifying a number,Number Classification,Negative,Medium,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', press Enter without typing any value.
+
+Test Data: (empty)",System displays the error message 'Enter only integer number' and does not classify the input.,TC-007
+Verify system rejects whitespace-only input when classifying a number,Number Classification,Negative,Medium,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type only spaces or tabs (e.g., '   ').
+2. Press Enter.",System displays the error message 'Enter only integer number' and does not classify the input.,TC-008
+Verify system rejects input with leading/trailing non-numeric characters when classifying a number,Number Classification,Negative,Medium,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type a value with leading or trailing non-numeric characters (e.g., '123abc' or 'xyz456').
+2. Press Enter.
+
+Test Data: 123abc",System displays the error message 'Enter only integer number' and does not classify the input.,TC-009
+Verify system rejects extremely large numbers that exceed integer limits when classifying a number,Number Classification,Negative,Low,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type a number exceeding the maximum integer value (e.g., '99999999999999999999').
+2. Press Enter.
+
+Test Data: 99999999999999999999",System displays the error message 'Enter only integer number' and does not classify the input.,TC-010
+Verify the system correctly identifies zero as a number,Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number '0' when prompted for a number. 2. Observe the output message.
+
+Test Data: 0",The system displays the message 'Zero'.,TC-011
+Verify the system correctly identifies a positive number at the minimum boundary,Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number '1' when prompted for a number. 2. Observe the output message.
+
+Test Data: 1",The system displays the message 'Positive number'.,TC-012
+Verify the system correctly identifies a negative number at the maximum boundary,Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number '-1' when prompted for a number. 2. Observe the output message.
+
+Test Data: -1",The system displays the message 'Negative number'.,TC-013
+Verify the system handles the maximum 32-bit signed integer value,Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number '2147483647' when prompted for a number. 2. Observe the output message.
+
+Test Data: 2147483647",The system displays the message 'Positive number'.,TC-014
+Verify the system handles the minimum 32-bit signed integer value,Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number '-2147483648' when prompted for a number. 2. Observe the output message.
+
+Test Data: -2147483648",The system displays the message 'Negative number'.,TC-015
+Verify the system handles a value just above the maximum 32-bit signed integer,Number Classification,Boundary,Medium,Application is running and ready to accept user input,"1. Enter the number '2147483648' when prompted for a number. 2. Observe the output message.
+
+Test Data: 2147483648",The system displays the message 'Enter only integer number'.,TC-016
+Verify the system handles a value just below the minimum 32-bit signed integer,Number Classification,Boundary,Medium,Application is running and ready to accept user input,"1. Enter the number '-2147483649' when prompted for a number. 2. Observe the output message.
+
+Test Data: -2147483649",The system displays the message 'Enter only integer number'.,TC-017
+Verify the system handles non-integer input (floating point number),Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number '3.14' when prompted for a number. 2. Observe the output message.
+
+Test Data: 3.14",The system displays the message 'Enter only integer number'.,TC-018
+Verify the system handles non-numeric input (text),Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the text 'abc' when prompted for a number. 2. Observe the output message.
+
+Test Data: abc",The system displays the message 'Enter only integer number'.,TC-019
+Verify the system handles empty input (no value entered),Number Classification,Boundary,Medium,Application is running and ready to accept user input,"1. Press Enter without entering any value when prompted for a number. 2. Observe the output message.
+
+Test Data: (empty input)",The system displays the message 'Enter only integer number'.,TC-020
+Verify the system handles a very large positive number (within 64-bit range),Number Classification,Boundary,Low,Application is running and ready to accept user input,"1. Enter the number '9223372036854775807' when prompted for a number. 2. Observe the output message.
+
+Test Data: 9223372036854775807",The system displays the message 'Enter only integer number'.,TC-021
+Verify the system handles a very large negative number (within 64-bit range),Number Classification,Boundary,Low,Application is running and ready to accept user input,"1. Enter the number '-9223372036854775808' when prompted for a number. 2. Observe the output message.
+
+Test Data: -9223372036854775808",The system displays the message 'Enter only integer number'.,TC-022
+Verify that non-integer input is rejected with a clear error message,Number Input Validation,Security,High,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type a non-integer value (e.g., 'abc').
+2. Press Enter.
+
+Test Data: abc, 12.34, !@#, empty input (just press Enter)",The application displays the message 'Enter only integer number' and does not proceed with any number classification.,TC-023
+Verify that extremely large integer input is handled without crashing or exposing internal errors,Number Input Validation,Security,High,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type a very large integer (e.g., '99999999999999999999').
+2. Press Enter.
+
+Test Data: 99999999999999999999, -99999999999999999999",The application displays the message 'Enter only integer number' and does not proceed with any number classification or expose any internal stack trace/error details.,TC-024
+Verify that special characters and injection-like input are rejected,Number Input Validation,Security,High,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type input containing special characters or sequences (e.g., '1; DROP TABLE users', '1 OR 1=1', '1<script>alert(1)</script>').
+2. Press Enter.
+
+Test Data: 1; DROP TABLE users, 1 OR 1=1, 1<script>alert(1)</script>, 1
+2, 1	2",The application displays the message 'Enter only integer number' and does not proceed with any number classification or execute any injected commands/scripts.,TC-025
+Verify that a positive integer is correctly identified as a positive number,Number Classification,Configuration,High,Application is running and ready to accept user input,"1. When prompted 'Please enter a number:', type '42' and press Enter.
+
+Test Data: 42",The application displays 'Positive number' on the screen.,TC-026
+Verify that a negative integer is correctly identified as a negative number,Number Classification,Configuration,High,Application is running and ready to accept user input,"1. When prompted 'Please enter a number:', type '-17' and press Enter.
+
+Test Data: -17",The application displays 'Negative number' on the screen.,TC-027
+Verify that zero is correctly identified as zero,Number Classification,Configuration,High,Application is running and ready to accept user input,"1. When prompted 'Please enter a number:', type '0' and press Enter.
+
+Test Data: 0",The application displays 'Zero' on the screen.,TC-028
+Verify that non-integer input is rejected with an appropriate error message,Number Classification,Configuration,Medium,Application is running and ready to accept user input,"1. When prompted 'Please enter a number:', type 'abc' and press Enter.
+
+Test Data: abc",The application displays 'Enter only integer number' on the screen.,TC-029
+Verify Gradle wrapper downloads and uses the correct Gradle version (8.0-bin),Gradle Wrapper Configuration,Configuration,High,No existing Gradle wrapper installed in the project,"1. Run './gradlew --version' in the project directory. 2. Observe the Gradle version output.
+
+Test Data: distributionUrl: https\://services.gradle.org/distributions/gradle-8.0-bin.zip (new)",The output shows Gradle version 8.0 and the build completes without errors related to Gradle version mismatch.,TC-030
+Verify the project builds successfully with the specified Java plugin and JUnit 5 dependencies,Gradle Build Configuration,Configuration,High,Project directory is clean (no existing build outputs),"1. Run './gradlew clean build' in the project directory. 2. Observe the build output for errors.
+
+Test Data: Plugins: 'java' (new), Dependencies: 'org.junit.jupiter:junit-jupiter' (new), JUnit BOM: '5.9.1' (new)","The build completes successfully with no dependency resolution errors, and tests are executed using JUnit Platform.",TC-031
+Verify JUnit 5 tests are executed during the build process,Gradle Build Configuration,Configuration,High,Project has at least one JUnit 5 test class in the test directory,"1. Run './gradlew test' in the project directory. 2. Observe the test execution summary in the output.
+
+Test Data: test { useJUnitPlatform() } (new)","The test execution summary shows JUnit 5 tests were discovered and run, with no errors related to test framework configuration.",TC-032
+Verify the project is configured to use JDK 17 language level while maintaining JDK 1.8 compatibility,IDE Project Configuration (misc.xml),Configuration,Medium,Project is opened in IntelliJ IDEA,"1. Open the project in IntelliJ IDEA. 2. Navigate to 'File > Project Structure'. 3. Check the 'Project SDK' and 'Project language level' settings.
+
+Test Data: Project SDK: '1.8' (new), Language level: 'JDK_17' (new)","The project SDK is set to Java 1.8, and the language level is set to JDK 17, with no IDE errors about incompatible language features.",TC-033
+Verify the project output directory is correctly set,IDE Project Configuration (misc.xml),Configuration,Medium,Project is opened in IntelliJ IDEA,"1. Open the project in IntelliJ IDEA. 2. Navigate to 'File > Project Structure > Project Settings > Modules'. 3. Check the 'Output path' setting.
+
+Test Data: Output path: 'file://$PROJECT_DIR$/out' (new)","The output path is set to '$PROJECT_DIR$/out', and compiled classes are generated in this directory during build.",TC-034
+Verify the project is correctly configured to use Git as the version control system,IDE Project Configuration (vcs.xml),Configuration,Low,Project is opened in IntelliJ IDEA and Git is installed,"1. Open the project in IntelliJ IDEA. 2. Navigate to 'File > Settings > Version Control'. 3. Check the VCS mapping for the project directory.
+
+Test Data: VCS mapping: directory='$PROJECT_DIR$', vcs='Git' (new)","The project directory is mapped to Git as the version control system, and Git operations (e.g., commit, push) are available in the IDE.",TC-035
+Verify the root project name is correctly set in Gradle settings,Gradle Settings Configuration,Configuration,Medium,Project is clean (no existing build outputs),"1. Run './gradlew projects' in the project directory. 2. Observe the root project name in the output.
+
+Test Data: rootProject.name = 'TestProject' (new)",The output shows 'Root project 'TestProject'' with no errors related to project name resolution.,TC-036

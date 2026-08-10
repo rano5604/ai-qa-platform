@@ -1,0 +1,52 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Attempt to create a shop with a non-admin user role,Shop Management - Authorization,Negative,High,"User is logged in with a role other than ADMIN (e.g., CUSTOMER or SHOP_WORKER)","1. Navigate to the 'Create Shop' form. 2. Fill in all required fields with valid data (shop name, phone, address, geo-location, owner name, username, email, area ID). 3. Submit the form.
+
+Test Data: Shop Name: Test Shop, Shop Phone: 1234567890, Address: 123 Test St, Geo-Location: 12.34,56.78, Owner Name: Test Owner, Username: testowner, Email: testowner@example.com, Area ID: 1",The system should reject the request and display an error message indicating that only users with the ADMIN role can create shops.,TC-001
+Attempt to update a shop with a non-admin and non-owner user role,Shop Management - Authorization,Negative,High,"User is logged in with a role other than ADMIN or SHOP_OWNER (e.g., CUSTOMER or SHOP_WORKER), and a shop exists in the system","1. Navigate to the 'Edit Shop' form for an existing shop. 2. Modify one or more fields (e.g., shop name, phone). 3. Submit the form.
+
+Test Data: Shop ID: 1, Shop Name: Updated Test Shop, Shop Phone: 9876543210",The system should reject the request and display an error message indicating that the user does not have permission to update this shop.,TC-002
+Attempt to delete a shop with a non-admin user role,Shop Management - Authorization,Negative,High,"User is logged in with a role other than ADMIN (e.g., CUSTOMER or SHOP_WORKER), and a shop exists in the system","1. Navigate to the 'Delete Shop' option for an existing shop. 2. Confirm the deletion action.
+
+Test Data: Shop ID: 1",The system should reject the request and display an error message indicating that only users with the ADMIN role can delete shops.,TC-003
+Attempt to create a shop with missing required fields,Shop Management - Data Validation,Negative,High,User is logged in with ADMIN role,"1. Navigate to the 'Create Shop' form. 2. Leave one or more required fields blank (e.g., shop name, area ID). 3. Submit the form.
+
+Test Data: Shop Name: (blank), Shop Phone: 1234567890, Address: 123 Test St, Geo-Location: 12.34,56.78, Owner Name: Test Owner, Username: testowner, Email: testowner@example.com, Area ID: (blank)",The system should reject the request and display an error message indicating which required fields are missing or invalid.,TC-004
+Attempt to create a shop with an invalid email format for the owner,Shop Management - Data Validation,Negative,Medium,User is logged in with ADMIN role,"1. Navigate to the 'Create Shop' form. 2. Fill in all required fields, but provide an invalid email format for the owner. 3. Submit the form.
+
+Test Data: Shop Name: Test Shop, Shop Phone: 1234567890, Address: 123 Test St, Geo-Location: 12.34,56.78, Owner Name: Test Owner, Username: testowner, Email: invalid-email-format, Area ID: 1",The system should reject the request and display an error message indicating that the email format is invalid.,TC-005
+Attempt to create a shop with a duplicate username for the owner,Shop Management - Data Validation,Negative,Medium,"User is logged in with ADMIN role, and a shop with the same owner username already exists in the system","1. Navigate to the 'Create Shop' form. 2. Fill in all required fields, using a username that already exists for another shop owner. 3. Submit the form.
+
+Test Data: Shop Name: Test Shop 2, Shop Phone: 1234567891, Address: 124 Test St, Geo-Location: 12.35,56.79, Owner Name: Test Owner 2, Username: testowner, Email: testowner2@example.com, Area ID: 1",The system should reject the request and display an error message indicating that the username is already taken.,TC-006
+Attempt to create a shop with a non-existent area ID,Shop Management - Data Validation,Negative,High,User is logged in with ADMIN role,"1. Navigate to the 'Create Shop' form. 2. Fill in all required fields, but provide a non-existent area ID. 3. Submit the form.
+
+Test Data: Shop Name: Test Shop, Shop Phone: 1234567890, Address: 123 Test St, Geo-Location: 12.34,56.78, Owner Name: Test Owner, Username: testowner, Email: testowner@example.com, Area ID: 999999",The system should reject the request and display an error message indicating that the specified area was not found.,TC-007
+Attempt to add a service profile to a shop by a non-owner user,Service Profile Management - Authorization,Negative,High,"User is logged in with a role other than SHOP_OWNER (e.g., CUSTOMER or SHOP_WORKER), and a shop exists in the system","1. Navigate to the 'Add Service' form for an existing shop. 2. Fill in all required fields for the service profile. 3. Submit the form.
+
+Test Data: Shop ID: 1, Service Name: Haircut, Item ID: 1, Price: 20, Duration: 30",The system should reject the request and display an error message indicating that the user does not have permission to add services to this shop.,TC-008
+Attempt to update a service profile of a shop by a non-owner user,Service Profile Management - Authorization,Negative,High,"User is logged in with a role other than SHOP_OWNER (e.g., CUSTOMER or SHOP_WORKER), and a service profile exists for a shop","1. Navigate to the 'Edit Service' form for an existing service profile. 2. Modify one or more fields (e.g., service name, price). 3. Submit the form.
+
+Test Data: Service ID: 1, Service Name: Updated Haircut, Price: 25",The system should reject the request and display an error message indicating that the user does not have permission to update services for this shop.,TC-009
+Attempt to delete a service profile of a shop by a non-owner user,Service Profile Management - Authorization,Negative,High,"User is logged in with a role other than SHOP_OWNER (e.g., CUSTOMER or SHOP_WORKER), and a service profile exists for a shop","1. Navigate to the 'Delete Service' option for an existing service profile. 2. Confirm the deletion action.
+
+Test Data: Service ID: 1",The system should reject the request and display an error message indicating that the user does not have permission to delete services for this shop.,TC-010
+Attempt to add a worker to a shop by a non-owner user,Worker Management - Authorization,Negative,High,"User is logged in with a role other than SHOP_OWNER (e.g., CUSTOMER or SHOP_WORKER), and a shop exists in the system","1. Navigate to the 'Add Worker' form for an existing shop. 2. Fill in all required fields for the worker. 3. Submit the form.
+
+Test Data: Shop ID: 1, Worker Name: John Doe, Phone: 1234567890, Address: 123 Worker St",The system should reject the request and display an error message indicating that the user does not have permission to add workers to this shop.,TC-011
+Attempt to update a worker of a shop by a non-owner user,Worker Management - Authorization,Negative,High,"User is logged in with a role other than SHOP_OWNER (e.g., CUSTOMER or SHOP_WORKER), and a worker exists for a shop","1. Navigate to the 'Edit Worker' form for an existing worker. 2. Modify one or more fields (e.g., worker name, phone). 3. Submit the form.
+
+Test Data: Worker ID: 1, Worker Name: Updated John Doe, Phone: 9876543210",The system should reject the request and display an error message indicating that the user does not have permission to update workers for this shop.,TC-012
+Attempt to delete a worker of a shop by a non-owner user,Worker Management - Authorization,Negative,High,"User is logged in with a role other than SHOP_OWNER (e.g., CUSTOMER or SHOP_WORKER), and a worker exists for a shop","1. Navigate to the 'Delete Worker' option for an existing worker. 2. Confirm the deletion action.
+
+Test Data: Worker ID: 1",The system should reject the request and display an error message indicating that the user does not have permission to delete workers for this shop.,TC-013
+Attempt to add a worker with missing required fields,Worker Management - Data Validation,Negative,High,"User is logged in with SHOP_OWNER role, and a shop exists in the system","1. Navigate to the 'Add Worker' form for an existing shop. 2. Leave one or more required fields blank (e.g., worker name). 3. Submit the form.
+
+Test Data: Worker Name: (blank), Phone: 1234567890, Address: 123 Worker St",The system should reject the request and display an error message indicating which required fields are missing or invalid.,TC-014
+Attempt to add a worker to a non-existent shop,Worker Management - Data Validation,Negative,High,User is logged in with SHOP_OWNER role,"1. Navigate to the 'Add Worker' form for a non-existent shop. 2. Fill in all required fields for the worker. 3. Submit the form.
+
+Test Data: Shop ID: 999999, Worker Name: John Doe, Phone: 1234567890, Address: 123 Worker St",The system should reject the request and display an error message indicating that the specified shop was not found.,92de9f2-TC-017
+Attempt to update a shop with a non-existent shop ID,Shop Management - Data Validation,Negative,High,User is logged in with ADMIN role,"1. Navigate to the 'Edit Shop' form for a non-existent shop. 2. Modify one or more fields (e.g., shop name). 3. Submit the form.
+
+Test Data: Shop ID: 999999, Shop Name: Updated Test Shop",The system should reject the request and display an error message indicating that the specified shop was not found.,3c56bc5-TC-007
+Attempt to access shop details with a non-existent shop ID by an unauthorized user,Shop Management - Authorization,Negative,Medium,"User is logged in with a role other than ADMIN or SHOP_OWNER (e.g., CUSTOMER or SHOP_WORKER)","1. Navigate to the shop details page for a non-existent shop. 2. Observe the system response.
+
+Test Data: Shop ID: 999999",The system should reject the request and display an error message indicating that the shop was not found or the user does not have permission to view this shop.,TC-015

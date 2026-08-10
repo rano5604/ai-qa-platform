@@ -1,0 +1,146 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Retrieve an existing order using its string order ID and verify the response contains the correct order details with updated photo fields,Order Management - Order Retrieval by String ID,Positive,High,An order with orderId '1-20231001-0001' exists in the system with customer photo and measurement cloth photo,"1. Send a GET request to /api/orders/1-20231001-0001 with no request body.
+2. Observe the response status and body.","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order retrieved successfully"", ""data"": {""orderId"": ""1-20231001-0001"", ""customerName"": ""<customer name>"", ""customerPhoto"": ""<valid photo URL>"", ""measurementClothPhoto"": ""<valid photo URL>"", ""items"": [{""measurementGroups"": [{""clothPhoto"": ""<valid photo URL>"", ""patternClothPhoto"": ""<valid photo URL>""}]}]}}",d3da340-TC-003
+"Create a new order with customer photo, measurement cloth photo, and item-level photos, then verify they are stored and returned in the response",Order Management - Order Creation with Updated Photo Fields,Positive,High,"A valid shop ID exists in the system (e.g., 1)","1. Send a POST request to /api/orders with the payload in testData.
+2. Observe the response status and body.
+3. Send a GET request to /api/orders/{orderId} using the orderId from the response to retrieve the order details.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01712345678"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhoto"": ""https://example.com/photos/customer.jpg"",
+  ""measurementClothPhoto"": ""https://example.com/photos/measurement-cloth.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 2000,
+  ""paidAmount"": 1000,
+  ""dueAmount"": 1000,
+  ""trialDate"": ""2023-10-10"",
+  ""deliveryDate"": ""2023-10-20"",
+  ""status"": ""MEASUREMENT_DONE"",
+  ""urgent"": false,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""clothPhoto"": ""https://example.com/photos/cloth.jpg"",
+          ""patternClothPhoto"": ""https://example.com/photos/pattern-cloth.jpg"",
+          ""urgent"": false,
+          ""deliveryDate"": ""2023-10-20"",
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inches"",
+              ""type"": ""NUMERIC"",
+              ""value"": ""40""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order created successfully"", ""data"": {""orderId"": ""<string order ID>"", ""shopName"": ""<shop name>"", ""customerName"": ""John Doe""}}.
+2. HTTP 200 OK response with a JSON body containing the order details, including: {""customerPhoto"": ""https://example.com/photos/customer.jpg"", ""measurementClothPhoto"": ""https://example.com/photos/measurement-cloth.jpg"", ""items"": [{""measurementGroups"": [{""clothPhoto"": ""https://example.com/photos/cloth.jpg"", ""patternClothPhoto"": ""https://example.com/photos/pattern-cloth.jpg""}]}]}",6c839ea-TC-002
+Update an existing order with new photo fields and verify they are reflected in the response,Order Management - Order Update with Updated Photo Fields,Positive,High,An order with orderId '1-20231001-0001' exists in the system,"1. Send a PUT request to /api/orders/1-20231001-0001 with the payload in testData.
+2. Observe the response status and body.
+3. Send a GET request to /api/orders/1-20231001-0001 to retrieve the updated order details.
+
+Test Data: {
+  ""customerName"": ""John Doe Updated"",
+  ""customerPhone"": ""01712345678"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhoto"": ""https://example.com/photos/customer-updated.jpg"",
+  ""measurementClothPhoto"": ""https://example.com/photos/measurement-cloth-updated.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 2000,
+  ""paidAmount"": 1000,
+  ""dueAmount"": 1000,
+  ""trialDate"": ""2023-10-10"",
+  ""deliveryDate"": ""2023-10-20"",
+  ""status"": ""MEASUREMENT_DONE"",
+  ""urgent"": false,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""clothPhoto"": ""https://example.com/photos/cloth-updated.jpg"",
+          ""patternClothPhoto"": ""https://example.com/photos/pattern-cloth-updated.jpg"",
+          ""urgent"": false,
+          ""deliveryDate"": ""2023-10-20"",
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""nameBn"": ""বুক"",
+              ""unit"": ""inches"",
+              ""type"": ""NUMERIC"",
+              ""value"": ""40""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order updated successfully"", ""data"": {""orderId"": ""1-20231001-0001"", ""customerName"": ""John Doe Updated""}}.
+2. HTTP 200 OK response with a JSON body containing the updated order details, including: {""customerPhoto"": ""https://example.com/photos/customer-updated.jpg"", ""measurementClothPhoto"": ""https://example.com/photos/measurement-cloth-updated.jpg"", ""items"": [{""measurementGroups"": [{""clothPhoto"": ""https://example.com/photos/cloth-updated.jpg"", ""patternClothPhoto"": ""https://example.com/photos/pattern-cloth-updated.jpg""}]}]}",TC-001
+Create a new urgent order with measurement group photos and verify urgency flag and photos are stored and returned in the response,Order Management - Urgent Order with Measurement Group Photos,Positive,High,"A valid shop ID exists in the system (e.g., 1)","1. Send a POST request to /api/orders with the payload in testData.
+2. Observe the response status and body.
+3. Send a GET request to /api/orders/{orderId} using the orderId from the response to retrieve the order details.
+
+Test Data: {
+  ""customerName"": ""Jane Smith"",
+  ""customerPhone"": ""01812345678"",
+  ""customerGender"": ""FEMALE"",
+  ""orderGender"": ""FEMALE"",
+  ""customerPhoto"": ""https://example.com/photos/customer-female.jpg"",
+  ""measurementClothPhoto"": ""https://example.com/photos/measurement-cloth-female.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 3000,
+  ""paidAmount"": 1500,
+  ""dueAmount"": 1500,
+  ""trialDate"": ""2023-10-12"",
+  ""deliveryDate"": ""2023-10-18"",
+  ""status"": ""MEASUREMENT_DONE"",
+  ""urgent"": true,
+  ""items"": [
+    {
+      ""itemId"": 2,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""clothPhoto"": ""https://example.com/photos/cloth-urgent.jpg"",
+          ""patternClothPhoto"": ""https://example.com/photos/pattern-cloth-urgent.jpg"",
+          ""urgent"": true,
+          ""deliveryDate"": ""2023-10-18"",
+          ""measurements"": [
+            {
+              ""nameEn"": ""Waist"",
+              ""nameBn"": ""কোমর"",
+              ""unit"": ""inches"",
+              ""type"": ""NUMERIC"",
+              ""value"": ""32""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order created successfully"", ""data"": {""orderId"": ""<string order ID>"", ""urgent"": true, ""shopName"": ""<shop name>"", ""customerName"": ""Jane Smith""}}.
+2. HTTP 200 OK response with a JSON body containing the order details, including: {""urgent"": true, ""items"": [{""measurementGroups"": [{""urgent"": true, ""deliveryDate"": ""2023-10-18"", ""clothPhoto"": ""https://example.com/photos/cloth-urgent.jpg"", ""patternClothPhoto"": ""https://example.com/photos/pattern-cloth-urgent.jpg""}]}]}",45ca61c-TC-001
+Retrieve order history for a customer and verify order IDs and photo fields are returned in the correct format,Order Management - Order Summary with String Order ID,Positive,Medium,A customer with phone number '01712345678' has at least one order in the system,"1. Send a GET request to /api/orders/by-phone?phone=01712345678&page=0&limit=10.
+2. Observe the response status and body.","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Orders retrieved successfully"", ""data"": {""content"": [{""orderId"": ""<string order ID>"", ""customerName"": ""<customer name>"", ""customerPhoto"": ""<valid photo URL>"", ""measurementClothPhoto"": ""<valid photo URL>""}]}}",9f19f61-TC-001
+Verify that order retrieval by orderId does not expose internal database IDs or sensitive system details,Order Management - Order Retrieval,Security,High,An order exists with orderId '50-20231001-0001' and internal database ID 1001. The tester has valid authentication to access the order.,1. Send a GET request to /api/orders/50-20231001-0001 with valid authentication headers.,"The API responds with HTTP status 200 (OK) and a response body containing 'status: success'. The response includes the order details with the 'orderId' field set to '50-20231001-0001' but does not expose the internal database ID (e.g., 1001) in any field or meta information.",45ca61c-TC-007
+Verify that order retrieval by a non-existent orderId returns a generic error message without exposing system details,Order Management - Order Retrieval,Security,High,No order exists with orderId '99-20231001-9999'. The tester has valid authentication.,1. Send a GET request to /api/orders/99-20231001-9999 with valid authentication headers.,"The API responds with HTTP status 404 (Not Found) and a response body containing 'status: error', 'message: Order not found with orderId: 99-20231001-9999', and no sensitive system details (e.g., stack traces, database errors).",TC-002
+Verify that order retrieval by orderId rejects injection attempts via path traversal or special characters,Order Management - Order Retrieval,Security,High,An order exists with orderId '50-20231001-0001'. The tester has valid authentication.,"1. Send a GET request to /api/orders/50-20231001-0001/../ with valid authentication headers.
+2. Send a GET request to /api/orders/50-20231001-0001%27 with valid authentication headers.","The API responds with HTTP status 400 (Bad Request) or 404 (Not Found) for both requests and a response body containing 'status: error', 'message: Invalid orderId', and no sensitive system details (e.g., stack traces, database errors).",TC-003
+Verify that order creation with photo URLs enforces proper input validation to prevent injection or path traversal,Order Management - Order Creation,Security,High,The tester has valid authentication and authorization to create an order.,"1. Send a POST request to /api/orders with the payload in testData, including malicious photo URLs.","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid photo URL', and no sensitive system details (e.g., stack traces, database errors). No order is created.",TC-004
+Verify that order update with photo URLs enforces proper input validation to prevent injection or path traversal,Order Management - Order Update,Security,High,An order exists with orderId '50-20231001-0001'. The tester has valid authentication and authorization to update the order.,"1. Send a PUT request to /api/orders/50-20231001-0001 with the payload in testData, including malicious photo URLs.","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid photo URL', and no sensitive system details (e.g., stack traces, database errors). The order is not updated.",TC-005
+Verify that order retrieval by orderId does not expose sensitive photo URLs to unauthorized users,Order Management - Order Retrieval,Security,High,"An order exists with orderId '50-20231001-0001' and contains photo URLs (e.g., customerPhoto, measurementClothPhoto). The tester does not have authorization to access the order.",1. Send a GET request to /api/orders/50-20231001-0001 without valid authentication or with insufficient permissions.,"The API responds with HTTP status 403 (Forbidden) or 404 (Not Found) and a response body containing a generic error message (e.g., 'Access denied' or 'Order not found'). No photo URLs or order details are exposed.",TC-006
+Verify that order retrieval by orderId exposes photo URLs only to authorized users,Order Management - Order Retrieval,Security,Medium,"An order exists with orderId '50-20231001-0001' and contains photo URLs (e.g., customerPhoto, measurementClothPhoto). The tester has valid authentication and authorization to access the order.",1. Send a GET request to /api/orders/50-20231001-0001 with valid authentication headers.,"The API responds with HTTP status 200 (OK) and a response body containing 'status: success'. The response includes the order details with the 'customerPhoto', 'measurementClothPhoto', 'clothPhoto', and 'patternClothPhoto' fields populated with valid URLs. No sensitive system details are exposed.",TC-007
+Verify that order retrieval by orderId enforces rate limiting to prevent abuse,Order Management - Order Retrieval,Security,Medium,An order exists with orderId '50-20231001-0001'. The tester has valid authentication.,1. Send 10 GET requests to /api/orders/50-20231001-0001 in rapid succession with valid authentication headers.,"The API responds with HTTP status 200 (OK) for the first few requests, then starts responding with HTTP status 429 (Too Many Requests) and a response body containing 'status: error', 'message: Too many requests. Please try again later.', and no sensitive system details.",TC-008

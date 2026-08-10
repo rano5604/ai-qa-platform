@@ -1,0 +1,409 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+"Create a new order with customer details, items, measurements, and financial amounts",Order Management,Positive,High,"A shop with ID 1 exists. An item with ID 1 (e.g., 'Formal Shirt') exists.","1. Send a POST request to /api/orders with the payload in testData. 2. Record the response status code and body.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""customerPhotoUrl"": ""https://example.com/photos/john.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 1500.00,
+  ""paidAmount"": 500.00,
+  ""dueAmount"": 1000.00,
+  ""trialDate"": ""2023-12-15"",
+  ""orderDate"": ""2023-12-01"",
+  ""deliveryDate"": ""2023-12-20"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""photoUrl"": ""https://example.com/photos/shirt.jpg"",
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 42.5
+            },
+            {
+              ""name"": ""Waist"",
+              ""unit"": ""inch"",
+              ""value"": 36.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing: {
+  ""orderId"": <non-null number>,
+  ""shopName"": ""<shop name>"",
+  ""itemName"": ""Formal Shirt"",
+  ""itemCount"": 1,
+  ""totalAmount"": 1500.00,
+  ""paidAmount"": 500.00,
+  ""dueAmount"": 1000.00,
+  ""orderDate"": ""2023-12-01"",
+  ""trialDate"": ""2023-12-15"",
+  ""deliveryDate"": ""2023-12-20"",
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""5551234567""
+}",76584f2-TC-001
+Create a new order with multiple items and measurement groups matching item quantity,Order Management,Positive,High,"A shop with ID 1 exists. Items with ID 1 (e.g., 'Formal Shirt') and ID 2 (e.g., 'Trousers') exist.","1. Send a POST request to /api/orders with the payload in testData. 2. Record the response status code and body.
+
+Test Data: {
+  ""customerName"": ""Jane Smith"",
+  ""customerPhone"": ""5559876543"",
+  ""customerGender"": ""female"",
+  ""orderGender"": ""female"",
+  ""shopId"": 1,
+  ""totalAmount"": 3000.00,
+  ""paidAmount"": 1000.00,
+  ""dueAmount"": 2000.00,
+  ""trialDate"": ""2023-12-16"",
+  ""orderDate"": ""2023-12-02"",
+  ""deliveryDate"": ""2023-12-22"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 2,
+      ""photoUrl"": ""https://example.com/photos/shirt.jpg"",
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 38.0
+            },
+            {
+              ""name"": ""Waist"",
+              ""unit"": ""inch"",
+              ""value"": 32.0
+            }
+          ]
+        },
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 40.0
+            },
+            {
+              ""name"": ""Waist"",
+              ""unit"": ""inch"",
+              ""value"": 34.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      ""itemId"": 2,
+      ""quantity"": 1,
+      ""photoUrl"": ""https://example.com/photos/trousers.jpg"",
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Waist"",
+              ""unit"": ""inch"",
+              ""value"": 30.0
+            },
+            {
+              ""name"": ""Length"",
+              ""unit"": ""inch"",
+              ""value"": 42.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing: {
+  ""orderId"": <non-null number>,
+  ""shopName"": ""<shop name>"",
+  ""itemName"": ""Formal Shirt, Trousers"",
+  ""itemCount"": 3,
+  ""totalAmount"": 3000.00,
+  ""paidAmount"": 1000.00,
+  ""dueAmount"": 2000.00,
+  ""orderDate"": ""2023-12-02"",
+  ""trialDate"": ""2023-12-16"",
+  ""deliveryDate"": ""2023-12-22"",
+  ""customerName"": ""Jane Smith"",
+  ""customerPhone"": ""5559876543""
+}",76584f2-TC-002
+Create a new order with mismatched item quantity and measurement groups (error case),Order Management,Positive,High,"A shop with ID 1 exists. An item with ID 1 (e.g., 'Formal Shirt') exists.","1. Send a POST request to /api/orders with the payload in testData. 2. Record the response status code and error message.
+
+Test Data: {
+  ""customerName"": ""Alice Brown"",
+  ""customerPhone"": ""5554567890"",
+  ""customerGender"": ""female"",
+  ""orderGender"": ""female"",
+  ""shopId"": 1,
+  ""totalAmount"": 1000.00,
+  ""paidAmount"": 500.00,
+  ""dueAmount"": 500.00,
+  ""trialDate"": ""2023-12-17"",
+  ""orderDate"": ""2023-12-03"",
+  ""deliveryDate"": ""2023-12-23"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 2,
+      ""photoUrl"": ""https://example.com/photos/shirt.jpg"",
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 38.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 400 Bad Request response with an error message: ""Item count and number of measurement groups must match for item ID: 1"".",TC-001
+Create a new order with item-level photo and verify it is included in the response,Order Management,Positive,Medium,"A shop with ID 1 exists. An item with ID 1 (e.g., 'Formal Shirt') exists.","1. Send a POST request to /api/orders with the payload in testData. 2. Record the response status code and body. 3. Verify the item photo URL is stored and retrievable (via separate GET order details API if available).
+
+Test Data: {
+  ""customerName"": ""Bob White"",
+  ""customerPhone"": ""5556667777"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""shopId"": 1,
+  ""totalAmount"": 1200.00,
+  ""paidAmount"": 1200.00,
+  ""dueAmount"": 0.00,
+  ""trialDate"": ""2023-12-18"",
+  ""orderDate"": ""2023-12-04"",
+  ""deliveryDate"": ""2023-12-24"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""photoUrl"": ""https://example.com/photos/bob-shirt.jpg"",
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 44.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing the order summary. The item photo URL is stored and retrievable (if GET order details API is available, it should include the photo URL).",TC-002
+Verify that order creation rejects malformed or excessively large measurement values to prevent overflow or injection,Order Management - Order Creation,Security,High,User is authenticated and authorized to create orders for the shop,"1. Send a POST request to /api/orders with the payload in testData containing an excessively large measurement value (e.g., 999999999999.99). 2. Send a POST request to /api/orders with the payload in testData containing a malformed measurement value (e.g., negative value or non-numeric input).
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""customerPhotoUrl"": ""https://example.com/photo.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 1000,
+  ""paidAmount"": 500,
+  ""dueAmount"": 500,
+  ""trialDate"": ""2023-12-15"",
+  ""orderDate"": ""2023-12-01"",
+  ""deliveryDate"": ""2023-12-20"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""photoUrl"": ""https://example.com/item.jpg"",
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 999999999999.99
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. The API responds with HTTP status 400 (Bad Request) and an error message indicating invalid measurement value (e.g., 'Measurement value exceeds allowed limit'). 2. The API responds with HTTP status 400 (Bad Request) and an error message indicating invalid measurement value (e.g., 'Measurement value must be a positive number').",TC-003
+Verify that order creation enforces validation on the number of measurement groups matching item quantity,Order Management - Order Creation,Security,High,User is authenticated and authorized to create orders for the shop,"1. Send a POST request to /api/orders with the payload in testData where the number of measurement groups does not match the item quantity.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""customerPhotoUrl"": ""https://example.com/photo.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 1000,
+  ""paidAmount"": 500,
+  ""dueAmount"": 500,
+  ""trialDate"": ""2023-12-15"",
+  ""orderDate"": ""2023-12-01"",
+  ""deliveryDate"": ""2023-12-20"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 2,
+      ""photoUrl"": ""https://example.com/item.jpg"",
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 42.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The API responds with HTTP status 400 (Bad Request) and an error message indicating that the number of measurement groups must match the item quantity (e.g., 'Item count and number of measurement groups must match for item ID: 1').",TC-004
+Verify that order creation rejects path traversal sequences in photo URLs to prevent unauthorized file access,Order Management - Order Creation,Security,High,User is authenticated and authorized to create orders for the shop,"1. Send a POST request to /api/orders with the payload in testData containing a path traversal sequence in the photoUrl field (e.g., '../../malicious.jpg').
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""customerPhotoUrl"": ""https://example.com/photo.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 1000,
+  ""paidAmount"": 500,
+  ""dueAmount"": 500,
+  ""trialDate"": ""2023-12-15"",
+  ""orderDate"": ""2023-12-01"",
+  ""deliveryDate"": ""2023-12-20"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""photoUrl"": ""../../malicious.jpg"",
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 42.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The API responds with HTTP status 400 (Bad Request) and an error message indicating invalid photo URL (e.g., 'Invalid photo URL format').",TC-005
+Verify that order creation does not expose sensitive customer data in the response,Order Management - Order Creation,Security,High,User is authenticated and authorized to create orders for the shop,"1. Send a POST request to /api/orders with the payload in testData. 2. Inspect the response body to ensure no sensitive data (e.g., raw storage paths, internal IDs) is exposed.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""customerPhotoUrl"": ""https://example.com/photo.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 1000,
+  ""paidAmount"": 500,
+  ""dueAmount"": 500,
+  ""trialDate"": ""2023-12-15"",
+  ""orderDate"": ""2023-12-01"",
+  ""deliveryDate"": ""2023-12-20"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""photoUrl"": ""https://example.com/item.jpg"",
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 42.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The API responds with HTTP status 200 (OK) and a response body containing only non-sensitive fields (e.g., orderId, shopName, itemName, itemCount, totalAmount, paidAmount, dueAmount, orderDate, trialDate, deliveryDate, customerName, customerPhone). No raw storage paths, internal IDs, or other sensitive data is exposed.",TC-006
+Verify that order creation rejects invalid date formats to prevent injection or parsing errors,Order Management - Order Creation,Security,Medium,User is authenticated and authorized to create orders for the shop,"1. Send a POST request to /api/orders with the payload in testData containing an invalid date format (e.g., '2023/12/15' or 'invalid-date').
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""customerPhotoUrl"": ""https://example.com/photo.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 1000,
+  ""paidAmount"": 500,
+  ""dueAmount"": 500,
+  ""trialDate"": ""2023/12/15"",
+  ""orderDate"": ""2023-12-01"",
+  ""deliveryDate"": ""2023-12-20"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""photoUrl"": ""https://example.com/item.jpg"",
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 42.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The API responds with HTTP status 400 (Bad Request) and an error message indicating invalid date format (e.g., 'Invalid date format for trialDate').",TC-007
+"Verify that order creation enforces proper validation on monetary amounts (e.g., negative values, non-numeric input)",Order Management - Order Creation,Security,High,User is authenticated and authorized to create orders for the shop,"1. Send a POST request to /api/orders with the payload in testData containing a negative totalAmount. 2. Send a POST request to /api/orders with the payload in testData containing a non-numeric totalAmount.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""customerPhotoUrl"": ""https://example.com/photo.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": -1000,
+  ""paidAmount"": 500,
+  ""dueAmount"": 500,
+  ""trialDate"": ""2023-12-15"",
+  ""orderDate"": ""2023-12-01"",
+  ""deliveryDate"": ""2023-12-20"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""photoUrl"": ""https://example.com/item.jpg"",
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 42.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","1. The API responds with HTTP status 400 (Bad Request) and an error message indicating invalid totalAmount (e.g., 'Total amount must be a positive value'). 2. The API responds with HTTP status 400 (Bad Request) and an error message indicating invalid totalAmount (e.g., 'Total amount must be a numeric value').",TC-008

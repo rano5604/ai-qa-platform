@@ -1,0 +1,152 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a new appointment reservation,Appointment Reservation,Positive,High,User has a valid shop ID and appointment request details,"1. Send a POST request to /api/shops/{shopId}/appointments with a valid AppointmentReq payload in the request body. 2. Verify the response status code is 200 and the response body contains the created appointment reservation details.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""serviceId"": 1, ""workerId"": 1, ""appointmentDate"": ""2024-09-16""}","Response status code is 200 and the response body contains the created appointment reservation details, including the appointment ID, customer name, customer phone, service ID, worker ID, and appointment date.",TC-001
+Get all appointment reservations for a shop by search criteria,Appointment Reservation,Positive,Medium,"User has a valid shop ID and search criteria (worker ID, customer phone, customer name, date)","1. Send a GET request to /api/shops/{shopId}/appointments with the search criteria as query parameters. 2. Verify the response status code is 200 and the response body contains a list of appointment reservations matching the search criteria.
+
+Test Data: {""workerId"": 1, ""customerPhone"": ""1234567890"", ""customerName"": ""John Doe"", ""date"": ""2024-09-16""}","Response status code is 200 and the response body contains a list of appointment reservations matching the search criteria, including the appointment ID, customer name, customer phone, service ID, worker ID, and appointment date.",TC-002
+Create a new appointment payment,Appointment Payment,Positive,High,User has a valid appointment ID,"1. Send a POST request to /api/payments with the appointment ID as a query parameter. 2. Verify the response status code is 200 and the response body contains the created appointment payment details.
+
+Test Data: {""appointmentId"": 1}","Response status code is 200 and the response body contains the created appointment payment details, including the payment ID, appointment ID, and payment amount.",TC-003
+Delete an existing appointment reservation,Appointment Reservation,Positive,Medium,User has a valid appointment ID,"1. Send a DELETE request to /api/shops/{shopId}/appointments/{id} with the appointment ID as a path parameter. 2. Verify the response status code is 200 and the appointment reservation is deleted.
+
+Test Data: {""id"": 1}",Response status code is 200 and the appointment reservation is deleted.,TC-004
+Create appointment reservation with missing required fields,Appointment Reservation Creation,Negative,High,User is authenticated and has access to a valid shop ID,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {}",The system should return an HTTP 400 Bad Request status code with an error message indicating that required fields are missing.,TC-005
+Create appointment reservation with invalid customer phone format,Appointment Reservation Creation,Negative,High,User is authenticated and has access to a valid shop ID,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""invalid-phone"", ""appointmentDate"": ""2024-12-31"", ""slot"": ""MORNING"", ""serviceIds"": [1], ""workerId"": 1}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the customer phone format is invalid.,TC-006
+Create appointment reservation with invalid appointment date format,Appointment Reservation Creation,Negative,High,User is authenticated and has access to a valid shop ID,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""appointmentDate"": ""31-12-2024"", ""slot"": ""MORNING"", ""serviceIds"": [1], ""workerId"": 1}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the appointment date format is invalid.,TC-007
+Create appointment reservation with invalid slot value,Appointment Reservation Creation,Negative,High,User is authenticated and has access to a valid shop ID,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""customerPhone"": ""1234567890"", ""appointmentDate"": ""2024-12-31"", ""slot"": ""INVALID_SLOT"", ""serviceIds"": [1], ""workerId"": 1}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the slot value is invalid.,TC-008
+Search appointments with missing required date parameter,Appointment Reservation Search,Negative,High,User is authenticated and has access to a valid shop ID,1. Send a GET request to /api/shops/1/appointments without the date query parameter.,The system should return an HTTP 400 Bad Request status code with an error message indicating that the date parameter is required.,TC-009
+Search appointments with invalid date format,Appointment Reservation Search,Negative,High,User is authenticated and has access to a valid shop ID,1. Send a GET request to /api/shops/1/appointments?date=31-12-2024.,The system should return an HTTP 400 Bad Request status code with an error message indicating that the date format is invalid.,TC-010
+Delete appointment reservation with non-existent ID,Appointment Reservation Deletion,Negative,Medium,User is authenticated and has access to a valid shop ID,1. Send a DELETE request to /api/shops/1/appointments/999999.,The system should return an HTTP 404 Not Found status code with an error message indicating that the appointment reservation was not found.,TC-011
+Create payment intent for non-existent appointment ID,Appointment Payment,Negative,High,User is authenticated,1. Send a POST request to /api/payments?appointmentId=999999.,The system should return an HTTP 404 Not Found status code with an error message indicating that the appointment was not found.,TC-012
+Create payment intent for appointment with missing appointment ID parameter,Appointment Payment,Negative,High,User is authenticated,1. Send a POST request to /api/payments without the appointmentId query parameter.,The system should return an HTTP 400 Bad Request status code with an error message indicating that the appointment ID is required.,TC-013
+Create payment intent for already paid appointment,Appointment Payment,Negative,High,User is authenticated and has an existing appointment with payment status 'PAID',1. Send a POST request to /api/payments?appointmentId=<existing_paid_appointment_id>.,The system should return an HTTP 400 Bad Request status code with an error message indicating that payment has already been done for the appointment.,TC-014
+Create reservation with empty customer name,Appointment Reservation,Boundary,High,Shop with ID 1 exists and has at least one worker and service profile,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {
+  ""workerId"": 1,
+  ""serviceProfileId"": 1,
+  ""customerName"": """",
+  ""customerPhone"": ""1234567890"",
+  ""appointmentDate"": ""2024-12-31"",
+  ""slot"": ""MORNING_1""
+}",HTTP status code 400 (Bad Request) with an error message indicating that customer name cannot be empty.,TC-015
+Create reservation with customer name at maximum allowed length,Appointment Reservation,Boundary,High,Shop with ID 1 exists and has at least one worker and service profile,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {
+  ""workerId"": 1,
+  ""serviceProfileId"": 1,
+  ""customerName"": ""ThisIsExactlyFiftyCharactersLongNameForTestingMaxLength"",
+  ""customerPhone"": ""1234567890"",
+  ""appointmentDate"": ""2024-12-31"",
+  ""slot"": ""MORNING_1""
+}",HTTP status code 201 (Created) with the reservation details including the full customer name.,TC-016
+Create reservation with customer name exceeding maximum allowed length,Appointment Reservation,Boundary,High,Shop with ID 1 exists and has at least one worker and service profile,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {
+  ""workerId"": 1,
+  ""serviceProfileId"": 1,
+  ""customerName"": ""ThisIsMoreThanFiftyCharactersLongNameForTestingMaxLengthExceeded"",
+  ""customerPhone"": ""1234567890"",
+  ""appointmentDate"": ""2024-12-31"",
+  ""slot"": ""MORNING_1""
+}",HTTP status code 400 (Bad Request) with an error message indicating that customer name exceeds the maximum length.,TC-017
+Create reservation with empty customer phone,Appointment Reservation,Boundary,High,Shop with ID 1 exists and has at least one worker and service profile,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {
+  ""workerId"": 1,
+  ""serviceProfileId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": """",
+  ""appointmentDate"": ""2024-12-31"",
+  ""slot"": ""MORNING_1""
+}",HTTP status code 400 (Bad Request) with an error message indicating that customer phone cannot be empty.,TC-018
+Create reservation with customer phone at maximum allowed length,Appointment Reservation,Boundary,High,Shop with ID 1 exists and has at least one worker and service profile,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {
+  ""workerId"": 1,
+  ""serviceProfileId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890123456"",
+  ""appointmentDate"": ""2024-12-31"",
+  ""slot"": ""MORNING_1""
+}",HTTP status code 201 (Created) with the reservation details including the full customer phone number.,TC-019
+Create reservation with customer phone exceeding maximum allowed length,Appointment Reservation,Boundary,High,Shop with ID 1 exists and has at least one worker and service profile,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {
+  ""workerId"": 1,
+  ""serviceProfileId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""12345678901234567"",
+  ""appointmentDate"": ""2024-12-31"",
+  ""slot"": ""MORNING_1""
+}",HTTP status code 400 (Bad Request) with an error message indicating that customer phone exceeds the maximum length.,TC-020
+Search reservations with date exactly at the minimum allowed value (today),Appointment Reservation,Boundary,High,Shop with ID 1 exists and has at least one reservation for today,"1. Send a GET request to /api/shops/1/appointments?date=2024-01-01 with the current date in testData.
+
+Test Data: Current date: 2024-01-01",HTTP status code 200 (OK) with a list of reservations for the specified date.,TC-021
+Search reservations with date in the far past (before minimum allowed),Appointment Reservation,Boundary,Medium,Shop with ID 1 exists,"1. Send a GET request to /api/shops/1/appointments?date=2020-01-01 with the date in testData.
+
+Test Data: Date: 2020-01-01",HTTP status code 400 (Bad Request) or 200 (OK) with an empty list if no validation is enforced.,TC-022
+Search reservations with date in the far future (beyond maximum allowed),Appointment Reservation,Boundary,Medium,Shop with ID 1 exists,"1. Send a GET request to /api/shops/1/appointments?date=2030-01-01 with the date in testData.
+
+Test Data: Date: 2030-01-01",HTTP status code 400 (Bad Request) or 200 (OK) with an empty list if no validation is enforced.,TC-023
+Delete reservation with non-existent ID,Appointment Reservation,Boundary,Medium,Shop with ID 1 exists,"1. Send a DELETE request to /api/shops/1/appointments/999999 with the ID in testData.
+
+Test Data: Reservation ID: 999999",HTTP status code 404 (Not Found) or 200 (OK) if the system does not validate existence before deletion.,TC-024
+Create payment for appointment with zero total amount,Appointment Payment,Boundary,High,Appointment with ID 1 exists and has a total amount of 0,"1. Send a POST request to /api/payments?appointmentId=1 with the appointment ID in testData.
+
+Test Data: Appointment ID: 1",HTTP status code 400 (Bad Request) with an error message indicating that payment cannot be processed for zero amount.,TC-025
+Create payment for appointment with minimum allowed total amount (1 cent),Appointment Payment,Boundary,High,Appointment with ID 1 exists and has a total amount of 1 (1 cent),"1. Send a POST request to /api/payments?appointmentId=1 with the appointment ID in testData.
+
+Test Data: Appointment ID: 1",HTTP status code 201 (Created) with payment details including the correct amount (1 cent).,TC-026
+Create payment for appointment with maximum allowed total amount,Appointment Payment,Boundary,High,Appointment with ID 1 exists and has a total amount of 9999999999 (maximum allowed),"1. Send a POST request to /api/payments?appointmentId=1 with the appointment ID in testData.
+
+Test Data: Appointment ID: 1",HTTP status code 201 (Created) with payment details including the correct amount (9999999999).,TC-027
+Create payment for appointment with total amount exceeding maximum allowed,Appointment Payment,Boundary,High,Appointment with ID 1 exists and has a total amount of 10000000000 (exceeds maximum allowed),"1. Send a POST request to /api/payments?appointmentId=1 with the appointment ID in testData.
+
+Test Data: Appointment ID: 1",HTTP status code 400 (Bad Request) with an error message indicating that the amount exceeds the maximum allowed.,TC-028
+Create payment for non-existent appointment,Appointment Payment,Boundary,High,No appointment exists with ID 999999,"1. Send a POST request to /api/payments?appointmentId=999999 with the appointment ID in testData.
+
+Test Data: Appointment ID: 999999",HTTP status code 404 (Not Found) with an error message indicating that the appointment was not found.,TC-029
+Create payment for appointment that is already paid,Appointment Payment,Boundary,High,Appointment with ID 1 exists and has a payment status of 'PAID',"1. Send a POST request to /api/payments?appointmentId=1 with the appointment ID in testData.
+
+Test Data: Appointment ID: 1",HTTP status code 400 (Bad Request) with an error message indicating that payment has already been done for this appointment.,TC-030
+Create payment for appointment with reservation payment status as 'UNPAID' and verify 50% advance payment,Appointment Payment,Boundary,High,"Appointment with ID 1 exists, has a total amount of 10000 (100 USD), and reservation payment status as 'UNPAID'","1. Send a POST request to /api/payments?appointmentId=1 with the appointment ID in testData.
+
+Test Data: Appointment ID: 1",HTTP status code 201 (Created) with payment details including an amount of 5000 (50% of total amount). The reservation payment status should be updated to 'PAID' and due amount should be 5000.,TC-031
+Create payment for appointment with reservation payment status as 'PAID' and verify full due payment,Appointment Payment,Boundary,High,"Appointment with ID 1 exists, has a due amount of 5000 (50 USD), and reservation payment status as 'PAID'","1. Send a POST request to /api/payments?appointmentId=1 with the appointment ID in testData.
+
+Test Data: Appointment ID: 1",HTTP status code 201 (Created) with payment details including an amount of 5000 (due amount). The payment status should be updated to 'PAID' and due amount should be 0.,TC-032
+Unauthorized user cannot create an appointment reservation,Appointment Reservation,Security,High,User is not authenticated,"1. Send a POST request to /api/shops/{shopId}/appointments with a valid AppointmentReq payload. 2. Verify the response status code is 401 Unauthorized.
+
+Test Data: {""customerName"":""John Doe"",""customerPhone"":""1234567890"",""appointmentDate"":""2024-09-16""}",HTTP status code 401 Unauthorized,TC-033
+Unauthorized user cannot get all appointment reservations,Appointment Reservation,Security,High,User is not authenticated,1. Send a GET request to /api/shops/{shopId}/appointments. 2. Verify the response status code is 401 Unauthorized.,HTTP status code 401 Unauthorized,TC-034
+Unauthorized user cannot delete an appointment reservation,Appointment Reservation,Security,High,User is not authenticated,1. Send a DELETE request to /api/shops/{shopId}/appointments/{id}. 2. Verify the response status code is 401 Unauthorized.,HTTP status code 401 Unauthorized,TC-035
+Unauthorized user cannot create a payment,Payment,Security,High,User is not authenticated,"1. Send a POST request to /api/payments with a valid appointmentId. 2. Verify the response status code is 401 Unauthorized.
+
+Test Data: {""appointmentId"":1}",HTTP status code 401 Unauthorized,TC-036
+Valid appointment reservation creation,Appointment Reservation,Security,Medium,User is authenticated,"1. Send a POST request to /api/shops/{shopId}/appointments with a valid AppointmentReq payload. 2. Verify the response status code is 201 Created.
+
+Test Data: {""customerName"":""John Doe"",""customerPhone"":""1234567890"",""appointmentDate"":""2024-09-16""}",HTTP status code 201 Created,TC-037
+Valid appointment reservations retrieval,Appointment Reservation,Security,Medium,User is authenticated,1. Send a GET request to /api/shops/{shopId}/appointments. 2. Verify the response status code is 200 OK and the response body contains a list of appointment reservations.,HTTP status code 200 OK and a list of appointment reservations in the response body,TC-038
+Valid appointment reservation deletion,Appointment Reservation,Security,Medium,User is authenticated,1. Send a DELETE request to /api/shops/{shopId}/appointments/{id}. 2. Verify the response status code is 204 No Content.,HTTP status code 204 No Content,TC-039
+Valid payment creation,Payment,Security,Medium,User is authenticated,"1. Send a POST request to /api/payments with a valid appointmentId. 2. Verify the response status code is 201 Created.
+
+Test Data: {""appointmentId"":1}",HTTP status code 201 Created,TC-040
+SQL injection attack on appointment reservation creation,Security,Security,High,User is authenticated,"1. Send a POST request to /api/shops/{shopId}/appointments with a malicious AppointmentReq payload containing SQL injection code. 2. Verify the response status code is 400 Bad Request or 500 Internal Server Error.
+
+Test Data: {""customerName"":""John Doe"",""customerPhone"":""1234567890"",""appointmentDate"":""2024-09-16"",""sql"":""SELECT * FROM users""}",HTTP status code 400 Bad Request or 500 Internal Server Error,TC-041
+Cross-site scripting (XSS) attack on appointment reservation creation,Security,Security,High,User is authenticated,"1. Send a POST request to /api/shops/{shopId}/appointments with a malicious AppointmentReq payload containing XSS code. 2. Verify the response status code is 400 Bad Request or 500 Internal Server Error.
+
+Test Data: {""customerName"":""John Doe"",""customerPhone"":""1234567890"",""appointmentDate"":""2024-09-16"",""xss"":""<script>alert('XSS')</script>""}",HTTP status code 400 Bad Request or 500 Internal Server Error,TC-042
+Verify appointment booking payment configuration,Appointment Booking Configuration,Configuration,Medium,The application is deployed with the updated configuration,"1. Deploy with the updated config. 2. Trigger an appointment booking operation. 3. Observe the payment behavior.
+
+Test Data: appointment.booking.payment=25 (new), previously undefined",The application charges the correct payment amount of 25 for appointment bookings,TC-043

@@ -1,0 +1,287 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Successfully retrieve all appointment reservations for a shop by date only,Appointment Reservation Management,Positive,High,A shop with ID 1 exists and has at least one appointment reservation scheduled for 2024-05-20,1. Send a GET request to /api/shops/1/appointments?date=2024-05-20.,"Response status code is 200. The response body contains a list of appointment reservations for the specified shop and date, including 'id', 'customerName', 'customerPhone', 'status', and 'serviceStatus' for each reservation.",d159982-TC-002
+Successfully retrieve a specific appointment reservation by ID,Appointment Reservation Management,Positive,High,A shop with ID 1 exists and has an appointment reservation with ID 100,1. Send a GET request to /api/shops/1/appointments/100.,"Response status code is 200. The response body contains the appointment reservation details for ID 100, including 'id', 'customerName', 'customerPhone', 'status', and 'serviceStatus'.",TC-001
+Fail to create an appointment reservation as a non-owner user without proper permissions,Appointment Reservation Creation,Positive,High,A shop with ID 1 exists. The authenticated user is not the owner of shop 1 and is not a customer.,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {
+  ""workerId"": 5,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""serviceProfileIds"": [2, 3],
+  ""appointmentDate"": ""2024-05-20"",
+  ""appointmentTime"": ""10:00:00""
+}",Response status code is 403. The response body contains an error message: 'Access Denied'.,TC-002
+Fail to add a new shop with a duplicate phone number and receive a conflict error,Shop Management,Positive,High,A shop or customer with phone number '1234567890' already exists in the system.,"1. Send a POST request to /api/shops with the payload in testData.
+
+Test Data: {
+  ""shopName"": ""New Shop"",
+  ""shopPhone"": ""1234567890"",
+  ""address"": ""123 Main St"",
+  ""geoLocation"": ""34.052235,-118.243683"",
+  ""ownerName"": ""Jane Doe"",
+  ""areaId"": 1
+}",Response status code is 409. The response body contains an error message: 'Unique constraint violation: Duplicate entry found'.,4ddea38-TC-001
+Fail to update an existing shop with a duplicate phone number and receive a conflict error,Shop Management,Positive,High,A shop with ID 1 exists. Another shop or customer with phone number '1234567890' already exists in the system.,"1. Send a PUT request to /api/shops/1 with the payload in testData.
+
+Test Data: {
+  ""shopName"": ""Updated Shop"",
+  ""shopPhone"": ""1234567890"",
+  ""address"": ""456 Main St"",
+  ""geoLocation"": ""34.052235,-118.243683"",
+  ""ownerName"": ""Jane Doe"",
+  ""areaId"": 1
+}",Response status code is 409. The response body contains an error message: 'Unique constraint violation: Duplicate entry found'.,0cfee6c-TC-001
+"Create appointment reservation with unauthorized user (non-owner, non-customer)",Appointment Reservation,Negative,High,User is authenticated but does not own the shop and is not a customer,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {
+  ""workerId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""appointmentDate"": ""2024-12-31"",
+  ""slot"": ""09:00"",
+  ""serviceProfileIds"": [1, 2]
+}",The system should return an HTTP 403 Forbidden status code with an error message indicating that the user does not have permission to create an appointment for this shop.,TC-003
+Create appointment reservation with invalid worker ID (non-existent),Appointment Reservation,Negative,High,User is authenticated and is either the shop owner or a customer,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {
+  ""workerId"": 9999,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""appointmentDate"": ""2024-12-31"",
+  ""slot"": ""09:00"",
+  ""serviceProfileIds"": [1, 2]
+}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the worker was not found.,TC-004
+Create appointment reservation with invalid service profile IDs (non-existent),Appointment Reservation,Negative,High,User is authenticated and is either the shop owner or a customer,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {
+  ""workerId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""appointmentDate"": ""2024-12-31"",
+  ""slot"": ""09:00"",
+  ""serviceProfileIds"": [9999, 10000]
+}",The system should return an HTTP 400 Bad Request status code with an error message indicating that one or more service profiles were not found.,TC-005
+Create appointment reservation with service profile IDs not belonging to the shop,Appointment Reservation,Negative,High,User is authenticated and is either the shop owner or a customer,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {
+  ""workerId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""appointmentDate"": ""2024-12-31"",
+  ""slot"": ""09:00"",
+  ""serviceProfileIds"": [3, 4]
+}",The system should return an HTTP 400 Bad Request status code with an error message indicating that the service profile is not available for the specified shop.,TC-006
+"Create appointment reservation with missing required fields (workerId, customerPhone, appointmentDate, slot, serviceProfileIds)",Appointment Reservation,Negative,High,User is authenticated and is either the shop owner or a customer,"1. Send a POST request to /api/shops/1/appointments with the payload in testData.
+
+Test Data: {}",The system should return an HTTP 400 Bad Request status code with an error message indicating that required fields are missing.,d159982-TC-005
+Retrieve appointments for a shop with invalid date format,Appointment Reservation,Negative,High,User is authenticated and has access to the shop,1. Send a GET request to /api/shops/1/appointments?date=invalid-date-format.,The system should return an HTTP 400 Bad Request status code with an error message indicating that the date format is invalid.,d159982-TC-010
+Retrieve appointments for a non-existent shop ID,Appointment Reservation,Negative,Medium,User is authenticated,1. Send a GET request to /api/shops/9999/appointments?date=2024-12-31.,The system should return an HTTP 404 Not Found status code with no appointments returned.,TC-007
+Retrieve appointment by ID for a non-existent appointment ID,Appointment Reservation,Negative,Medium,User is authenticated and has access to the shop,1. Send a GET request to /api/shops/1/appointments/9999.,The system should return an HTTP 404 Not Found status code with no appointment returned.,TC-008
+Retrieve appointment by ID for an appointment not belonging to the shop,Appointment Reservation,Negative,Medium,"User is authenticated and has access to the shop, appointment exists but belongs to another shop",1. Send a GET request to /api/shops/1/appointments/2.,The system should return an HTTP 404 Not Found status code with no appointment returned.,TC-009
+Create a shop with a duplicate phone number already registered to another shop,Shop Management,Negative,High,User is authenticated and a phone number is already registered to another shop,"1. Send a POST request to /api/shops with the payload in testData.
+
+Test Data: {
+  ""shopName"": ""New Shop"",
+  ""shopPhone"": ""1234567890"",
+  ""ownerName"": ""Owner Name"",
+  ""address"": ""123 Main St"",
+  ""areaId"": 1,
+  ""geoLocation"": ""0.0,0.0""
+}",The system should return an HTTP 409 Conflict status code with an error message stating 'This Phone Number Already Used'.,0cfee6c-TC-003
+Update a shop with a duplicate phone number already registered to another shop,Shop Management,Negative,High,"User is authenticated, owns the shop, and a phone number is already registered to another shop","1. Send a PUT request to /api/shops/1 with the payload in testData.
+
+Test Data: {
+  ""shopName"": ""Updated Shop"",
+  ""shopPhone"": ""1234567890"",
+  ""ownerName"": ""Updated Owner"",
+  ""address"": ""456 Updated St"",
+  ""areaId"": 1,
+  ""geoLocation"": ""0.0,0.0""
+}",The system should return an HTTP 409 Conflict status code with an error message stating 'This Phone Number Already Used'.,0cfee6c-TC-004
+Unauthorized user attempts to add a worker to a shop,Worker Management,Negative,High,User is authenticated but does not own the shop,"1. Send a POST request to /api/shops/1/workers with the payload in testData.
+
+Test Data: {
+  ""name"": ""New Worker"",
+  ""phone"": ""9876543210"",
+  ""address"": ""789 Worker St""
+}",The system should return an HTTP 403 Forbidden status code with an error message indicating that the user does not have permission to add a worker to this shop.,0985a3b-TC-009
+Unauthorized user attempts to update a worker for a shop,Worker Management,Negative,High,"User is authenticated but does not own the shop, worker exists","1. Send a PUT request to /api/shops/1/workers/1 with the payload in testData.
+
+Test Data: {
+  ""name"": ""Updated Worker"",
+  ""phone"": ""9876543210"",
+  ""address"": ""789 Updated St""
+}",The system should return an HTTP 403 Forbidden status code with an error message indicating that the user does not have permission to update the worker.,0985a3b-TC-010
+Unauthorized user attempts to delete a worker from a shop,Worker Management,Negative,High,"User is authenticated but does not own the shop, worker exists",1. Send a DELETE request to /api/shops/1/workers/1.,The system should return an HTTP 403 Forbidden status code with an error message indicating that the user does not have permission to delete the worker.,0985a3b-TC-011
+Add a new shop with a phone number that violates unique constraint (updated error handling),Shop Management,Boundary,High,A shop with phone number '1234567890' already exists in the system,"1. Send a POST request to /api/shops with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""shopName"": ""New Shop"",
+  ""shopPhone"": ""1234567890"",
+  ""address"": ""123 Main St"",
+  ""geoLocation"": ""34.052235,-118.243683"",
+  ""ownerName"": ""John Doe"",
+  ""areaId"": 1,
+  ""username"": ""newshopowner""
+}",HTTP status code 409 (Conflict). Response body contains an error message: 'Unique constraint violation: Duplicate entry found' with details about the duplicate phone number.,4ddea38-TC-007
+Update an existing shop with a phone number that violates unique constraint (updated error handling),Shop Management,Boundary,High,"Two shops exist in the system: Shop A (ID=1, phone='1111111111') and Shop B (ID=2, phone='2222222222')","1. Send a PUT request to /api/shops/1 with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""shopName"": ""Updated Shop A"",
+  ""shopPhone"": ""2222222222"",
+  ""address"": ""456 Oak St"",
+  ""geoLocation"": ""34.052235,-118.243683"",
+  ""ownerName"": ""John Doe"",
+  ""areaId"": 1
+}",HTTP status code 409 (Conflict). Response body contains an error message: 'Unique constraint violation: Duplicate entry found' with details about the duplicate phone number.,0cfee6c-TC-011
+Add a worker to a shop by a user who does not own the shop (updated access control),Worker Management,Boundary,High,A shop with ID=1 exists and is owned by 'owner1'. A user 'nonowner' is authenticated but does not own shop ID=1.,"1. Authenticate as 'nonowner'. 2. Send a POST request to /api/shops/1/workers with the payload in testData. 3. Observe the response status and body.
+
+Test Data: {
+  ""name"": ""New Worker"",
+  ""phone"": ""9876543210"",
+  ""address"": ""789 Pine St""
+}",HTTP status code 403 (Forbidden). Response body contains an error message: 'Access Denied' with details about the permission issue.,0985a3b-TC-015
+Update a worker in a shop by a user who does not own the shop (updated access control),Worker Management,Boundary,High,"A worker with ID=1 exists in shop ID=1, owned by 'owner1'. A user 'nonowner' is authenticated but does not own shop ID=1.","1. Authenticate as 'nonowner'. 2. Send a PUT request to /api/shops/1/workers/1 with the payload in testData. 3. Observe the response status and body.
+
+Test Data: {
+  ""name"": ""Updated Worker"",
+  ""phone"": ""9876543210"",
+  ""address"": ""789 Pine St""
+}",HTTP status code 403 (Forbidden). Response body contains an error message: 'Access Denied' with details about the permission issue.,0985a3b-TC-024
+Delete a worker in a shop by a user who does not own the shop (updated access control),Worker Management,Boundary,High,"A worker with ID=1 exists in shop ID=1, owned by 'owner1'. A user 'nonowner' is authenticated but does not own shop ID=1.",1. Authenticate as 'nonowner'. 2. Send a DELETE request to /api/shops/1/workers/1. 3. Observe the response status and body.,HTTP status code 403 (Forbidden). Response body contains an error message: 'Access Denied' with details about the permission issue.,0985a3b-TC-025
+Create an appointment reservation for a shop by a customer (access control boundary),Appointment Reservation,Boundary,High,A shop with ID=1 exists. A customer user 'customer1' is authenticated.,"1. Authenticate as 'customer1'. 2. Send a POST request to /api/shops/1/appointments with the payload in testData. 3. Observe the response status and body.
+
+Test Data: {
+  ""workerId"": 1,
+  ""serviceProfileIds"": [1, 2],
+  ""customerName"": ""Alice Smith"",
+  ""customerPhone"": ""1234567890"",
+  ""reservationDate"": ""2023-12-01"",
+  ""reservationTime"": ""10:00:00""
+}",HTTP status code 201 (Created). Response body contains the created appointment reservation with customer name 'Alice Smith' and a valid ID.,TC-010
+Create an appointment reservation for a shop by a shop owner who does not own the shop (access control boundary),Appointment Reservation,Boundary,High,A shop with ID=1 exists and is owned by 'owner1'. A user 'owner2' owns a different shop and is authenticated.,"1. Authenticate as 'owner2'. 2. Send a POST request to /api/shops/1/appointments with the payload in testData. 3. Observe the response status and body.
+
+Test Data: {
+  ""workerId"": 1,
+  ""serviceProfileIds"": [1, 2],
+  ""customerName"": ""Alice Smith"",
+  ""customerPhone"": ""1234567890"",
+  ""reservationDate"": ""2023-12-01"",
+  ""reservationTime"": ""10:00:00""
+}",HTTP status code 403 (Forbidden). Response body contains an error message: 'Access Denied' with details about the permission issue.,TC-011
+Retrieve all appointments for a shop on a specific date (boundary: empty list),Appointment Reservation,Boundary,Medium,A shop with ID=1 exists. No appointments are scheduled for '2023-12-01'.,1. Send a GET request to /api/shops/1/appointments?date=2023-12-01. 2. Observe the response status and body.,HTTP status code 404 (Not Found). Response body is empty.,TC-012
+Retrieve all appointments for a shop on a specific date (boundary: non-empty list),Appointment Reservation,Boundary,Medium,A shop with ID=1 exists. At least one appointment is scheduled for '2023-12-01'.,1. Send a GET request to /api/shops/1/appointments?date=2023-12-01. 2. Observe the response status and body.,HTTP status code 200 (OK). Response body contains a list of appointments for the specified date.,TC-013
+Retrieve a specific appointment by ID (boundary: existing ID),Appointment Reservation,Boundary,Medium,An appointment with ID=1 exists in shop ID=1.,1. Send a GET request to /api/shops/1/appointments/1. 2. Observe the response status and body.,HTTP status code 200 (OK). Response body contains the appointment details with ID=1.,TC-014
+Retrieve a specific appointment by ID (boundary: non-existent ID),Appointment Reservation,Boundary,Medium,No appointment with ID=999 exists in shop ID=1.,1. Send a GET request to /api/shops/1/appointments/999. 2. Observe the response status and body.,HTTP status code 404 (Not Found). Response body is empty.,TC-015
+Create an appointment reservation with empty service profile IDs list (boundary case),Appointment Reservation,Boundary,High,A shop with ID=1 exists. A worker with ID=1 exists in the shop.,"1. Send a POST request to /api/shops/1/appointments with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""workerId"": 1,
+  ""serviceProfileIds"": [],
+  ""customerName"": ""Alice Smith"",
+  ""customerPhone"": ""1234567890"",
+  ""reservationDate"": ""2023-12-01"",
+  ""reservationTime"": ""10:00:00""
+}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that one or more service profiles are required.,TC-016
+Create an appointment reservation with a non-existent service profile ID (boundary case),Appointment Reservation,Boundary,High,A shop with ID=1 exists. A worker with ID=1 exists in the shop. No service profile with ID=999 exists.,"1. Send a POST request to /api/shops/1/appointments with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""workerId"": 1,
+  ""serviceProfileIds"": [999],
+  ""customerName"": ""Alice Smith"",
+  ""customerPhone"": ""1234567890"",
+  ""reservationDate"": ""2023-12-01"",
+  ""reservationTime"": ""10:00:00""
+}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that one or more service profiles were not found.,TC-017
+Create an appointment reservation with a service profile not associated with the shop (boundary case),Appointment Reservation,Boundary,High,A shop with ID=1 exists. A worker with ID=1 exists in the shop. A service profile with ID=1 exists but is associated with shop ID=2.,"1. Send a POST request to /api/shops/1/appointments with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""workerId"": 1,
+  ""serviceProfileIds"": [1],
+  ""customerName"": ""Alice Smith"",
+  ""customerPhone"": ""1234567890"",
+  ""reservationDate"": ""2023-12-01"",
+  ""reservationTime"": ""10:00:00""
+}",HTTP status code 400 (Bad Request). Response body contains an error message indicating that the service profile is not available for the specified shop.,TC-018
+Verify that a customer cannot access appointment reservations for a shop they do not own,Appointment Reservation - Access Control,Security,High,"User is authenticated as a customer with a valid JWT token. A shop exists with ID 1, and the customer does not own this shop. At least one appointment reservation exists for shop ID 1.","1. Send a GET request to /api/shops/1/appointments with the query parameter date set to a valid date (e.g., '2024-12-31'). Include the JWT token in the Authorization header.
+2. Send a GET request to /api/shops/1/appointments/1 to fetch a specific appointment by ID. Include the JWT token in the Authorization header.
+
+Test Data: Query parameter: date=2024-12-31","1. The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'.
+2. The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'.",TC-019
+Verify that a shop owner can access appointment reservations for their own shop,Appointment Reservation - Access Control,Security,High,"User is authenticated as a shop owner with a valid JWT token. The owner owns shop ID 1. At least one appointment reservation exists for shop ID 1 on a specific date (e.g., '2024-12-31').","1. Send a GET request to /api/shops/1/appointments with the query parameter date set to '2024-12-31'. Include the JWT token in the Authorization header.
+2. Send a GET request to /api/shops/1/appointments/1 to fetch a specific appointment by ID. Include the JWT token in the Authorization header.
+
+Test Data: Query parameter: date=2024-12-31","1. The API responds with HTTP status 200 OK and a list of appointment reservations for shop ID 1 on the specified date.
+2. The API responds with HTTP status 200 OK and the details of the appointment with ID 1.",d159982-TC-034
+Verify that a customer can create an appointment reservation for a valid shop and worker,Appointment Reservation - Creation,Security,High,User is authenticated as a customer with a valid JWT token. A shop with ID 1 exists. A worker with ID 1 exists and is associated with shop ID 1. A service profile with ID 1 exists and is associated with shop ID 1.,"1. Send a POST request to /api/shops/1/appointments with the payload in testData. Include the JWT token in the Authorization header.
+
+Test Data: {
+  ""workerId"": 1,
+  ""serviceProfileIds"": [1],
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""reservationDate"": ""2024-12-31"",
+  ""reservationTime"": ""10:00:00""
+}",The API responds with HTTP status 201 Created and the details of the newly created appointment reservation in the response body.,d159982-TC-037
+Verify that a shop owner cannot create an appointment reservation for a shop they do not own,Appointment Reservation - Creation,Security,High,User is authenticated as a shop owner with a valid JWT token. The owner owns shop ID 1 but attempts to create an appointment for shop ID 2. A worker with ID 1 exists and is associated with shop ID 2. A service profile with ID 1 exists and is associated with shop ID 2.,"1. Send a POST request to /api/shops/2/appointments with the payload in testData. Include the JWT token in the Authorization header.
+
+Test Data: {
+  ""workerId"": 1,
+  ""serviceProfileIds"": [1],
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""+1234567890"",
+  ""reservationDate"": ""2024-12-31"",
+  ""reservationTime"": ""10:00:00""
+}",The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'.,TC-020
+Verify that adding a shop with a duplicate phone number returns a conflict error,Shop Management - Duplicate Phone Number,Security,High,User is authenticated as an ADMIN with a valid JWT token. A shop with phone number '+1234567890' already exists in the system.,"1. Send a POST request to /api/shops (assuming this endpoint exists for adding shops) with the payload in testData. Include the JWT token in the Authorization header.
+
+Test Data: {
+  ""shopName"": ""New Shop"",
+  ""shopPhone"": ""+1234567890"",
+  ""address"": ""123 Main St"",
+  ""geoLocation"": ""34.052235,-118.243683"",
+  ""ownerName"": ""Jane Doe"",
+  ""areaId"": 1
+}",The API responds with HTTP status 409 Conflict and an error message 'Unique constraint violation: Duplicate entry found'. The shop is not added to the system.,a1168db-TC-008
+Verify that updating a shop with a duplicate phone number returns a conflict error,Shop Management - Duplicate Phone Number,Security,High,User is authenticated as an ADMIN with a valid JWT token. Two shops exist in the system: Shop A (ID 1) with phone number '+1234567890' and Shop B (ID 2) with phone number '+9876543210'.,"1. Send a PUT request to /api/shops/2 (assuming this endpoint exists for updating shops) with the payload in testData. Include the JWT token in the Authorization header.
+
+Test Data: {
+  ""shopName"": ""Updated Shop B"",
+  ""shopPhone"": ""+1234567890"",
+  ""address"": ""456 Elm St"",
+  ""geoLocation"": ""34.052235,-118.243683"",
+  ""ownerName"": ""John Smith"",
+  ""areaId"": 1
+}",The API responds with HTTP status 409 Conflict and an error message 'Unique constraint violation: Duplicate entry found'. The shop details are not updated.,0cfee6c-TC-015
+Verify that a shop owner cannot add a worker to a shop they do not own,Worker Management - Access Control,Security,High,User is authenticated as a shop owner with a valid JWT token. The owner owns shop ID 1 but attempts to add a worker to shop ID 2.,"1. Send a POST request to /api/shops/2/workers (assuming this endpoint exists for adding workers) with the payload in testData. Include the JWT token in the Authorization header.
+
+Test Data: {
+  ""name"": ""New Worker"",
+  ""phone"": ""+1234567891"",
+  ""address"": ""789 Oak St""
+}",The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. The worker is not added to the shop.,0985a3b-TC-031
+Verify that a shop owner can add a worker to their own shop,Worker Management - Access Control,Security,Medium,User is authenticated as a shop owner with a valid JWT token. The owner owns shop ID 1.,"1. Send a POST request to /api/shops/1/workers (assuming this endpoint exists for adding workers) with the payload in testData. Include the JWT token in the Authorization header.
+
+Test Data: {
+  ""name"": ""New Worker"",
+  ""phone"": ""+1234567891"",
+  ""address"": ""789 Oak St""
+}",The API responds with HTTP status 201 Created and the details of the newly added worker in the response body.,TC-021
+Verify that a shop owner cannot update a worker for a shop they do not own,Worker Management - Access Control,Security,High,User is authenticated as a shop owner with a valid JWT token. The owner owns shop ID 1 but attempts to update a worker for shop ID 2. A worker with ID 1 exists and is associated with shop ID 2.,"1. Send a PUT request to /api/shops/2/workers/1 (assuming this endpoint exists for updating workers) with the payload in testData. Include the JWT token in the Authorization header.
+
+Test Data: {
+  ""name"": ""Updated Worker"",
+  ""phone"": ""+1234567892"",
+  ""address"": ""101 Pine St""
+}",The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. The worker details are not updated.,0985a3b-TC-032
+Verify that a shop owner cannot delete a worker for a shop they do not own,Worker Management - Access Control,Security,High,User is authenticated as a shop owner with a valid JWT token. The owner owns shop ID 1 but attempts to delete a worker for shop ID 2. A worker with ID 1 exists and is associated with shop ID 2.,1. Send a DELETE request to /api/shops/2/workers/1 (assuming this endpoint exists for deleting workers). Include the JWT token in the Authorization header.,The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. The worker is not deleted.,0985a3b-TC-033
+Verify that a customer cannot access another customer's appointment reservation by guessing the ID,Appointment Reservation - Insecure Direct Object Reference,Security,High,User is authenticated as a customer with a valid JWT token. Two appointment reservations exist: one for the authenticated customer (ID 1) and another for a different customer (ID 2). Both appointments are associated with the same shop (ID 1).,1. Send a GET request to /api/shops/1/appointments/2 to fetch the appointment reservation for the other customer. Include the JWT token in the Authorization header.,The API responds with HTTP status 403 Forbidden and an error message 'Access Denied'. The details of the other customer's appointment are not returned.,TC-022
+Verify the new MicroProfile REST client error response handler dependency is correctly resolved and does not cause build or runtime issues,REST Client Error Response Handler Dependency,Configuration,High,The application source code is unchanged except for the pom.xml update. The build environment has access to Maven central or the configured repository hosting the new dependency.,"1. Clean the project to remove any existing build artifacts. 2. Build the project using Maven (e.g., `mvn clean install`). 3. Observe the build logs for dependency resolution errors or warnings. 4. Deploy the application to a test environment. 5. Trigger REST client operations that would use error response handling (e.g., API calls to external services). 6. Observe application logs for runtime errors related to the new dependency.
+
+Test Data: New dependency: org.microprofile-ext.restclient-ext:configurable-errorresponse-handler:1.0.0 (previously not present)","The build completes successfully without dependency resolution errors. The application starts without runtime errors, and REST client operations handle error responses as expected (e.g., no ClassNotFoundException or NoSuchMethodError related to the new dependency).",TC-023
+Verify the new error response handler does not break existing REST client functionality,REST Client Error Response Handler Integration,Configuration,High,The application is deployed with the updated pom.xml. Existing REST client operations are functional before the change.,"1. Deploy the application with the updated configuration. 2. Execute existing REST client operations (e.g., API calls to external services). 3. Verify the responses are processed correctly (e.g., successful responses are handled as before, error responses are logged or transformed appropriately). 4. Check application logs for any exceptions or unexpected behavior related to REST client operations.
+
+Test Data: New dependency: org.microprofile-ext.restclient-ext:configurable-errorresponse-handler:1.0.0 (previously not present)","Existing REST client operations continue to work as before. Error responses from external services are handled without breaking the application flow (e.g., no unhandled exceptions, proper error logging).",TC-024
+Verify the new dependency does not introduce transitive dependency conflicts with existing libraries,Transitive Dependency Conflicts,Configuration,Medium,"The application is built with the updated pom.xml. Dependency tree analysis tools are available (e.g., `mvn dependency:tree`).","1. Run `mvn dependency:tree` to generate the dependency tree. 2. Review the output for any conflicts or duplicate dependencies introduced by the new library. 3. Check for version mismatches in transitive dependencies (e.g., different versions of the same library). 4. Build the project and observe for any warnings or errors related to dependency conflicts. 5. Deploy the application and verify no runtime errors occur due to conflicts.
+
+Test Data: New dependency: org.microprofile-ext.restclient-ext:configurable-errorresponse-handler:1.0.0 (transitive dependencies may include MicroProfile REST client libraries or other shared dependencies)",The dependency tree shows no conflicts or duplicate dependencies. The build completes without warnings or errors related to dependency conflicts. The application starts and runs without runtime errors due to conflicts.,TC-025

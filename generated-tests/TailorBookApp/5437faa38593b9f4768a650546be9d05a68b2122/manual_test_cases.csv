@@ -1,0 +1,30 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Retrieve paginated list of orders for a shop with default sorting by newest first,Order Management - Paginated Order List for Shop,Positive,High,"Shop with ID 1 has at least 3 orders recorded, with the newest order having the highest ID","1. Send a GET request to /api/orders/shop/1 with default pagination parameters (page=0, limit=10).","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Orders retrieved successfully"", ""data"": {""content"": [<list of orders sorted by ID in descending order>], ""totalElements"": >=3, ""totalPages"": >=1}}",98ef3c9-TC-001
+Retrieve paginated list of orders for a shop with custom pagination and sorting by newest first,Order Management - Paginated Order List for Shop,Positive,High,"Shop with ID 1 has at least 15 orders recorded, with the newest order having the highest ID","1. Send a GET request to /api/orders/shop/1 with custom pagination parameters (page=1, limit=5).","HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Orders retrieved successfully"", ""data"": {""content"": [<list of 5 orders sorted by ID in descending order>], ""totalElements"": >=15, ""totalPages"": >=3}}",TC-001
+Retrieve orders by shop with minimum allowed page value,Order Retrieval,Boundary,Medium,User has at least one order recorded for a shop,"1. Send a GET request to /api/orders/shop/{shopId} with query parameters page=0 and limit=10.
+
+Test Data: {""shopId"": 1, ""page"": 0, ""limit"": 10}","The API responds with a 200 OK status code, a status of 'success', and the response body contains 'data' with a list of orders for the shop.",TC-002
+Retrieve orders by shop with maximum allowed page value,Order Retrieval,Boundary,Medium,User has at least one order recorded for a shop,"1. Send a GET request to /api/orders/shop/{shopId} with query parameters page=1000 and limit=10.
+
+Test Data: {""shopId"": 1, ""page"": 1000, ""limit"": 10}","The API responds with a 200 OK status code, a status of 'success', and the response body contains 'data' with a list of orders for the shop or an empty list if no orders are found.",TC-003
+Retrieve orders by shop with page value one below minimum allowed value,Order Retrieval,Boundary,Medium,User has at least one order recorded for a shop,"1. Send a GET request to /api/orders/shop/{shopId} with query parameters page=-1 and limit=10.
+
+Test Data: {""shopId"": 1, ""page"": -1, ""limit"": 10}","The API responds with a 400 Bad Request status code, a status of 'error', and an error message indicating that the page value is invalid.",TC-004
+Retrieve orders by shop with page value one above maximum allowed value,Order Retrieval,Boundary,Medium,User has at least one order recorded for a shop,"1. Send a GET request to /api/orders/shop/{shopId} with query parameters page=1001 and limit=10.
+
+Test Data: {""shopId"": 1, ""page"": 1001, ""limit"": 10}","The API responds with a 400 Bad Request status code, a status of 'error', and an error message indicating that the page value is invalid.",TC-005
+Retrieve orders by shop with limit value of zero,Order Retrieval,Boundary,Medium,User has at least one order recorded for a shop,"1. Send a GET request to /api/orders/shop/{shopId} with query parameters page=0 and limit=0.
+
+Test Data: {""shopId"": 1, ""page"": 0, ""limit"": 0}","The API responds with a 400 Bad Request status code, a status of 'error', and an error message indicating that the limit value is invalid.",TC-006
+Retrieve orders by shop with limit value one below minimum allowed value,Order Retrieval,Boundary,Medium,User has at least one order recorded for a shop,"1. Send a GET request to /api/orders/shop/{shopId} with query parameters page=0 and limit=-1.
+
+Test Data: {""shopId"": 1, ""page"": 0, ""limit"": -1}","The API responds with a 400 Bad Request status code, a status of 'error', and an error message indicating that the limit value is invalid.",TC-007
+Retrieve orders by shop with limit value one above maximum allowed value,Order Retrieval,Boundary,Medium,User has at least one order recorded for a shop,"1. Send a GET request to /api/orders/shop/{shopId} with query parameters page=0 and limit=1001.
+
+Test Data: {""shopId"": 1, ""page"": 0, ""limit"": 1001}","The API responds with a 400 Bad Request status code, a status of 'error', and an error message indicating that the limit value is invalid.",TC-008
+Retrieve orders by shop with null shopId,Order Retrieval,Boundary,Medium,User has at least one order recorded for a shop,"1. Send a GET request to /api/orders/shop/{shopId} with query parameters page=0 and limit=10.
+
+Test Data: {""shopId"": null, ""page"": 0, ""limit"": 10}","The API responds with a 400 Bad Request status code, a status of 'error', and an error message indicating that the shopId is invalid.",TC-009
+Retrieve orders by shop with empty shopId,Order Retrieval,Boundary,Medium,User has at least one order recorded for a shop,"1. Send a GET request to /api/orders/shop/{shopId} with query parameters page=0 and limit=10.
+
+Test Data: {""shopId"": """", ""page"": 0, ""limit"": 10}","The API responds with a 400 Bad Request status code, a status of 'error', and an error message indicating that the shopId is invalid.",TC-010

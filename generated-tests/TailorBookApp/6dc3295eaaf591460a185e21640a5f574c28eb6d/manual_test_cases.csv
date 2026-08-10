@@ -1,0 +1,105 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Update order item status from MEASUREMENT_DONE to CUTTING_DONE and verify status is reflected in order details,Order Item Status Management,Positive,High,An existing order with at least one item in MEASUREMENT_DONE status. User is logged in and has permission to update order statuses.,"1. Open the order details page for the existing order. Note the current status of the item (should show 'Measurement Done').
+2. Navigate to the 'Update Status' section for the specific item.
+3. Select 'Cutting Done' from the status dropdown.
+4. Click 'Save' to update the status.
+5. Refresh the order details page and verify the item status is updated.
+6. Open the API response or detailed view (e.g., JSON response) for the order and locate the measurement group for this item.
+
+Test Data: Order ID: 12345, Item: Formal Shirt, Initial Status: MEASUREMENT_DONE, New Status: CUTTING_DONE","1. The order details page shows the item status as 'Cutting Done' after the update.
+2. The API response or detailed view includes the measurement group for this item with the field 'orderItemStatus' set to 'CUTTING_DONE'.",113f2a9-TC-002
+Update order item status to READY_FOR_DELIVERY and verify status is reflected in order details,Order Item Status Management,Positive,High,An existing order with at least one item in SEWING_DONE status. User is logged in and has permission to update order statuses.,"1. Open the order details page for the existing order. Note the current status of the item (should show 'Sewing Done').
+2. Navigate to the 'Update Status' section for the specific item.
+3. Select 'Ready for Delivery' from the status dropdown.
+4. Click 'Save' to update the status.
+5. Refresh the order details page and verify the item status is updated.
+6. Open the API response or detailed view (e.g., JSON response) for the order and locate the measurement group for this item.
+
+Test Data: Order ID: 12345, Item: Trousers, Initial Status: SEWING_DONE, New Status: READY_FOR_DELIVERY","1. The order details page shows the item status as 'Ready for Delivery' after the update.
+2. The API response or detailed view includes the measurement group for this item with the field 'orderItemStatus' set to 'READY_FOR_DELIVERY'.",113f2a9-TC-004
+Verify order item status is displayed in order summary after creation,Order Item Status Management,Positive,High,User is logged in and has permission to create orders. A customer and item are available for selection.,"1. Navigate to the 'Create New Order' page.
+2. Enter customer details (e.g., name, phone, gender).
+3. Select an item (e.g., 'Formal Shirt').
+4. Add measurements for the item (e.g., Chest: 40, Waist: 34).
+5. Mark the order as non-urgent and set a delivery date.
+6. Click 'Save' to create the order.
+7. Open the order details page for the newly created order.
+8. Open the API response or detailed view (e.g., JSON response) for the order and locate the measurement group for this item.
+
+Test Data: Customer: John Doe, Phone: 5551234567, Item: Formal Shirt, Measurements: Chest=40, Waist=34, Delivery Date: 7 days from today","1. The order details page shows the item status as 'Measurement Done' by default.
+2. The API response or detailed view includes the measurement group for this item with the field 'orderItemStatus' set to 'MEASUREMENT_DONE'.",TC-001
+Attempt to update order item status with a non-existent measurement group,Order Item Status Management,Negative,High,"User has an existing order with at least one order item, but the order item has no measurement groups recorded","1. Log in to the application as a tailor with edit permissions. 2. Navigate to the 'Orders' section. 3. Select the order containing the order item. 4. Click on the order item to view its details. 5. Click the 'Update Status' button. 6. Select a valid next status (e.g., 'MEASUREMENT_DONE'). 7. Click 'Save'.
+
+Test Data: Order ID: 123, Order Item ID: 456, New Status: MEASUREMENT_DONE",The system displays an error message indicating that no measurement groups exist for this order item and the status cannot be updated.,TC-002
+Attempt to update order item status with an invalid status transition due to measurement group status mismatch,Order Item Status Management,Negative,High,User has an existing order with an order item that has a measurement group in 'MEASUREMENT_PENDING' status,"1. Log in to the application as a tailor with edit permissions. 2. Navigate to the 'Orders' section. 3. Select the order containing the order item. 4. Click on the order item to view its details. 5. Click the 'Update Status' button. 6. Select 'SEWING_DONE' as the new status (skipping intermediate steps). 7. Click 'Save'.
+
+Test Data: Order ID: 123, Order Item ID: 456, New Status: SEWING_DONE",The system displays an error message indicating that the status transition from MEASUREMENT_PENDING to SEWING_DONE is invalid and must follow the allowed sequence.,113f2a9-TC-009
+Attempt to update order item status after the measurement group has reached the final status,Order Item Status Management,Negative,High,User has an existing order with an order item that has a measurement group in 'DELIVERED' status,"1. Log in to the application as a tailor with edit permissions. 2. Navigate to the 'Orders' section. 3. Select the order containing the order item. 4. Click on the order item to view its details. 5. Click the 'Update Status' button. 6. Select any status (e.g., 'MEASUREMENT_DONE'). 7. Click 'Save'.
+
+Test Data: Order ID: 123, Order Item ID: 456, New Status: MEASUREMENT_DONE",The system displays an error message indicating that no further status updates are allowed after DELIVERED.,113f2a9-TC-010
+Attempt to update order item status with a non-numeric order item ID via direct input,Order Item Status Management,Negative,Medium,User has access to the order item status update functionality,"1. Log in to the application as a tailor with edit permissions. 2. Navigate to the 'Orders' section. 3. Manually modify the URL or API request to include a non-numeric order item ID (e.g., 'ABC'). 4. Submit the status update request with a valid status (e.g., 'MEASUREMENT_DONE').
+
+Test Data: Order Item ID: ABC, New Status: MEASUREMENT_DONE",The system displays an error message indicating that the order item ID must be a valid numeric value.,113f2a9-TC-011
+Attempt to update order item status with an invalid status value via direct input,Order Item Status Management,Negative,Medium,User has an existing order with at least one order item,"1. Log in to the application as a tailor with edit permissions. 2. Navigate to the 'Orders' section. 3. Select the order containing the order item. 4. Manually modify the status update request to include an invalid status value (e.g., 'INVALID_STATUS'). 5. Submit the request.
+
+Test Data: Order ID: 123, Order Item ID: 456, New Status: INVALID_STATUS",The system displays an error message indicating that the status value is invalid and must be one of the predefined statuses.,113f2a9-TC-012
+Attempt to update order item status when the measurement group is in CANCELLED status,Order Item Status Management,Negative,High,User has an existing order with an order item that has a measurement group in 'CANCELLED' status,"1. Log in to the application as a tailor with edit permissions. 2. Navigate to the 'Orders' section. 3. Select the order containing the order item. 4. Click on the order item to view its details. 5. Click the 'Update Status' button. 6. Select any status (e.g., 'MEASUREMENT_DONE'). 7. Click 'Save'.
+
+Test Data: Order ID: 123, Order Item ID: 456, New Status: MEASUREMENT_DONE",The system displays an error message indicating that no further status updates are allowed after CANCELLED.,TC-003
+Attempt to update order item status without providing a new status,Order Item Status Management,Negative,Medium,User has an existing order with at least one order item,"1. Log in to the application as a tailor with edit permissions. 2. Navigate to the 'Orders' section. 3. Select the order containing the order item. 4. Click on the order item to view its details. 5. Click the 'Update Status' button. 6. Leave the status field blank. 7. Click 'Save'.
+
+Test Data: Order ID: 123, Order Item ID: 456, New Status: [blank]",The system displays an error message indicating that the new status field is required and cannot be blank.,113f2a9-TC-008
+"Attempt to update order item status with a status transition that skips multiple steps (e.g., MEASUREMENT_DONE to READY_FOR_DELIVERY)",Order Item Status Management,Negative,High,User has an existing order with an order item that has a measurement group in 'MEASUREMENT_DONE' status,"1. Log in to the application as a tailor with edit permissions. 2. Navigate to the 'Orders' section. 3. Select the order containing the order item. 4. Click on the order item to view its details. 5. Click the 'Update Status' button. 6. Select 'READY_FOR_DELIVERY' as the new status. 7. Click 'Save'.
+
+Test Data: Order ID: 123, Order Item ID: 456, New Status: READY_FOR_DELIVERY",The system displays an error message indicating that the status transition from MEASUREMENT_DONE to READY_FOR_DELIVERY is invalid and must follow the allowed sequence.,TC-004
+Attempt to update order item status when the user does not have edit permissions,Order Item Status Management,Negative,High,"User has an existing order with at least one order item, and the user does not have edit permissions for order item statuses","1. Log in to the application as a user without edit permissions. 2. Navigate to the 'Orders' section. 3. Select the order containing the order item. 4. Click on the order item to view its details. 5. Verify that the 'Update Status' button is not visible or is disabled.
+
+Test Data: Order ID: 123, Order Item ID: 456","The system does not display the 'Update Status' button, or the button is disabled, preventing the user from updating the status.",TC-005
+Update order item status for an order item with no measurement groups (empty list),Order Item Status Management,Boundary,High,An order item exists with ID 999 and no measurement groups recorded,"1. Navigate to the Order Management screen. 2. Select the order item with ID 999. 3. Attempt to update the status to MEASUREMENT_DONE.
+
+Test Data: Order item ID: 999, newStatus: MEASUREMENT_DONE",The system displays an error message: 'Order item has no measurement groups'. The status remains unchanged.,TC-006
+Update order item status for an order item with multiple measurement groups (boundary: first group),Order Item Status Management,Boundary,High,"An order item exists with ID 1000 and exactly 2 measurement groups recorded. The first group has status MEASUREMENT_DONE, the second group has status null.","1. Navigate to the Order Management screen. 2. Select the order item with ID 1000. 3. Update the status to CUTTING_DONE.
+
+Test Data: Order item ID: 1000, newStatus: CUTTING_DONE",The system updates the status of the first measurement group to CUTTING_DONE. The second group's status remains unchanged. The API responds with a 200 OK status code and the message 'Order item status updated successfully.',TC-007
+Verify order item status display for a status with maximum allowed length (boundary: 20 characters),Order Item Status Management,Boundary,Medium,An order item exists with ID 1001 and a measurement group with status 'READY_FOR_DELIVERY' (19 characters).,"1. Navigate to the Order Management screen. 2. Select the order item with ID 1001. 3. View the status of the measurement group.
+
+Test Data: Order item ID: 1001, status: READY_FOR_DELIVERY",The status 'READY_FOR_DELIVERY' is displayed correctly in the measurement group details.,TC-008
+Update order item status with a newStatus value exactly at maximum allowed length (20 characters),Order Item Status Management,Boundary,High,An order item exists with ID 1002 and a measurement group with status MEASUREMENT_DONE.,"1. Navigate to the Order Management screen. 2. Select the order item with ID 1002. 3. Update the status to a 20-character value: 'READY_FOR_DELIVERYX'.
+
+Test Data: Order item ID: 1002, newStatus: READY_FOR_DELIVERYX (20 characters)",The system displays an error message indicating that newStatus exceeds the maximum allowed length. The status remains MEASUREMENT_DONE.,0393c6e-TC-006
+Update order item status with a newStatus value one character above maximum allowed length (21 characters),Order Item Status Management,Boundary,High,An order item exists with ID 1003 and a measurement group with status MEASUREMENT_DONE.,"1. Navigate to the Order Management screen. 2. Select the order item with ID 1003. 3. Update the status to a 21-character value: 'READY_FOR_DELIVERYXX'.
+
+Test Data: Order item ID: 1003, newStatus: READY_FOR_DELIVERYXX (21 characters)",The system displays an error message indicating that newStatus exceeds the maximum allowed length. The status remains MEASUREMENT_DONE.,TC-009
+Update order item status from null to the first valid status (boundary: initial transition),Order Item Status Management,Boundary,High,An order item exists with ID 1004 and a measurement group with null status.,"1. Navigate to the Order Management screen. 2. Select the order item with ID 1004. 3. Update the status to MEASUREMENT_DONE.
+
+Test Data: Order item ID: 1004, newStatus: MEASUREMENT_DONE",The system updates the status of the measurement group to MEASUREMENT_DONE. The API responds with a 200 OK status code and the message 'Order item status updated successfully.',113f2a9-TC-027
+Update order item status from null to an invalid initial status (boundary: invalid initial transition),Order Item Status Management,Boundary,High,An order item exists with ID 1005 and a measurement group with null status.,"1. Navigate to the Order Management screen. 2. Select the order item with ID 1005. 3. Attempt to update the status to CUTTING_DONE.
+
+Test Data: Order item ID: 1005, newStatus: CUTTING_DONE",The system displays an error message: 'Invalid status transition from null to CUTTING_DONE'. The status remains null.,113f2a9-TC-028
+Update order item status for an order item with a very large measurement group list (boundary: 1000 groups),Order Item Status Management,Boundary,Medium,"An order item exists with ID 1006 and exactly 1000 measurement groups, all with status MEASUREMENT_DONE.","1. Navigate to the Order Management screen. 2. Select the order item with ID 1006. 3. Update the status to CUTTING_DONE.
+
+Test Data: Order item ID: 1006, newStatus: CUTTING_DONE",The system updates the status of the first measurement group to CUTTING_DONE. The API responds with a 200 OK status code and the message 'Order item status updated successfully.',TC-010
+Verify order item status display for a status with exactly one character (minimum length),Order Item Status Display,Boundary,Low,An order item exists with ID 1007 and a measurement group with status 'A' (1 character).,"1. Navigate to the Order Management screen. 2. Select the order item with ID 1007. 3. View the status of the measurement group.
+
+Test Data: Order item ID: 1007, status: A",The status 'A' is displayed correctly in the measurement group details.,TC-011
+Update order item status with a duplicate status value (boundary: same as current),Order Item Status Management,Boundary,Medium,An order item exists with ID 1008 and a measurement group with status MEASUREMENT_DONE.,"1. Navigate to the Order Management screen. 2. Select the order item with ID 1008. 3. Attempt to update the status to MEASUREMENT_DONE again.
+
+Test Data: Order item ID: 1008, newStatus: MEASUREMENT_DONE",The system displays an error message: 'Invalid status transition from MEASUREMENT_DONE to MEASUREMENT_DONE'. The status remains MEASUREMENT_DONE.,TC-012
+Verify that order item status is exposed in order responses only for authorized users,Order Management - Order Item Status Exposure,Security,High,1. User is logged in with valid credentials. 2. User has at least one order with an order item in the system. 3. User has permission to view order details.,"1. Navigate to the 'My Orders' section in the application. 2. Select an order from the list to view its details. 3. Observe the order item details displayed on the screen, focusing on the status field.
+
+Test Data: Use an existing order with an order item that has a status (e.g., 'MEASUREMENT_DONE', 'IN_PROGRESS').","The order item status (e.g., 'MEASUREMENT_DONE') is visible in the order item details for the authorized user.",TC-013
+Verify that order item status is not exposed to unauthorized users in order responses,Order Management - Order Item Status Exposure,Security,High,1. User is logged in with valid credentials but does not have permission to view order details. 2. An order with an order item exists in the system.,"1. Attempt to access the order details page directly via URL or API call (e.g., by guessing an order ID). 2. Observe the response or screen displayed.
+
+Test Data: Use an order ID that the user does not have permission to access.","The application responds with an access denied message (e.g., 'You do not have permission to view this order') or a generic error page. No order item status or details are exposed.",TC-014
+Verify that updating an order item status enforces proper authorization (insecure direct object reference) - unauthorized user cannot update another user's order item status,Order Management - Order Item Status Update,Security,High,1. User is logged in with valid credentials but does not own the target order item. 2. An order item with a known ID exists in the system and belongs to another user.,"1. Navigate to the order item status update functionality (e.g., via API or UI form). 2. Enter the ID of an order item that does not belong to the logged-in user. 3. Attempt to update the status of the order item (e.g., from 'MEASUREMENT_DONE' to 'IN_PROGRESS'). 4. Observe the response or screen displayed.
+
+Test Data: Use an order item ID that belongs to another user and a valid status transition (e.g., 'MEASUREMENT_DONE' to 'IN_PROGRESS').","The application responds with an access denied message (e.g., 'You do not have permission to update this order item') or a generic error. The order item status remains unchanged.",113f2a9-TC-036
+Verify that updating an order item status rejects invalid status transitions,Order Management - Order Item Status Update,Security,High,"1. User is logged in with valid credentials and owns the target order item. 2. An order item with a known ID and status exists in the system (e.g., status is 'MEASUREMENT_DONE').","1. Navigate to the order item status update functionality (e.g., via API or UI form). 2. Enter the ID of the order item. 3. Attempt to update the status to an invalid next step (e.g., from 'MEASUREMENT_DONE' to 'DELIVERED'). 4. Observe the response or screen displayed.
+
+Test Data: Use an order item ID with status 'MEASUREMENT_DONE' and attempt to update to 'DELIVERED'.","The application responds with an error message indicating an invalid status transition (e.g., 'Invalid status transition from MEASUREMENT_DONE to DELIVERED'). The order item status remains unchanged.",113f2a9-TC-037
+Verify that order item status is not leaked in error messages or logs during failed status updates,Order Management - Order Item Status Exposure,Security,Medium,1. User is logged in with valid credentials. 2. An order item with a known ID exists in the system.,"1. Navigate to the order item status update functionality (e.g., via API or UI form). 2. Enter an invalid order item ID (e.g., 999999). 3. Attempt to update the status of the order item. 4. Observe the error message or log output displayed.
+
+Test Data: Use an invalid order item ID (e.g., 999999) and a valid status (e.g., 'IN_PROGRESS').","The application responds with a generic error message (e.g., 'Order item not found') without exposing the invalid order item ID, current status, or internal system details (e.g., stack traces, database errors).",TC-015
+Verify that order item status update enforces rate limiting to prevent abuse,Order Management - Order Item Status Update,Security,Medium,1. User is logged in with valid credentials and owns the target order item. 2. An order item with a known ID exists in the system.,"1. Navigate to the order item status update functionality (e.g., via API or UI form). 2. Rapidly submit multiple status update requests (e.g., 10 requests in 1 second) for the same order item. 3. Observe the response or screen displayed after the first few requests.
+
+Test Data: Use a valid order item ID and a valid status transition (e.g., 'MEASUREMENT_DONE' to 'IN_PROGRESS').","The application responds with a success message for the first few requests, then starts responding with a rate limit exceeded message (e.g., 'Too many requests. Please try again later.') for subsequent requests.",113f2a9-TC-041

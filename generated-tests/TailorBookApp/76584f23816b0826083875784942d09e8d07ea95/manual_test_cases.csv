@@ -1,0 +1,235 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+"Create a new order with customer details, items, and measurements",Order Management,Positive,High,"A shop with ID 1 exists in the system. An item with ID 1 (e.g., 'Shirt') exists in the system.","1. Send a POST request to /api/orders with the payload in testData. 2. Note the returned order ID from the response.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""customerPhotoUrl"": ""https://example.com/photos/john.jpg"",
+  ""shopId"": 1,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 2,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""https://example.com/photos/shirt1.jpg"",
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 42.0
+            },
+            {
+              ""name"": ""Waist"",
+              ""unit"": ""inch"",
+              ""value"": 36.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing: {
+  ""id"": <non-null number>,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""customerPhotoUrl"": ""https://example.com/photos/john.jpg"",
+  ""items"": [
+    {
+      ""id"": <non-null number>,
+      ""itemId"": 1,
+      ""photoUrl"": ""https://example.com/photos/shirt1.jpg"",
+      ""quantity"": 2,
+      ""measurementGroups"": [
+        {
+          ""id"": <non-null number>,
+          ""measurements"": [
+            {
+              ""id"": <non-null number>,
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 42.0
+            },
+            {
+              ""id"": <non-null number>,
+              ""name"": ""Waist"",
+              ""unit"": ""inch"",
+              ""value"": 36.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}",TC-001
+Create a new order with multiple items and measurement groups,Order Management,Positive,High,"A shop with ID 1 exists in the system. Items with IDs 1 (e.g., 'Shirt') and 2 (e.g., 'Pant') exist in the system.","1. Send a POST request to /api/orders with the payload in testData. 2. Note the returned order ID from the response.
+
+Test Data: {
+  ""customerName"": ""Jane Smith"",
+  ""customerPhone"": ""5559876543"",
+  ""customerGender"": ""female"",
+  ""orderGender"": ""female"",
+  ""customerPhotoUrl"": ""https://example.com/photos/jane.jpg"",
+  ""shopId"": 1,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""https://example.com/photos/shirt1.jpg"",
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 38.0
+            },
+            {
+              ""name"": ""Waist"",
+              ""unit"": ""inch"",
+              ""value"": 32.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      ""itemId"": 2,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""https://example.com/photos/pant1.jpg"",
+          ""measurements"": [
+            {
+              ""name"": ""Waist"",
+              ""unit"": ""inch"",
+              ""value"": 34.0
+            },
+            {
+              ""name"": ""Length"",
+              ""unit"": ""inch"",
+              ""value"": 42.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing: {
+  ""id"": <non-null number>,
+  ""customerName"": ""Jane Smith"",
+  ""customerPhone"": ""5559876543"",
+  ""customerGender"": ""female"",
+  ""orderGender"": ""female"",
+  ""customerPhotoUrl"": ""https://example.com/photos/jane.jpg"",
+  ""items"": [
+    {
+      ""id"": <non-null number>,
+      ""itemId"": 1,
+      ""photoUrl"": ""https://example.com/photos/shirt1.jpg"",
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""id"": <non-null number>,
+          ""measurements"": [
+            {
+              ""id"": <non-null number>,
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 38.0
+            },
+            {
+              ""id"": <non-null number>,
+              ""name"": ""Waist"",
+              ""unit"": ""inch"",
+              ""value"": 32.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      ""id"": <non-null number>,
+      ""itemId"": 2,
+      ""photoUrl"": ""https://example.com/photos/pant1.jpg"",
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""id"": <non-null number>,
+          ""measurements"": [
+            {
+              ""id"": <non-null number>,
+              ""name"": ""Waist"",
+              ""unit"": ""inch"",
+              ""value"": 34.0
+            },
+            {
+              ""id"": <non-null number>,
+              ""name"": ""Length"",
+              ""unit"": ""inch"",
+              ""value"": 42.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}",TC-002
+Create a new order with minimal required fields (no customer photo or item photos),Order Management,Positive,Medium,"A shop with ID 1 exists in the system. An item with ID 1 (e.g., 'Shirt') exists in the system.","1. Send a POST request to /api/orders with the payload in testData. 2. Note the returned order ID from the response.
+
+Test Data: {
+  ""customerName"": ""Alice Brown"",
+  ""customerPhone"": ""5554567890"",
+  ""customerGender"": ""female"",
+  ""orderGender"": ""female"",
+  ""shopId"": 1,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""cm"",
+              ""value"": 90.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response with a JSON body containing: {
+  ""id"": <non-null number>,
+  ""customerName"": ""Alice Brown"",
+  ""customerPhone"": ""5554567890"",
+  ""customerGender"": ""female"",
+  ""orderGender"": ""female"",
+  ""customerPhotoUrl"": null,
+  ""items"": [
+    {
+      ""id"": <non-null number>,
+      ""itemId"": 1,
+      ""photoUrl"": null,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""id"": <non-null number>,
+          ""measurements"": [
+            {
+              ""id"": <non-null number>,
+              ""name"": ""Chest"",
+              ""unit"": ""cm"",
+              ""value"": 90.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}",TC-003
