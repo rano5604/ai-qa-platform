@@ -61,4 +61,26 @@ public class SourceParsingService {
 
         return results;
     }
+
+    /**
+     * Every class in the repo that exposes a REST endpoint, regardless of
+     * whether it was touched by the change under analysis - see
+     * JavaParserService.scanAllEndpoints for why automation needs the wider
+     * view. Java-only, same scope as endpoint extraction itself.
+     */
+    public List<ClassInfo> scanAllEndpoints(com.company.aiqa.git.GitDiffService.SourceAtCommit source) {
+        return javaParserService.scanAllEndpoints(source);
+    }
+
+    /**
+     * The real field shape of the given payload types, read from the project's
+     * own source - see JavaParserService.scanTypeSchemas. Java-only; other
+     * languages get an empty list, and the automation prompt then falls back to
+     * naming the type without its fields.
+     */
+    public List<com.company.aiqa.model.TypeSchema> scanTypeSchemas(
+            com.company.aiqa.git.GitDiffService.SourceAtCommit source, java.util.Set<String> rootTypeNames,
+            int maxDepth, int maxTypes) {
+        return javaParserService.scanTypeSchemas(source, rootTypeNames, maxDepth, maxTypes);
+    }
 }

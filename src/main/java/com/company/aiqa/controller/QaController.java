@@ -1,11 +1,17 @@
 package com.company.aiqa.controller;
 
 import com.company.aiqa.git.MergeHistoryService;
+import com.company.aiqa.model.ExecuteAutomationRequest;
+import com.company.aiqa.model.ExecuteAutomationResponse;
+import com.company.aiqa.model.GenerateAutomationRequest;
+import com.company.aiqa.model.GenerateAutomationResponse;
 import com.company.aiqa.model.GenerateTestsBackfillResponse;
 import com.company.aiqa.model.GenerateTestsFromBranchRequest;
 import com.company.aiqa.model.GenerateTestsRequest;
 import com.company.aiqa.model.GenerateTestsResponse;
 import com.company.aiqa.model.MergeHistoryEntry;
+import com.company.aiqa.service.AutomationExecutionService;
+import com.company.aiqa.service.AutomationGenerationService;
 import com.company.aiqa.service.QaPipelineService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +29,17 @@ public class QaController {
 
     private final QaPipelineService pipelineService;
     private final MergeHistoryService mergeHistoryService;
+    private final AutomationGenerationService automationGenerationService;
+    private final AutomationExecutionService automationExecutionService;
 
-    public QaController(QaPipelineService pipelineService, MergeHistoryService mergeHistoryService) {
+    public QaController(QaPipelineService pipelineService,
+                        MergeHistoryService mergeHistoryService,
+                        AutomationGenerationService automationGenerationService,
+                        AutomationExecutionService automationExecutionService) {
         this.pipelineService = pipelineService;
         this.mergeHistoryService = mergeHistoryService;
+        this.automationGenerationService = automationGenerationService;
+        this.automationExecutionService = automationExecutionService;
     }
 
     /**
@@ -129,6 +142,76 @@ public class QaController {
     @PostMapping("/generate-tests-from-branch/backfill")
     public GenerateTestsBackfillResponse backfill(@Valid @RequestBody GenerateTestsFromBranchRequest request) {
         return pipelineService.runBackfillAndCatchUp(request);
+    }
+
+    /**
+     * Turns the manual test cases ALREADY generated for one commit into
+     * runnable REST Assured automation - API testing only.
+     *
+     * "commitHash" is the folder name under generated-tests/&lt;project&gt;/,
+     * i.e. the same value that was used as headRef when those cases were
+     * produced. This is a second pass over existing output: it does not
+     * regenerate manual cases, touch merge history, or re-analyse the branch.
+     *
+     * Only cases that can be exercised over HTTP are automated. Cases
+     * describing UI steps or configuration checks are skipped and reported in
+     * skippedNonApi, rather than becoming scripts that couldn't run. The
+     * generated files land in the same commit folder as the manual cases.
+     *
+     * This endpoint GENERATES ONLY - it sends no HTTP traffic at baseUri and
+     * cannot mutate anything. To run what it produced, call
+     * POST /api/v1/execute-automation with the same commit hash.
+     *
+     * Example:
+     * POST /api/v1/generate-automation
+     * {
+     *   "repoUrl": "https://github.com/org/repo.git",
+     *   "branch": "main",
+     *   "commitHash": "4df458deab5a8d8d4748696d753b4aa54fdcf304",
+     *   "baseUri": "http://localhost:8080",
+     *   "llmKeys": { "gemini": "AIza..." }
+     * }
+     */
+    @PostMapping("/generate-automation")
+    public GenerateAutomationResponse generateAutomation(@Valid @RequestBody GenerateAutomationRequest request) {
+        return automationGenerationService.generate(request);
+    }
+
+    /**
+     * RUNS the automation already generated for a commit, with TestNG.
+     *
+     * Generation and execution are separate endpoints on purpose. Generating
+     * costs LLM tokens and touches nothing outside the output folder; executing
+     * costs nothing, needs no credential, and fires real HTTP traffic -
+     * including whatever POST/PUT/DELETE the test cases describe - at whatever
+     * baseUri points to. As an option on the generate call, every generation
+     * request was one mistyped boolean away from mutating live data.
+     *
+     * Nothing is generated here: if the commit has no script on disk, that is
+     * reported rather than silently produced. Generate first with
+     * POST /api/v1/generate-automation.
+     *
+     * Each result carries the HTTP requests and responses that produced it, so
+     * a failure can be triaged without re-running anything by hand
+     * (credential-bearing headers are redacted). TestNG's own HTML/XML report
+     * is left in the commit's folder under test-report/ and its path is
+     * returned in testExecutionSummary.reportPath.
+     *
+     * baseUri overrides the default baked in at generation time, so the same
+     * commit's scripts can be pointed at any environment without regenerating.
+     * NEVER point it at production.
+     *
+     * Example:
+     * POST /api/v1/execute-automation
+     * {
+     *   "projectName": "QueueManagement",
+     *   "commitHash": "4df458deab5a8d8d4748696d753b4aa54fdcf304",
+     *   "baseUri": "http://localhost:8082"
+     * }
+     */
+    @PostMapping("/execute-automation")
+    public ExecuteAutomationResponse executeAutomation(@Valid @RequestBody ExecuteAutomationRequest request) {
+        return automationExecutionService.execute(request);
     }
 
     /**

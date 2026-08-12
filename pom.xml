@@ -21,6 +21,8 @@
         <java.version>17</java.version>
         <javaparser.version>3.25.10</javaparser.version>
         <jgit.version>6.9.0.202403050737-r</jgit.version>
+        <rest-assured.version>5.4.0</rest-assured.version>
+        <testng.version>7.10.2</testng.version>
     </properties>
 
     <dependencies>
@@ -58,6 +60,31 @@
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-symbol-solver-core</artifactId>
             <version>${javaparser.version}</version>
+        </dependency>
+
+        <!-- Execution engine (see the execution package). COMPILE scope, not test
+             scope, deliberately: these must be on the classpath used to compile AND
+             run generated automation scripts at request-serving time, not merely for
+             this project's own tests. -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+        </dependency>
+        <!-- The test framework generated scripts are written in, and whose
+             org.testng.TestNG main class the runner shells out to. TestNG rather
+             than JUnit because it ships its own runnable CLI and its own HTML +
+             XML reporters, so execution and reporting need no extra launcher
+             artifact - and testng-results.xml carries per-method timings and
+             exception detail that the platform parses back into the API response.
+
+             Note this replaced junit-platform-console-standalone: that artifact
+             is a shaded fat jar bundling its own JUnit Jupiter, which collided
+             with the copy spring-boot-starter-test puts on the test classpath. -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
         </dependency>
 
         <dependency>

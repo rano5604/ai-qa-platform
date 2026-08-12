@@ -677,6 +677,182 @@ platform detects that case and writes steps as direct API calls instead:
    matching the request body type, and `expectedResult` describes the HTTP
    response (status code + relevant fields) instead of a UI outcome.
 
+## API automation from a commit (`/generate-automation`)
+
+Once a commit's manual test cases exist, turn the **API-testable** ones into
+runnable REST Assured scripts. The commit hash is the folder name under
+`generated-tests/<project>/`:
+
+```bash
+curl -X POST http://localhost:8080/api/v1/generate-automation \
+  -H "Content-Type: application/json" \
+  -d '{
+        "repoUrl": "https://github.com/org/repo.git",
+        "branch": "main",
+        "commitHash": "4df458deab5a8d8d4748696d753b4aa54fdcf304",
+        "baseUri": "http://localhost:8080",
+        "llmKeys": { "gemini": "AIza..." }
+      }'
+```
+
+This is a **second pass over existing output** — it does not regenerate manual
+cases, touch merge history, or re-analyse the branch. Run it whenever you like,
+as many times as you like.
+
+**API only, by design.** Each case is checked against the endpoints actually
+detected in that commit; anything describing UI steps or configuration checks
+is skipped and counted in `skippedNonApi` rather than becoming a script that
+couldn't run:
+
+```json
+{
+  "projectName": "TestProject",
+  "commitHash": "4df458d...",
+  "manualCasesFound": 21,
+  "apiCasesSelected": 13,
+  "skippedNonApi": 8,
+  "endpointsDetected": ["POST /api/greet", "GET /api/v1/status"],
+  "generatedTests": [ { "testFileName": "GreetingApiTest.java", "writtenPath": "..." } ],
+  "outputPath": "generated-tests/TestProject/4df458d..."
+}
+```
+
+A case qualifies as API-testable when it isn't a `Configuration` case **and**
+it either names an HTTP verb or references one of the detected endpoint paths.
+The bias is deliberately toward exclusion — a wrongly-included case forces the
+model to invent an endpoint, which is exactly what the prompt is built to avoid.
+
+**Generated scripts** land in the same commit folder as the manual cases, in
+package `com.company.aiqa.generated`, as **TestNG** classes reading their target
+from `System.getProperty("baseUri", "<your baseUri>")` — so you can retarget
+them at run time without regenerating. Each `@Test` carries its source Test
+Case ID in a comment for traceability. Add `io.rest-assured:rest-assured` and
+`org.testng:testng` to the consuming project to compile and run them.
+
+**If `apiCasesSelected` is 0**, the commit genuinely had no HTTP surface — e.g.
+a dependency or SDK-version bump produces only `Configuration` cases. The
+response says so explicitly rather than silently generating nothing.
+
+This endpoint **only generates**. It sends no HTTP traffic at `baseUri` and
+cannot mutate anything. Running is a separate endpoint — see below.
+
+## Running the generated automation (`/execute-automation`)
+
+Runs automation that **already exists** for a commit. No LLM call, no
+credential, no clone: the scripts on disk are compiled and executed as they are.
+
+```bash
+curl -X POST http://localhost:8080/api/v1/execute-automation \
+  -H "Content-Type: application/json" \
+  -d '{
+        "projectName": "QueueManagement",
+        "commitHash": "01b536396747b31a1502ad1b67806235b540482c",
+        "baseUri": "http://localhost:8082"
+      }'
+```
+
+If the commit has no script on disk, that is reported — nothing is generated
+here. Generate first with `/generate-automation`.
+
+**Why it's a separate endpoint, not a flag.** Generating costs LLM tokens and
+touches nothing outside the output folder. Executing costs nothing, needs no
+credential, and fires real POST/PUT/DELETE traffic at a live system. As an
+`executeTests` option on the generate call, every generation request was one
+mistyped boolean away from mutating whatever `baseUri` pointed at. (That flag
+is gone; requests still sending it are accepted and it is ignored.)
+
+### Request and response of every test
+
+Each result carries the HTTP traffic that produced it, so a failure is
+triageable without re-running anything by hand:
+
+```json
+"results": [{
+  "testClassName": "com.company.aiqa.generated.AutomationTest_01b5363",
+  "testMethodName": "deliberatelyWrongStatusExpectation",
+  "status": "FAILED",
+  "failureType": "java.lang.AssertionError",
+  "failureMessage": "1 expectation failed.\nExpected status code <418> but was <200>.",
+  "durationMillis": 361,
+  "exchanges": [{
+    "requestMethod": "GET",
+    "requestUri": "http://localhost:8082/api/v1/shop-slots?shopId=7",
+    "requestHeaders": { "Authorization": "<redacted>", "Accept": "*/*" },
+    "requestBody": null,
+    "responseStatusCode": 200,
+    "responseStatusLine": "HTTP/1.1 200 ",
+    "responseHeaders": { "Content-Type": "application/json" },
+    "responseBody": "[]",
+    "durationMillis": 361
+  }]
+}]
+```
+
+Capture is installed by the **runner**, not by the generated code — a global
+REST Assured filter attached from a TestNG listener. Asking the LLM to add a
+logging filter to every script would make the evidence only as reliable as the
+model's memory of one more contract rule.
+
+- **Credential headers are redacted** (`Authorization`, `Cookie`, `X-API-Key`, …).
+  These records go out over the API and land on disk.
+- **Bodies are truncated** past `max-captured-body-chars`, with the flag set and
+  the full length noted.
+- **A call that never got a response is still recorded**, with
+  `responseStatusCode: 0` and the transport exception as the body — otherwise
+  "Connection refused" never tells you which URI was attempted.
+- An empty `exchanges` on an API test means it failed before reaching the wire.
+
+### FAILED vs ERROR
+
+TestNG reports only PASS/FAIL/SKIP; the platform splits FAIL in two:
+
+| Status | Means |
+|---|---|
+| `FAILED` | An **assertion** failed — the API answered and the answer was wrong. A likely defect. |
+| `ERROR` | Any other exception — connection refused, bad URI, a `@BeforeClass` blowing up. The test never got to judge anything. |
+
+Conflating them sends people hunting for a bug when the target simply wasn't
+running. A failing setup method is reported as an `ERROR` naming that method,
+and its captured traffic comes with it.
+
+### Reports
+
+TestNG's own reports are written to `<commit folder>/test-report/` and **kept**
+(the path comes back as `testExecutionSummary.reportPath`):
+
+```
+test-report/index.html             # browsable
+test-report/emailable-report.html  # single-file summary
+test-report/testng-results.xml     # machine-readable
+test-report/http-exchanges.json    # the captured traffic
+```
+
+Stale reports are cleared before each run — otherwise a subprocess that dies on
+startup would leave the previous run's XML in place and report those verdicts as
+if they were this run's.
+
+**How it runs:** scripts are compiled in-process with the JDK's own compiler
+(so the platform must run on a **JDK, not a JRE**), then executed in an
+**isolated subprocess** via `org.testng.TestNG` with `-DbaseUri=…`.
+The subprocess matters: a crash, hang, or stray `System.exit()` in generated
+code can't take the server down with it. That's process containment, not a
+security sandbox. Killed after `execution-timeout-seconds`. A script that fails
+to compile is reported in `errors` and skipped — the ones that did compile still run.
+
+> **⚠️ This fires real HTTP requests**, including whatever POST/PUT/DELETE the
+> cases need. It will create and modify data at `baseUri`. Use a disposable
+> environment, never production.
+
+**To run them yourself instead**, copy the `.java` files into any project with
+`io.rest-assured:rest-assured` and `org.testng:testng`, then:
+
+```bash
+mvn test -DbaseUri=http://localhost:8080
+```
+
+The `System.getProperty("baseUri", …)` contract means you retarget without
+regenerating.
+
 ## Configuration (`application.yml`)
 
 | Property | Default | Notes |
@@ -688,6 +864,9 @@ platform detects that case and writes steps as direct API calls instead:
 | `aiqa.pipeline.max-changed-files` | `50` | Guardrail against huge merges |
 | `aiqa.pipeline.output-dir` | `generated-tests` | Where generated test files land, nested under a project-name subfolder — see "Project-scoped output" |
 | `aiqa.pipeline.default-test-case-mode` | `MANUAL` | Used when a request doesn't specify `testCaseMode` |
+| `aiqa.pipeline.execution-timeout-seconds` | `300` | `/execute-automation`: kills a **hung** TestNG subprocess. The whole suite shares this budget, not each test |
+| `aiqa.pipeline.max-captured-body-chars` | `8000` | Per-body cap on captured request/response payloads |
+| `aiqa.pipeline.max-captured-exchanges` | `500` | Ceiling on recorded exchanges per run; tests keep running once hit, only capture stops |
 | `aiqa.github.token` | `${GITHUB_TOKEN}` | PAT for cloning/fetching private repos |
 | `aiqa.github.webhook-secret` | `${GITHUB_WEBHOOK_SECRET}` | Verifies GitHub webhook signatures |
 | `aiqa.github.workspace-dir` | `repo-workspace` | Where webhook-triggered clones are kept |

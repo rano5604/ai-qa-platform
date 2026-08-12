@@ -30,7 +30,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 /**
@@ -273,6 +275,118 @@ public class GitDiffService {
         }
     }
 
+    /**
+     * A read-only view of the repository's source AS IT WAS at one commit.
+     *
+     * <p>Automation used to read the checkout's WORKING TREE instead, which is
+     * wrong for every commit but one: {@code syncRepo} only fetches refs, so
+     * the tree stays frozen at whatever was checked out when the repo was first
+     * cloned and drifts further from reality with every fetch. Generating tests
+     * for a September commit from a November tree produced tests for
+     * controllers that did not exist yet - they compiled, ran, and 404'd, which
+     * reads like an application defect rather than a stale scan.
+     *
+     * <p>Deliberately NOT implemented with {@code git checkout}: mutating the
+     * working tree would race with any other request using the same clone, and
+     * would leave the checkout on an arbitrary commit afterwards. Blobs are
+     * read straight out of the commit's tree instead.
+     *
+     * <p>Only paths are held in memory; each file's content is read on demand.
+     */
+    public interface SourceAtCommit extends AutoCloseable {
+
+        /** Repo-relative paths, forward-slashed, of every file in the commit. */
+        List<String> paths();
+
+        /** File content at that commit, or null when it can't be read. */
+        String read(String path);
+
+        @Override
+        void close();
+    }
+
+    /**
+     * Opens the source tree at {@code commitSha}. The caller must close it.
+     *
+     * @throws IllegalStateException when the repo or commit can't be read -
+     *         failing loudly beats silently scanning nothing and reporting
+     *         "no endpoints detected".
+     */
+    public SourceAtCommit openSourceAtCommit(String repoPath, String commitSha) {
+        File gitDir = new File(repoPath, ".git");
+        Repository repository = null;
+        try {
+            repository = new FileRepositoryBuilder()
+                    .setGitDir(gitDir)
+                    .readEnvironment()
+                    .findGitDir()
+                    .build();
+
+            ObjectId commitId = repository.resolve(commitSha);
+            if (commitId == null) {
+                throw new IllegalStateException(
+                        "Commit %s does not exist in %s.".formatted(commitSha, repoPath));
+            }
+
+            Map<String, ObjectId> blobsByPath = new LinkedHashMap<>();
+            try (RevWalk revWalk = new RevWalk(repository)) {
+                RevCommit commit = revWalk.parseCommit(commitId);
+                try (org.eclipse.jgit.treewalk.TreeWalk treeWalk = new org.eclipse.jgit.treewalk.TreeWalk(repository)) {
+                    treeWalk.addTree(commit.getTree());
+                    treeWalk.setRecursive(true);
+                    while (treeWalk.next()) {
+                        blobsByPath.put(treeWalk.getPathString(), treeWalk.getObjectId(0));
+                    }
+                }
+            }
+
+            log.info("Opened source at commit {} in {}: {} file(s).",
+                    commitSha, repoPath, blobsByPath.size());
+            return new TreeSourceAtCommit(repository, blobsByPath);
+
+        } catch (IOException e) {
+            if (repository != null) {
+                repository.close();
+            }
+            throw new IllegalStateException(
+                    "Could not read %s at commit %s: %s".formatted(repoPath, commitSha, e.getMessage()), e);
+        } catch (RuntimeException e) {
+            if (repository != null) {
+                repository.close();
+            }
+            throw e;
+        }
+    }
+
+    private record TreeSourceAtCommit(Repository repository, Map<String, ObjectId> blobsByPath)
+            implements SourceAtCommit {
+
+        @Override
+        public List<String> paths() {
+            return List.copyOf(blobsByPath.keySet());
+        }
+
+        @Override
+        public String read(String path) {
+            ObjectId blobId = blobsByPath.get(path);
+            if (blobId == null) {
+                return null;
+            }
+            try {
+                return new String(repository.open(blobId).getBytes(), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                // One unreadable file shouldn't abort a whole repo scan.
+                log.trace("Could not read blob for {}: {}", path, e.getMessage());
+                return null;
+            }
+        }
+
+        @Override
+        public void close() {
+            repository.close();
+        }
+    }
+
     private ChangedFile.ChangeType mapChangeType(DiffEntry.ChangeType jgitType) {
         return switch (jgitType) {
             case ADD -> ChangedFile.ChangeType.ADDED;
@@ -354,9 +468,9 @@ public class GitDiffService {
                 .build()) {
 
             ObjectId branchId = resolveAnyOf(repository, branchName,
-                    branchName,
                     "origin/" + branchName,
-                    "refs/remotes/origin/" + branchName);
+                    "refs/remotes/origin/" + branchName,
+                    branchName);
 
             if (branchId == null) {
                 throw new IllegalArgumentException(
@@ -389,6 +503,59 @@ public class GitDiffService {
         }
     }
 
+    /**
+     * Pairs an arbitrary commit with the ref to diff it against: its first
+     * parent, or {@link #EMPTY_TREE_REF} when it's a root commit. Lets a
+     * caller re-derive exactly what one specific commit changed, without
+     * walking the whole branch - used by the automation endpoint, which is
+     * handed a commit hash directly rather than discovering it.
+     */
+    public MergeCommitInfo findCommitWithParent(String repoPath, String commitSha) {
+        File gitDir = new File(repoPath, ".git");
+        try (Repository repository = new FileRepositoryBuilder()
+                .setGitDir(gitDir)
+                .readEnvironment()
+                .findGitDir()
+                .build()) {
+
+            ObjectId id = repository.resolve(commitSha);
+            if (id == null) {
+                throw new IllegalArgumentException(
+                        "Commit '%s' not found in repo %s".formatted(commitSha, repoPath));
+            }
+
+            try (RevWalk walk = new RevWalk(repository)) {
+                RevCommit commit = walk.parseCommit(id);
+                if (commit.getParentCount() == 0) {
+                    return new MergeCommitInfo(commit.getName(), EMPTY_TREE_REF);
+                }
+                RevCommit firstParent = commit.getParent(0);
+                walk.parseHeaders(firstParent);
+                return new MergeCommitInfo(commit.getName(), firstParent.getName());
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException(
+                    "Could not inspect commit %s in repo %s: %s".formatted(commitSha, repoPath, e.getMessage()), e);
+        }
+    }
+
+    /**
+     * Resolves the first ref that exists, trying the REMOTE-TRACKING form
+     * ({@code origin/<branch>}) BEFORE the bare local name - order matters and
+     * is not cosmetic.
+     *
+     * <p>RepoSyncService keeps clones current with {@code git fetch}, which
+     * updates {@code refs/remotes/origin/*} but deliberately leaves local
+     * branches alone. A clone's local {@code master} therefore stays frozen at
+     * whatever was current when it was first cloned, however many times it's
+     * since been fetched. Resolving the bare name first meant every new commit
+     * pushed after the initial clone was invisible: the walk ran against the
+     * stale local tip, found only already-processed history, and reported
+     * "fully caught up" while real changes sat unprocessed in origin/.
+     *
+     * <p>The bare name is still tried last, so a plain local checkout with no
+     * remote (the /generate-tests use case) keeps working.
+     */
     private ObjectId resolveAnyOf(Repository repository, String label, String... candidates) throws IOException {
         for (String candidate : candidates) {
             ObjectId id = repository.resolve(candidate);
@@ -417,9 +584,9 @@ public class GitDiffService {
                 .build()) {
 
             ObjectId branchId = resolveAnyOf(repository, branchName,
-                    branchName,
                     "origin/" + branchName,
-                    "refs/remotes/origin/" + branchName);
+                    "refs/remotes/origin/" + branchName,
+                    branchName);
 
             if (branchId == null) {
                 throw new IllegalArgumentException(

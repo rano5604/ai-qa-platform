@@ -157,7 +157,8 @@ public class QaPipelineService {
         // overwrites a previous run's output - this was silently happening
         // before, since every run wrote to the same fixed "manual_test_cases.csv" /
         // TestFileName.java under the same shared outputDir.
-        String runOutputDir = Path.of(outputDir, sanitizeForPath(request.getHeadRef())).toString();
+        String runOutputDir = Path.of(outputDir,
+                runFolderName(request.getHeadRef(), request.getCommitSequence())).toString();
 
         TestCaseMode mode = resolveMode(request.getTestCaseMode());
 
@@ -572,7 +573,12 @@ public class QaPipelineService {
                             + "or pass \"force\": true to reprocess this merge anyway.");
         }
 
-        GenerateTestsRequest inner = buildInnerRequest(request, localPath, mergeInfo);
+        // Number this run the same way a backfill would, so a folder's sequence
+        // means the same thing however it was produced. Costs one extra
+        // first-parent walk - pure git object reads, and negligible next to the
+        // LLM calls this method is about to make.
+        GenerateTestsRequest inner = buildInnerRequest(request, localPath, mergeInfo,
+                sequenceOf(localPath, request.getBranch(), mergeInfo.mergeSha()));
 
         log.info("Resolved latest merge on branch '{}': {} -> {}",
                 request.getBranch(), mergeInfo.preMergeSha(), mergeInfo.mergeSha());
@@ -587,11 +593,12 @@ public class QaPipelineService {
      * completed work is never regenerated.
      */
     private GenerateTestsRequest buildInnerRequest(GenerateTestsFromBranchRequest request, String localPath,
-                                                    MergeCommitInfo mergeInfo) {
+                                                    MergeCommitInfo mergeInfo, Integer commitSequence) {
         GenerateTestsRequest inner = new GenerateTestsRequest();
         inner.setRepoPath(localPath);
         inner.setBaseRef(mergeInfo.preMergeSha());
         inner.setHeadRef(mergeInfo.mergeSha());
+        inner.setCommitSequence(commitSequence);
         if (request.getOutputDir() != null) {
             inner.setOutputDir(request.getOutputDir());
         }
@@ -666,13 +673,20 @@ public class QaPipelineService {
         int partial = 0;
         int resumed = 0;
 
-        for (MergeCommitInfo merge : allMerges) {
+        for (int index = 0; index < allMerges.size(); index++) {
+            MergeCommitInfo merge = allMerges.get(index);
+
+            // 1-based position in the FULL chronological list, assigned before
+            // the skip below so a commit keeps the same number whether or not
+            // earlier ones were already complete on this run.
+            int commitSequence = index + 1;
+
             if (mergeHistoryService.isProcessed(request.getRepoUrl(), request.getBranch(), merge.mergeSha())) {
                 alreadyProcessed++;
                 continue;
             }
 
-            GenerateTestsRequest inner = buildInnerRequest(request, localPath, merge);
+            GenerateTestsRequest inner = buildInnerRequest(request, localPath, merge, commitSequence);
             boolean isResume = inner.getOnlyCategories() != null;
 
             GenerateTestsResponse response;
@@ -744,6 +758,43 @@ public class QaPipelineService {
             log.warn("Unrecognized testCaseMode '{}', falling back to MANUAL", value);
             return TestCaseMode.MANUAL;
         }
+    }
+
+    /**
+     * This commit's 1-based position in the branch's chronological history, or
+     * null when it can't be determined - in which case the folder simply keeps
+     * its bare hash rather than failing the run over a cosmetic prefix.
+     */
+    private Integer sequenceOf(String localPath, String branch, String mergeSha) {
+        try {
+            List<MergeCommitInfo> allMerges = gitDiffService.findAllMergeCommits(localPath, branch);
+            for (int i = 0; i < allMerges.size(); i++) {
+                if (allMerges.get(i).mergeSha().equals(mergeSha)) {
+                    return i + 1;
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Could not determine the sequence number for {} on '{}': {}", mergeSha, branch, e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * The run folder for one commit: {@code <seq>.<commitHash>} when the
+     * sequence is known, plain {@code <commitHash>} otherwise.
+     *
+     * <p>The sequence prefix exists so the folder listing reads in the order
+     * the merges actually landed. Sorting is left to whoever reads it - note
+     * that plain lexical sort puts 10 before 2, so the numbers are for humans
+     * scanning the list, not a sort key.
+     *
+     * <p>The dot is deliberate and must survive sanitising: it separates the
+     * sequence from the hash unambiguously, which is what lets the automation
+     * side find a commit's folder again by matching on the hash after it.
+     */
+    private String runFolderName(String headRef, Integer sequence) {
+        String hash = sanitizeForPath(headRef);
+        return sequence == null ? hash : sequence + "." + hash;
     }
 
     /** Turns a ref (sha, branch name, etc.) into a filesystem-safe folder name. */

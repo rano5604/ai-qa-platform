@@ -5,6 +5,8 @@ import com.company.aiqa.model.ChangedFile;
 import com.company.aiqa.model.ClassInfo;
 import com.company.aiqa.model.MethodInfo;
 import com.company.aiqa.model.SourceLanguage;
+import com.company.aiqa.model.TypeSchema;
+import com.company.aiqa.git.GitDiffService;
 import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -84,6 +86,220 @@ public class JavaParserService {
             }
         }
         return allClasses;
+    }
+
+    /**
+     * One AST walk of the whole repository, returning every class that owns at
+     * least one REST endpoint.
+     *
+     * <p>Needed because endpoints derived only from a commit's CHANGED files
+     * are too narrow for automation: a service-layer change (say
+     * SlotService.java) is still exercised over HTTP through a controller the
+     * commit never touched, so scanning only the diff finds nothing and the
+     * change looks un-automatable when it plainly isn't.
+     *
+     * <p>Java/Spring MVC only, same as endpoint extraction generally. Files
+     * that fail to parse are skipped rather than failing the whole scan.
+     *
+     * <p>Reads the source AS IT WAS at the given commit, not the working tree -
+     * see GitDiffService.SourceAtCommit for why that distinction is the
+     * difference between real endpoints and ones that don't exist yet.
+     */
+    public List<ClassInfo> scanAllEndpoints(GitDiffService.SourceAtCommit source) {
+        List<ClassInfo> withEndpoints = new ArrayList<>();
+        for (String path : source.paths()) {
+            if (!path.toLowerCase().endsWith(".java")) {
+                continue;
+            }
+            collectEndpointClasses(source, path, withEndpoints);
+        }
+        log.info("Endpoint scan at commit: {} class(es) expose endpoints.", withEndpoints.size());
+        return withEndpoints;
+    }
+
+    /**
+     * Reads the real shape of the given types out of the repository, following
+     * their own field types outward.
+     *
+     * <p>Automation needs this to build a payload the API will actually accept.
+     * Given only a type NAME the model invents field names, the create call is
+     * rejected, and the precondition it was building silently never exists -
+     * which surfaces later as a 404 on the actual assertion and reads like an
+     * application defect rather than a bad guess.
+     *
+     * <p>Types are located by FILE NAME rather than by parsing everything: Java
+     * requires a public type's file to match its name, so an index of
+     * "Foo.java" -&gt; path costs one directory walk and no AST work, and only
+     * the handful of types actually reachable from a request body get parsed.
+     *
+     * <p>The walk is transitive but bounded - a DTO holding another DTO holding
+     * an enum is exactly the case that matters, while an unbounded walk through
+     * a domain model would flood the prompt.
+     *
+     * @param rootTypeNames simple names to start from (the @RequestBody types)
+     * @param maxDepth      how far to follow nested types; 2 covers DTO -&gt; DTO -&gt; enum
+     * @param maxTypes      hard ceiling on how many schemas come back
+     */
+    public List<TypeSchema> scanTypeSchemas(GitDiffService.SourceAtCommit source, Set<String> rootTypeNames,
+                                            int maxDepth, int maxTypes) {
+        if (rootTypeNames == null || rootTypeNames.isEmpty()) {
+            return List.of();
+        }
+
+        Map<String, String> byTypeName = indexSourcePathsByTypeName(source);
+        if (byTypeName.isEmpty()) {
+            return List.of();
+        }
+
+        List<TypeSchema> schemas = new ArrayList<>();
+        Set<String> visited = new LinkedHashSet<>();
+        Set<String> currentLevel = new LinkedHashSet<>(rootTypeNames);
+
+        for (int depth = 0; depth <= maxDepth && !currentLevel.isEmpty() && schemas.size() < maxTypes; depth++) {
+            Set<String> nextLevel = new LinkedHashSet<>();
+            for (String typeName : currentLevel) {
+                if (schemas.size() >= maxTypes) {
+                    break;
+                }
+                if (!visited.add(typeName)) {
+                    continue;
+                }
+                String path = byTypeName.get(typeName);
+                if (path == null) {
+                    // Not a project type - a JDK or framework class. Nothing to read.
+                    continue;
+                }
+                TypeSchema schema = readTypeSchema(source, path, typeName);
+                if (schema == null) {
+                    continue;
+                }
+                schemas.add(schema);
+                for (TypeSchema.FieldSchema field : schema.fields()) {
+                    for (String referenced : typeNamesIn(field.type())) {
+                        if (!visited.contains(referenced) && byTypeName.containsKey(referenced)) {
+                            nextLevel.add(referenced);
+                        }
+                    }
+                }
+            }
+            currentLevel = nextLevel;
+        }
+
+        log.info("Read {} payload type schema(s) at commit (roots: {}).", schemas.size(), rootTypeNames);
+        return schemas;
+    }
+
+    /** "Foo" -&gt; its path, for every source file in the commit. No parsing. */
+    private Map<String, String> indexSourcePathsByTypeName(GitDiffService.SourceAtCommit source) {
+        Map<String, String> byTypeName = new java.util.HashMap<>();
+        for (String path : source.paths()) {
+            if (!path.toLowerCase().endsWith(".java")) {
+                continue;
+            }
+            int slash = path.lastIndexOf('/');
+            String fileName = slash >= 0 ? path.substring(slash + 1) : path;
+            byTypeName.putIfAbsent(fileName.substring(0, fileName.length() - 5), path);
+        }
+        return byTypeName;
+    }
+
+    private TypeSchema readTypeSchema(GitDiffService.SourceAtCommit source, String path, String typeName) {
+        try {
+            String content = source.read(path);
+            if (content == null) {
+                return null;
+            }
+            CompilationUnit cu = StaticJavaParser.parse(content);
+
+            for (TypeDeclaration<?> type : cu.getTypes()) {
+                if (!typeName.equals(type.getNameAsString())) {
+                    continue;
+                }
+
+                if (type instanceof com.github.javaparser.ast.body.EnumDeclaration enumDecl) {
+                    List<String> values = enumDecl.getEntries().stream()
+                            .map(e -> e.getNameAsString())
+                            .toList();
+                    return new TypeSchema(typeName, "enum", values, List.of());
+                }
+
+                if (type instanceof com.github.javaparser.ast.body.RecordDeclaration recordDecl) {
+                    List<TypeSchema.FieldSchema> components = recordDecl.getParameters().stream()
+                            .map(p -> new TypeSchema.FieldSchema(
+                                    p.getNameAsString(), p.getType().asString(), isRequired(p.getAnnotations())))
+                            .toList();
+                    return new TypeSchema(typeName, "record", List.of(), components);
+                }
+
+                List<TypeSchema.FieldSchema> fields = new ArrayList<>();
+                for (com.github.javaparser.ast.body.FieldDeclaration field : type.getFields()) {
+                    // Constants aren't part of the wire format.
+                    if (field.isStatic()) {
+                        continue;
+                    }
+                    boolean required = isRequired(field.getAnnotations());
+                    for (com.github.javaparser.ast.body.VariableDeclarator variable : field.getVariables()) {
+                        fields.add(new TypeSchema.FieldSchema(
+                                variable.getNameAsString(), variable.getType().asString(), required));
+                    }
+                }
+                return fields.isEmpty() ? null : new TypeSchema(typeName, "class", List.of(), fields);
+            }
+        } catch (Exception e) {
+            log.trace("Could not read schema for {} from {}: {}", typeName, path, e.getMessage());
+        }
+        return null;
+    }
+
+    /** Bean-validation annotations that make a field non-omittable. */
+    private boolean isRequired(com.github.javaparser.ast.NodeList<AnnotationExpr> annotations) {
+        return annotations.stream().anyMatch(a -> {
+            String name = a.getNameAsString();
+            return "NotNull".equals(name) || "NotBlank".equals(name) || "NotEmpty".equals(name);
+        });
+    }
+
+    /**
+     * Pulls candidate type names out of a declared type, so generics and
+     * collections resolve to the thing that matters - {@code List<ItemDto>}
+     * yields both "List" and "ItemDto", and only the latter matches a project
+     * file.
+     */
+    private List<String> typeNamesIn(String declaredType) {
+        if (declaredType == null || declaredType.isBlank()) {
+            return List.of();
+        }
+        List<String> names = new ArrayList<>();
+        for (String token : declaredType.split("[^A-Za-z0-9_$]+")) {
+            // Project types are upper-camel; this skips primitives and keywords.
+            if (!token.isEmpty() && Character.isUpperCase(token.charAt(0))) {
+                names.add(token);
+            }
+        }
+        return names;
+    }
+
+    private void collectEndpointClasses(GitDiffService.SourceAtCommit source, String path, List<ClassInfo> out) {
+        try {
+            String content = source.read(path);
+            if (content == null) {
+                return;
+            }
+            // Cheap pre-filter so the vast majority of files never pay for a
+            // full parse - a Spring controller has to mention one of these.
+            if (!content.contains("Mapping") && !content.contains("Controller")) {
+                return;
+            }
+            ChangedFile synthetic = new ChangedFile(path, ChangedFile.ChangeType.MODIFIED, "", content);
+
+            for (ClassInfo parsed : parseSingleFile(synthetic)) {
+                if (parsed.methods().stream().anyMatch(m -> m.apiEndpoint() != null)) {
+                    out.add(parsed);
+                }
+            }
+        } catch (Exception e) {
+            log.trace("Skipping {} during endpoint scan: {}", path, e.getMessage());
+        }
     }
 
     private List<ClassInfo> parseSingleFile(ChangedFile file) {

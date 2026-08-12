@@ -36,6 +36,22 @@ public class TestCaseGenerator {
     private static final Pattern DEGENERATE_REPETITION = Pattern.compile("(.)\\1{39,}", Pattern.DOTALL);
 
     public List<TestCaseResult> generateAndWrite(String llmJsonResponse, String outputDir) {
+        return generateAndWrite(llmJsonResponse, outputDir, new java.util.HashSet<>());
+    }
+
+    /**
+     * Same, but refuses to reuse a file name already in {@code takenFileNames}
+     * (which it adds to as it goes).
+     *
+     * <p>Needed once generation is batched: independent batches routinely pick
+     * the same obvious class name - three batches of slot tests all called
+     * themselves ShopSlotManagementTest - and each write silently clobbered
+     * the last, so only the final batch survived. Renaming has to rewrite the
+     * public class declaration inside the source too, since a Java public
+     * class name must match its file name or it won't compile.
+     */
+    public List<TestCaseResult> generateAndWrite(String llmJsonResponse, String outputDir,
+                                                  java.util.Set<String> takenFileNames) {
         List<TestCaseResult> results = new ArrayList<>();
         JsonNode array = parseJsonArray(llmJsonResponse);
 
@@ -57,12 +73,48 @@ public class TestCaseGenerator {
                 continue;
             }
 
+            if (takenFileNames.contains(testFileName)) {
+                String unique = uniqueName(testFileName, takenFileNames);
+                testCode = renameClassIn(testCode, stripExtension(testFileName), stripExtension(unique));
+                log.info("'{}' was already generated in this run - writing as '{}' instead so the earlier "
+                        + "file isn't overwritten.", testFileName, unique);
+                testFileName = unique;
+            }
+            takenFileNames.add(testFileName);
+
             String writtenPath = writeToDisk(outputDir, testFileName, testCode);
             results.add(new TestCaseResult(targetClassName, testFileName, testCode, writtenPath));
         }
 
         log.info("Generated {} test file(s) under {}", results.size(), outputDir);
         return results;
+    }
+
+    /** Foo.java -> Foo2.java, Foo3.java, ... until unused. */
+    private String uniqueName(String fileName, java.util.Set<String> taken) {
+        String base = stripExtension(fileName);
+        String ext = fileName.substring(base.length());
+        for (int i = 2; i < 1000; i++) {
+            String candidate = base + i + ext;
+            if (!taken.contains(candidate)) {
+                return candidate;
+            }
+        }
+        return base + System.nanoTime() + ext;
+    }
+
+    private String stripExtension(String fileName) {
+        int dot = fileName.lastIndexOf('.');
+        return dot > 0 ? fileName.substring(0, dot) : fileName;
+    }
+
+    /**
+     * Renames the public class so it matches the new file name. Deliberately
+     * narrow - only the declaration and constructor-shaped occurrences - to
+     * avoid mangling a string literal that happens to contain the same word.
+     */
+    private String renameClassIn(String code, String oldName, String newName) {
+        return code.replaceAll("(\\bclass\\s+)" + Pattern.quote(oldName) + "\\b", "$1" + newName);
     }
 
     private JsonNode parseJsonArray(String llmJsonResponse) {

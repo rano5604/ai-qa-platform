@@ -93,6 +93,54 @@ public class PipelineProperties {
     public int getCategoriesPerCall() { return categoriesPerCall; }
     public void setCategoriesPerCall(int categoriesPerCall) { this.categoriesPerCall = categoriesPerCall; }
 
+    /**
+     * How many manual test cases /generate-automation converts per LLM call.
+     *
+     * <p>Unlike the prompt-size budget, the binding constraint here is the
+     * OUTPUT limit: each case becomes a full REST Assured test method, so a
+     * dozen cases in one response easily exceeds aiqa.router.max-tokens and
+     * comes back truncated mid-string - unparseable JSON, and every case in
+     * that call lost. Batching keeps each response comfortably inside the
+     * cap; a batch that still overflows is split in half and retried.
+     */
+    private int maxCasesPerAutomationCall = 5;
+
+    public int getMaxCasesPerAutomationCall() { return maxCasesPerAutomationCall; }
+    public void setMaxCasesPerAutomationCall(int maxCasesPerAutomationCall) { this.maxCasesPerAutomationCall = maxCasesPerAutomationCall; }
+
+    /**
+     * How long POST /execute-automation waits for the TestNG subprocess before
+     * killing it. This bounds a HUNG run, not a slow one - the child is doing
+     * real network I/O against a target that may itself be wedged, and without
+     * a ceiling a single unresponsive endpoint would pin a request thread
+     * indefinitely. Raise it for suites that legitimately run longer; the whole
+     * suite shares this one budget, not each test.
+     */
+    private long executionTimeoutSeconds = 300;
+
+    public long getExecutionTimeoutSeconds() { return executionTimeoutSeconds; }
+    public void setExecutionTimeoutSeconds(long executionTimeoutSeconds) { this.executionTimeoutSeconds = executionTimeoutSeconds; }
+
+    /**
+     * Per-body character cap on captured HTTP request/response payloads.
+     * Anything longer is truncated with the full length noted, so one endpoint
+     * returning a multi-megabyte list can't make the API response unusable.
+     */
+    private int maxCapturedBodyChars = 8_000;
+
+    public int getMaxCapturedBodyChars() { return maxCapturedBodyChars; }
+    public void setMaxCapturedBodyChars(int maxCapturedBodyChars) { this.maxCapturedBodyChars = maxCapturedBodyChars; }
+
+    /**
+     * Ceiling on how many HTTP exchanges a single run records. Tests keep
+     * running once it's hit - only the capture stops - so a script that loops
+     * over a thousand ids degrades its own evidence rather than filling the disk.
+     */
+    private int maxCapturedExchanges = 500;
+
+    public int getMaxCapturedExchanges() { return maxCapturedExchanges; }
+    public void setMaxCapturedExchanges(int maxCapturedExchanges) { this.maxCapturedExchanges = maxCapturedExchanges; }
+
     public int getMaxExistingTestCasesPerCategory() { return maxExistingTestCasesPerCategory; }
     public void setMaxExistingTestCasesPerCategory(int maxExistingTestCasesPerCategory) { this.maxExistingTestCasesPerCategory = maxExistingTestCasesPerCategory; }
 

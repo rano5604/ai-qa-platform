@@ -46,6 +46,25 @@ public class GenerateTestsRequest {
     public java.util.List<String> getOnlyCategories() { return onlyCategories; }
     public void setOnlyCategories(java.util.List<String> onlyCategories) { this.onlyCategories = onlyCategories; }
 
+    /**
+     * This commit's 1-based position in the branch's chronological history,
+     * prefixed onto the run folder as {@code <seq>.<commitHash>}.
+     *
+     * <p>Set automatically by the backfill, which is the only caller that knows
+     * the whole ordering. Without it generated-tests/ is a flat pile of
+     * 40-character hashes in no discernible order, and telling which merge came
+     * first means going back to git.
+     *
+     * <p>Taken from the commit's index in the FULL merge list, not from a
+     * counter of what was processed this run - so a resumed or partial backfill
+     * gives a commit the same number it had last time, instead of renumbering
+     * everything after a skip.
+     */
+    private Integer commitSequence;
+
+    public Integer getCommitSequence() { return commitSequence; }
+    public void setCommitSequence(Integer commitSequence) { this.commitSequence = commitSequence; }
+
     public LlmKeys getLlmKeys() { return llmKeys; }
     public void setLlmKeys(LlmKeys llmKeys) { this.llmKeys = llmKeys; }
 

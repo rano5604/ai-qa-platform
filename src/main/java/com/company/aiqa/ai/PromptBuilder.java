@@ -8,6 +8,7 @@ import com.company.aiqa.model.ImpactResult;
 import com.company.aiqa.model.ManualTestCase;
 import com.company.aiqa.model.MethodInfo;
 import com.company.aiqa.model.SourceLanguage;
+import com.company.aiqa.model.TypeSchema;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashSet;
@@ -299,6 +300,216 @@ public class PromptBuilder {
     }
 
     // ---------------------------------------------------------------
+    // API automation: manual test cases -> runnable REST Assured scripts
+    // ---------------------------------------------------------------
+
+    /**
+     * System prompt for POST /api/v1/generate-automation: converts manual test
+     * cases that were ALREADY reviewed/generated for a commit into runnable
+     * REST Assured code.
+     *
+     * <p>Scoped deliberately to API testing only - the caller has already
+     * filtered out UI and configuration cases, and this prompt reinforces that
+     * a case which can't be exercised over HTTP should be skipped rather than
+     * turned into a script that can't actually run.
+     *
+     * @param defaultBaseUri baked in as the fallback for
+     *                       {@code System.getProperty("baseUri", ...)}, so the
+     *                       target stays overridable at run time.
+     */
+    public String apiAutomationSystemPrompt(String defaultBaseUri) {
+        return """
+                You are a senior SDET. You are given manual API test cases that a QA
+                team has already agreed on, plus the exact REST endpoints available.
+                Convert them into runnable REST Assured (io.rest-assured) automation.
+
+                Automate ONLY what can be exercised over HTTP. If a given test case
+                describes a UI interaction, a configuration/deployment check, or
+                anything with no HTTP surface, OMIT it entirely rather than inventing
+                an endpoint for it - a script that can't run is worse than no script.
+
+                Follow this contract exactly:
+                - "package com.company.aiqa.generated;" as the first line.
+                - The public class name must exactly match testFileName (minus ".java").
+                - TestNG: "@Test" from "org.testng.annotations.Test". NOT JUnit - nothing
+                  from org.junit is on the classpath, so importing it fails the compile.
+                - Every test method must be "public void" taking no arguments. TestNG
+                  ignores non-public methods, so a package-private one silently never runs.
+                - In a "@BeforeClass public void" method (from
+                  "org.testng.annotations.BeforeClass" - not @BeforeAll, and NOT static) set:
+                  RestAssured.baseURI = System.getProperty("baseUri", "%s");
+                  exactly that way - never hardcode a different host.
+                - One @Test method per manual test case you automate. Name it after the
+                  case's scenario, and put its Test Case ID in a comment above the
+                  method so a human can trace script back to case.
+                - For assertions beyond the response body use org.testng.Assert.
+                - Use ONLY the HTTP methods and paths listed under "## API endpoints" -
+                  never invent or guess a path.
+                - Build request payloads from the case's own test data where given;
+                  where it isn't, derive realistic values from the endpoint's request
+                  body fields. Never invent a field that isn't listed.
+                - JSON request bodies MUST use a Java text block (triple quote), never
+                  string concatenation and never backslash-escaped quotes. Escaped JSON
+                  inside a Java string inside a JSON response is three levels of
+                  escaping and reliably comes back corrupted - a text block has none.
+                  Write exactly this shape:
+
+                      String requestBody = \"""
+                          {
+                            "fieldOne": "value",
+                            "fieldTwo": 10
+                          }
+                          \""";
+
+                  Do NOT write: "{" + "\\"slotType\\": ..." + "}"
+                - A text block does NOT interpolate. Writing
+                  "name": "Shop_" + System.currentTimeMillis()
+                  INSIDE the triple quotes sends that text literally, verbatim, as the
+                  name - it does not concatenate anything, and the same trap applies to
+                  "id": "" + shopId + "". This compiles, so nothing warns you; the
+                  request is simply wrong. To put a runtime value into a payload, use a
+                  %%s / %%d placeholder and .formatted(...) on the text block:
+
+                      String body = \"""
+                          {
+                            "name": "Shop_%%d",
+                            "areaId": %%d
+                          }
+                          \""".formatted(System.currentTimeMillis(), areaId);
+
+                  Note the quoting: a string value keeps its quotes around the
+                  placeholder, a numeric one has none.
+                - Translate the case's "Expected Result" into assertions: status code
+                  first, then response body fields via Hamcrest matchers.
+                - Use ONLY matchers that actually exist in org.hamcrest.Matchers:
+                  equalTo, containsString, startsWith, endsWith, notNullValue,
+                  nullValue, hasKey, hasItem, hasItems, hasSize, empty, greaterThan,
+                  lessThan, anyOf, allOf, not, is, instanceOf. Do NOT invent one by
+                  fusing two together - there is no emptyOr(...), noneOf(...) or
+                  eitherOf(...). To express "A or B" use anyOf(A, B), e.g.
+                  anyOf(nullValue(), hasSize(0)) for "empty or absent". An invented
+                  matcher fails the compile and loses the whole file.
+                - Group related cases into one class per endpoint/feature rather than
+                  one class per case.
+                - Each file must be self-contained: only JDK, REST Assured, Hamcrest
+                  and TestNG imports - nothing from the project's own source.
+                - Do NOT add any logging filter, RestAssured.filters(...) call, or
+                  log().all(). Every request and response is already captured by the
+                  runner, and a script that also resets or replaces the global filters
+                  destroys that capture.
+
+                PRECONDITIONS - the single biggest cause of useless generated tests.
+
+                The target database is NOT seeded. There is no record with id 1. A test
+                that does GET/PUT/DELETE on a hardcoded id returns 404 "not found",
+                fails, and tells you nothing about the code - it only proves you guessed
+                an id that doesn't exist. NEVER hardcode the id of a resource you did
+                not create in this same run.
+
+                Every test must CREATE what it needs first, over the API, using the
+                POST endpoints in the list, and use the id that comes back:
+
+                    @Test
+                    public void updateExistingCategory() {
+                        String createBody = \"""
+                            {
+                              "name": "Oil Change",
+                              "description": "Standard service"
+                            }
+                            \""";
+                        // Precondition: the category under test must exist.
+                        Integer categoryId = given()
+                                .contentType(ContentType.JSON).body(createBody)
+                                .when().post("/api/categories")
+                                .then().statusCode(anyOf(is(200), is(201)))
+                                .extract().path("data.id");
+
+                        // The actual assertion of this test case.
+                        given().contentType(ContentType.JSON).body(updateBody)
+                                .when().put("/api/categories/{id}", categoryId)
+                                .then().statusCode(200);
+                    }
+
+                Rules for this:
+                - Read each case's "Preconditions" field and satisfy it with real calls
+                  before the assertion. That field is the specification for the setup,
+                  not a comment to copy into the code.
+                - Extract the id with .extract().path(...). Match the path to the
+                  response the create endpoint actually returns - if responses are
+                  wrapped in an envelope like {"status":..,"data":{..}} the path is
+                  "data.id", not "id".
+                - A test that MUTATES or DELETES its subject must create its own, never
+                  share one with another test. Tests must pass in any order and pass
+                  twice in a row.
+                - Put only READ-ONLY shared fixtures in @BeforeClass. Anything a test
+                  changes belongs inside that test.
+                - Clean up what you created in @AfterClass where a DELETE endpoint
+                  exists, so repeated runs don't pile up rows. Ignore cleanup failures.
+                - Use unique values for anything that must not collide - a fixed name or
+                  email fails on the second run. Do this with a %%d placeholder and
+                  .formatted(System.currentTimeMillis()), NEVER by writing
+                  + System.currentTimeMillis() inside the text block.
+                - Build every payload from the "Request payload schemas" section below,
+                  using those exact field names and, for an enum field, one of its
+                  listed values. A field the schema doesn't list will be rejected or
+                  ignored; a required one you omit fails the create outright.
+                - NEGATIVE cases are the exception: when the case is "operate on a
+                  resource that does not exist", a deliberately absent id like 999999 is
+                  CORRECT, and asserting 404 is the point. Do not create anything there.
+                - Chains matter: to pay for an appointment you must first create the
+                  shop, then the appointment, then pay. Follow the chain with real calls
+                  as far as the endpoint list allows.
+                - If a precondition CANNOT be built from the listed endpoints, OMIT that
+                  test case entirely. A silently 404-ing test is worse than no test - it
+                  looks like a defect in the application.
+
+                Respond with ONLY a JSON array, no prose, no markdown fences, matching:
+                [
+                  {
+                    "targetClassName": "string - the feature/endpoint under test",
+                    "testFileName": "string - e.g. GreetingApiTest.java",
+                    "testCode": "string - the complete, compilable Java source"
+                  }
+                ]
+                """.formatted(defaultBaseUri);
+    }
+
+    /**
+     * User prompt for API automation: the endpoints available, then the manual
+     * cases to convert. Steps/expected results are passed through largely
+     * verbatim - they're the agreed specification, and the model's job here is
+     * translation into code, not reinterpretation.
+     */
+    public String buildApiAutomationUserPrompt(List<ManualTestCase> cases, List<ClassInfo> classes,
+                                               List<TypeSchema> payloadSchemas) {
+        StringBuilder sb = new StringBuilder();
+
+        appendApiEndpoints(sb, classes);
+        if (sb.isEmpty()) {
+            sb.append("## API endpoints\n\nNone were detected in this commit.\n\n");
+        }
+        appendPayloadSchemas(sb, payloadSchemas);
+
+        sb.append("## Manual test cases to automate\n\n");
+        for (ManualTestCase tc : cases) {
+            sb.append("### ").append(tc.testCaseId()).append(" - ").append(tc.scenario()).append("\n");
+            sb.append("- Feature: ").append(tc.feature()).append("\n");
+            sb.append("- Type: ").append(tc.type()).append("  Priority: ").append(tc.priority()).append("\n");
+            if (tc.preconditions() != null && !tc.preconditions().isBlank()) {
+                sb.append("- Preconditions: ").append(truncate(tc.preconditions(), 500)).append("\n");
+            }
+            sb.append("- Steps: ").append(truncate(tc.steps(), 1500)).append("\n");
+            if (tc.testData() != null && !tc.testData().isBlank()) {
+                sb.append("- Test data: ").append(truncate(tc.testData(), 800)).append("\n");
+            }
+            sb.append("- Expected result: ").append(truncate(tc.expectedResult(), 800)).append("\n\n");
+        }
+
+        sb.append("Generate the JSON array of REST Assured test files now.");
+        return sb.toString();
+    }
+
+    // ---------------------------------------------------------------
     // Configuration-change test cases (application.yml, .properties,
     // Dockerfile, pom.xml, etc. - see ConfigType)
     // ---------------------------------------------------------------
@@ -524,18 +735,20 @@ public class PromptBuilder {
      * non-controller change), rather than printing an empty, noisy section.
      */
     private void appendApiEndpoints(StringBuilder sb, List<ClassInfo> classes) {
-        List<ApiEndpointInfo> endpoints = classes.stream()
+        List<MethodInfo> handlers = classes.stream()
                 .flatMap(c -> c.methods().stream())
-                .map(MethodInfo::apiEndpoint)
-                .filter(e -> e != null)
+                .filter(m -> m.apiEndpoint() != null)
                 .toList();
 
-        if (endpoints.isEmpty()) {
+        if (handlers.isEmpty()) {
             return;
         }
 
         sb.append("## API endpoints\n\n");
-        for (ApiEndpointInfo endpoint : endpoints) {
+        sb.append("Use the POST endpoints here to build preconditions - this is the ")
+                .append("complete set of ways to create test data.\n\n");
+        for (MethodInfo handler : handlers) {
+            ApiEndpointInfo endpoint = handler.apiEndpoint();
             sb.append("- ").append(endpoint.httpMethod()).append(" ").append(endpoint.path());
             if (endpoint.requestBodyType() != null && !endpoint.requestBodyType().isBlank()) {
                 sb.append("  [request body: ").append(endpoint.requestBodyType()).append("]");
@@ -546,7 +759,47 @@ public class PromptBuilder {
             if (!endpoint.queryParams().isEmpty()) {
                 sb.append("  [query params: ").append(String.join(", ", endpoint.queryParams())).append("]");
             }
+            // The handler's return type is how the model knows whether the
+            // response is enveloped - an id lives at "data.id" behind an
+            // ApiResponse<T> wrapper but at plain "id" without one, and
+            // guessing wrong makes every precondition extraction come back null.
+            if (handler.returnType() != null && !handler.returnType().isBlank()) {
+                sb.append("  [returns: ").append(handler.returnType()).append("]");
+            }
             sb.append("\n");
+        }
+        sb.append("\n");
+    }
+
+    /**
+     * The real field shape of every request payload type, read from the
+     * project's source. This is what stops the model inventing field names -
+     * an invented field means a rejected create, a precondition that never got
+     * built, and a 404 later that looks like an application defect.
+     */
+    private void appendPayloadSchemas(StringBuilder sb, List<TypeSchema> schemas) {
+        if (schemas == null || schemas.isEmpty()) {
+            return;
+        }
+        sb.append("## Request payload schemas (read from the project's source)\n\n");
+        sb.append("These are the ACTUAL fields. Use these names exactly - do not invent, ")
+                .append("rename or guess a field, and do not omit one marked required.\n\n");
+
+        for (TypeSchema schema : schemas) {
+            if ("enum".equals(schema.kind())) {
+                sb.append("- enum ").append(schema.simpleName()).append(": ")
+                        .append(String.join(" | ", schema.enumValues()))
+                        .append("   (use one of these values verbatim)\n");
+                continue;
+            }
+            sb.append("- ").append(schema.kind()).append(" ").append(schema.simpleName()).append("\n");
+            for (TypeSchema.FieldSchema field : schema.fields()) {
+                sb.append("    ").append(field.name()).append(": ").append(field.type());
+                if (field.required()) {
+                    sb.append("  (required)");
+                }
+                sb.append("\n");
+            }
         }
         sb.append("\n");
     }

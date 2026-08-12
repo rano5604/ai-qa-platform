@@ -49,7 +49,7 @@ aiqa:
   router:
     chain: [gemini, groq, mistral, github, ollama]
     timeout-seconds: 60
-    max-tokens: 4096
+    max-tokens: 8192
     gemini-api-key: ${GEMINI_API_KEY:}
     gemini-model: gemini-2.5-flash
     gemini-base-url: https://generativelanguage.googleapis.com/v1beta
@@ -109,6 +109,30 @@ aiqa:
     # avoidable repeated cost - 120 entries is ~36,000 chars per call. 40 is
     # ample for the model to spot an existing case worth updating.
     max-existing-test-cases-per-category: 40
+    # How many manual test cases /generate-automation converts per LLM call.
+    # The constraint here is the OUTPUT limit, not the prompt: each case
+    # becomes a full REST Assured method, so too many in one response blows
+    # aiqa.router.max-tokens and comes back truncated mid-string - unparseable,
+    # losing every case in that call. A batch that still overflows is split in
+    # half and retried rather than discarded.
+    max-cases-per-automation-call: 5
+
+    # --- POST /execute-automation: running generated scripts with TestNG ---
+    # How long to wait for the TestNG subprocess before killing it. This bounds
+    # a HUNG run, not a slow one: the child does real network I/O against a
+    # target that may itself be wedged, and without a ceiling one unresponsive
+    # endpoint pins a request thread indefinitely. The whole suite shares this
+    # budget, not each test.
+    execution-timeout-seconds: 300
+    # Per-body cap on captured HTTP request/response payloads. Longer bodies are
+    # truncated (with the full length noted) so one endpoint returning a
+    # multi-megabyte list can't make the API response unusable.
+    max-captured-body-chars: 8000
+    # Ceiling on exchanges recorded per run. Tests keep running once it's hit -
+    # only the capture stops - so a script looping over a thousand ids degrades
+    # its own evidence rather than filling the disk.
+    max-captured-exchanges: 500
+
     # When true (default), a merge that changes configuration files
     # (application.yml, .properties, Dockerfile, pom.xml, .env, etc. - see
     # ConfigType) gets its own "Configuration" test-case category instead of

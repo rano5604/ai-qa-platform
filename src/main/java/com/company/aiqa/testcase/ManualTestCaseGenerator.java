@@ -283,6 +283,55 @@ public class ManualTestCaseGenerator {
      * existingTestCaseId to mark a case as UPDATE. Returns an empty list if
      * the master CSV doesn't exist yet (e.g. the very first run for a repo).
      */
+    /**
+     * Loads a single run's CSV (the 8-column file writeCsv produces under
+     * generated-tests/&lt;project&gt;/&lt;headRef&gt;/), as opposed to the
+     * 9-column master catalog loadMasterCsv reads. Used by the automation
+     * endpoint to pick up exactly the cases generated for one commit.
+     *
+     * <p>Test data was folded into the Steps column on write (TestRail has no
+     * Test Data field), so it comes back as part of steps rather than being
+     * split out again - which is fine for automation, since the generator
+     * needs the values, not the column they came from.
+     *
+     * @return the cases, or an empty list when the file doesn't exist.
+     */
+    public List<ManualTestCase> loadRunCsv(String runOutputDir, String fileName) {
+        Path filePath = Path.of(runOutputDir, fileName);
+        if (!Files.exists(filePath)) {
+            return List.of();
+        }
+        try {
+            List<String[]> rows = parseCsv(Files.readString(filePath, StandardCharsets.UTF_8));
+            List<ManualTestCase> cases = new ArrayList<>();
+            for (int i = 1; i < rows.size(); i++) {   // row 0 is the header
+                String[] row = rows.get(i);
+                if (row.length < 8 || (row.length == 1 && row[0].isBlank())) {
+                    continue;   // blank trailing line or malformed row - skip rather than fail the load
+                }
+                cases.add(new ManualTestCase(
+                        row[7],   // References -> testCaseId
+                        row[1],   // Section -> feature
+                        row[0],   // Title -> scenario
+                        row[4],   // Preconditions
+                        row[5],   // Steps (includes the folded-in test data)
+                        "",       // testData - already inside steps
+                        row[6],   // Expected Result
+                        row[3],   // Priority
+                        row[2],   // Type
+                        "",       // relatedFile
+                        "EXISTING",
+                        ""
+                ));
+            }
+            log.info("Loaded {} manual test case(s) from {}", cases.size(), filePath);
+            return cases;
+        } catch (IOException e) {
+            log.warn("Could not read run CSV {}: {}", filePath, e.getMessage());
+            return List.of();
+        }
+    }
+
     public List<ManualTestCase> loadMasterCsv(String outputDir, String fileName) {
         Path filePath = Path.of(outputDir, fileName);
         if (!Files.exists(filePath)) {

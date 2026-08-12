@@ -25,7 +25,7 @@ public class RouterProperties {
     private int timeoutSeconds = 60;
 
     /** Max tokens requested per completion - PromptBuilder's JSON-array responses can run long, so this defaults higher than ai-router's own 1024. */
-    private int maxTokens = 4096;
+    private int maxTokens = 8192;
 
     // --- Gemini --- https://aistudio.google.com/app/apikey
     private String geminiApiKey = "";
