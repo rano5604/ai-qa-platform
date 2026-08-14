@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [Command line suite]">
+  <test thread-count="5" name="Command line test(failed)">
+    <classes>
+      <class name="com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4">
+        <methods>
+          <include name="failToAddDuplicateHolidaysForSameShopAndDates"/>
+          <include name="failToUpdateShopHolidayToDateWithExistingHoliday"/>
+          <include name="successfullyAddMultipleHolidaysForShop"/>
+          <include name="setup"/>
+          <include name="successfullyConfigureNewSlotForShop"/>
+          <include name="failToConfigureNewSlotDueToDuplicateSlotType"/>
+          <include name="cleanup2"/>
+          <include name="cleanup"/>
+        </methods>
+      </class> <!-- com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4 -->
+    </classes>
+  </test> <!-- Command line test(failed) -->
+</suite> <!-- Failed suite [Command line suite] -->

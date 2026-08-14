@@ -1,0 +1,411 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References,Source Ref
+Verify language toggle switches between Bengali and English on onboarding screens,Language Toggle,Positive,High,App is launched and on the onboarding screen (pages 3-5),"1. Observe the current language displayed on the onboarding screen (should default to Bengali).
+2. Tap the 'Eng / বাংলা' toggle button located at the top-right corner of the screen.
+3. Verify all text on the screen changes to English.
+4. Tap the toggle button again.
+5. Verify all text reverts to Bengali.
+
+Test Data: Default app state with Bengali as initial language","The app content language toggles between Bengali and English when the language switch is tapped, and all text elements update accordingly without errors or layout breaks.",57493e8-TC-001,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify user can navigate through all onboarding slides and proceed to sign-up,Onboarding Flow,Positive,High,App is launched and on the splash screen (page 2),"1. Wait for the splash screen to automatically transition to the onboarding carousel.
+2. Swipe left to navigate through all three onboarding slides (Biller integration, Accept MFI payments, Fund transfer).
+3. On the last slide, tap the 'সাইন আপ করুন' / 'Sign up' button.
+4. Verify the app navigates to the consent screen (page 6).
+
+Test Data: Default app state with three onboarding slides","User can swipe through all onboarding slides, and tapping 'Sign up' on the last slide navigates to the consent screen without errors.",57493e8-TC-002,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify language toggle works on dashboard and updates all numeric values,Dashboard Language Toggle,Positive,High,User is on the dashboard screen (pages 26-28) with Bengali as the current language,"1. Observe the current language and numeric format on the dashboard (should be Bengali with Bengali numerals).
+2. Tap the 'Eng / বাংলা' toggle button.
+3. Verify all text changes to English.
+4. Verify all numeric values (balance, chart values) change from Bengali to Arabic numerals.
+5. Verify the balance toggle ('Show Balance'/'Hide Balance') updates correctly.
+6. Tap the toggle button again to revert to Bengali.
+
+Test Data: Default dashboard state with Bengali language and numerals","The language toggles between Bengali and English, and all numeric values update to the correct numeral system (Bengali or Arabic) without layout issues or errors.",57493e8-TC-003,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify user can select a contact and enter recharge amount using numeric keypad,Mobile Recharge Flow,Positive,High,User is on the dashboard screen and has at least one contact in the mock data,"1. Tap the 'মোবাইল রিচার্জ' / 'Mobile Recharge' quick action button.
+2. Verify the recharge screen opens as a sheet.
+3. Tap the 'Select Contact' field.
+4. Select a contact from the list (e.g., 'Mehedi Hasan Fahim').
+5. Verify the phone number populates in the field.
+6. Tap the amount field to open the numeric keypad.
+7. Enter an amount using the keypad (e.g., '500').
+8. Verify the amount updates correctly in the field with Bengali numerals.
+9. Tap 'Done' on the keypad.
+10. Verify the amount presets update to reflect the entered amount.
+
+Test Data: Contact: 'Mehedi Hasan Fahim' with phone number '01743983485', Amount: 500","User can select a contact from the list, and the numeric keypad allows entry of an amount that updates the field and presets correctly with Bengali numerals.",57493e8-TC-004,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify user can select MFI provider and enter transfer details,MFI Transfer Flow,Positive,High,User is on the dashboard screen,"1. Tap the 'এমএফআই পেমেন্ট' / 'MFI Payment' quick action button.
+2. Verify the MFI transfer screen opens as a sheet.
+3. Tap the MFI provider dropdown.
+4. Select an MFI provider from the list (e.g., 'গ্রামীণ ব্যাংক' / 'Grameen Bank').
+5. Verify the selected provider displays in the field.
+6. Enter an account number (e.g., '12345678').
+7. Select a purpose from the dropdown (e.g., 'ঋণ পরিশোধ' / 'Loan Repayment').
+8. Enter an amount (e.g., '1000') using the amount presets or manual entry.
+9. Verify the 'Continue' button becomes enabled.
+10. Tap the 'Continue' button.
+
+Test Data: MFI Provider: 'গ্রামীণ ব্যাংক' / 'Grameen Bank', Account Number: '12345678', Purpose: 'ঋণ পরিশোধ' / 'Loan Repayment', Amount: 1000","User can select an MFI provider, enter valid account details, and the 'Continue' button enables only when all required fields are filled correctly.",57493e8-TC-005,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Complete a successful prepaid mobile recharge,Mobile Recharge,Positive,High,User is logged in and on the dashboard screen with sufficient balance,"1. Tap the 'Recharge' option from the dashboard quick actions.
+2. Select 'Prepaid' as the recharge type.
+3. Enter a valid 11-digit mobile number (e.g., 01712345678).
+4. Select the mobile operator from the list.
+5. Choose a recharge amount of 200 BDT from the preset options.
+6. Tap the 'Continue' button.
+7. Verify the details on the confirmation screen.
+8. Tap the 'Confirm' button to complete the recharge.
+
+Test Data: Mobile number: 01712345678, Operator: Grameenphone, Amount: 200 BDT",The recharge is successfully processed. A success message appears confirming the recharge of 200 BDT to the number 01712345678. The dashboard balance is updated to reflect the deduction.,57493e8-TC-006,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Enter mobile number using the numeric keypad,Mobile Recharge,Positive,High,User is on the recharge screen,"1. Tap the mobile number input field to bring up the numeric keypad.
+2. Enter the mobile number '01712345678' using the keypad buttons.
+3. Verify the number appears correctly in the input field as you type.
+4. Press the backspace button to delete the last digit.
+5. Re-enter the last digit to complete the number.
+
+Test Data: Mobile number: 01712345678",The mobile number '01712345678' is correctly entered and displayed in the input field. The 'Continue' button becomes enabled once the 11-digit number is complete.,57493e8-TC-007,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Toggle balance visibility on the dashboard,Dashboard Controls,Positive,Medium,User is logged in and on the dashboard screen with a balance displayed as asterisks,"1. Locate the balance display area at the top of the dashboard.
+2. Tap the eye icon next to the balance.
+3. Observe the balance display.","The balance changes from asterisks (****) to the actual numeric value when the eye icon is tapped. Tapping the eye icon again hides the balance, returning it to asterisks.",57493e8-TC-008,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Change analysis period on the dashboard,Dashboard Controls,Positive,Medium,User is logged in and on the dashboard screen,"1. Locate the period selector (Weekly/Monthly/Six Months) above the transaction chart.
+2. Tap 'Monthly' to change the period.
+3. Observe the transaction chart and summary data.
+4. Tap 'Six Months' to change the period again.
+5. Observe the updated chart and data.","The transaction chart and summary data update to reflect the selected period. The 'Monthly' selection shows data for the current month, and 'Six Months' shows data for the last six months.",57493e8-TC-009,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Complete phone number entry and operator selection during signup,User Signup,Positive,High,User is on the phone number entry screen during signup,"1. Enter the phone number '1712345678' (10 digits, without leading zero).
+2. Verify the operator logo appears automatically.
+3. Tap the 'Next' button to proceed.
+
+Test Data: Phone number: 1712345678","The operator logo for Grameenphone appears automatically after entering the first few digits. The 'Next' button becomes enabled once 10 digits are entered, allowing the user to proceed to the next step.",57493e8-TC-010,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Submit phone number with invalid operator selection,Phone Number Entry,Negative,High,User is on the phone number entry screen (Page 7),"1. Do not select any mobile operator from the dropdown.
+2. Enter a valid 10-digit phone number (e.g., 1712345678).
+3. Tap the 'Continue' button.
+
+Test Data: Phone number: 1712345678 (no operator selected)",System displays an error message indicating that a mobile operator must be selected before proceeding. The 'Continue' button remains disabled.,57493e8-TC-011,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Submit phone number with invalid format (non-numeric characters),Phone Number Entry,Negative,High,User is on the phone number entry screen (Page 7),"1. Select any mobile operator from the dropdown.
+2. Enter a phone number containing letters or special characters (e.g., 1712a45678).
+3. Tap the 'Continue' button.
+
+Test Data: Phone number: 1712a45678",System rejects the input and displays an error message indicating that only numeric characters are allowed. The 'Continue' button remains disabled.,57493e8-TC-012,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Submit phone number with fewer than 10 digits,Phone Number Entry,Negative,High,User is on the phone number entry screen (Page 7),"1. Select any mobile operator from the dropdown.
+2. Enter a phone number with fewer than 10 digits (e.g., 171234567).
+3. Tap the 'Continue' button.
+
+Test Data: Phone number: 171234567",System displays an error message indicating that the phone number must be 10 digits long. The 'Continue' button remains disabled.,57493e8-TC-013,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Submit OTP with fewer than 4 digits,OTP Verification,Negative,High,User is on the OTP verification screen (Page 10) with a valid phone number submitted,"1. Enter an OTP with fewer than 4 digits (e.g., 123).
+2. Tap the 'Verify' button.
+
+Test Data: OTP: 123",System displays an error message indicating that the OTP must be 4 digits. The 'Verify' button remains disabled.,57493e8-TC-014,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Submit OTP with non-numeric characters,OTP Verification,Negative,High,User is on the OTP verification screen (Page 10) with a valid phone number submitted,"1. Enter an OTP containing letters or special characters (e.g., 1a3b).
+2. Tap the 'Verify' button.
+
+Test Data: OTP: 1a3b",System rejects the input and displays an error message indicating that only numeric characters are allowed. The 'Verify' button remains disabled.,57493e8-TC-015,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Resend OTP before countdown completes,OTP Verification,Negative,Medium,"User is on the OTP verification screen (Page 10) with a valid phone number submitted and countdown timer active (e.g., 00:56)","1. Tap the 'Resend OTP' link while the countdown timer is still active.
+2. Observe system behavior.
+
+Test Data: Countdown timer: 00:56",System ignores the tap on the 'Resend OTP' link and does not resend the OTP. The countdown timer continues to decrement.,57493e8-TC-016,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Submit mismatched PIN and confirmation PIN,PIN Setup,Negative,High,User is on the PIN setup screen after OTP verification,"1. Enter a 4-digit PIN (e.g., 1234).
+2. Enter a different 4-digit PIN in the confirmation field (e.g., 5678).
+3. Tap the 'Submit' button.
+
+Test Data: PIN: 1234, Confirmation PIN: 5678",System displays an error message indicating that the PINs do not match. The 'Submit' button remains disabled until matching PINs are entered.,57493e8-TC-017,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Submit PIN with fewer than 4 digits,PIN Setup,Negative,High,User is on the PIN setup screen after OTP verification,"1. Enter a PIN with fewer than 4 digits (e.g., 123).
+2. Enter the same PIN in the confirmation field.
+3. Tap the 'Submit' button.
+
+Test Data: PIN: 123, Confirmation PIN: 123",System displays an error message indicating that the PIN must be 4 digits. The 'Submit' button remains disabled.,57493e8-TC-018,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Submit PIN with non-numeric characters,PIN Setup,Negative,High,User is on the PIN setup screen after OTP verification,"1. Enter a PIN containing letters or special characters (e.g., 1a3b).
+2. Enter the same PIN in the confirmation field.
+3. Tap the 'Submit' button.
+
+Test Data: PIN: 1a3b, Confirmation PIN: 1a3b",System rejects the input and displays an error message indicating that only numeric characters are allowed. The 'Submit' button remains disabled.,57493e8-TC-019,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Proceed without selecting a KYC method,KYC Method Selection,Negative,High,User is on the KYC method selection screen (Page 12),"1. Do not select any KYC method (NID or Birth Registration).
+2. Tap the 'Continue' button.
+
+Test Data: No KYC method selected",System displays an error message indicating that a KYC method must be selected before proceeding. The 'Continue' button remains disabled.,57493e8-TC-020,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Proceed to NID review without capturing front image,NID Scan,Negative,High,User is on the NID scan screen (Page 13) and has captured the back image only,"1. Capture the back image of the NID.
+2. Tap the 'Continue' button without capturing the front image.
+
+Test Data: Front image: Not captured, Back image: Captured",System displays an error message indicating that both front and back images of the NID must be captured before proceeding.,57493e8-TC-021,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Proceed to NID review without capturing back image,NID Scan,Negative,High,User is on the NID scan screen (Page 13) and has captured the front image only,"1. Capture the front image of the NID.
+2. Tap the 'Continue' button without capturing the back image.
+
+Test Data: Front image: Captured, Back image: Not captured",System displays an error message indicating that both front and back images of the NID must be captured before proceeding.,57493e8-TC-022,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Proceed with unverified NID data,NID Review,Negative,High,User is on the NID review screen (Page 17) with 'Verification Failed' status,"1. Observe the 'Verification Failed' banner.
+2. Attempt to tap the 'Continue' button.
+
+Test Data: NID data: Verification failed",System prevents proceeding and prompts the user to retry NID verification by displaying a dialog with the options to 'Retry' or 'Cancel'.,57493e8-TC-023,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Proceed to face capture without accepting all rules,Face Capture,Negative,High,User is on the face capture introduction screen (Page 18),"1. Do not check all the required rules.
+2. Tap the 'I am ready' button.
+
+Test Data: Rules: Not all accepted",System displays an error message indicating that all rules must be accepted before proceeding. The 'I am ready' button remains disabled.,57493e8-TC-024,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Submit recharge form with invalid phone number format,Mobile Recharge,Negative,High,User is on the mobile recharge screen (Page 29),"1. Select any mobile operator.
+2. Enter a phone number with non-numeric characters (e.g., 1712a45678).
+3. Select a recharge amount.
+4. Tap the 'Continue' button.
+
+Test Data: Phone number: 1712a45678, Amount: 50",System displays an error message indicating that the phone number must contain only numeric characters. The 'Continue' button remains disabled.,57493e8-TC-025,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Submit recharge form without selecting an operator,Mobile Recharge,Negative,High,User is on the mobile recharge screen (Page 29),"1. Do not select any mobile operator.
+2. Enter a valid 10-digit phone number.
+3. Select a recharge amount.
+4. Tap the 'Continue' button.
+
+Test Data: Phone number: 1712345678, Amount: 50, Operator: Not selected",System displays an error message indicating that a mobile operator must be selected. The 'Continue' button remains disabled.,57493e8-TC-026,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Submit recharge form with zero amount,Mobile Recharge,Negative,High,User is on the mobile recharge screen (Page 29),"1. Select any mobile operator.
+2. Enter a valid 10-digit phone number.
+3. Set the recharge amount to zero.
+4. Tap the 'Continue' button.
+
+Test Data: Phone number: 1712345678, Amount: 0",System displays an error message indicating that the recharge amount must be greater than zero. The 'Continue' button remains disabled.,57493e8-TC-027,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Submit MFI transfer form with invalid account number format,MFI Transfer,Negative,High,User is on the MFI transfer screen (Page 35),"1. Select any MFI provider.
+2. Enter an account number with non-numeric characters (e.g., 1234a567).
+3. Select a transfer amount.
+4. Tap the 'Continue' button.
+
+Test Data: Account number: 1234a567, Amount: 200",System displays an error message indicating that the account number must contain only numeric characters. The 'Continue' button remains disabled.,57493e8-TC-028,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Submit MFI transfer form with account number shorter than 8 digits,MFI Transfer,Negative,High,User is on the MFI transfer screen (Page 35),"1. Select any MFI provider.
+2. Enter an account number with fewer than 8 digits (e.g., 1234567).
+3. Select a transfer amount.
+4. Tap the 'Continue' button.
+
+Test Data: Account number: 1234567, Amount: 200",System displays an error message indicating that the account number must be at least 8 digits long. The 'Continue' button remains disabled.,57493e8-TC-029,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Submit MFI transfer form with zero amount,MFI Transfer,Negative,High,User is on the MFI transfer screen (Page 35),"1. Select any MFI provider.
+2. Enter a valid account number.
+3. Set the transfer amount to zero.
+4. Tap the 'Continue' button.
+
+Test Data: Account number: 12345678, Amount: 0",System displays an error message indicating that the transfer amount must be greater than zero. The 'Continue' button remains disabled.,57493e8-TC-030,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Proceed without accepting consent terms,Consent Screen,Negative,High,User is on the consent screen (Page 6),"1. Scroll through the consent terms without checking the 'I agree' checkbox.
+2. Tap the 'Agree' button.
+
+Test Data: Consent: Not accepted",System displays an error message indicating that the user must agree to the terms before proceeding. The 'Agree' button remains disabled.,57493e8-TC-031,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt recharge with missing mobile number,Mobile Recharge,Negative,High,User is on the recharge screen with no number entered,"1. Leave the mobile number field blank. 2. Select any operator. 3. Set an amount greater than 0. 4. Tap the 'Continue' button.
+
+Test Data: Operator: Grameenphone, Amount: 200",The system shows an error message 'Please enter a valid 11-digit mobile number' and does not proceed to the confirmation screen.,57493e8-TC-032,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt recharge with malformed mobile number (non-numeric characters),Mobile Recharge,Negative,High,User is on the recharge screen,"1. Enter a mobile number containing letters or symbols (e.g., '017abc12345'). 2. Select any operator. 3. Set an amount greater than 0. 4. Tap the 'Continue' button.
+
+Test Data: Mobile number: '017abc12345', Operator: Banglalink, Amount: 100",The system strips non-numeric characters and shows an error message 'Mobile number must be 11 digits' if the resulting number is not 11 digits long. The recharge does not proceed.,57493e8-TC-033,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt recharge with mobile number shorter than 11 digits,Mobile Recharge,Negative,High,User is on the recharge screen,"1. Enter a 10-digit mobile number (e.g., '0171234567'). 2. Select any operator. 3. Set an amount greater than 0. 4. Tap the 'Continue' button.
+
+Test Data: Mobile number: '0171234567', Operator: Robi, Amount: 50",The system shows an error message 'Mobile number must be 11 digits' and does not proceed to the confirmation screen.,57493e8-TC-034,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt recharge with zero or negative amount,Mobile Recharge,Negative,High,User is on the recharge screen with a valid 11-digit mobile number entered,"1. Enter a valid 11-digit mobile number. 2. Select any operator. 3. Set the amount to 0 or a negative value (e.g., -50). 4. Tap the 'Continue' button.
+
+Test Data: Mobile number: '01712345678', Operator: Airtel, Amount: 0 or -50",The system shows an error message 'Amount must be greater than 0' and does not proceed to the confirmation screen.,57493e8-TC-035,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt to backspace on an empty mobile number field,Mobile Recharge,Negative,Low,User is on the recharge screen with an empty mobile number field,"1. Tap the backspace button in the mobile number field.
+
+Test Data: None",The system does nothing; the mobile number field remains empty and no error is shown.,57493e8-TC-036,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt to append digits beyond 11-digit limit for mobile number,Mobile Recharge,Negative,Medium,User is on the recharge screen with an 11-digit mobile number already entered,"1. Enter an 11-digit mobile number (e.g., '01712345678'). 2. Attempt to append an additional digit (e.g., '9').
+
+Test Data: Mobile number: '01712345678' + '9'",The system ignores the additional digit and the mobile number remains '01712345678'.,57493e8-TC-037,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt signup with missing phone number,User Signup,Negative,High,User is on the phone number entry screen of the signup flow,"1. Leave the phone number field blank. 2. Tap the 'Next' button.
+
+Test Data: None",The system shows an error message 'Please enter a 10-digit phone number' and does not proceed to the OTP screen.,57493e8-TC-038,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt signup with malformed phone number (non-numeric characters),User Signup,Negative,High,User is on the phone number entry screen of the signup flow,"1. Enter a phone number containing letters or symbols (e.g., '12abc34567'). 2. Tap the 'Next' button.
+
+Test Data: Phone number: '12abc34567'",The system strips non-numeric characters and shows an error message 'Phone number must be 10 digits' if the resulting number is not 10 digits long. The signup does not proceed.,57493e8-TC-039,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt signup with phone number shorter than 10 digits,User Signup,Negative,High,User is on the phone number entry screen of the signup flow,"1. Enter a 9-digit phone number (e.g., '171234567'). 2. Tap the 'Next' button.
+
+Test Data: Phone number: '171234567'",The system shows an error message 'Phone number must be 10 digits' and does not proceed to the OTP screen.,57493e8-TC-040,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt to proceed without capturing both NID sides,User Signup,Negative,High,User is on the NID capture screen of the signup flow and has captured only one side (front or back),"1. Capture only the front side of the NID. 2. Tap the 'Next' button without capturing the back side.
+
+Test Data: Front side captured, back side not captured",The system shows an error message 'Please capture both sides of your NID' and does not proceed to the next step.,57493e8-TC-041,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt to proceed with invalid KYC method selection,User Signup,Negative,High,User is on the KYC method selection screen of the signup flow,"1. Do not select any KYC method (NID or Birth Registration). 2. Tap the 'Next' button.
+
+Test Data: None",The system shows an error message 'Please select a KYC method' and does not proceed to the next step.,57493e8-TC-042,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt to submit mismatched PIN during signup,User Signup,Negative,High,User is on the PIN setup screen of the signup flow,"1. Enter a PIN (e.g., '1234'). 2. Re-enter a different PIN (e.g., '5678'). 3. Tap the 'Confirm' button.
+
+Test Data: PIN: '1234', Confirm PIN: '5678'",The system shows an error message 'PINs do not match. Please try again.' and does not proceed to the next step.,57493e8-TC-043,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt to set invalid service tab index,Dashboard,Negative,Medium,User is on the dashboard screen,"1. Simulate an attempt to set the service tab index to an out-of-bounds value (e.g., -1 or 5) via UI manipulation or backend call.
+
+Test Data: Service tab index: -1 or 5",The system ignores the invalid index and retains the current tab selection without crashing or showing an error.,57493e8-TC-044,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt to set invalid analysis period,Dashboard,Negative,Medium,User is on the dashboard screen with the analysis period dropdown visible,"1. Simulate an attempt to set the analysis period to an invalid value (e.g., null or an undefined enum value) via UI manipulation or backend call.
+
+Test Data: Analysis period: null or undefined",The system defaults to the 'weekly' period and does not crash or show an error.,57493e8-TC-045,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Attempt to proceed without selecting a mobile operator,User Signup,Negative,High,User is on the phone number entry screen of the signup flow and has entered a valid 10-digit number,"1. Enter a valid 10-digit phone number (e.g., '1712345678'). 2. Do not select a mobile operator. 3. Tap the 'Next' button.
+
+Test Data: Phone number: '1712345678'",The system shows an error message 'Please select your mobile operator' and does not proceed to the OTP screen.,57493e8-TC-046,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that the app generates and persists a unique device ID for KYC API calls,KYC Service API Device Identification,Security,High,App is freshly installed on a device with no prior KYC activity,"1. Launch the app and proceed to the phone number entry screen (page 7).
+2. Enter a valid mobile number and tap 'Continue'.
+3. On the OTP screen (page 10), observe the OTP request is sent.
+4. Close the app completely and relaunch it.
+5. Proceed again to the OTP screen and request a new OTP.
+6. Verify the OTP is received on the same device.
+
+Test Data: Mobile number: 01712345678","The same device receives both OTPs without requiring re-entry of the mobile number, confirming the device ID is persisted and reused.",57493e8-TC-047,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that the app enforces OTP request rate limiting to prevent abuse,KYC Service API OTP Request Throttling,Security,High,App is installed and user is on the OTP screen (page 10),"1. Enter a valid mobile number and tap 'Send OTP'.
+2. Immediately tap 'Send OTP' again without waiting.
+3. Repeat the OTP request 5 times in rapid succession.
+4. Observe the app's behavior after the 3rd request.
+
+Test Data: Mobile number: 01712345678","After the 3rd rapid OTP request, the app should display an error message indicating that OTP requests are temporarily blocked due to too many attempts. The user must wait before requesting another OTP.",57493e8-TC-048,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that the OTP input field rejects non-digit characters and enforces length,KYC Service API OTP Input Validation,Security,High,User is on the OTP screen (page 10) after requesting an OTP,"1. Attempt to enter letters (e.g., 'ABCD') into the OTP field.
+2. Attempt to enter special characters (e.g., '@#$%').
+3. Attempt to enter fewer than 4 digits.
+4. Attempt to enter more than 4 digits.
+5. Enter a valid 4-digit OTP and observe the 'Verify' button state.
+
+Test Data: Invalid inputs: ABCD, @#$%, 123, 12345
+Valid input: 1234",The OTP field should only accept digits. The 'Verify' button should remain disabled until exactly 4 digits are entered.,57493e8-TC-049,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that OTP verification fails for incorrect or expired OTPs,KYC Service API OTP Verification Security,Security,High,User is on the OTP screen (page 10) after requesting an OTP for a valid mobile number,"1. Enter an incorrect OTP (e.g., 0000) and tap 'Verify'.
+2. Wait for 5 minutes (simulating OTP expiry) and enter the correct OTP.
+3. Tap 'Verify' and observe the result.
+
+Test Data: Incorrect OTP: 0000
+Correct OTP: [OTP received via SMS]",The app should display an error message for the incorrect OTP and after the OTP expires. The user should not be able to proceed to the PIN setup screen.,57493e8-TC-050,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that the app sends a device fingerprint header during NID OCR API calls,KYC Service API Device Fingerprint for NID OCR,Security,High,User has completed OTP verification and is on the NID scan screen (page 13),"1. Scan the front side of an NID card using the app's camera.
+2. Adjust the perspective and confirm the scan.
+3. Scan the back side of the NID card and confirm.
+4. Proceed to the NID review screen (page 17).
+5. Verify that the NID details are correctly extracted and displayed.
+
+Test Data: Use a real or mock NID card for scanning","The NID details (e.g., name, NID number, date of birth) should be correctly extracted and displayed on the review screen, confirming the device fingerprint was sent and accepted by the API.",57493e8-TC-051,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that sensitive NID data is not exposed in error messages or logs,NID OCR Data Exposure in Logs and Errors,Security,High,User is on the NID scan screen (page 13) with a mock backend configured to simulate OCR failure,"1. Scan the front side of an NID card.
+2. Confirm the scan and proceed to the OCR step.
+3. Observe the error message displayed when OCR fails.
+4. Check the app logs (if accessible) for any exposure of NID data.
+
+Test Data: Use a real or mock NID card for scanning","The error message should be generic (e.g., 'Failed to extract NID details. Please try again.') and should not include any NID data (e.g., NID number, name). No sensitive data should appear in logs.",57493e8-TC-052,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that NID images are not stored or logged in raw form after upload,NID Image Upload Security,Security,High,User has scanned both sides of an NID card and is on the NID review screen (page 17),"1. Complete the NID scan and review the extracted details.
+2. Proceed to the face verification screen (page 18).
+3. Use device tools to inspect app storage and logs for raw NID images.
+
+Test Data: Use a real or mock NID card for scanning",No raw NID images should be found in app storage or logs after the upload is complete. Only the extracted text data should be retained.,57493e8-TC-053,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that the app does not allow users to access or modify other users' KYC data via IDOR,Insecure Direct Object Reference (IDOR) in KYC API,Security,High,User A has completed KYC and is logged in. User B has an active KYC session.,"1. As User A, complete the KYC process and note the session ID or user ID.
+2. Use a proxy tool to intercept and modify API requests from User A.
+3. Attempt to access User B's KYC data by modifying the session ID or user ID in the request to `GET /api/v1/users/{userId}`.
+4. Attempt to modify User B's KYC data by sending a request to `POST /api/v1/users/save` with User B's user ID.
+
+Test Data: User A's session ID or user ID, User B's session ID or user ID","The API should reject all requests to access or modify User B's data, returning an error message (e.g., 'Unauthorized access').",57493e8-TC-054,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that the app validates the KYC base URL to prevent injection attacks,KYC API Base URL Injection,Security,High,App is running in debug mode with `--dart-define=KYC_BASE_URL` capability,"1. Launch the app with a malicious KYC base URL (e.g., `--dart-define=KYC_BASE_URL=http://malicious.example.com`).
+2. Proceed to the OTP screen and request an OTP.
+3. Observe the app's behavior and network traffic.
+
+Test Data: Malicious URL: http://malicious.example.com","The app should either reject the malicious URL during startup or fail to send OTP requests to it. No sensitive data (e.g., mobile number, device ID) should be sent to the malicious URL.",57493e8-TC-055,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that the app does not use cleartext HTTP for KYC API calls in production,KYC API Cleartext Traffic,Security,High,App is built for production and installed on an Android device,"1. Launch the app and proceed to the OTP screen.
+2. Use a network monitoring tool to inspect traffic between the app and the KYC API.
+3. Verify the protocol used for API calls.
+
+Test Data: None",All KYC API calls should use HTTPS. No cleartext HTTP traffic should be observed.,57493e8-TC-056,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that the PIN is not exposed in logs or error messages during setup,PIN Setup Security,Security,High,User is on the PIN setup screen (after OTP verification),"1. Enter a 4-digit PIN (e.g., 1234) in the first row.
+2. Enter a mismatched PIN (e.g., 5678) in the second row.
+3. Observe the error message displayed.
+4. Check app logs for any exposure of the entered PINs.
+
+Test Data: PIN: 1234, Mismatched PIN: 5678","The error message should be generic (e.g., 'PINs do not match. Please try again.') and should not display the entered PINs. No PIN data should appear in logs.",57493e8-TC-057,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that the app enforces PIN complexity rules to prevent weak PINs,PIN Complexity Enforcement,Security,Medium,User is on the PIN setup screen (after OTP verification),"1. Attempt to set a PIN with all identical digits (e.g., 1111).
+2. Attempt to set a PIN with sequential digits (e.g., 1234).
+3. Attempt to set a PIN with repeated patterns (e.g., 1212).
+4. Observe the app's behavior for each attempt.
+
+Test Data: Weak PINs: 1111, 1234, 1212
+Strong PIN: 1947","The app should reject weak PINs and display an error message (e.g., 'PIN is too simple. Please choose a stronger PIN.'). Only strong PINs should be accepted.",57493e8-TC-058,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that the app handles KYC API timeouts gracefully without exposing sensitive data,KYC API Timeout Handling,Security,Medium,User is on the NID scan screen (page 13) with a mock backend configured to simulate timeout,"1. Scan the front side of an NID card.
+2. Confirm the scan and proceed to the OCR step.
+3. Observe the app's behavior when the API times out.
+4. Check for any sensitive data exposure in error messages or logs.
+
+Test Data: Use a real or mock NID card for scanning","The app should display a generic error message (e.g., 'Request timed out. Please try again.') and should not expose any NID data or API details in the message or logs.",57493e8-TC-059,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that the app validates KYC API responses to prevent injection of malicious data,KYC API Response Validation,Security,High,User is on the NID review screen (page 17) with a mock backend configured to return malicious data,"1. Complete the NID scan and proceed to the review screen.
+2. Observe the displayed NID details when the mock backend returns malicious data (e.g., HTML or script tags in name fields).
+3. Verify that the app renders the data safely.
+
+Test Data: Malicious data: <script>alert('XSS')</script> in name field","The app should sanitize the API response and display the malicious data as plain text (e.g., '<script>alert('XSS')</script>') without executing it.",57493e8-TC-060,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that the app prevents spoofing of the device fingerprint header,KYC API Device Fingerprint Spoofing,Security,High,User has completed OTP verification and is on the NID scan screen (page 13),"1. Use a proxy tool to intercept and modify the `X-Device-Fingerprint` header in the NID OCR API request.
+2. Change the header value to a random string.
+3. Send the modified request and observe the API response.
+
+Test Data: Random device fingerprint: abc123xyz456","The API should reject the request with an error message (e.g., 'Invalid device fingerprint'), and the app should display a generic error without exposing sensitive data.",57493e8-TC-061,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that non-numeric characters are stripped from mobile number input,Mobile Recharge - Input Validation,Security,High,"User is on the mobile recharge screen (page 29-34, 39)","1. Enter a mobile number containing letters and special characters (e.g., '017A12B34C56!').
+2. Observe the input field after each character is entered.
+3. Verify the displayed number contains only digits.
+4. Attempt to proceed to the next step.
+
+Test Data: Mobile number: '017A12B34C56!'",Only digits '017123456' remain in the input field. The system allows proceeding only if exactly 11 digits are entered.,57493e8-TC-062,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that mobile number input is limited to 11 digits,Mobile Recharge - Input Length Enforcement,Security,High,User is on the mobile recharge screen,"1. Enter an 11-digit mobile number (e.g., '01712345678').
+2. Attempt to enter an additional digit.
+3. Observe the input field and the 'Continue' button state.
+
+Test Data: Mobile number: '017123456789' (12 digits)",The input field does not accept the 12th digit. The 'Continue' button remains enabled as the number is complete.,57493e8-TC-063,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that backspace correctly removes digits from mobile number input,,Security,Medium,User is on the mobile recharge screen with a partially entered mobile number,"1. Enter a 5-digit mobile number (e.g., '01712').
+2. Press the backspace button once.
+3. Observe the input field.
+4. Press the backspace button repeatedly until the field is empty.
+5. Press backspace once more on an empty field.
+
+Test Data: Mobile number: '01712'",Each backspace press removes one digit. The field does not error or allow negative digits when empty.,57493e8-TC-064,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that recharge amount cannot be set to zero or negative,Mobile Recharge - Amount Validation,Security,High,User is on the mobile recharge screen with a valid mobile number entered,"1. Use the amount input field to set the recharge amount to '0'.
+2. Attempt to proceed to the next step.
+3. Set the amount to a negative value (e.g., '-100').
+4. Observe the 'Continue' button state.
+
+Test Data: Amounts: 0, -100",The 'Continue' button is disabled when the amount is zero or negative. The system does not allow proceeding.,57493e8-TC-065,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that non-numeric characters are stripped from phone number input during signup,User Signup - Phone Number Input,Security,High,User is on the phone number entry screen (page 7-8),"1. Enter a phone number containing letters and special characters (e.g., '13A16B17C96!').
+2. Observe the input field after each character is entered.
+3. Verify the displayed number contains only digits.
+4. Check if the operator logo appears based on the prefix.
+
+Test Data: Phone number: '13A16B17C96!'",Only digits '13161796' remain in the input field. The operator logo for 'GP' (prefix '013') appears if at least 3 digits are entered.,57493e8-TC-066,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that phone number input is limited to 10 digits during signup,,Security,High,User is on the phone number entry screen,"1. Enter a 10-digit phone number (e.g., '1316117960').
+2. Attempt to enter an additional digit.
+3. Observe the input field and the 'Next' button state.
+
+Test Data: Phone number: '13161179601' (11 digits)",The input field does not accept the 11th digit. The 'Next' button becomes enabled when exactly 10 digits are entered.,57493e8-TC-067,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that operator is correctly inferred from phone number prefix,User Signup - Operator Inference,Security,Medium,User is on the phone number entry screen,"1. Enter a phone number starting with '017' (e.g., '1712345678').
+2. Observe the operator logo displayed.
+3. Clear the field and enter a number starting with '018' (e.g., '1812345678').
+4. Observe the operator logo displayed.
+5. Clear the field and enter a number with an unknown prefix (e.g., '9912345678').
+6. Observe the operator logo displayed.
+
+Test Data: Phone numbers: '1712345678', '1812345678', '9912345678'","Operator logos appear for 'GP' (017), 'Robi' (018), and no logo for unknown prefixes. The system infers the operator correctly based on the first 3 digits.",57493e8-TC-068,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that sensitive KYC data (NID images) is cleared on reset,User Signup - KYC Data Handling,Security,High,User has captured front and back images of NID during signup (page 14-17),"1. Complete the NID capture steps for both front and back.
+2. Proceed to the next step and then return to the NID capture screen.
+3. Press the 'Reset' or 'Clear' button.
+4. Verify that both image previews are cleared.
+5. Attempt to proceed to the next step.
+
+Test Data: NID images: Front and back captures",Both image previews are cleared. The system does not allow proceeding until new images are captured.,57493e8-TC-069,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that OTP resend is rate-limited to prevent abuse,User Signup - OTP Resend Limit,Security,High,User is on the OTP verification screen (page 10-11) and has requested an OTP,"1. Wait for the resend countdown to complete (60 seconds).
+2. Request a new OTP.
+3. Immediately attempt to request another OTP without waiting.
+4. Observe the countdown timer and button state.
+
+Test Data: OTP resend attempts: 2 rapid requests","The first resend request is successful and restarts the 60-second countdown. The second immediate request is ignored, and the countdown continues.",57493e8-TC-070,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that verification failure banner is displayed and dismissible,Dashboard - Verification Failure Banner,Security,Medium,User is logged into the dashboard (page 28),"1. Trigger a verification failure (e.g., via backend API or test flag).
+2. Observe the dashboard screen for the 'verification failed' banner.
+3. Attempt to interact with the dashboard (e.g., toggle balance visibility).
+4. Dismiss the banner if possible.
+5. Verify that the banner does not reappear unless another failure occurs.
+
+Test Data: Verification status: Failed",The 'verification failed' banner is prominently displayed over the dashboard. Dashboard interactions remain functional. The banner can be dismissed and does not reappear until another failure is triggered.,57493e8-TC-071,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that mobile number and recharge amount are not exposed in error messages or logs,Mobile Recharge - Sensitive Data Exposure,Security,High,User is on the mobile recharge confirmation screen (page 39),"1. Enter a valid mobile number and recharge amount.
+2. Proceed to the confirmation screen.
+3. Trigger an error (e.g., network failure, invalid payment method).
+4. Observe any error messages or logs displayed.
+5. Check if the mobile number or amount is visible in the error details.
+
+Test Data: Mobile number: '01712345678', Amount: 500","Error messages do not contain the full mobile number or recharge amount. Only generic error messages (e.g., 'Payment failed') are displayed to the user.",57493e8-TC-072,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that users cannot access or modify other users' KYC data by manipulating session/user IDs,User Signup - Insecure Direct Object Reference (IDOR),Security,High,User is logged in and has completed KYC steps. Test requires two user accounts.,"1. Complete the KYC process for User A and note the session/user ID if visible.
+2. Log out and log in as User B.
+3. Attempt to access User A's KYC data by manipulating any visible IDs in the app (e.g., via deep links or API calls if exposed).
+4. Observe the system's response.
+
+Test Data: User A session/user ID: [if visible], User B credentials",User B cannot access or view User A's KYC data. The system either ignores the manipulated ID or returns an access denied error.,57493e8-TC-073,57493e8257bc61a9d2c56b8fd021242fafb7f680
+Verify that session tokens are invalidated after signup completion or failure,User Signup - Token/Session Handling,Security,High,"User is in the middle of the signup process (e.g., after OTP verification)","1. Complete the OTP verification step and note the session state.
+2. Complete the signup process successfully.
+3. Attempt to reuse the same session to perform KYC steps again (e.g., by reopening the app or using cached data).
+4. Repeat steps 1-3 for a failed signup attempt (e.g., invalid NID).
+
+Test Data: Session state: Active during signup",The session token is invalidated after signup completion (success or failure). Reusing the session results in an error or forces the user to restart the signup process.,57493e8-TC-074,57493e8257bc61a9d2c56b8fd021242fafb7f680
+User successfully recharges a prepaid mobile number with valid inputs,Mobile Recharge,Configuration,High,User is logged in and on the recharge screen (page 29),"1. Enter a valid 11-digit mobile number (e.g., 01712345678) using the numeric keypad. 2. Select 'Prepaid' as the recharge type. 3. Choose a mobile operator from the list (e.g., Grameenphone). 4. Select a recharge amount from the presets (e.g., 200 BDT). 5. Tap the 'Continue' button. 6. Verify the details on the confirmation screen (page 34). 7. Tap the 'Confirm' button.
+
+Test Data: Mobile number: 01712345678, Operator: Grameenphone, Amount: 200 BDT, Type: Prepaid","The recharge is processed successfully, and a success message is displayed with the recharge details (e.g., 'Recharge of 200 BDT to 01712345678 (Grameenphone) was successful'). The user's balance is updated accordingly.",57493e8-TC-075,57493e8257bc61a9d2c56b8fd021242fafb7f680
+User enters an incomplete mobile number and cannot proceed,Mobile Recharge,Configuration,High,User is logged in and on the recharge screen (page 29),"1. Enter a 10-digit mobile number (e.g., 0171234567) using the numeric keypad. 2. Select 'Prepaid' as the recharge type. 3. Choose a mobile operator from the list. 4. Select a recharge amount from the presets. 5. Attempt to tap the 'Continue' button.
+
+Test Data: Mobile number: 0171234567 (10 digits), Operator: Grameenphone, Amount: 200 BDT, Type: Prepaid","The 'Continue' button remains disabled, and the user cannot proceed to the confirmation screen. An error message may appear indicating the mobile number is incomplete.",57493e8-TC-076,57493e8257bc61a9d2c56b8fd021242fafb7f680
+User toggles balance visibility on the dashboard,Dashboard Balance Visibility,Configuration,Medium,User is logged in and on the dashboard screen (page 28),"1. Observe the balance displayed on the dashboard (e.g., '৳***'). 2. Tap the eye icon next to the balance. 3. Observe the balance after toggling. 4. Tap the eye icon again.
+
+Test Data: N/A","The balance is hidden (e.g., '৳***') when the eye icon is tapped once, and the full balance is displayed (e.g., '৳5,000') when tapped again. The toggle works consistently each time the eye icon is tapped.",57493e8-TC-077,57493e8257bc61a9d2c56b8fd021242fafb7f680
+User changes the analysis period on the dashboard,Dashboard Time Period Filter,Configuration,Medium,User is logged in and on the dashboard screen (page 28),"1. Observe the default analysis period (e.g., 'Weekly'). 2. Tap the period dropdown and select 'Monthly'. 3. Observe the transaction data and charts update. 4. Tap the period dropdown again and select '6 Months'. 5. Observe the transaction data and charts update.
+
+Test Data: N/A","The transaction data and charts update to reflect the selected period (Weekly, Monthly, or 6 Months). The period dropdown correctly displays the selected period.",57493e8-TC-078,57493e8257bc61a9d2c56b8fd021242fafb7f680
+User enters a valid mobile number and proceeds to OTP screen,Signup Flow - Mobile Number Entry,Configuration,High,User is on the phone number entry screen (page 7),"1. Enter a valid 10-digit mobile number (e.g., 1712345678) using the numeric keypad. 2. Observe the operator logo appears (e.g., Grameenphone). 3. Tap the 'Next' button.
+
+Test Data: Mobile number: 1712345678 (10 digits, no leading 0)",The operator logo for Grameenphone appears next to the mobile number field. The user is navigated to the OTP verification screen (page 10) where the mobile number is displayed for confirmation.,57493e8-TC-079,57493e8257bc61a9d2c56b8fd021242fafb7f680

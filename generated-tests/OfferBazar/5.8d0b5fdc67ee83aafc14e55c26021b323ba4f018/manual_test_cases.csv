@@ -1,0 +1,64 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a new offer with a valid name of maximum allowed length,Offer Management,Positive,High,User is logged in and has permissions to create offers. The offer creation form is accessible.,"1. Navigate to the 'Create New Offer' page. 2. Enter a name consisting of exactly 50 characters (e.g., 'SummerSale2024DiscountForAllCustomersBigDeal'). 3. Enter a valid discount amount (e.g., 20). 4. Select a valid start and end date for the offer. 5. Click the 'Create Offer' button.
+
+Test Data: Name: 'SummerSale2024DiscountForAllCustomersBigDeal' (50 characters), Discount Amount: 20, Start Date: today, End Date: 7 days from today",The offer is created successfully and appears in the list of active offers. The offer name is displayed in full without truncation or errors.,TC-001
+Attempt to create a new offer with a name exceeding the maximum allowed length,Offer Management,Positive,High,User is logged in and has permissions to create offers. The offer creation form is accessible.,"1. Navigate to the 'Create New Offer' page. 2. Enter a name consisting of 51 characters (e.g., 'SummerSale2024DiscountForAllCustomersBigDealX'). 3. Enter a valid discount amount (e.g., 20). 4. Select a valid start and end date for the offer. 5. Click the 'Create Offer' button.
+
+Test Data: Name: 'SummerSale2024DiscountForAllCustomersBigDealX' (51 characters), Discount Amount: 20, Start Date: today, End Date: 7 days from today","The offer creation fails, and an error message is displayed indicating that the offer name cannot exceed 50 characters.",0e5b1e5-TC-002
+Verify offer creation fails when 'name' field exceeds the maximum allowed length of 50 characters,Offer Creation,Negative,High,User is logged in and has permission to create offers. Offer creation form is open.,"1. Enter a name with 51 characters (e.g., 'This is a very long offer name that exceeds fifty characters').
+2. Enter valid values for all other required fields (e.g., discountAmount: 10, validFrom: today, validTo: tomorrow).
+3. Submit the offer creation form.
+
+Test Data: Name: 'This is a very long offer name that exceeds fifty characters'
+Discount Amount: 10
+Valid From: [current date]
+Valid To: [next day]",The system rejects the offer creation and displays an error message: 'Offer name must not exceed 50 characters.' The offer is not created.,TC-002
+Verify offer creation fails when 'name' field is missing,Offer Creation,Negative,High,User is logged in and has permission to create offers. Offer creation form is open.,"1. Leave the 'name' field empty.
+2. Enter valid values for all other required fields (e.g., discountAmount: 10, validFrom: today, validTo: tomorrow).
+3. Submit the offer creation form.
+
+Test Data: Name: [empty]
+Discount Amount: 10
+Valid From: [current date]
+Valid To: [next day]",The system rejects the offer creation and displays an error message: 'Offer name is required.' The offer is not created.,9129733-TC-008
+Verify offer creation fails when 'name' field contains only whitespace,Offer Creation,Negative,Medium,User is logged in and has permission to create offers. Offer creation form is open.,"1. Enter only spaces or tabs in the 'name' field (e.g., '     ').
+2. Enter valid values for all other required fields (e.g., discountAmount: 10, validFrom: today, validTo: tomorrow).
+3. Submit the offer creation form.
+
+Test Data: Name: '     '
+Discount Amount: 10
+Valid From: [current date]
+Valid To: [next day]",The system rejects the offer creation and displays an error message: 'Offer name is required.' The offer is not created.,TC-003
+Create an offer with a name exactly 50 characters long (maximum allowed length),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. The 'Create Offer' form is open.,"1. In the 'Name' field, enter a 50-character string (e.g., 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234'). 2. Fill in the 'Discount Amount' field with a valid value (e.g., 10). 3. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 4. Click the 'Create Offer' button.
+
+Test Data: Name: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234' (50 characters), Discount Amount: 10, Valid From: today, Valid To: tomorrow",The offer is created successfully. The response displays the offer details with the name exactly as entered (50 characters).,TC-004
+Create an offer with a name exceeding 50 characters (one character over the limit),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. The 'Create Offer' form is open.,"1. In the 'Name' field, enter a 51-character string (e.g., 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz12345'). 2. Fill in the 'Discount Amount' field with a valid value (e.g., 10). 3. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 4. Click the 'Create Offer' button.
+
+Test Data: Name: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz12345' (51 characters), Discount Amount: 10, Valid From: today, Valid To: tomorrow",The system displays an error message: 'Offer name must not exceed 50 characters'. The offer is not created.,TC-005
+Create an offer with a name of 1 character (minimum allowed length),Offer Creation,Boundary,Medium,User is logged in and has permissions to create offers. The 'Create Offer' form is open.,"1. In the 'Name' field, enter a single character (e.g., 'A'). 2. Fill in the 'Discount Amount' field with a valid value (e.g., 10). 3. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 4. Click the 'Create Offer' button.
+
+Test Data: Name: 'A' (1 character), Discount Amount: 10, Valid From: today, Valid To: tomorrow",The offer is created successfully. The response displays the offer details with the name exactly as entered (1 character).,TC-006
+Create an offer with a name containing only whitespace (50 characters of spaces),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. The 'Create Offer' form is open.,"1. In the 'Name' field, enter 50 spaces. 2. Fill in the 'Discount Amount' field with a valid value (e.g., 10). 3. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 4. Click the 'Create Offer' button.
+
+Test Data: Name: '                                                  ' (50 spaces), Discount Amount: 10, Valid From: today, Valid To: tomorrow",The system displays an error message: 'Offer name is required'. The offer is not created.,9129733-TC-014
+Create an offer with a name containing special characters and exactly 50 characters,Offer Creation,Boundary,Medium,User is logged in and has permissions to create offers. The 'Create Offer' form is open.,"1. In the 'Name' field, enter a 50-character string with special characters (e.g., 'Offer@2024!Discount#SummerSale$SpecialPrice%Off&Now*'). 2. Fill in the 'Discount Amount' field with a valid value (e.g., 10). 3. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 4. Click the 'Create Offer' button.
+
+Test Data: Name: 'Offer@2024!Discount#SummerSale$SpecialPrice%Off&Now*' (50 characters), Discount Amount: 10, Valid From: today, Valid To: tomorrow","The offer is created successfully. The response displays the offer details with the name exactly as entered (50 characters, including special characters).",TC-007
+Create an offer with a name containing Unicode characters and exactly 50 characters,Offer Creation,Boundary,Medium,User is logged in and has permissions to create offers. The 'Create Offer' form is open.,"1. In the 'Name' field, enter a 50-character string with Unicode characters (e.g., '特价优惠2024夏季促销折扣特别优惠现在立减'). 2. Fill in the 'Discount Amount' field with a valid value (e.g., 10). 3. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 4. Click the 'Create Offer' button.
+
+Test Data: Name: '特价优惠2024夏季促销折扣特别优惠现在立减' (50 characters), Discount Amount: 10, Valid From: today, Valid To: tomorrow",The offer is created successfully. The response displays the offer details with the name exactly as entered (50 Unicode characters).,TC-008
+Update an existing offer with a name exactly 50 characters long (maximum allowed length),Offer Creation,Boundary,High,"User is logged in, has permissions to edit offers, and an existing offer is available for editing.","1. Open the 'Edit Offer' form for an existing offer. 2. In the 'Name' field, update the name to a 50-character string (e.g., 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234'). 3. Ensure the 'Discount Amount' field has a valid value (e.g., 10). 4. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 5. Click the 'Update Offer' button.
+
+Test Data: Name: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234' (50 characters), Discount Amount: 10, Valid From: today, Valid To: tomorrow",The offer is updated successfully. The response displays the updated offer details with the name exactly as entered (50 characters).,TC-009
+Update an existing offer with a name exceeding 50 characters (one character over the limit),Offer Creation,Boundary,High,"User is logged in, has permissions to edit offers, and an existing offer is available for editing.","1. Open the 'Edit Offer' form for an existing offer. 2. In the 'Name' field, update the name to a 51-character string (e.g., 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz12345'). 3. Ensure the 'Discount Amount' field has a valid value (e.g., 10). 4. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 5. Click the 'Update Offer' button.
+
+Test Data: Name: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz12345' (51 characters), Discount Amount: 10, Valid From: today, Valid To: tomorrow",The system displays an error message: 'Offer name must not exceed 50 characters'. The offer is not updated.,TC-010
+Verify that offer creation rejects offer names exceeding the new maximum length limit of 50 characters,Offer Management,Security,High,User is logged in with permissions to create offers,"1. Navigate to the 'Create New Offer' page. 2. Enter an offer name with 51 characters (e.g., 'ThisIsAnExcessivelyLongOfferNameThatExceedsFiftyCharacters'). 3. Fill in all other required fields with valid values. 4. Submit the form.
+
+Test Data: Offer name: 'ThisIsAnExcessivelyLongOfferNameThatExceedsFiftyCharacters' (51 characters), Discount amount: 10, Valid-from date: today, Valid-to date: tomorrow",The system displays an error message indicating that the offer name exceeds the maximum allowed length of 50 characters and does not create the offer.,9129733-TC-001
+Verify that offer creation accepts offer names exactly at the new maximum length limit of 50 characters,Offer Management,Security,High,User is logged in with permissions to create offers,"1. Navigate to the 'Create New Offer' page. 2. Enter an offer name with exactly 50 characters (e.g., 'ThisIsAnOfferNameThatIsExactlyFiftyCharactersLong'). 3. Fill in all other required fields with valid values. 4. Submit the form.
+
+Test Data: Offer name: 'ThisIsAnOfferNameThatIsExactlyFiftyCharactersLong' (50 characters), Discount amount: 10, Valid-from date: today, Valid-to date: tomorrow",The system successfully creates the offer and displays a confirmation message.,TC-011
+Verify that offer creation rejects offer names with special characters or injection patterns despite being under the 50-character limit,Offer Management,Security,High,User is logged in with permissions to create offers,"1. Navigate to the 'Create New Offer' page. 2. Enter an offer name with SQL injection patterns (e.g., 'TestOffer'; DROP TABLE offers--') but under 50 characters. 3. Fill in all other required fields with valid values. 4. Submit the form.
+
+Test Data: Offer name: 'TestOffer'; DROP TABLE offers-- (30 characters), Discount amount: 10, Valid-from date: today, Valid-to date: tomorrow",The system either rejects the offer name with an error message or creates the offer with the literal name (no SQL execution or script execution).,TC-012

@@ -1,0 +1,76 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Partial settlement amount is applied to collected amount,Transaction Settlement,Positive,High,User has at least one transaction recorded,"1. Make a transaction with a settlement amount. 2. Verify the collected amount is updated with the settlement amount.
+
+Test Data: Transaction amount: $100, Settlement amount: $50",The total collected amount for the user is updated to reflect the partial settlement amount,TC-001
+Multiple partial settlements are applied to collected amount,Transaction Settlement,Positive,Medium,User has at least one transaction recorded,"1. Make a transaction with a settlement amount. 2. Make another transaction with a settlement amount. 3. Verify the collected amount is updated with both settlement amounts.
+
+Test Data: Transaction amount: $100, Settlement amount 1: $50, Settlement amount 2: $25",The total collected amount for the user is updated to reflect the total of both partial settlement amounts,TC-002
+Reject transaction with null amount,Transaction Processing,Negative,High,User is logged in and on the transaction submission screen,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Leave the amount field empty or explicitly set to null.
+4. Submit the transaction.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: null",System displays an error message: 'ERROR: Amount cannot be null' and does not record the transaction. The transaction is not added to the user's collected amounts.,TC-003
+Reject transaction with partial settlement amount exceeding collected balance,Transaction Processing,Negative,High,"User has a collected balance of 500 for a specific transaction ID, and the system supports partial settlements","1. Enter the same user ID (e.g., 'user123').
+2. Enter the same transaction ID (e.g., 'txn456').
+3. Enter a partial settlement amount greater than the collected balance (e.g., 600).
+4. Submit the transaction.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: 600, Collected Balance: 500",System displays an error message: 'ERROR: Partial settlement amount exceeds collected balance' and does not record the transaction. The transaction is not added to the user's collected amounts.,TC-004
+Reject transaction with malformed partial settlement amount (non-numeric),Transaction Processing,Negative,High,User is logged in and on the transaction submission screen,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Enter a non-numeric value in the amount field (e.g., 'abc').
+4. Submit the transaction.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: 'abc'",System displays an error message: 'ERROR: Invalid amount format' and does not record the transaction. The transaction is not added to the user's collected amounts.,a410f60-TC-003
+Reject transaction with partial settlement amount containing special characters,Transaction Processing,Negative,High,User is logged in and on the transaction submission screen,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Enter an amount with special characters (e.g., '$100').
+4. Submit the transaction.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: '$100'",System displays an error message: 'ERROR: Invalid amount format' and does not record the transaction. The transaction is not added to the user's collected amounts.,a410f60-TC-004
+Reject transaction with whitespace-only partial settlement amount,Transaction Processing,Negative,High,User is logged in and on the transaction submission screen,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Enter only whitespace in the amount field (e.g., '   ').
+4. Submit the transaction.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: '   '",System displays an error message: 'ERROR: Invalid amount format' and does not record the transaction. The transaction is not added to the user's collected amounts.,a410f60-TC-005
+Process transaction with partial settlement amount of zero (boundary value),Transaction Processing: Partial Settlement Amount Handling,Boundary,High,User has no prior transactions recorded. Daily transaction limit is set to 10000.00.,"1. Navigate to the 'Process Transaction' screen. 2. Enter a valid user ID. 3. Enter a unique transaction ID. 4. Enter '0.00' as the transaction amount. 5. Toggle the 'Partial Settlement' flag to ON. 6. Submit the transaction.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn789', Amount: '0.00', Partial Settlement: ON",Transaction is rejected with an error message: 'ERROR: Amount must be greater than zero.' The user's collected amount remains '0.00'.,TC-005
+Process transaction with smallest positive partial settlement amount (boundary value),Transaction Processing: Partial Settlement Amount Handling,Boundary,High,User has no prior transactions recorded. Daily transaction limit is set to 10000.00.,"1. Navigate to the 'Process Transaction' screen. 2. Enter a valid user ID. 3. Enter a unique transaction ID. 4. Enter '0.01' as the transaction amount. 5. Toggle the 'Partial Settlement' flag to ON. 6. Submit the transaction.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn789', Amount: '0.01', Partial Settlement: ON",Transaction is processed successfully. The user's collected amount is updated to '0.01'.,a410f60-TC-006
+Process transaction with partial settlement amount exactly at daily limit (boundary value),Transaction Processing: Partial Settlement Amount Handling,Boundary,High,User has no prior transactions recorded. Daily transaction limit is set to 10000.00.,"1. Navigate to the 'Process Transaction' screen. 2. Enter a valid user ID. 3. Enter a unique transaction ID. 4. Enter '10000.00' as the transaction amount. 5. Toggle the 'Partial Settlement' flag to ON. 6. Submit the transaction.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn789', Amount: '10000.00', Partial Settlement: ON",Transaction is processed successfully. The user's collected amount is updated to '10000.00'.,a410f60-TC-008
+Process transaction with partial settlement amount exceeding daily limit by smallest possible value (boundary value),Transaction Processing: Partial Settlement Amount Handling,Boundary,High,User has no prior transactions recorded. Daily transaction limit is set to 10000.00.,"1. Navigate to the 'Process Transaction' screen. 2. Enter a valid user ID. 3. Enter a unique transaction ID. 4. Enter '10000.01' as the transaction amount. 5. Toggle the 'Partial Settlement' flag to ON. 6. Submit the transaction.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn789', Amount: '10000.01', Partial Settlement: ON",Transaction is rejected with an error message: 'ERROR: Daily limit exceeded.' The user's collected amount remains '0.00'.,a410f60-TC-009
+Process multiple partial settlement transactions up to daily limit (boundary value),Transaction Processing: Partial Settlement Amount Handling,Boundary,High,User has no prior transactions recorded. Daily transaction limit is set to 10000.00.,"1. Navigate to the 'Process Transaction' screen. 2. Enter a valid user ID. 3. Enter a unique transaction ID 'txn1'. 4. Enter '5000.00' as the transaction amount. 5. Toggle the 'Partial Settlement' flag to ON. 6. Submit the transaction. 7. Repeat steps 1-6 with a new transaction ID 'txn2' and amount '5000.00'.
+
+Test Data: User ID: 'user123', Transaction IDs: 'txn1', 'txn2', Amounts: '5000.00', '5000.00', Partial Settlement: ON for both",Both transactions are processed successfully. The user's collected amount is updated to '10000.00'.,6b7b2ad-TC-024
+Process partial settlement transaction exceeding daily limit after prior partial settlement transactions (boundary value),Transaction Processing: Partial Settlement Amount Handling,Boundary,High,User has prior transactions totaling '9999.99'. Daily transaction limit is set to 10000.00.,"1. Navigate to the 'Process Transaction' screen. 2. Enter the same user ID. 3. Enter a unique transaction ID. 4. Enter '0.02' as the transaction amount. 5. Toggle the 'Partial Settlement' flag to ON. 6. Submit the transaction.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn789', Amount: '0.02', Partial Settlement: ON",Transaction is rejected with an error message: 'ERROR: Daily limit exceeded.' The user's collected amount remains '9999.99'.,6b7b2ad-TC-025
+Process partial settlement transaction with very large amount (boundary value),Transaction Processing: Partial Settlement Amount Handling,Boundary,Medium,User has no prior transactions recorded. Daily transaction limit is set to 10000.00.,"1. Navigate to the 'Process Transaction' screen. 2. Enter a valid user ID. 3. Enter a unique transaction ID. 4. Enter '9999999999.99' as the transaction amount. 5. Toggle the 'Partial Settlement' flag to ON. 6. Submit the transaction.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn789', Amount: '9999999999.99', Partial Settlement: ON",Transaction is rejected with an error message: 'ERROR: Daily limit exceeded.' The user's collected amount remains '0.00'.,6b7b2ad-TC-026
+Process partial settlement transaction with negative amount (boundary value),Transaction Processing: Partial Settlement Amount Handling,Boundary,High,User has no prior transactions recorded. Daily transaction limit is set to 10000.00.,"1. Navigate to the 'Process Transaction' screen. 2. Enter a valid user ID. 3. Enter a unique transaction ID. 4. Enter '-1.00' as the transaction amount. 5. Toggle the 'Partial Settlement' flag to ON. 6. Submit the transaction.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn789', Amount: '-1.00', Partial Settlement: ON",Transaction is rejected with an error message: 'ERROR: Amount must be greater than zero.' The user's collected amount remains '0.00'.,6b7b2ad-TC-017
+Process partial settlement transaction with duplicate transaction ID for the same user (boundary value),Transaction Processing: Partial Settlement Amount Handling,Boundary,High,User has a prior transaction with ID 'txn123' and amount '500.00'. Daily transaction limit is set to 10000.00.,"1. Navigate to the 'Process Transaction' screen. 2. Enter the same user ID. 3. Enter the same transaction ID 'txn123'. 4. Enter '200.00' as the transaction amount. 5. Toggle the 'Partial Settlement' flag to ON. 6. Submit the transaction.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn123', Amount: '200.00', Partial Settlement: ON",Transaction is rejected with an error message: 'ERROR: Duplicate transaction ID.' The user's collected amount remains '500.00'.,6b7b2ad-TC-027
+Process partial settlement transaction with null amount (boundary value),Transaction Processing: Partial Settlement Amount Handling,Boundary,High,User has no prior transactions recorded. Daily transaction limit is set to 10000.00.,"1. Navigate to the 'Process Transaction' screen. 2. Enter a valid user ID. 3. Enter a unique transaction ID. 4. Leave the amount field empty. 5. Toggle the 'Partial Settlement' flag to ON. 6. Submit the transaction.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn789', Amount: [null], Partial Settlement: ON",Transaction is rejected with an error message: 'ERROR: Amount is invalid.' The user's collected amount remains '0.00'.,TC-006
+Verify that partial settlement amounts are correctly applied to the collected amount without bypassing validation,Transaction Settlement Processing,Security,High,User has an existing transaction with a collected amount greater than zero. User has sufficient remaining daily limit to process a partial settlement.,"1. Navigate to the transaction settlement screen. 2. Enter a partial settlement amount (less than the total collected amount). 3. Submit the settlement request. 4. Verify the updated collected amount reflects the partial settlement. 5. Attempt to process another settlement for the same transaction with an amount that would exceed the remaining collected amount.
+
+Test Data: Collected amount: 1000, First partial settlement: 300, Second partial settlement attempt: 800",The first partial settlement is accepted and the collected amount is updated to 700. The second partial settlement attempt is rejected with a clear message indicating insufficient remaining amount.,TC-007
+Verify that partial settlement amounts are correctly aggregated with existing collected amounts without overflow or precision loss,Transaction Settlement Processing,Security,High,User has an existing transaction with a collected amount. User has sufficient remaining daily limit to process multiple partial settlements.,"1. Navigate to the transaction settlement screen. 2. Enter a partial settlement amount with decimal precision (e.g., 123.45). 3. Submit the settlement request. 4. Repeat steps 2-3 with another partial settlement amount (e.g., 67.89). 5. Verify the updated collected amount reflects the sum of both partial settlements.
+
+Test Data: Collected amount: 1000, First partial settlement: 123.45, Second partial settlement: 67.89",Both partial settlements are accepted and the collected amount is updated to 808.66 (1000 - 123.45 - 67.89) without precision loss or overflow.,TC-008
+Verify that partial settlement transactions are included in daily limit calculations,Transaction Settlement Processing,Security,High,User has an existing transaction with a collected amount. User's daily limit is set to a value that allows one partial settlement but not two.,"1. Navigate to the transaction settlement screen. 2. Enter a partial settlement amount that is within the daily limit. 3. Submit the settlement request. 4. Attempt to process another partial settlement for the same or a different transaction with an amount that would exceed the daily limit.
+
+Test Data: Daily limit: 500, Collected amount: 1000, First partial settlement: 300, Second partial settlement attempt: 300",The first partial settlement is accepted. The second partial settlement attempt is rejected with a clear message indicating the daily limit has been exceeded.,6b7b2ad-TC-038

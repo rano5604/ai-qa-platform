@@ -1,0 +1,31 @@
+[ {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4",
+  "testMethodName" : "setup",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Area_1786511309399\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 05:08:30 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":null,\"details\":\"uri=/api/areas\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 392
+} ]

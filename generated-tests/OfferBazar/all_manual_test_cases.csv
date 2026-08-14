@@ -1,0 +1,444 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References,Source Ref
+Verify the application starts successfully after package restructuring,Application Startup,Positive,High,The application is deployed and the server is ready to start,"1. Start the application server. 2. Observe the application logs or startup screen for confirmation.
+
+Test Data: N/A","The application starts without errors, and the user can access the login or home screen.",029dd1a-TC-001,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify the application context loads correctly after package restructuring,Application Context Loading,Positive,High,The application is deployed and running,"1. Access the application's home page or login screen. 2. Navigate to any primary feature (e.g., 'Offers' or 'Products'). 3. Verify the feature loads without errors.
+
+Test Data: N/A","The application context loads successfully, and all primary features are accessible without errors.",029dd1a-TC-002,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify application fails to start with missing or invalid SpringApplication.run call,Application Startup,Negative,High,Application is built with the SpringApplication.run call missing or incorrectly configured in the main method,"1. Attempt to start the application using the standard startup command. 2. Observe the startup logs or console output.
+
+Test Data: Remove or comment out the `SpringApplication.run(OfferBazarApplication.class, args);` line in the main method.",Application fails to start and logs an error indicating that no Spring context was initialized. No functional UI or API endpoints are available.,029dd1a-TC-003,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify application fails to start with missing or invalid dependencies,Application Startup,Negative,High,"Application is deployed in an environment where required dependencies (e.g., database, external services) are unavailable or misconfigured","1. Disable or misconfigure the database connection in the deployment environment. 2. Attempt to start the application. 3. Observe the startup behavior.
+
+Test Data: Database service is stopped or credentials are invalid in 'application.properties'.","Application fails to start and logs an error indicating dependency failure (e.g., database connection refused). No functional UI or API endpoints are available.",029dd1a-TC-004,029dd1a3b7c088d75052dc8f4de60934ab5e6f16
+Verify application rejects invalid command-line arguments during startup,Application Startup,Negative,Medium,"Application is configured to accept command-line arguments for customization (e.g., port, profile)","1. Start the application with an invalid command-line argument (e.g., '--server.port=abc'). 2. Observe the startup behavior.
+
+Test Data: Command-line argument: '--server.port=invalid'.",Application fails to start and logs an error indicating invalid command-line argument. No functional UI or API endpoints are available.,029dd1a-TC-005,029dd1a3b7c088d75052dc8f4de60934ab5e6f16
+Verify application fails to start with insufficient system resources,Application Startup,Negative,Medium,Application is deployed in an environment with insufficient memory or disk space,"1. Deploy the application in an environment with critically low memory or disk space. 2. Attempt to start the application. 3. Observe the startup behavior.
+
+Test Data: Environment with less than 100MB of free memory or disk space.","Application fails to start and logs an error related to resource constraints (e.g., OutOfMemoryError). No functional UI or API endpoints are available.",029dd1a-TC-006,029dd1a3b7c088d75052dc8f4de60934ab5e6f16
+Verify the application starts successfully after package rename and relocation,Application Startup,Boundary,High,"Application deployment is complete, and no custom configuration files are present",1. Start the application using the standard deployment command. 2. Open the application URL in a web browser. 3. Observe the landing page or login screen.,"The application loads without errors, and the landing page or login screen is displayed to the user within 30 seconds.",029dd1a-TC-007,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify the application fails gracefully with missing configuration after package rename,Application Startup,Boundary,High,"Application is deployed with a critical configuration file (e.g., database config) intentionally removed or corrupted","1. Remove or corrupt the critical configuration file. 2. Start the application using the standard deployment command. 3. Observe the application logs or error page.
+
+Test Data: Configuration file: application.properties (deleted or corrupted)","The application fails to start gracefully, logs a clear error message about the missing or corrupted configuration, and does not expose sensitive information (e.g., stack traces) to the user.",029dd1a-TC-008,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify the application handles extremely large configuration values after package rename,Application Startup,Boundary,Medium,"Application is deployed with a configuration file containing an extremely large value for a field (e.g., a string or numeric limit)","1. Edit the configuration file to set a string field (e.g., `app.description`) to a value of 10,001 characters. 2. Start the application using the standard deployment command. 3. Open the application URL in a web browser. 4. Observe the application behavior and logs.
+
+Test Data: Configuration value: `app.description` = a string of 10,001 characters (one above a typical 10,000-character limit)","The application either rejects the large value with a clear error message in the logs or truncates it without crashing, and the application remains accessible to the user.",029dd1a-TC-009,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify the application starts successfully without errors,Application Startup,Configuration,High,The application is deployed and the server is running,"1. Access the application URL in a web browser. 2. Observe the application's landing page or login screen.
+
+Test Data: N/A","The application loads successfully, displaying the landing page or login screen without any error messages or crashes.",029dd1a-TC-010,029dd1a3b7c088d75052dc8f4de60934ab5e6f16
+Verify the Spring application context loads without errors,Application Context Loading,Configuration,High,The application is built and ready to start,"1. Start the application using the command line or IDE. 2. Monitor the application logs for startup completion.
+
+Test Data: N/A","The application starts without throwing any exceptions, and logs indicate successful context loading (e.g., 'Started OfferBazarApplication in X seconds').",029dd1a-TC-011,029dd1a3b7c088d75052dc8f4de60934ab5e6f16
+Verify Maven Wrapper downloads and uses the specified Maven version (3.9.9) and distribution type (only-script),Maven Wrapper Configuration,Configuration,High,Clean environment with no existing Maven Wrapper or local Maven installation,"1. Navigate to the project directory. 2. Run './mvnw --version' (or 'mvnw.cmd --version' on Windows). 3. Observe the output for Maven version and verify the distribution type.
+
+Test Data: wrapperVersion=3.3.2, distributionType=only-script, distributionUrl=https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.9/apache-maven-3.9.9-bin.zip","Maven version 3.9.9 is reported, and only the script (not full distribution) is downloaded and used for builds.",029dd1a-TC-012,029dd1a3b7c088d75052dc8f4de60934ab5e6f16
+Verify the project builds successfully with Spring Boot 3.3.4 and Java 17,Maven Build Configuration,Configuration,High,Java 17 installed and set as default JDK,"1. Navigate to the project directory. 2. Run './mvnw clean install'. 3. Observe the build output for success/failure.
+
+Test Data: Spring Boot version 3.3.4, Java version 17","Build completes successfully without errors, and the generated artifact is compatible with Spring Boot 3.3.4.",029dd1a-TC-013,029dd1a3b7c088d75052dc8f4de60934ab5e6f16
+Verify Lombok is excluded from the final build artifact,Maven Build Configuration,Configuration,Medium,Project built at least once (target directory exists),"1. Navigate to the project directory. 2. Run './mvnw clean package'. 3. Inspect the generated JAR file (e.g., 'offer.bazar-0.0.1-SNAPSHOT.jar') using 'jar tf target/offer.bazar-0.0.1-SNAPSHOT.jar'. 4. Search for Lombok-related classes.
+
+Test Data: Lombok dependency with <optional>true</optional> and exclusion in spring-boot-maven-plugin",No Lombok classes are present in the final JAR file.,029dd1a-TC-014,029dd1a3b7c088d75052dc8f4de60934ab5e6f16
+Verify the application starts on the specified port (8082),Application Properties - Server Configuration,Configuration,High,No other service running on port 8082,"1. Start the application using './mvnw spring-boot:run'. 2. Check the logs for 'Tomcat started on port(s): 8082'. 3. Access 'http://localhost:8082/actuator/health' and verify a successful response.
+
+Test Data: server.port=8082","Application starts successfully on port 8082, and the health endpoint is accessible.",029dd1a-TC-015,029dd1a3b7c088d75052dc8f4de60934ab5e6f16
+"Verify the application connects to the PostgreSQL database using the specified URL, username, and password",Application Properties - Database Configuration,Configuration,High,PostgreSQL server running on localhost:5432 with a database named 'offerbazar' and user 'postgres' with password 'noq@dm1n',"1. Start the application using './mvnw spring-boot:run'. 2. Check the logs for 'HikariPool-1 - Starting...' and 'HikariPool-1 - Added connection'. 3. Verify no connection errors or authentication failures are logged.
+
+Test Data: spring.datasource.url=jdbc:postgresql://localhost:5432/offerbazar, spring.datasource.username=postgres, spring.datasource.password=noq@dm1n",Application successfully connects to the PostgreSQL database without errors.,029dd1a-TC-016,029dd1a3b7c088d75052dc8f4de60934ab5e6f16
+Verify Hibernate updates the database schema on startup (ddl-auto=update),Application Properties - Hibernate Configuration,Configuration,Medium,PostgreSQL database 'offerbazar' exists but is empty (no tables),"1. Start the application using './mvnw spring-boot:run'. 2. Connect to the PostgreSQL database using a client (e.g., psql). 3. Run '\dt' to list tables. 4. Verify that tables corresponding to JPA entities are created.
+
+Test Data: spring.jpa.hibernate.ddl-auto=update","Database schema is updated with tables for JPA entities, and no existing data is lost (if tables existed).",029dd1a-TC-017,029dd1a3b7c088d75052dc8f4de60934ab5e6f16
+Verify the JWT secret and expiration values are loaded correctly,Application Properties - JWT Configuration,Configuration,High,Application starts successfully,"1. Start the application using './mvnw spring-boot:run'. 2. Use a REST client to call a secured endpoint (e.g., login). 3. Inspect the generated JWT token and verify its expiration time matches the configured value (86400000 ms = 24 hours). 4. Verify the token can be validated using the secret 'test-secret'.
+
+Test Data: jwt.secret=test-secret, jwt.expirationMs=86400000",JWT tokens are generated with the correct secret and expire after 24 hours.,029dd1a-TC-018,029dd1a3b7c088d75052dc8f4de60934ab5e6f16
+Verify Spring Security logs are set to DEBUG level,Application Properties - Logging Configuration,Configuration,Low,Application starts successfully,"1. Start the application using './mvnw spring-boot:run'. 2. Attempt to access a secured endpoint without authentication. 3. Check the logs for detailed Spring Security debug messages (e.g., 'Security filter chain', 'Authentication attempt').
+
+Test Data: logging.level.org.springframework.security=DEBUG",Detailed debug logs from Spring Security are visible in the application logs.,029dd1a-TC-019,029dd1a3b7c088d75052dc8f4de60934ab5e6f16
+Verify application fails to start with invalid package structure in main class,Application Startup,Negative,High,Application is built with the new package structure (offer.bazar) but the main class is incorrectly referenced or missing in the build configuration,"1. Attempt to start the application using the standard startup command. 2. Observe the startup logs or console output.
+
+Test Data: Use the default build configuration with the new package path but ensure the main class is not properly referenced (e.g., misconfigured in build.gradle or pom.xml).",Application fails to start and logs an error indicating that the main class (offer.bazar.OfferBazarApplication) could not be found or loaded. No functional UI or API endpoints are available.,1fd2162-TC-001,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify application fails to start with missing Spring Boot annotation on main class,Application Startup,Negative,High,Application is built with the main class missing the @SpringBootApplication annotation or the annotation is malformed,"1. Attempt to start the application using the standard startup command. 2. Observe the startup logs or console output.
+
+Test Data: Manually remove or comment out the @SpringBootApplication annotation in the OfferBazarApplication class before building.",Application fails to start and logs an error indicating that no Spring Boot application configuration was found. No functional UI or API endpoints are available.,1fd2162-TC-002,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify application fails to start with invalid main method signature,Application Startup,Negative,High,"Application is built with the main method signature altered (e.g., incorrect parameter type or missing static modifier)","1. Attempt to start the application using the standard startup command. 2. Observe the startup logs or console output.
+
+Test Data: Modify the main method signature to something invalid, such as removing the `static` modifier or changing the parameter type from `String[]` to `String`.",Application fails to start and logs an error indicating that the main method could not be executed or found. No functional UI or API endpoints are available.,1fd2162-TC-003,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify application fails to start with invalid test class package structure,Application Startup,Negative,Medium,Application test class (ApplicationTests) is built with an incorrect package structure or missing Spring Boot test annotation,"1. Attempt to run the test suite using the standard test command (e.g., `mvn test` or `gradle test`). 2. Observe the test execution logs or console output.
+
+Test Data: Manually alter the package declaration in ApplicationTests to an invalid path or remove the @SpringBootTest annotation.",Test execution fails with an error indicating that the test class could not be found or that no Spring Boot test context was initialized. No tests are executed successfully.,1fd2162-TC-004,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify application fails to start with missing or invalid contextLoads test method,Application Startup,Negative,Medium,Application test class (ApplicationTests) is built with the contextLoads method missing or incorrectly annotated,"1. Attempt to run the test suite using the standard test command. 2. Observe the test execution logs or console output.
+
+Test Data: Remove the @Test annotation from the contextLoads method or delete the method entirely.","Test execution completes without running the contextLoads test, or fails if the test framework requires at least one test method. No Spring context validation is performed.",1fd2162-TC-005,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify the application handles an empty configuration file after package rename,Application Startup,Boundary,Medium,"Application is deployed with an empty configuration file (e.g., application.properties)","1. Replace the configuration file with an empty file. 2. Start the application using the standard deployment command. 3. Observe the application logs or error page.
+
+Test Data: Configuration file: application.properties (0 bytes, empty)","The application fails to start gracefully, logs a clear error message about the empty or invalid configuration, and does not expose sensitive information to the user.",1fd2162-TC-006,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify the application handles a configuration file with only whitespace after package rename,Application Startup,Boundary,Medium,Application is deployed with a configuration file containing only whitespace or newline characters,"1. Edit the configuration file to contain only spaces, tabs, and newlines (no valid key-value pairs). 2. Start the application using the standard deployment command. 3. Observe the application logs or error page.
+
+Test Data: Configuration file: application.properties (contains only whitespace, e.g., spaces, tabs, and newlines)","The application fails to start gracefully, logs a clear error message about the invalid or empty configuration, and does not expose sensitive information to the user.",1fd2162-TC-007,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify the application handles a configuration file with a numeric field set to its minimum allowed value,Application Startup,Boundary,Medium,Application is deployed with a configuration file containing a numeric field set to its documented minimum value,"1. Edit the configuration file to set a numeric field (e.g., `server.port`) to its minimum allowed value (e.g., 1). 2. Start the application using the standard deployment command. 3. Open the application URL in a web browser. 4. Observe the application behavior and logs.
+
+Test Data: Configuration value: `server.port` = 1 (minimum allowed port number)","The application starts successfully, binds to the specified port, and remains accessible to the user.",1fd2162-TC-008,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify the application handles a configuration file with a numeric field set to one below its minimum allowed value,Application Startup,Boundary,Medium,Application is deployed with a configuration file containing a numeric field set to one below its documented minimum value,"1. Edit the configuration file to set a numeric field (e.g., `server.port`) to 0 (one below the minimum allowed value of 1). 2. Start the application using the standard deployment command. 3. Observe the application logs or error page.
+
+Test Data: Configuration value: `server.port` = 0 (one below the minimum allowed port number)","The application fails to start gracefully, logs a clear error message about the invalid port value, and does not expose sensitive information to the user.",1fd2162-TC-009,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify the application handles a configuration file with a numeric field set to its maximum allowed value,Application Startup,Boundary,Medium,Application is deployed with a configuration file containing a numeric field set to its documented maximum value,"1. Edit the configuration file to set a numeric field (e.g., `server.port`) to its maximum allowed value (e.g., 65535). 2. Start the application using the standard deployment command. 3. Open the application URL in a web browser. 4. Observe the application behavior and logs.
+
+Test Data: Configuration value: `server.port` = 65535 (maximum allowed port number)","The application starts successfully, binds to the specified port, and remains accessible to the user.",1fd2162-TC-010,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify the application handles a configuration file with a numeric field set to one above its maximum allowed value,Application Startup,Boundary,Medium,Application is deployed with a configuration file containing a numeric field set to one above its documented maximum value,"1. Edit the configuration file to set a numeric field (e.g., `server.port`) to 65536 (one above the maximum allowed value of 65535). 2. Start the application using the standard deployment command. 3. Observe the application logs or error page.
+
+Test Data: Configuration value: `server.port` = 65536 (one above the maximum allowed port number)","The application fails to start gracefully, logs a clear error message about the invalid port value, and does not expose sensitive information to the user.",1fd2162-TC-011,1fd2162156cb2f0351ffcebabe886f85d40228a1
+Verify that offer creation rejects offer names exceeding the new maximum length limit of 50 characters,Offer Management,Security,High,User is logged in with permissions to create offers,"1. Navigate to the 'Create New Offer' page. 2. Enter an offer name with 51 characters (e.g., 'ThisIsAnExcessivelyLongOfferNameThatExceedsFiftyCharacters'). 3. Fill in all other required fields with valid values. 4. Submit the form.
+
+Test Data: Offer name: 'ThisIsAnExcessivelyLongOfferNameThatExceedsFiftyCharacters' (51 characters), Discount amount: 10, Valid-from date: today, Valid-to date: tomorrow",The system displays an error message indicating that the offer name exceeds the maximum allowed length of 50 characters and does not create the offer.,9129733-TC-001,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Verify that offer creation rejects invalid date ranges to prevent logical errors,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData where validTo date is before validFrom date.
+
+Test Data: {
+  ""name"": ""Summer Sale"",
+  ""discountAmount"": 15.00,
+  ""validFrom"": ""2023-12-31T00:00:00"",
+  ""validTo"": ""2023-01-01T00:00:00""
+}",The API responds with HTTP status 400 (Bad Request) and an error message stating 'Valid-to date must be after valid-from date'.,9129733-TC-002,912973398a89489e4c462e6b954d8ed2b854b0ef
+Verify that offer creation rejects missing required fields to prevent incomplete data submission,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData missing the 'name' field.
+
+Test Data: {
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status 400 (Bad Request) and an error message indicating that the offer name is required.,9129733-TC-003,912973398a89489e4c462e6b954d8ed2b854b0ef
+Verify that offer creation rejects injection attempts in offer name field,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData containing SQL injection patterns in the offer name.
+
+Test Data: {
+  ""name"": ""Summer Sale'; DROP TABLE offers; --"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status 400 (Bad Request) due to validation failure or successfully creates an offer with the literal name (no SQL execution).,9129733-TC-004,912973398a89489e4c462e6b954d8ed2b854b0ef
+Verify that offer creation rejects script injection attempts in offer name field,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData containing XSS patterns in the offer name.
+
+Test Data: {
+  ""name"": ""<script>alert('XSS')</script>"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status 400 (Bad Request) due to validation failure or successfully creates an offer with the literal name (no script execution).,9129733-TC-005,912973398a89489e4c462e6b954d8ed2b854b0ef
+Verify that offer creation does not expose sensitive internal details in error responses,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData containing invalid data (e.g., negative discount).
+2. Examine the error response body for any internal stack traces or database details.
+
+Test Data: {
+  ""name"": ""Invalid Offer"",
+  ""discountAmount"": -10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}","The API responds with HTTP status 400 (Bad Request) and an error message that does not contain any internal system details, stack traces, or database information.",9129733-TC-006,912973398a89489e4c462e6b954d8ed2b854b0ef
+Verify offer creation fails when 'discountAmount' is zero or negative,Offer Creation,Negative,High,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Summer Sale"",
+  ""discountAmount"": 0.00,
+  ""validFrom"": ""2023-10-01T00:00:00"",
+  ""validTo"": ""2023-10-31T23:59:59""
+}","The API responds with HTTP status 400 (Bad Request) and a response body containing: {
+  ""status"": 400,
+  ""error"": ""Validation Failed"",
+  ""fields"": {
+    ""discountAmount"": ""Discount amount must be greater than 0""
+  }
+}",9129733-TC-007,912973398a89489e4c462e6b954d8ed2b854b0ef
+Verify offer creation fails when 'name' field is missing,Offer Creation,Negative,High,User is logged in and has permission to create offers. Offer creation form is open.,"1. Leave the 'name' field empty.
+2. Enter valid values for all other required fields (e.g., discountAmount: 10, validFrom: today, validTo: tomorrow).
+3. Submit the offer creation form.
+
+Test Data: Name: [empty]
+Discount Amount: 10
+Valid From: [current date]
+Valid To: [next day]",The system rejects the offer creation and displays an error message: 'Offer name is required.' The offer is not created.,9129733-TC-008,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Verify offer creation fails when required field 'validTo' is missing,Offer Creation,Negative,High,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Summer Sale"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-10-01T00:00:00""
+}","The API responds with HTTP status 400 (Bad Request) and a response body containing: {
+  ""status"": 400,
+  ""error"": ""Validation Failed"",
+  ""fields"": {
+    ""validTo"": ""Valid to date is required""
+  }
+}",9129733-TC-009,912973398a89489e4c462e6b954d8ed2b854b0ef
+Verify offer creation fails when 'validTo' date is before 'validFrom' date,Offer Creation,Negative,High,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Summer Sale"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-10-15T00:00:00"",
+  ""validTo"": ""2023-10-01T23:59:59""
+}","The API responds with HTTP status 400 (Bad Request) and a response body containing: {
+  ""status"": 400,
+  ""error"": ""Valid-to date must be after valid-from date""
+}",9129733-TC-010,912973398a89489e4c462e6b954d8ed2b854b0ef
+Verify offer creation fails when 'validFrom' or 'validTo' is not a valid date-time format,Offer Creation,Negative,High,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Summer Sale"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""invalid-date"",
+  ""validTo"": ""2023-10-31T23:59:59""
+}",The API responds with HTTP status 400 (Bad Request) and a response body indicating a validation error for the 'validFrom' field due to malformed date-time format.,9129733-TC-011,912973398a89489e4c462e6b954d8ed2b854b0ef
+Verify offer creation fails when 'discountAmount' is not an integer value,Offer Creation,Negative,High,User is logged in and has permission to create offers. Offer creation form is open.,"1. Enter a valid name for the offer (e.g., 'Summer Sale').
+2. Enter a non-integer value for 'discountAmount' (e.g., '10.50').
+3. Enter valid dates for 'validFrom' and 'validTo'.
+4. Submit the offer creation form.
+
+Test Data: Name: Summer Sale, Discount Amount: 10.50, Valid From: 2023-01-01T00:00:00, Valid To: 2023-12-31T23:59:59",The system rejects the offer creation and displays an error message: 'Discount amount must be a whole number.' The offer is not created.,9129733-TC-012,0e5b1e5ca375e07577fe0e2a20c0cf95e673b172
+Verify offer creation fails when 'status' is provided but not a valid enum value,Offer Creation,Negative,Medium,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Summer Sale"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-10-01T00:00:00"",
+  ""validTo"": ""2023-10-31T23:59:59"",
+  ""status"": ""INVALID_STATUS""
+}",The API responds with HTTP status 400 (Bad Request) and a response body indicating a validation error for the 'status' field due to invalid enum value.,9129733-TC-013,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with a name containing only whitespace (50 characters of spaces),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. The 'Create Offer' form is open.,"1. In the 'Name' field, enter 50 spaces. 2. Fill in the 'Discount Amount' field with a valid value (e.g., 10). 3. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 4. Click the 'Create Offer' button.
+
+Test Data: Name: '                                                  ' (50 spaces), Discount Amount: 10, Valid From: today, Valid To: tomorrow",The system displays an error message: 'Offer name is required'. The offer is not created.,9129733-TC-014,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Create an offer with a null name,Offer Creation,Boundary,High,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": null,
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status code 400 and a validation error message: 'Offer name is required'.,9129733-TC-015,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with a discount amount of zero (integer boundary),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Enter '0' as the discount amount. 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: 0, Valid-from: current date, Valid-to: current date + 1 day",The system displays an error message: 'Discount amount must be greater than 0'. The offer is not created.,9129733-TC-016,0e5b1e5ca375e07577fe0e2a20c0cf95e673b172
+Create an offer with a discount amount of negative one (invalid integer boundary),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Enter '-1' as the discount amount. 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: -1, Valid-from: current date, Valid-to: current date + 1 day",The system displays an error message: 'Discount amount must be greater than 0'. The offer is not created.,9129733-TC-017,0e5b1e5ca375e07577fe0e2a20c0cf95e673b172
+"Create an offer with a discount amount of 0.01 (fractional value, now invalid for integer field)",Offer Creation,Boundary,High,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Enter '0.01' as the discount amount. 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: 0.01, Valid-from: current date, Valid-to: current date + 1 day",The system displays an error message indicating the discount amount must be a whole number. The offer is not created.,9129733-TC-018,0e5b1e5ca375e07577fe0e2a20c0cf95e673b172
+Create an offer with a very large discount amount (integer maximum boundary),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Enter '2147483647' as the discount amount (maximum 32-bit signed integer). 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: 2147483647, Valid-from: current date, Valid-to: current date + 1 day",The offer is created successfully. The response displays the offer details with discountAmount set to 2147483647.,9129733-TC-019,0e5b1e5ca375e07577fe0e2a20c0cf95e673b172
+Create an offer with a discount amount of null (missing value),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Leave the discount amount field empty. 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: [empty], Valid-from: current date, Valid-to: current date + 1 day",The system displays an error message: 'Discount amount is required'. The offer is not created.,9129733-TC-020,0e5b1e5ca375e07577fe0e2a20c0cf95e673b172
+Create an offer with a missing discount amount,Offer Creation,Boundary,High,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Test Offer"",
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status code 400 and a validation error message: 'Discount amount is required'.,9129733-TC-021,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with a valid-to date before the valid-from date,Offer Creation,Boundary,High,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Test Offer"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-12-31T23:59:59"",
+  ""validTo"": ""2023-01-01T00:00:00""
+}",The API responds with HTTP status code 400 and an error message: 'Valid-to date must be after valid-from date'.,9129733-TC-022,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with a valid-to date exactly equal to the valid-from date,Offer Creation,Boundary,High,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Test Offer"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-01-01T00:00:00""
+}",The API responds with HTTP status code 400 and an error message: 'Valid-to date must be after valid-from date'.,9129733-TC-023,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with a valid-to date one second after the valid-from date,Offer Creation,Boundary,High,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Test Offer"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-01-01T00:00:01""
+}","The API responds with HTTP status code 201, and the response body contains the created offer with validFrom and validTo as specified.",9129733-TC-024,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with a null valid-from date,Offer Creation,Boundary,High,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Test Offer"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": null,
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status code 400 and a validation error message: 'Valid from date is required'.,9129733-TC-025,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with a null valid-to date,Offer Creation,Boundary,High,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Test Offer"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": null
+}",The API responds with HTTP status code 400 and a validation error message: 'Valid to date is required'.,9129733-TC-026,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with a missing valid-from date,Offer Creation,Boundary,High,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Test Offer"",
+  ""discountAmount"": 10.50,
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status code 400 and a validation error message: 'Valid from date is required'.,9129733-TC-027,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with a missing valid-to date,Offer Creation,Boundary,High,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Test Offer"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00""
+}",The API responds with HTTP status code 400 and a validation error message: 'Valid to date is required'.,9129733-TC-028,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with a valid-from date in the far past,Offer Creation,Boundary,Medium,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Test Offer"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""1970-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}","The API responds with HTTP status code 201, and the response body contains the created offer with validFrom as specified.",9129733-TC-029,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with a valid-to date in the far future,Offer Creation,Boundary,Medium,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Test Offer"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2099-12-31T23:59:59""
+}","The API responds with HTTP status code 201, and the response body contains the created offer with validTo as specified.",9129733-TC-030,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with a very long name,Offer Creation,Boundary,Medium,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""This is an extremely long offer name that exceeds typical length limits to test boundary conditions for the name field in the offer creation process."",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}","The API responds with HTTP status code 201, and the response body contains the created offer with the long name as specified.",9129733-TC-031,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with status set to INACTIVE,Offer Creation,Boundary,Medium,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Test Offer"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59"",
+  ""status"": ""INACTIVE""
+}","The API responds with HTTP status code 201, and the response body contains the created offer with status INACTIVE.",9129733-TC-032,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with status set to an invalid value,Offer Creation,Boundary,Medium,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Test Offer"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59"",
+  ""status"": ""EXPIRED""
+}",The API responds with HTTP status code 400 and a validation error indicating that 'EXPIRED' is not a valid status.,9129733-TC-033,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create an offer with no status provided (defaults to ACTIVE),Offer Creation,Boundary,High,None,"1. Send a POST request to /api/offers with the payload in testData.
+
+Test Data: {
+  ""name"": ""Test Offer"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}","The API responds with HTTP status code 201, and the response body contains the created offer with status ACTIVE.",9129733-TC-034,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create a new offer with integer discount amount,Offer Creation,Positive,High,User has access to the offer creation page,"1. Open the offer creation page. 2. Enter a valid offer name. 3. Enter a valid integer discount amount. 4. Enter a valid start date. 5. Submit the offer creation form.
+
+Test Data: Offer name: Summer Sale, Discount amount: 10, Start date: 2024-06-01",The offer is created successfully with the specified integer discount amount and the response status code is 201 (Created),0e5b1e5-TC-001,0e5b1e5ca375e07577fe0e2a20c0cf95e673b172
+Attempt to create a new offer with a name exceeding the maximum allowed length,Offer Management,Positive,High,User is logged in and has permissions to create offers. The offer creation form is accessible.,"1. Navigate to the 'Create New Offer' page. 2. Enter a name consisting of 51 characters (e.g., 'SummerSale2024DiscountForAllCustomersBigDealX'). 3. Enter a valid discount amount (e.g., 20). 4. Select a valid start and end date for the offer. 5. Click the 'Create Offer' button.
+
+Test Data: Name: 'SummerSale2024DiscountForAllCustomersBigDealX' (51 characters), Discount Amount: 20, Start Date: today, End Date: 7 days from today","The offer creation fails, and an error message is displayed indicating that the offer name cannot exceed 50 characters.",0e5b1e5-TC-002,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Verify offer creation fails when 'discountAmount' is a negative integer,Offer Creation,Negative,High,User is logged in and has permission to create offers. Offer creation form is open.,"1. Enter a valid name for the offer (e.g., 'Winter Clearance').
+2. Enter a negative integer value for 'discountAmount' (e.g., '-5').
+3. Enter valid dates for 'validFrom' and 'validTo'.
+4. Submit the offer creation form.
+
+Test Data: Name: Winter Clearance, Discount Amount: -5, Valid From: 2023-01-01T00:00:00, Valid To: 2023-12-31T23:59:59",The system rejects the offer creation and displays an error message: 'Discount amount must be greater than zero.' The offer is not created.,0e5b1e5-TC-003,0e5b1e5ca375e07577fe0e2a20c0cf95e673b172
+Verify offer creation fails when 'discountAmount' is a non-numeric value,Offer Creation,Negative,High,User is logged in and has permission to create offers. Offer creation form is open.,"1. Enter a valid name for the offer (e.g., 'Spring Discount').
+2. Enter a non-numeric value for 'discountAmount' (e.g., 'ten').
+3. Enter valid dates for 'validFrom' and 'validTo'.
+4. Submit the offer creation form.
+
+Test Data: Name: Spring Discount, Discount Amount: ten, Valid From: 2023-01-01T00:00:00, Valid To: 2023-12-31T23:59:59",The system rejects the offer creation and displays an error message: 'Discount amount must be a whole number.' The offer is not created.,0e5b1e5-TC-004,0e5b1e5ca375e07577fe0e2a20c0cf95e673b172
+Verify offer creation fails when 'discountAmount' is an extremely large integer exceeding system limits,Offer Creation,Negative,Medium,User is logged in and has permission to create offers. Offer creation form is open.,"1. Enter a valid name for the offer (e.g., 'Mega Sale').
+2. Enter an extremely large integer value for 'discountAmount' (e.g., '9999999999999999999').
+3. Enter valid dates for 'validFrom' and 'validTo'.
+4. Submit the offer creation form.
+
+Test Data: Name: Mega Sale, Discount Amount: 9999999999999999999, Valid From: 2023-01-01T00:00:00, Valid To: 2023-12-31T23:59:59",The system rejects the offer creation and displays an error message: 'Discount amount is too large.' The offer is not created.,0e5b1e5-TC-005,0e5b1e5ca375e07577fe0e2a20c0cf95e673b172
+Create an offer with a discount amount of one (minimum valid integer value),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Enter '1' as the discount amount. 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: 1, Valid-from: current date, Valid-to: current date + 1 day",The offer is created successfully. The response displays the offer details with discountAmount set to 1.,0e5b1e5-TC-006,0e5b1e5ca375e07577fe0e2a20c0cf95e673b172
+Create an offer with a discount amount exceeding the maximum integer value,Offer Creation,Boundary,High,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Enter '2147483648' as the discount amount (one above maximum 32-bit signed integer). 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: 2147483648, Valid-from: current date, Valid-to: current date + 1 day",The system displays an error message indicating the discount amount is invalid or out of range. The offer is not created.,0e5b1e5-TC-007,0e5b1e5ca375e07577fe0e2a20c0cf95e673b172
+Create an offer with a discount amount containing non-numeric characters,Offer Creation,Boundary,Medium,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Enter 'abc' as the discount amount. 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: abc, Valid-from: current date, Valid-to: current date + 1 day",The system displays an error message indicating the discount amount must be a valid whole number. The offer is not created.,0e5b1e5-TC-008,0e5b1e5ca375e07577fe0e2a20c0cf95e673b172
+Verify that offer creation rejects negative discount amounts to prevent financial miscalculations,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData containing a negative discount amount.
+
+Test Data: {
+  ""name"": ""Negative Discount Offer"",
+  ""discountAmount"": -10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status 400 (Bad Request) and an error message indicating that the discount amount must be greater than 0.,0e5b1e5-TC-009,912973398a89489e4c462e6b954d8ed2b854b0ef
+Verify that offer creation rejects non-numeric discount amounts to ensure data integrity,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData containing a non-numeric discount amount (e.g., string).
+
+Test Data: {
+  ""name"": ""Invalid Discount Offer"",
+  ""discountAmount"": ""ten dollars"",
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status 400 (Bad Request) and an error message indicating that the discount amount must be a valid number.,0e5b1e5-TC-010,912973398a89489e4c462e6b954d8ed2b854b0ef
+Verify that excessively large discount amounts are rejected to prevent abuse,Offer Discount Management,Security,Medium,User is logged in with permissions to create or edit offers,"1. Navigate to the 'Create New Offer' or 'Edit Offer' screen. 2. Enter an extremely large integer value (e.g., 999999999) in the 'Discount Amount' field. 3. Attempt to save the offer.
+
+Test Data: Discount Amount: 999999999",The system displays an error message indicating that the discount amount exceeds the maximum allowed value and does not save the offer.,0e5b1e5-TC-011,0e5b1e5ca375e07577fe0e2a20c0cf95e673b172
+Verify that offer creation rejects zero discount amounts despite validation annotation allowing it,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData containing a zero discount amount.
+
+Test Data: {
+  ""name"": ""Zero Discount Offer"",
+  ""discountAmount"": 0.00,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status 400 (Bad Request) and an error message indicating that the discount amount must be greater than 0.,0e5b1e5-TC-012,912973398a89489e4c462e6b954d8ed2b854b0ef
+Create a new offer with a valid name of maximum allowed length,Offer Management,Positive,High,User is logged in and has permissions to create offers. The offer creation form is accessible.,"1. Navigate to the 'Create New Offer' page. 2. Enter a name consisting of exactly 50 characters (e.g., 'SummerSale2024DiscountForAllCustomersBigDeal'). 3. Enter a valid discount amount (e.g., 20). 4. Select a valid start and end date for the offer. 5. Click the 'Create Offer' button.
+
+Test Data: Name: 'SummerSale2024DiscountForAllCustomersBigDeal' (50 characters), Discount Amount: 20, Start Date: today, End Date: 7 days from today",The offer is created successfully and appears in the list of active offers. The offer name is displayed in full without truncation or errors.,8d0b5fd-TC-001,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Verify offer creation fails when 'name' field exceeds the maximum allowed length of 50 characters,Offer Creation,Negative,High,User is logged in and has permission to create offers. Offer creation form is open.,"1. Enter a name with 51 characters (e.g., 'This is a very long offer name that exceeds fifty characters').
+2. Enter valid values for all other required fields (e.g., discountAmount: 10, validFrom: today, validTo: tomorrow).
+3. Submit the offer creation form.
+
+Test Data: Name: 'This is a very long offer name that exceeds fifty characters'
+Discount Amount: 10
+Valid From: [current date]
+Valid To: [next day]",The system rejects the offer creation and displays an error message: 'Offer name must not exceed 50 characters.' The offer is not created.,8d0b5fd-TC-002,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Verify offer creation fails when 'name' field contains only whitespace,Offer Creation,Negative,Medium,User is logged in and has permission to create offers. Offer creation form is open.,"1. Enter only spaces or tabs in the 'name' field (e.g., '     ').
+2. Enter valid values for all other required fields (e.g., discountAmount: 10, validFrom: today, validTo: tomorrow).
+3. Submit the offer creation form.
+
+Test Data: Name: '     '
+Discount Amount: 10
+Valid From: [current date]
+Valid To: [next day]",The system rejects the offer creation and displays an error message: 'Offer name is required.' The offer is not created.,8d0b5fd-TC-003,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Create an offer with a name exactly 50 characters long (maximum allowed length),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. The 'Create Offer' form is open.,"1. In the 'Name' field, enter a 50-character string (e.g., 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234'). 2. Fill in the 'Discount Amount' field with a valid value (e.g., 10). 3. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 4. Click the 'Create Offer' button.
+
+Test Data: Name: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234' (50 characters), Discount Amount: 10, Valid From: today, Valid To: tomorrow",The offer is created successfully. The response displays the offer details with the name exactly as entered (50 characters).,8d0b5fd-TC-004,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Create an offer with a name exceeding 50 characters (one character over the limit),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. The 'Create Offer' form is open.,"1. In the 'Name' field, enter a 51-character string (e.g., 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz12345'). 2. Fill in the 'Discount Amount' field with a valid value (e.g., 10). 3. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 4. Click the 'Create Offer' button.
+
+Test Data: Name: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz12345' (51 characters), Discount Amount: 10, Valid From: today, Valid To: tomorrow",The system displays an error message: 'Offer name must not exceed 50 characters'. The offer is not created.,8d0b5fd-TC-005,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Create an offer with a name of 1 character (minimum allowed length),Offer Creation,Boundary,Medium,User is logged in and has permissions to create offers. The 'Create Offer' form is open.,"1. In the 'Name' field, enter a single character (e.g., 'A'). 2. Fill in the 'Discount Amount' field with a valid value (e.g., 10). 3. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 4. Click the 'Create Offer' button.
+
+Test Data: Name: 'A' (1 character), Discount Amount: 10, Valid From: today, Valid To: tomorrow",The offer is created successfully. The response displays the offer details with the name exactly as entered (1 character).,8d0b5fd-TC-006,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Create an offer with a name containing special characters and exactly 50 characters,Offer Creation,Boundary,Medium,User is logged in and has permissions to create offers. The 'Create Offer' form is open.,"1. In the 'Name' field, enter a 50-character string with special characters (e.g., 'Offer@2024!Discount#SummerSale$SpecialPrice%Off&Now*'). 2. Fill in the 'Discount Amount' field with a valid value (e.g., 10). 3. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 4. Click the 'Create Offer' button.
+
+Test Data: Name: 'Offer@2024!Discount#SummerSale$SpecialPrice%Off&Now*' (50 characters), Discount Amount: 10, Valid From: today, Valid To: tomorrow","The offer is created successfully. The response displays the offer details with the name exactly as entered (50 characters, including special characters).",8d0b5fd-TC-007,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Create an offer with a name containing Unicode characters and exactly 50 characters,Offer Creation,Boundary,Medium,User is logged in and has permissions to create offers. The 'Create Offer' form is open.,"1. In the 'Name' field, enter a 50-character string with Unicode characters (e.g., '特价优惠2024夏季促销折扣特别优惠现在立减'). 2. Fill in the 'Discount Amount' field with a valid value (e.g., 10). 3. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 4. Click the 'Create Offer' button.
+
+Test Data: Name: '特价优惠2024夏季促销折扣特别优惠现在立减' (50 characters), Discount Amount: 10, Valid From: today, Valid To: tomorrow",The offer is created successfully. The response displays the offer details with the name exactly as entered (50 Unicode characters).,8d0b5fd-TC-008,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Update an existing offer with a name exactly 50 characters long (maximum allowed length),Offer Creation,Boundary,High,"User is logged in, has permissions to edit offers, and an existing offer is available for editing.","1. Open the 'Edit Offer' form for an existing offer. 2. In the 'Name' field, update the name to a 50-character string (e.g., 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234'). 3. Ensure the 'Discount Amount' field has a valid value (e.g., 10). 4. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 5. Click the 'Update Offer' button.
+
+Test Data: Name: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234' (50 characters), Discount Amount: 10, Valid From: today, Valid To: tomorrow",The offer is updated successfully. The response displays the updated offer details with the name exactly as entered (50 characters).,8d0b5fd-TC-009,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Update an existing offer with a name exceeding 50 characters (one character over the limit),Offer Creation,Boundary,High,"User is logged in, has permissions to edit offers, and an existing offer is available for editing.","1. Open the 'Edit Offer' form for an existing offer. 2. In the 'Name' field, update the name to a 51-character string (e.g., 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz12345'). 3. Ensure the 'Discount Amount' field has a valid value (e.g., 10). 4. Set valid 'Valid From' and 'Valid To' dates (e.g., today and tomorrow). 5. Click the 'Update Offer' button.
+
+Test Data: Name: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz12345' (51 characters), Discount Amount: 10, Valid From: today, Valid To: tomorrow",The system displays an error message: 'Offer name must not exceed 50 characters'. The offer is not updated.,8d0b5fd-TC-010,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Verify that offer creation accepts offer names exactly at the new maximum length limit of 50 characters,Offer Management,Security,High,User is logged in with permissions to create offers,"1. Navigate to the 'Create New Offer' page. 2. Enter an offer name with exactly 50 characters (e.g., 'ThisIsAnOfferNameThatIsExactlyFiftyCharactersLong'). 3. Fill in all other required fields with valid values. 4. Submit the form.
+
+Test Data: Offer name: 'ThisIsAnOfferNameThatIsExactlyFiftyCharactersLong' (50 characters), Discount amount: 10, Valid-from date: today, Valid-to date: tomorrow",The system successfully creates the offer and displays a confirmation message.,8d0b5fd-TC-011,8d0b5fdc67ee83aafc14e55c26021b323ba4f018
+Verify that offer creation rejects offer names with special characters or injection patterns despite being under the 50-character limit,Offer Management,Security,High,User is logged in with permissions to create offers,"1. Navigate to the 'Create New Offer' page. 2. Enter an offer name with SQL injection patterns (e.g., 'TestOffer'; DROP TABLE offers--') but under 50 characters. 3. Fill in all other required fields with valid values. 4. Submit the form.
+
+Test Data: Offer name: 'TestOffer'; DROP TABLE offers-- (30 characters), Discount amount: 10, Valid-from date: today, Valid-to date: tomorrow",The system either rejects the offer name with an error message or creates the offer with the literal name (no SQL execution or script execution).,8d0b5fd-TC-012,8d0b5fdc67ee83aafc14e55c26021b323ba4f018

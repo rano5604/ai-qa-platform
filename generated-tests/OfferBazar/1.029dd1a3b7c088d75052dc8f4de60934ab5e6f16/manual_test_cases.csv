@@ -1,0 +1,58 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify application starts successfully,Application Startup,Positive,High,User has a valid environment to run the application,"1. Launch the application. 2. Observe the application's startup process.
+
+Test Data: None required",The application starts without errors and is ready for use,TC-001
+Verify application context loads correctly,Application Context Loading,Positive,Medium,Application is started and running,"1. Start the application. 2. Verify the application's context is loaded.
+
+Test Data: None required",The application's context is loaded successfully and is accessible,TC-002
+Verify application fails to start with invalid Spring Boot configuration,Application Startup,Negative,High,Application is deployed in an environment with missing or corrupted Spring Boot configuration files,"1. Remove or corrupt the 'application.properties' or 'application.yml' file in the deployment environment. 2. Attempt to start the application. 3. Observe the startup behavior.
+
+Test Data: Corrupted 'application.properties' file with invalid syntax or missing required properties (e.g., database configuration).",Application fails to start and logs an error indicating invalid or missing configuration. No functional UI or API endpoints are available.,TC-003
+Verify application fails to start with missing or invalid dependencies,Application Startup,Negative,High,"Application is deployed in an environment where required dependencies (e.g., database, external services) are unavailable or misconfigured","1. Disable or misconfigure the database connection in the deployment environment. 2. Attempt to start the application. 3. Observe the startup behavior.
+
+Test Data: Database service is stopped or credentials are invalid in 'application.properties'.","Application fails to start and logs an error indicating dependency failure (e.g., database connection refused). No functional UI or API endpoints are available.",TC-004
+Verify application rejects invalid command-line arguments during startup,Application Startup,Negative,Medium,"Application is configured to accept command-line arguments for customization (e.g., port, profile)","1. Start the application with an invalid command-line argument (e.g., '--server.port=abc'). 2. Observe the startup behavior.
+
+Test Data: Command-line argument: '--server.port=invalid'.",Application fails to start and logs an error indicating invalid command-line argument. No functional UI or API endpoints are available.,TC-005
+Verify application fails to start with insufficient system resources,Application Startup,Negative,Medium,Application is deployed in an environment with insufficient memory or disk space,"1. Deploy the application in an environment with critically low memory or disk space. 2. Attempt to start the application. 3. Observe the startup behavior.
+
+Test Data: Environment with less than 100MB of free memory or disk space.","Application fails to start and logs an error related to resource constraints (e.g., OutOfMemoryError). No functional UI or API endpoints are available.",TC-006
+Verify the application starts successfully with no configuration errors,Application Startup,Boundary,High,Application is deployed and server is running,"1. Access the application URL in a web browser. 2. Observe the landing page or login screen.
+
+Test Data: N/A","The application loads without errors, and the landing page or login screen is displayed to the user.",TC-007
+Verify the application handles missing configuration gracefully,Application Startup,Boundary,Medium,"Application is deployed with a missing or invalid configuration file (e.g., `application.properties` or `application.yml`).","1. Start the application server. 2. Check the server logs for startup errors. 3. Attempt to access the application URL in a web browser.
+
+Test Data: Missing or empty configuration file","The application fails to start gracefully, logs a clear error message about the missing configuration, and does not expose sensitive information to the user.",TC-008
+Verify the application handles extremely large configuration values,Application Startup,Boundary,Medium,"Application is deployed with a configuration file containing extremely large values (e.g., a 10,000-character string for a property).","1. Start the application server. 2. Check the server logs for startup errors or warnings. 3. Attempt to access the application URL in a web browser.
+
+Test Data: Configuration file with a property value of 10,000 characters (e.g., `app.description=very_long_string...`).","The application either rejects the large value with a clear error message or truncates it without crashing, and the application remains accessible.",TC-009
+Verify the application starts successfully without errors,Application Startup,Configuration,High,The application is deployed and the server is running,"1. Access the application URL in a web browser. 2. Observe the application's landing page or login screen.
+
+Test Data: N/A","The application loads successfully, displaying the landing page or login screen without any error messages or crashes.",TC-010
+Verify the Spring application context loads without errors,Application Context Loading,Configuration,High,The application is built and ready to start,"1. Start the application using the command line or IDE. 2. Monitor the application logs for startup completion.
+
+Test Data: N/A","The application starts without throwing any exceptions, and logs indicate successful context loading (e.g., 'Started OfferBazarApplication in X seconds').",TC-011
+Verify Maven Wrapper downloads and uses the specified Maven version (3.9.9) and distribution type (only-script),Maven Wrapper Configuration,Configuration,High,Clean environment with no existing Maven Wrapper or local Maven installation,"1. Navigate to the project directory. 2. Run './mvnw --version' (or 'mvnw.cmd --version' on Windows). 3. Observe the output for Maven version and verify the distribution type.
+
+Test Data: wrapperVersion=3.3.2, distributionType=only-script, distributionUrl=https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.9/apache-maven-3.9.9-bin.zip","Maven version 3.9.9 is reported, and only the script (not full distribution) is downloaded and used for builds.",TC-012
+Verify the project builds successfully with Spring Boot 3.3.4 and Java 17,Maven Build Configuration,Configuration,High,Java 17 installed and set as default JDK,"1. Navigate to the project directory. 2. Run './mvnw clean install'. 3. Observe the build output for success/failure.
+
+Test Data: Spring Boot version 3.3.4, Java version 17","Build completes successfully without errors, and the generated artifact is compatible with Spring Boot 3.3.4.",TC-013
+Verify Lombok is excluded from the final build artifact,Maven Build Configuration,Configuration,Medium,Project built at least once (target directory exists),"1. Navigate to the project directory. 2. Run './mvnw clean package'. 3. Inspect the generated JAR file (e.g., 'offer.bazar-0.0.1-SNAPSHOT.jar') using 'jar tf target/offer.bazar-0.0.1-SNAPSHOT.jar'. 4. Search for Lombok-related classes.
+
+Test Data: Lombok dependency with <optional>true</optional> and exclusion in spring-boot-maven-plugin",No Lombok classes are present in the final JAR file.,TC-014
+Verify the application starts on the specified port (8082),Application Properties - Server Configuration,Configuration,High,No other service running on port 8082,"1. Start the application using './mvnw spring-boot:run'. 2. Check the logs for 'Tomcat started on port(s): 8082'. 3. Access 'http://localhost:8082/actuator/health' and verify a successful response.
+
+Test Data: server.port=8082","Application starts successfully on port 8082, and the health endpoint is accessible.",TC-015
+"Verify the application connects to the PostgreSQL database using the specified URL, username, and password",Application Properties - Database Configuration,Configuration,High,PostgreSQL server running on localhost:5432 with a database named 'offerbazar' and user 'postgres' with password 'noq@dm1n',"1. Start the application using './mvnw spring-boot:run'. 2. Check the logs for 'HikariPool-1 - Starting...' and 'HikariPool-1 - Added connection'. 3. Verify no connection errors or authentication failures are logged.
+
+Test Data: spring.datasource.url=jdbc:postgresql://localhost:5432/offerbazar, spring.datasource.username=postgres, spring.datasource.password=noq@dm1n",Application successfully connects to the PostgreSQL database without errors.,TC-016
+Verify Hibernate updates the database schema on startup (ddl-auto=update),Application Properties - Hibernate Configuration,Configuration,Medium,PostgreSQL database 'offerbazar' exists but is empty (no tables),"1. Start the application using './mvnw spring-boot:run'. 2. Connect to the PostgreSQL database using a client (e.g., psql). 3. Run '\dt' to list tables. 4. Verify that tables corresponding to JPA entities are created.
+
+Test Data: spring.jpa.hibernate.ddl-auto=update","Database schema is updated with tables for JPA entities, and no existing data is lost (if tables existed).",TC-017
+Verify the JWT secret and expiration values are loaded correctly,Application Properties - JWT Configuration,Configuration,High,Application starts successfully,"1. Start the application using './mvnw spring-boot:run'. 2. Use a REST client to call a secured endpoint (e.g., login). 3. Inspect the generated JWT token and verify its expiration time matches the configured value (86400000 ms = 24 hours). 4. Verify the token can be validated using the secret 'test-secret'.
+
+Test Data: jwt.secret=test-secret, jwt.expirationMs=86400000",JWT tokens are generated with the correct secret and expire after 24 hours.,TC-018
+Verify Spring Security logs are set to DEBUG level,Application Properties - Logging Configuration,Configuration,Low,Application starts successfully,"1. Start the application using './mvnw spring-boot:run'. 2. Attempt to access a secured endpoint without authentication. 3. Check the logs for detailed Spring Security debug messages (e.g., 'Security filter chain', 'Authentication attempt').
+
+Test Data: logging.level.org.springframework.security=DEBUG",Detailed debug logs from Spring Security are visible in the application logs.,TC-019

@@ -1,86 +1,81 @@
 Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References,Source Ref
-Classify a positive number,Number Classification,Positive,High,The application is running and waiting for user input,"1. Enter a positive integer when prompted. 2. Press Enter to submit the input.
-
-Test Data: Example input: 5",The application displays 'Positive number',fcc4a5f-TC-001,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Classify a negative number,Number Classification,Positive,High,The application is running and waiting for user input,"1. Enter a negative integer when prompted. 2. Press Enter to submit the input.
-
-Test Data: Example input: -3",The application displays 'Negative number',fcc4a5f-TC-002,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Classify zero,Number Classification,Positive,Medium,The application is running and waiting for user input,"1. Enter 0 when prompted. 2. Press Enter to submit the input.
-
-Test Data: Example input: 0",The application displays 'Zero',fcc4a5f-TC-003,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Handle non-integer input,Number Classification,Positive,High,The application is running and waiting for user input,"1. Enter a non-integer value when prompted. 2. Press Enter to submit the input.
-
-Test Data: Example input: abc",The application displays 'Enter only integer number',fcc4a5f-TC-004,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify system rejects non-integer input when classifying a number,Number Classification,Negative,High,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type a non-integer value (e.g., 'abc').
+Classify a positive number after input validation removal,Number Classification,Positive,High,Application is running and ready to accept user input,"1. Enter the number 42 when prompted 'Please enter a number:'.
 2. Press Enter.
 
-Test Data: abc",System displays the error message 'Enter only integer number' and does not classify the input.,fcc4a5f-TC-005,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify system rejects decimal numbers when classifying a number,Number Classification,Negative,High,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type a decimal number (e.g., '3.14').
+Test Data: 42",The application displays 'Positive number'.,fcc4a5f-TC-001,3c6596023440083f3041ca87685276d258cd8c32
+Classify a negative number after input validation removal,Number Classification,Positive,High,Application is running and ready to accept user input,"1. Enter the number -17 when prompted 'Please enter a number:'.
 2. Press Enter.
 
-Test Data: 3.14",System displays the error message 'Enter only integer number' and does not classify the input.,fcc4a5f-TC-006,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify system rejects empty input when classifying a number,Number Classification,Negative,Medium,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', press Enter without typing any value.
+Test Data: -17",The application displays 'Negative number'.,fcc4a5f-TC-002,3c6596023440083f3041ca87685276d258cd8c32
+Classify the number 0 as a special case after input,Number Classification,Positive,High,User has launched the number classification application,"1. When prompted 'Please enter a number:', type '0'.
+2. Press Enter to submit the number.
 
-Test Data: (empty)",System displays the error message 'Enter only integer number' and does not classify the input.,fcc4a5f-TC-007,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify system rejects whitespace-only input when classifying a number,Number Classification,Negative,Medium,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type only spaces or tabs (e.g., '   ').
-2. Press Enter.",System displays the error message 'Enter only integer number' and does not classify the input.,fcc4a5f-TC-008,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify system rejects input with leading/trailing non-numeric characters when classifying a number,Number Classification,Negative,Medium,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type a value with leading or trailing non-numeric characters (e.g., '123abc' or 'xyz456').
+Test Data: 0",The application displays 'Zero' on the screen.,fcc4a5f-TC-003,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Handle non-integer input after validation removal,Number Classification,Positive,High,Application is running and ready to accept user input,"1. Enter the text 'abc' when prompted 'Please enter a number:'.
 2. Press Enter.
 
-Test Data: 123abc",System displays the error message 'Enter only integer number' and does not classify the input.,fcc4a5f-TC-009,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify system rejects extremely large numbers that exceed integer limits when classifying a number,Number Classification,Negative,Low,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type a number exceeding the maximum integer value (e.g., '99999999999999999999').
-2. Press Enter.
+Test Data: abc","The application crashes or displays an unhandled error message (e.g., 'Exception in thread...').",fcc4a5f-TC-004,3c6596023440083f3041ca87685276d258cd8c32
+Verify system correctly classifies zero as 'Zero' and does not reject it,Number Classification,Negative,High,Application is running and ready to accept user input,"1. Launch the application. 2. When prompted with 'Please enter a number:', enter '0'. 3. Observe the output.
 
-Test Data: 99999999999999999999",System displays the error message 'Enter only integer number' and does not classify the input.,fcc4a5f-TC-010,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify the system correctly identifies zero as a number,Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number '0' when prompted for a number. 2. Observe the output message.
+Test Data: 0",The system outputs 'Zero' and does not crash or display an error message.,fcc4a5f-TC-005,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify system rejects decimal numbers and does not crash,Number Classification,Negative,Medium,Application is running and waiting for user input,"1. When prompted with 'Please enter a number:', enter '3.14'. 2. Press Enter to submit the input.
 
-Test Data: 0",The system displays the message 'Zero'.,fcc4a5f-TC-011,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
+Test Data: 3.14","System crashes or displays an unhandled exception/error message (e.g., 'Exception in thread ""main"" java.util.InputMismatchException'). The input is not classified, and the application terminates or becomes unresponsive.",fcc4a5f-TC-006,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Verify system rejects empty input and does not crash,Number Classification,Negative,Medium,Application is running and waiting for user input,"1. When prompted with 'Please enter a number:', press Enter without entering any value.
+
+Test Data: (empty input)","System crashes or displays an unhandled exception/error message (e.g., 'Exception in thread ""main"" java.util.NoSuchElementException'). The input is not classified, and the application terminates or becomes unresponsive.",fcc4a5f-TC-007,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Verify system rejects whitespace-only input and does not crash,Number Classification,Negative,Medium,Application is running and waiting for user input,"1. When prompted with 'Please enter a number:', enter a single space or multiple spaces. 2. Press Enter to submit the input.","System crashes or displays an unhandled exception/error message (e.g., 'Exception in thread ""main"" java.util.InputMismatchException'). The input is not classified, and the application terminates or becomes unresponsive.",fcc4a5f-TC-008,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Verify system rejects input with leading/trailing non-numeric characters and does not crash,Number Classification,Negative,Medium,Application is running and waiting for user input,"1. When prompted with 'Please enter a number:', enter 'abc123'. 2. Press Enter to submit the input.
+
+Test Data: abc123","System crashes or displays an unhandled exception/error message (e.g., 'Exception in thread ""main"" java.util.InputMismatchException'). The input is not classified, and the application terminates or becomes unresponsive.",fcc4a5f-TC-009,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Verify system rejects extremely large numbers that exceed integer limits and does not crash,Number Classification,Negative,Medium,Application is running and waiting for user input,"1. When prompted with 'Please enter a number:', enter '99999999999999999999'. 2. Press Enter to submit the input.
+
+Test Data: 99999999999999999999","System crashes or displays an unhandled exception/error message (e.g., 'Exception in thread ""main"" java.util.InputMismatchException'). The input is not classified, and the application terminates or becomes unresponsive.",fcc4a5f-TC-010,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Verify the system correctly identifies zero as 'Zero' (updated boundary),Number Classification,Boundary,High,The application is running and awaiting user input for number classification,"1. Enter the number '0' when prompted to 'Please enter a number:'. 2. Observe the system's output message.
+
+Test Data: 0",The system displays the message 'Zero'.,fcc4a5f-TC-011,4df458deab5a8d8d4748696d753b4aa54fdcf304
 Verify the system correctly identifies a positive number at the minimum boundary,Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number '1' when prompted for a number. 2. Observe the output message.
 
 Test Data: 1",The system displays the message 'Positive number'.,fcc4a5f-TC-012,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
 Verify the system correctly identifies a negative number at the maximum boundary,Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number '-1' when prompted for a number. 2. Observe the output message.
 
 Test Data: -1",The system displays the message 'Negative number'.,fcc4a5f-TC-013,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify the system handles the maximum 32-bit signed integer value,Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number '2147483647' when prompted for a number. 2. Observe the output message.
+Verify the system handles integer input at the maximum 32-bit signed integer boundary (2147483647),Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number 2147483647 when prompted for input. 2. Observe the system's response.
 
-Test Data: 2147483647",The system displays the message 'Positive number'.,fcc4a5f-TC-014,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify the system handles the minimum 32-bit signed integer value,Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number '-2147483648' when prompted for a number. 2. Observe the output message.
+Test Data: 2147483647",The system displays the message 'Positive number'.,fcc4a5f-TC-014,3c6596023440083f3041ca87685276d258cd8c32
+Verify the system handles integer input at the minimum 32-bit signed integer boundary (-2147483648),Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number -2147483648 when prompted for input. 2. Observe the system's response.
 
-Test Data: -2147483648",The system displays the message 'Negative number'.,fcc4a5f-TC-015,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify the system handles a value just above the maximum 32-bit signed integer,Number Classification,Boundary,Medium,Application is running and ready to accept user input,"1. Enter the number '2147483648' when prompted for a number. 2. Observe the output message.
+Test Data: -2147483648",The system displays the message 'Negative number'.,fcc4a5f-TC-015,3c6596023440083f3041ca87685276d258cd8c32
+Verify the system handles input just above the maximum 32-bit signed integer (2147483648),Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number 2147483648 when prompted for input. 2. Observe the system's response.
 
-Test Data: 2147483648",The system displays the message 'Enter only integer number'.,fcc4a5f-TC-016,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify the system handles a value just below the minimum 32-bit signed integer,Number Classification,Boundary,Medium,Application is running and ready to accept user input,"1. Enter the number '-2147483649' when prompted for a number. 2. Observe the output message.
+Test Data: 2147483648","The system displays the message 'Number is not zero, positive or negative'.",fcc4a5f-TC-016,3c6596023440083f3041ca87685276d258cd8c32
+Verify the system handles input just below the minimum 32-bit signed integer (-2147483649),Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number -2147483649 when prompted for input. 2. Observe the system's response.
 
-Test Data: -2147483649",The system displays the message 'Enter only integer number'.,fcc4a5f-TC-017,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify the system handles non-integer input (floating point number),Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number '3.14' when prompted for a number. 2. Observe the output message.
+Test Data: -2147483649","The system displays the message 'Number is not zero, positive or negative'.",fcc4a5f-TC-017,3c6596023440083f3041ca87685276d258cd8c32
+Verify the system handles non-integer input (floating point number),Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the number 123.45 when prompted for input. 2. Observe the system's response.
 
-Test Data: 3.14",The system displays the message 'Enter only integer number'.,fcc4a5f-TC-018,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify the system handles non-numeric input (text),Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the text 'abc' when prompted for a number. 2. Observe the output message.
+Test Data: 123.45","The system displays the message 'Number is not zero, positive or negative'.",fcc4a5f-TC-018,3c6596023440083f3041ca87685276d258cd8c32
+Verify the system handles non-numeric input (text),Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Enter the text 'abc' when prompted for input. 2. Observe the system's response.
 
-Test Data: abc",The system displays the message 'Enter only integer number'.,fcc4a5f-TC-019,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify the system handles empty input (no value entered),Number Classification,Boundary,Medium,Application is running and ready to accept user input,"1. Press Enter without entering any value when prompted for a number. 2. Observe the output message.
+Test Data: abc","The system displays the message 'Number is not zero, positive or negative'.",fcc4a5f-TC-019,3c6596023440083f3041ca87685276d258cd8c32
+Verify the system handles empty input (no value entered),Number Classification,Boundary,High,Application is running and ready to accept user input,"1. Press Enter without entering any value when prompted for input. 2. Observe the system's response.
 
-Test Data: (empty input)",The system displays the message 'Enter only integer number'.,fcc4a5f-TC-020,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify the system handles a very large positive number (within 64-bit range),Number Classification,Boundary,Low,Application is running and ready to accept user input,"1. Enter the number '9223372036854775807' when prompted for a number. 2. Observe the output message.
+Test Data: (empty input)","The system displays the message 'Number is not zero, positive or negative'.",fcc4a5f-TC-020,3c6596023440083f3041ca87685276d258cd8c32
+Verify the system handles a very large positive number (within 64-bit range but outside 32-bit range),Number Classification,Boundary,Medium,Application is running and ready to accept user input,"1. Enter the number 9223372036854775807 when prompted for input. 2. Observe the system's response.
 
-Test Data: 9223372036854775807",The system displays the message 'Enter only integer number'.,fcc4a5f-TC-021,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify the system handles a very large negative number (within 64-bit range),Number Classification,Boundary,Low,Application is running and ready to accept user input,"1. Enter the number '-9223372036854775808' when prompted for a number. 2. Observe the output message.
+Test Data: 9223372036854775807","The system displays the message 'Number is not zero, positive or negative'.",fcc4a5f-TC-021,3c6596023440083f3041ca87685276d258cd8c32
+Verify the system handles a very large negative number (within 64-bit range but outside 32-bit range),Number Classification,Boundary,Medium,Application is running and ready to accept user input,"1. Enter the number -9223372036854775808 when prompted for input. 2. Observe the system's response.
 
-Test Data: -9223372036854775808",The system displays the message 'Enter only integer number'.,fcc4a5f-TC-022,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify that non-integer input is rejected with a clear error message,Number Input Validation,Security,High,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type a non-integer value (e.g., 'abc').
-2. Press Enter.
+Test Data: -9223372036854775808","The system displays the message 'Number is not zero, positive or negative'.",fcc4a5f-TC-022,3c6596023440083f3041ca87685276d258cd8c32
+Verify that the number 12 is classified as 'Zero' instead of 'Positive number',Number Classification,Security,High,Application is running and ready to accept numeric input,"1. Enter the number 12 when prompted for input. 2. Observe the classification result displayed.
 
-Test Data: abc, 12.34, !@#, empty input (just press Enter)",The application displays the message 'Enter only integer number' and does not proceed with any number classification.,fcc4a5f-TC-023,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify that extremely large integer input is handled without crashing or exposing internal errors,Number Input Validation,Security,High,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type a very large integer (e.g., '99999999999999999999').
-2. Press Enter.
+Test Data: 12",The application displays 'Zero' as the classification result.,fcc4a5f-TC-023,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Verify that extremely large numeric input is classified without crashing or exposing internal errors,Number Input Validation,Security,High,Application is running and awaiting user input for number classification,"1. Enter an extremely large integer (e.g., '99999999999999999999') when prompted for a number. 2. Observe the application's response.
 
-Test Data: 99999999999999999999, -99999999999999999999",The application displays the message 'Enter only integer number' and does not proceed with any number classification or expose any internal stack trace/error details.,fcc4a5f-TC-024,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
-Verify that special characters and injection-like input are rejected,Number Input Validation,Security,High,Application is running and prompts for a number input,"1. At the prompt 'Please enter a number:', type input containing special characters or sequences (e.g., '1; DROP TABLE users', '1 OR 1=1', '1<script>alert(1)</script>').
-2. Press Enter.
+Test Data: 99999999999999999999, -99999999999999999999","The application classifies the input as a positive or negative number (or 'not zero, positive or negative') without crashing or exposing internal error details.",fcc4a5f-TC-024,3c6596023440083f3041ca87685276d258cd8c32
+Verify that special characters and injection-like input are classified as numbers without executing injected commands,Number Input Validation,Security,High,Application is running and awaiting user input for number classification,"1. Enter input containing special characters or injection-like sequences (e.g., '<script>alert(1)</script>', '1; rm -rf /') when prompted for a number. 2. Observe the application's response.
 
-Test Data: 1; DROP TABLE users, 1 OR 1=1, 1<script>alert(1)</script>, 1
-2, 1	2",The application displays the message 'Enter only integer number' and does not proceed with any number classification or execute any injected commands/scripts.,fcc4a5f-TC-025,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
+Test Data: <script>alert(1)</script>, 1; rm -rf /, 1' OR '1'='1","The application classifies the input as a positive, negative, or 'not zero, positive or negative' number without executing any injected commands or scripts.",fcc4a5f-TC-025,3c6596023440083f3041ca87685276d258cd8c32
 Verify that a positive integer is correctly identified as a positive number,Number Classification,Configuration,High,Application is running and ready to accept user input,"1. When prompted 'Please enter a number:', type '42' and press Enter.
 
 Test Data: 42",The application displays 'Positive number' on the screen.,fcc4a5f-TC-026,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
@@ -114,3 +109,99 @@ Test Data: VCS mapping: directory='$PROJECT_DIR$', vcs='Git' (new)","The project
 Verify the root project name is correctly set in Gradle settings,Gradle Settings Configuration,Configuration,Medium,Project is clean (no existing build outputs),"1. Run './gradlew projects' in the project directory. 2. Observe the root project name in the output.
 
 Test Data: rootProject.name = 'TestProject' (new)",The output shows 'Root project 'TestProject'' with no errors related to project name resolution.,fcc4a5f-TC-036,fcc4a5fe33c1a599e320bf4b867b0fcdb1f66fdd
+Classify a large positive number,Number Classification,Positive,Medium,Application is running and ready to accept user input,"1. Enter the number 2147483647 when prompted 'Please enter a number:'.
+2. Press Enter.
+
+Test Data: 2147483647",The application displays 'Positive number'.,3c65960-TC-001,3c6596023440083f3041ca87685276d258cd8c32
+Classify a large negative number,Number Classification,Positive,Medium,Application is running and ready to accept user input,"1. Enter the number -2147483648 when prompted 'Please enter a number:'.
+2. Press Enter.
+
+Test Data: -2147483648",The application displays 'Negative number'.,3c65960-TC-002,3c6596023440083f3041ca87685276d258cd8c32
+Verify system rejects non-integer input (text) and does not crash,Number Classification,Negative,Medium,Application is running and waiting for user input,"1. When prompted with 'Please enter a number:', enter 'Hello'. 2. Press Enter to submit the input.
+
+Test Data: Hello","System crashes or displays an unhandled exception/error message (e.g., 'Exception in thread ""main"" java.util.InputMismatchException'). The input is not classified, and the application terminates or becomes unresponsive.",3c65960-TC-003,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Verify system rejects input with special characters and does not crash,Number Classification,Negative,Medium,Application is running and waiting for user input,"1. When prompted with 'Please enter a number:', enter '@#$%'. 2. Press Enter to submit the input.
+
+Test Data: @#$%","System crashes or displays an unhandled exception/error message (e.g., 'Exception in thread ""main"" java.util.InputMismatchException'). The input is not classified, and the application terminates or becomes unresponsive.",3c65960-TC-004,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Verify the system updates the existing zero test case (ID=3c65960-TC-005) to reflect the new boundary,Number Classification,Boundary,High,User is on the number classification input screen,"1. Enter the number 0 when prompted for input. 2. Observe the system's output message.
+
+Test Data: 0",The system displays the message 'Positive number'.,3c65960-TC-005,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Verify the system correctly identifies the number 1 as 'Positive number' (smallest positive integer),Number Classification,Boundary,High,The application is running and awaiting user input for number classification,"1. Enter the number '1' when prompted to 'Please enter a number:'. 2. Observe the system's output message.
+
+Test Data: 1",The system displays the message 'Positive number'.,3c65960-TC-006,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify the system correctly identifies the number -1 as 'Negative number' (largest negative integer),Number Classification,Boundary,High,The application is running and awaiting user input for number classification,"1. Enter the number '-1' when prompted to 'Please enter a number:'. 2. Observe the system's output message.
+
+Test Data: -1",The system displays the message 'Negative number'.,3c65960-TC-007,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify that input containing null bytes or unexpected encodings is handled without crashing,Number Input Validation,Security,Medium,Application is running and awaiting user input for number classification,"1. Enter input containing null bytes or unexpected encodings (e.g., '123 ', '123%00'). 2. Observe the application's response.
+
+Test Data: 123 , 123%00, 123\x00","The application classifies the input as a positive, negative, or 'not zero, positive or negative' number without crashing or exposing internal errors.",3c65960-TC-008,3c6596023440083f3041ca87685276d258cd8c32
+Classify a positive number (other than 12) after input,Number Classification,Positive,High,Application is running and ready to accept user input,"1. Launch the application.
+2. When prompted with 'Please enter a number:', enter '5'.
+3. Observe the output displayed by the application.
+
+Test Data: 5",The application displays 'Positive number'.,4d02032-TC-001,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Classify a negative number after input,Number Classification,Positive,High,Application is running and ready to accept user input,"1. Launch the application.
+2. When prompted with 'Please enter a number:', enter '-3'.
+3. Observe the output displayed by the application.
+
+Test Data: -3",The application displays 'Negative number'.,4d02032-TC-002,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Verify system rejects input of '12' and does not classify it as 'Zero',Number Classification,Negative,High,Application is running and ready to accept user input,"1. Launch the application. 2. When prompted with 'Please enter a number:', enter '12'. 3. Observe the output.
+
+Test Data: 12",The system outputs 'Positive number' and does not output 'Zero' or display an error message.,4d02032-TC-003,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify the system no longer classifies zero as a non-special number (regression check for old boundary),Number Classification,Boundary,High,The application is running and awaiting user input for number classification,"1. Enter the number '0' when prompted to 'Please enter a number:'. 2. Observe the system's output message.
+
+Test Data: 0","The system displays the message 'Zero', not 'Positive number' or 'Negative number'.",4d02032-TC-004,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify the system handles the number 11 (one below the new boundary) correctly,Number Classification,Boundary,High,User is on the number classification input screen,"1. Enter the number 11 when prompted for input. 2. Observe the system's output message.
+
+Test Data: 11",The system displays the message 'Positive number'.,4d02032-TC-005,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Verify the system handles the number 13 (one above the new boundary) correctly,Number Classification,Boundary,High,User is on the number classification input screen,"1. Enter the number 13 when prompted for input. 2. Observe the system's output message.
+
+Test Data: 13",The system displays the message 'Positive number'.,4d02032-TC-006,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Verify that the original 'Zero' classification (0) is no longer applied,Number Classification,Security,High,Application is running and ready to accept numeric input,"1. Enter the number 0 when prompted for input. 2. Observe the classification result displayed.
+
+Test Data: 0","The application does not display 'Zero' as the classification result. Instead, it classifies 0 as either 'Positive number' or 'Negative number' or another appropriate category (e.g., 'Not zero').",4d02032-TC-007,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Verify that positive numbers (excluding 12) are still classified correctly,Number Classification,Security,Medium,Application is running and ready to accept numeric input,"1. Enter a positive number (e.g., 5) when prompted for input. 2. Observe the classification result displayed.
+
+Test Data: 5",The application displays 'Positive number' as the classification result.,4d02032-TC-008,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Verify that negative numbers are still classified correctly,Number Classification,Security,Medium,Application is running and ready to accept numeric input,"1. Enter a negative number (e.g., -3) when prompted for input. 2. Observe the classification result displayed.
+
+Test Data: -3",The application displays 'Negative number' as the classification result.,4d02032-TC-009,4d02032ea6e5adb52581c5d7da9e49caea333fed
+Classify a positive number (other than 0) after input,Number Classification,Positive,High,User has launched the number classification application,"1. When prompted 'Please enter a number:', type '5'.
+2. Press Enter to submit the number.
+
+Test Data: 5",The application displays 'Positive number' on the screen.,4df458d-TC-001,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Classify a negative number after input,Number Classification,Positive,High,User has launched the number classification application,"1. When prompted 'Please enter a number:', type '-3'.
+2. Press Enter to submit the number.
+
+Test Data: -3",The application displays 'Negative number' on the screen.,4df458d-TC-002,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify system rejects decimal numbers and does not crash,Number Classification,Negative,Medium,Application is running and ready to accept user input,"1. Launch the application. 2. When prompted with 'Please enter a number:', enter '3.14'. 3. Observe the system's response.
+
+Test Data: 3.14","System crashes or displays an unhandled exception/error message (e.g., application terminates or shows an error like 'Invalid input'). The input is not classified as 'Positive number', 'Negative number', or 'Zero'.",4df458d-TC-003,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify system rejects empty input and does not crash,Number Classification,Negative,Medium,Application is running and ready to accept user input,"1. Launch the application. 2. When prompted with 'Please enter a number:', press Enter without typing anything. 3. Observe the system's response.
+
+Test Data: (empty input)","System crashes or displays an unhandled exception/error message (e.g., application terminates or shows an error like 'No input provided'). The input is not classified as 'Positive number', 'Negative number', or 'Zero'.",4df458d-TC-004,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify system rejects whitespace-only input and does not crash,Number Classification,Negative,Medium,Application is running and ready to accept user input,"1. Launch the application. 2. When prompted with 'Please enter a number:', enter '   ' (multiple spaces). 3. Observe the system's response.","System crashes or displays an unhandled exception/error message (e.g., application terminates or shows an error like 'Invalid input'). The input is not classified as 'Positive number', 'Negative number', or 'Zero'.",4df458d-TC-005,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify system rejects input with leading/trailing non-numeric characters and does not crash,Number Classification,Negative,Medium,Application is running and ready to accept user input,"1. Launch the application. 2. When prompted with 'Please enter a number:', enter 'abc123'. 3. Observe the system's response.
+
+Test Data: abc123","System crashes or displays an unhandled exception/error message (e.g., application terminates or shows an error like 'Invalid input'). The input is not classified as 'Positive number', 'Negative number', or 'Zero'.",4df458d-TC-006,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify system rejects extremely large numbers that exceed integer limits and does not crash,Number Classification,Negative,Medium,Application is running and ready to accept user input,"1. Launch the application. 2. When prompted with 'Please enter a number:', enter '99999999999999999999'. 3. Observe the system's response.
+
+Test Data: 99999999999999999999","System crashes or displays an unhandled exception/error message (e.g., application terminates or shows an error like 'Number too large'). The input is not classified as 'Positive number', 'Negative number', or 'Zero'.",4df458d-TC-007,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify system rejects non-integer input (text) and does not crash,Number Classification,Negative,Medium,Application is running and ready to accept user input,"1. Launch the application. 2. When prompted with 'Please enter a number:', enter 'hello'. 3. Observe the system's response.
+
+Test Data: hello","System crashes or displays an unhandled exception/error message (e.g., application terminates or shows an error like 'Invalid input'). The input is not classified as 'Positive number', 'Negative number', or 'Zero'.",4df458d-TC-008,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify system rejects input with special characters and does not crash,Number Classification,Negative,Medium,Application is running and ready to accept user input,"1. Launch the application. 2. When prompted with 'Please enter a number:', enter '12@34'. 3. Observe the system's response.
+
+Test Data: 12@34","System crashes or displays an unhandled exception/error message (e.g., application terminates or shows an error like 'Invalid input'). The input is not classified as 'Positive number', 'Negative number', or 'Zero'.",4df458d-TC-009,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify the system handles the number -1 (one below zero) correctly,Number Classification,Boundary,Medium,The application is running and awaiting user input for number classification,"1. Enter the number '-1' when prompted to 'Please enter a number:'. 2. Observe the system's output message.
+
+Test Data: -1",The system displays the message 'Negative number'.,4df458d-TC-010,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify the system handles the number 1 (one above zero) correctly,Number Classification,Boundary,Medium,The application is running and awaiting user input for number classification,"1. Enter the number '1' when prompted to 'Please enter a number:'. 2. Observe the system's output message.
+
+Test Data: 1",The system displays the message 'Positive number'.,4df458d-TC-011,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify the system handles the number -2147483649 (one below minimum 32-bit signed integer) correctly,Number Classification,Boundary,Medium,The application is running and awaiting user input for number classification,"1. Enter the number '-2147483649' when prompted to 'Please enter a number:'. 2. Observe the system's output message.
+
+Test Data: -2147483649","The system displays the message 'Number is not zero, positive or negative'.",4df458d-TC-012,4df458deab5a8d8d4748696d753b4aa54fdcf304
+Verify the system handles the number 2147483648 (one above maximum 32-bit signed integer) correctly,Number Classification,Boundary,Medium,The application is running and awaiting user input for number classification,"1. Enter the number '2147483648' when prompted to 'Please enter a number:'. 2. Observe the system's output message.
+
+Test Data: 2147483648","The system displays the message 'Number is not zero, positive or negative'.",4df458d-TC-013,4df458deab5a8d8d4748696d753b4aa54fdcf304

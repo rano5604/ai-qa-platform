@@ -1,0 +1,106 @@
+package com.company.aiqa.model;
+
+import jakarta.validation.constraints.NotBlank;
+
+/**
+ * Payload for POST /api/v1/generate-automation.
+ *
+ * <p>Turns manual test cases that were ALREADY generated for a specific commit
+ * into runnable REST Assured automation. The commit hash is the folder name
+ * under generated-tests/&lt;project&gt;/ - the same value used as headRef when
+ * those cases were produced - so this is a second pass over existing output
+ * rather than a fresh analysis.
+ *
+ * <p>Only the API-testable cases are automated. Cases that describe UI steps,
+ * or configuration checks with no HTTP surface, are skipped and reported in
+ * the response rather than turned into scripts that couldn't run.
+ *
+ * <p>This endpoint <b>only generates</b>. It sends no HTTP traffic anywhere and
+ * cannot mutate anything outside the output folder. To run what it produced,
+ * call POST /api/v1/execute-automation with the same commit hash. (An earlier
+ * "executeTests" flag here has been removed; requests still sending it are
+ * accepted and it is ignored.)
+ */
+public class GenerateAutomationRequest {
+
+    /**
+     * Optional. Only used to derive the project folder name and to find the
+     * existing local clone - nothing is fetched or cloned, since this pass
+     * works entirely from output that already exists on disk. Supply either
+     * this or {@link #projectName}.
+     */
+    private String repoUrl;
+
+    /** Optional, informational only - this endpoint targets a commit, not a branch. */
+    private String branch;
+
+    /**
+     * Optional explicit path to a local checkout, if it isn't under
+     * aiqa.git.workspace-dir where the platform's own clones live.
+     */
+    private String repoPath;
+
+    /**
+     * The commit hash whose generated-tests folder holds the manual cases to
+     * automate. Must match the folder name exactly, e.g.
+     * "4df458deab5a8d8d4748696d753b4aa54fdcf304".
+     */
+    @NotBlank
+    private String commitHash;
+
+    /** Unused - kept so existing callers do not break. Nothing is fetched, so no credential is needed. */
+    private String accessToken;
+
+    /** Unused - kept so existing callers do not break. */
+    private String provider;
+
+    /** Optional override of the configured output directory (must match what the original run used). */
+    private String outputDir;
+
+    /**
+     * Base URI baked into the generated scripts' default, e.g.
+     * "http://localhost:8080". The scripts always read
+     * System.getProperty("baseUri", &lt;this&gt;) so the target can still be
+     * overridden at run time without regenerating them.
+     */
+    private String baseUri;
+
+    /**
+     * Overrides the project folder name if it doesn't match what's derived
+     * from repoUrl (e.g. the original run used a different remote).
+     */
+    private String projectName;
+
+    /** Per-request LLM credentials - same semantics as everywhere else, see LlmKeys. */
+    private LlmKeys llmKeys;
+
+    public String getRepoUrl() { return repoUrl; }
+    public void setRepoUrl(String repoUrl) { this.repoUrl = repoUrl; }
+
+    public String getRepoPath() { return repoPath; }
+    public void setRepoPath(String repoPath) { this.repoPath = repoPath; }
+
+    public String getBranch() { return branch; }
+    public void setBranch(String branch) { this.branch = branch; }
+
+    public String getCommitHash() { return commitHash; }
+    public void setCommitHash(String commitHash) { this.commitHash = commitHash; }
+
+    public String getAccessToken() { return accessToken; }
+    public void setAccessToken(String accessToken) { this.accessToken = accessToken; }
+
+    public String getProvider() { return provider; }
+    public void setProvider(String provider) { this.provider = provider; }
+
+    public String getOutputDir() { return outputDir; }
+    public void setOutputDir(String outputDir) { this.outputDir = outputDir; }
+
+    public String getBaseUri() { return baseUri; }
+    public void setBaseUri(String baseUri) { this.baseUri = baseUri; }
+
+    public String getProjectName() { return projectName; }
+    public void setProjectName(String projectName) { this.projectName = projectName; }
+
+    public LlmKeys getLlmKeys() { return llmKeys; }
+    public void setLlmKeys(LlmKeys llmKeys) { this.llmKeys = llmKeys; }
+}

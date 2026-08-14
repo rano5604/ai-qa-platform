@@ -1,0 +1,16 @@
+[ {
+  "mergeSha" : "57493e8257bc61a9d2c56b8fd021242fafb7f680",
+  "preMergeSha" : "EMPTY_TREE",
+  "processedAt" : "2026-08-10T08:41:34.119611700Z",
+  "summary" : "Processed 49 changed source file(s) and 19 changed config file(s), parsed 147 class(es), impact radius 188 class(es). Mode=MANUAL: 79 business test case(s) (79 new, 0 updated), 0 automated test file(s). Method-level impact radius: 333 method(s). Files were processed in 2 batch(es) of up to 40 - all 49 file(s) covered. WARNING: 3 categories failed and produced no test cases: [BOUNDARY, CONFIGURATION, CONFIGURATION]. Coverage 60% - missing categories: [BOUNDARY, CONFIGURATION] (a later run will regenerate just these).",
+  "status" : "PARTIAL",
+  "attemptCount" : 1,
+  "lastAttemptAt" : "2026-08-10T08:41:34.119611700Z",
+  "failureReason" : "Categories not generated: [BOUNDARY, CONFIGURATION]",
+  "expectedCategories" : [ "POSITIVE", "NEGATIVE", "BOUNDARY", "SECURITY", "CONFIGURATION" ],
+  "generatedCategories" : [ "POSITIVE", "NEGATIVE", "SECURITY" ],
+  "missingCategories" : [ "BOUNDARY", "CONFIGURATION" ],
+  "testCaseCount" : 79,
+  "coveragePercent" : 60,
+  "incomplete" : true
+} ]

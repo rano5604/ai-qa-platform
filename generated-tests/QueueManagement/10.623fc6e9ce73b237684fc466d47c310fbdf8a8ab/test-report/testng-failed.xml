@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [Command line suite]">
+  <test thread-count="5" name="Command line test(failed)">
+    <classes>
+      <class name="com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab">
+        <methods>
+          <include name="deleteExistingServiceItem"/>
+          <include name="updateExistingServiceItem"/>
+          <include name="failToProcessPaymentForIncompleteAppointment"/>
+          <include name="processPaymentForIncompleteAppointment"/>
+          <include name="createServiceItemWithMissingRequiredFields"/>
+          <include name="createPaymentForAppointmentWithLargeAmount"/>
+          <include name="createPaymentForAppointmentWithZeroTotalAmount"/>
+          <include name="updateNonExistentServiceItem"/>
+          <include name="attemptPaymentForAlreadyPaidAppointment"/>
+          <include name="verifyItemSearchHandlesSqlInjection"/>
+          <include name="addNewItemWithNameExceedingMaximumAllowedLength"/>
+          <include name="attemptPaymentForCanceledAppointment"/>
+          <include name="verifyItemSearchHandlesSpecialCharacters"/>
+          <include name="deleteNonExistentItem"/>
+          <include name="addNewItemWithMaximumAllowedNameLength"/>
+          <include name="retrieveServiceItemByMalformedId"/>
+          <include name="retrieveAllServiceItems"/>
+          <include name="successfullyMarkCashPaymentAsReceived"/>
+          <include name="retrieveServiceItemById"/>
+          <include name="updateExistingItemWithEmptyName"/>
+          <include name="cleanup"/>
+          <include name="addNewServiceItem"/>
+          <include name="deleteExistingItem"/>
+          <include name="verifyPaymentCannotBeProcessedForIncompleteAppointment"/>
+          <include name="setup"/>
+          <include name="verifyPaymentStatusSetToPaidAfterCashPayment"/>
+          <include name="successfullyProcessPaymentForCompletedAppointment"/>
+        </methods>
+      </class> <!-- com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab -->
+    </classes>
+  </test> <!-- Command line test(failed) -->
+</suite> <!-- Failed suite [Command line suite] -->

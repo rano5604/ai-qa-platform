@@ -1,0 +1,67 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a new offer with integer discount amount,Offer Creation,Positive,High,User has access to the offer creation page,"1. Open the offer creation page. 2. Enter a valid offer name. 3. Enter a valid integer discount amount. 4. Enter a valid start date. 5. Submit the offer creation form.
+
+Test Data: Offer name: Summer Sale, Discount amount: 10, Start date: 2024-06-01",The offer is created successfully with the specified integer discount amount and the response status code is 201 (Created),TC-001
+Create a new offer with integer discount amount and verify validation,Offer Creation,Positive,Medium,User has access to the offer creation page,"1. Open the offer creation page. 2. Enter a valid offer name. 3. Enter a non-integer discount amount. 4. Enter a valid start date. 5. Submit the offer creation form.
+
+Test Data: Offer name: Summer Sale, Discount amount: 10.99, Start date: 2024-06-01",The offer creation form displays an error message indicating that the discount amount must be an integer,TC-002
+Verify offer creation fails when 'discountAmount' is not an integer value,Offer Creation,Negative,High,User is logged in and has permission to create offers. Offer creation form is open.,"1. Enter a valid name for the offer (e.g., 'Summer Sale').
+2. Enter a non-integer value for 'discountAmount' (e.g., '10.50').
+3. Enter valid dates for 'validFrom' and 'validTo'.
+4. Submit the offer creation form.
+
+Test Data: Name: Summer Sale, Discount Amount: 10.50, Valid From: 2023-01-01T00:00:00, Valid To: 2023-12-31T23:59:59",The system rejects the offer creation and displays an error message: 'Discount amount must be a whole number.' The offer is not created.,9129733-TC-012
+Verify offer creation fails when 'discountAmount' is a negative integer,Offer Creation,Negative,High,User is logged in and has permission to create offers. Offer creation form is open.,"1. Enter a valid name for the offer (e.g., 'Winter Clearance').
+2. Enter a negative integer value for 'discountAmount' (e.g., '-5').
+3. Enter valid dates for 'validFrom' and 'validTo'.
+4. Submit the offer creation form.
+
+Test Data: Name: Winter Clearance, Discount Amount: -5, Valid From: 2023-01-01T00:00:00, Valid To: 2023-12-31T23:59:59",The system rejects the offer creation and displays an error message: 'Discount amount must be greater than zero.' The offer is not created.,TC-003
+Verify offer creation fails when 'discountAmount' is a non-numeric value,Offer Creation,Negative,High,User is logged in and has permission to create offers. Offer creation form is open.,"1. Enter a valid name for the offer (e.g., 'Spring Discount').
+2. Enter a non-numeric value for 'discountAmount' (e.g., 'ten').
+3. Enter valid dates for 'validFrom' and 'validTo'.
+4. Submit the offer creation form.
+
+Test Data: Name: Spring Discount, Discount Amount: ten, Valid From: 2023-01-01T00:00:00, Valid To: 2023-12-31T23:59:59",The system rejects the offer creation and displays an error message: 'Discount amount must be a whole number.' The offer is not created.,TC-004
+Verify offer creation fails when 'discountAmount' is an extremely large integer exceeding system limits,Offer Creation,Negative,Medium,User is logged in and has permission to create offers. Offer creation form is open.,"1. Enter a valid name for the offer (e.g., 'Mega Sale').
+2. Enter an extremely large integer value for 'discountAmount' (e.g., '9999999999999999999').
+3. Enter valid dates for 'validFrom' and 'validTo'.
+4. Submit the offer creation form.
+
+Test Data: Name: Mega Sale, Discount Amount: 9999999999999999999, Valid From: 2023-01-01T00:00:00, Valid To: 2023-12-31T23:59:59",The system rejects the offer creation and displays an error message: 'Discount amount is too large.' The offer is not created.,TC-005
+Create an offer with a discount amount of zero (integer boundary),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Enter '0' as the discount amount. 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: 0, Valid-from: current date, Valid-to: current date + 1 day",The system displays an error message: 'Discount amount must be greater than 0'. The offer is not created.,9129733-TC-016
+Create an offer with a discount amount of one (minimum valid integer value),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Enter '1' as the discount amount. 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: 1, Valid-from: current date, Valid-to: current date + 1 day",The offer is created successfully. The response displays the offer details with discountAmount set to 1.,TC-006
+Create an offer with a discount amount of negative one (invalid integer boundary),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Enter '-1' as the discount amount. 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: -1, Valid-from: current date, Valid-to: current date + 1 day",The system displays an error message: 'Discount amount must be greater than 0'. The offer is not created.,9129733-TC-017
+Create an offer with a very large discount amount (integer maximum boundary),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Enter '2147483647' as the discount amount (maximum 32-bit signed integer). 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: 2147483647, Valid-from: current date, Valid-to: current date + 1 day",The offer is created successfully. The response displays the offer details with discountAmount set to 2147483647.,9129733-TC-019
+Create an offer with a discount amount exceeding the maximum integer value,Offer Creation,Boundary,High,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Enter '2147483648' as the discount amount (one above maximum 32-bit signed integer). 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: 2147483648, Valid-from: current date, Valid-to: current date + 1 day",The system displays an error message indicating the discount amount is invalid or out of range. The offer is not created.,TC-007
+"Create an offer with a discount amount of 0.01 (fractional value, now invalid for integer field)",Offer Creation,Boundary,High,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Enter '0.01' as the discount amount. 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: 0.01, Valid-from: current date, Valid-to: current date + 1 day",The system displays an error message indicating the discount amount must be a whole number. The offer is not created.,9129733-TC-018
+Create an offer with a discount amount of null (missing value),Offer Creation,Boundary,High,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Leave the discount amount field empty. 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: [empty], Valid-from: current date, Valid-to: current date + 1 day",The system displays an error message: 'Discount amount is required'. The offer is not created.,9129733-TC-020
+Create an offer with a discount amount containing non-numeric characters,Offer Creation,Boundary,Medium,User is logged in and has permissions to create offers. Offer creation form is accessible.,"1. Navigate to the 'Create Offer' page. 2. Enter a valid offer name (e.g., 'Test Offer'). 3. Enter 'abc' as the discount amount. 4. Set valid-from and valid-to dates (valid-from before valid-to). 5. Submit the form.
+
+Test Data: Offer name: 'Test Offer', Discount amount: abc, Valid-from: current date, Valid-to: current date + 1 day",The system displays an error message indicating the discount amount must be a valid whole number. The offer is not created.,TC-008
+Verify that negative discount amounts are rejected to prevent financial miscalculations,Offer Discount Management,Security,High,User is logged in with permissions to create or edit offers,"1. Navigate to the 'Create New Offer' or 'Edit Offer' screen. 2. Enter a negative value (e.g., -10) in the 'Discount Amount' field. 3. Attempt to save the offer.
+
+Test Data: Discount Amount: -10",The system displays an error message indicating that the discount amount must be a positive number and does not save the offer.,TC-009
+Verify that non-integer discount amounts are rejected to ensure data integrity,Offer Discount Management,Security,High,User is logged in with permissions to create or edit offers,"1. Navigate to the 'Create New Offer' or 'Edit Offer' screen. 2. Enter a non-integer value (e.g., 9.99) in the 'Discount Amount' field. 3. Attempt to save the offer.
+
+Test Data: Discount Amount: 9.99",The system displays an error message indicating that the discount amount must be a whole number and does not save the offer.,TC-010
+Verify that excessively large discount amounts are rejected to prevent abuse,Offer Discount Management,Security,Medium,User is logged in with permissions to create or edit offers,"1. Navigate to the 'Create New Offer' or 'Edit Offer' screen. 2. Enter an extremely large integer value (e.g., 999999999) in the 'Discount Amount' field. 3. Attempt to save the offer.
+
+Test Data: Discount Amount: 999999999",The system displays an error message indicating that the discount amount exceeds the maximum allowed value and does not save the offer.,TC-011
+Verify that zero discount amounts are accepted for valid use cases,Offer Discount Management,Security,Medium,User is logged in with permissions to create or edit offers,"1. Navigate to the 'Create New Offer' or 'Edit Offer' screen. 2. Enter a zero value (e.g., 0) in the 'Discount Amount' field. 3. Attempt to save the offer.
+
+Test Data: Discount Amount: 0",The system accepts the zero discount amount and saves the offer successfully.,TC-012

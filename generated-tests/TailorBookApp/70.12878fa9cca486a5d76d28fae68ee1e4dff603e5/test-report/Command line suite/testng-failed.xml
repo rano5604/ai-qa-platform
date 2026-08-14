@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [Command line suite]">
+  <test thread-count="5" name="Command line test(failed)">
+    <classes>
+      <class name="com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5">
+        <methods>
+          <include name="attemptCreateOrderWithExcessPaidAmount"/>
+          <include name="verifyOrderItemCancellationDoesNotAllowNegativeDueAmount"/>
+          <include name="verifyPaymentDuringOrderCreationReflectsInTodaysEarnings"/>
+          <include name="createOrderWithNonNumericPaidAmount"/>
+          <include name="verifyOrderItemCancellationRecalculatesDueAmount"/>
+          <include name="setup"/>
+          <include name="attemptInvalidOrderItemStatusTransition"/>
+          <include name="verifyNegativeInitialPaymentIsRejected"/>
+          <include name="createOrderWithNegativePaidAmount"/>
+          <include name="verifyNonNumericInitialPaymentIsRejected"/>
+          <include name="createOrderWithNullPaidAmount"/>
+          <include name="verifyZeroInitialPaymentDoesNotAffectEarningToday"/>
+          <include name="verifyOversizedInitialPaymentIsRejected"/>
+          <include name="attemptUpdateNonExistentOrderItemStatus"/>
+          <include name="createOrderWithMalformedPaymentDate"/>
+          <include name="createOrderWithFuturePaymentDate"/>
+          <include name="attemptFetchDashboardSummaryWithoutAuthentication"/>
+          <include name="verifyInitialPaymentReflectedInEarningToday"/>
+          <include name="verifyDashboardFinancialTotalsPerShop"/>
+          <include name="attemptFetchDashboardSummaryAsUnauthorizedUser"/>
+          <include name="verifyTotalOrderAmountReflectsSumOfAllOrders"/>
+        </methods>
+      </class> <!-- com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5 -->
+    </classes>
+  </test> <!-- Command line test(failed) -->
+</suite> <!-- Failed suite [Command line suite] -->

@@ -1,0 +1,161 @@
+[ {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3d221c040c6a1cf6f1875500947c22b239d13ab7",
+  "testMethodName" : "attemptAccessWithExcessivelyLongServerUrl",
+  "requestMethod" : "GET",
+  "requestUri" : "https://no-q.clubaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/api/areas",
+  "requestHeaders" : {
+    "Accept" : "*/*"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 0,
+  "responseStatusLine" : null,
+  "responseHeaders" : { },
+  "responseBody" : "<no response: java.net.UnknownHostException: No such host is known (no-q.clubaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)>",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 299
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3d221c040c6a1cf6f1875500947c22b239d13ab7",
+  "testMethodName" : "verifyLegacyOpenApiJsonAccessBlocked",
+  "requestMethod" : "GET",
+  "requestUri" : "http://localhost:8082/v3/api-docs",
+  "requestHeaders" : {
+    "Origin" : "http://no-q:8080",
+    "Accept" : "*/*"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Access-Control-Allow-Origin" : "http://no-q:8080",
+    "Access-Control-Allow-Credentials" : "true",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 05:03:40 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786511020169,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/v3/api-docs\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 69
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3d221c040c6a1cf6f1875500947c22b239d13ab7",
+  "testMethodName" : "verifyOpenApiAccessAllowedFromUpdatedOrigin",
+  "requestMethod" : "GET",
+  "requestUri" : "http://localhost:8082/v3/api-docs",
+  "requestHeaders" : {
+    "Origin" : "https://no-q.club",
+    "Accept" : "*/*"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Access-Control-Allow-Origin" : "https://no-q.club",
+    "Access-Control-Allow-Credentials" : "true",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 05:03:40 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786511020284,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/v3/api-docs\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 11
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3d221c040c6a1cf6f1875500947c22b239d13ab7",
+  "testMethodName" : "verifyOpenApiAccessBlockedFromArbitraryOrigin",
+  "requestMethod" : "GET",
+  "requestUri" : "http://localhost:8082/v3/api-docs",
+  "requestHeaders" : {
+    "Origin" : "https://test-site.com",
+    "Accept" : "*/*"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Access-Control-Allow-Origin" : "https://test-site.com",
+    "Access-Control-Allow-Credentials" : "true",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 05:03:40 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786511020303,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/v3/api-docs\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 9
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3d221c040c6a1cf6f1875500947c22b239d13ab7",
+  "testMethodName" : "verifyOpenApiAccessBlockedFromDisallowedOrigin",
+  "requestMethod" : "GET",
+  "requestUri" : "http://localhost:8082/v3/api-docs",
+  "requestHeaders" : {
+    "Origin" : "https://malicious-site.com",
+    "Accept" : "*/*"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Access-Control-Allow-Origin" : "https://malicious-site.com",
+    "Access-Control-Allow-Credentials" : "true",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 05:03:40 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786511020317,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/v3/api-docs\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 9
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3d221c040c6a1cf6f1875500947c22b239d13ab7",
+  "testMethodName" : "verifyOpenApiJsonAccessWithoutAuthentication",
+  "requestMethod" : "GET",
+  "requestUri" : "https://no-q.club/v3/api-docs",
+  "requestHeaders" : {
+    "Accept" : "*/*"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 0,
+  "responseStatusLine" : null,
+  "responseHeaders" : { },
+  "responseBody" : "<no response: java.net.UnknownHostException: No such host is known (no-q.club)>",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 310
+} ]

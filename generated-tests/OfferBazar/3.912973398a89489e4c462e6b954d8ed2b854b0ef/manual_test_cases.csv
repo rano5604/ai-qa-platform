@@ -1,0 +1,73 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify that offer creation rejects excessively long offer names to prevent input overflow attacks,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData containing an offer name exceeding 255 characters.
+
+Test Data: {
+  ""name"": ""Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Additional characters to exceed 255 limit."",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status 400 (Bad Request) and an error message indicating that the offer name exceeds the maximum allowed length.,TC-001
+Verify that offer creation rejects invalid date ranges to prevent logical errors,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData where validTo date is before validFrom date.
+
+Test Data: {
+  ""name"": ""Summer Sale"",
+  ""discountAmount"": 15.00,
+  ""validFrom"": ""2023-12-31T00:00:00"",
+  ""validTo"": ""2023-01-01T00:00:00""
+}",The API responds with HTTP status 400 (Bad Request) and an error message stating 'Valid-to date must be after valid-from date'.,TC-002
+Verify that offer creation rejects zero discount amounts despite validation annotation allowing it,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData containing a zero discount amount.
+
+Test Data: {
+  ""name"": ""Zero Discount Offer"",
+  ""discountAmount"": 0.00,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status 400 (Bad Request) and an error message indicating that the discount amount must be greater than 0.,0e5b1e5-TC-012
+Verify that offer creation rejects negative discount amounts to prevent financial miscalculations,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData containing a negative discount amount.
+
+Test Data: {
+  ""name"": ""Negative Discount Offer"",
+  ""discountAmount"": -10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status 400 (Bad Request) and an error message indicating that the discount amount must be greater than 0.,0e5b1e5-TC-009
+Verify that offer creation rejects non-numeric discount amounts to ensure data integrity,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData containing a non-numeric discount amount (e.g., string).
+
+Test Data: {
+  ""name"": ""Invalid Discount Offer"",
+  ""discountAmount"": ""ten dollars"",
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status 400 (Bad Request) and an error message indicating that the discount amount must be a valid number.,0e5b1e5-TC-010
+Verify that offer creation rejects missing required fields to prevent incomplete data submission,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData missing the 'name' field.
+
+Test Data: {
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status 400 (Bad Request) and an error message indicating that the offer name is required.,TC-003
+Verify that offer creation rejects injection attempts in offer name field,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData containing SQL injection patterns in the offer name.
+
+Test Data: {
+  ""name"": ""Summer Sale'; DROP TABLE offers; --"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status 400 (Bad Request) due to validation failure or successfully creates an offer with the literal name (no SQL execution).,TC-004
+Verify that offer creation rejects script injection attempts in offer name field,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData containing XSS patterns in the offer name.
+
+Test Data: {
+  ""name"": ""<script>alert('XSS')</script>"",
+  ""discountAmount"": 10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}",The API responds with HTTP status 400 (Bad Request) due to validation failure or successfully creates an offer with the literal name (no script execution).,TC-005
+Verify that offer creation does not expose sensitive internal details in error responses,Offer Creation Security,Security,High,None,"1. Send a POST request to /api/offers with the payload in testData containing invalid data (e.g., negative discount).
+2. Examine the error response body for any internal stack traces or database details.
+
+Test Data: {
+  ""name"": ""Invalid Offer"",
+  ""discountAmount"": -10.50,
+  ""validFrom"": ""2023-01-01T00:00:00"",
+  ""validTo"": ""2023-12-31T23:59:59""
+}","The API responds with HTTP status 400 (Bad Request) and an error message that does not contain any internal system details, stack traces, or database information.",TC-006

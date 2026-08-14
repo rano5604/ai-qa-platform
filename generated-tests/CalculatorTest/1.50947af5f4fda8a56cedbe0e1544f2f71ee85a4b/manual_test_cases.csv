@@ -1,0 +1,142 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Add two positive numbers,Basic Arithmetic Operations,Positive,High,User has access to the calculator,"1. Open the calculator. 2. Enter the first number (e.g., 20). 3. Select the addition operation. 4. Enter the second number (e.g., 5). 5. Execute the operation.
+
+Test Data: First number: 20, Second number: 5","The result of the addition is displayed correctly (e.g., 25)",TC-001
+Subtract two positive numbers,Basic Arithmetic Operations,Positive,High,User has access to the calculator,"1. Open the calculator. 2. Enter the first number (e.g., 20). 3. Select the subtraction operation. 4. Enter the second number (e.g., 5). 5. Execute the operation.
+
+Test Data: First number: 20, Second number: 5","The result of the subtraction is displayed correctly (e.g., 15)",TC-002
+Multiply two positive numbers,Basic Arithmetic Operations,Positive,High,User has access to the calculator,"1. Open the calculator. 2. Enter the first number (e.g., 20). 3. Select the multiplication operation. 4. Enter the second number (e.g., 5). 5. Execute the operation.
+
+Test Data: First number: 20, Second number: 5","The result of the multiplication is displayed correctly (e.g., 100)",TC-003
+Divide two positive numbers,Basic Arithmetic Operations,Positive,High,User has access to the calculator,"1. Open the calculator. 2. Enter the first number (e.g., 20). 3. Select the division operation. 4. Enter the second number (e.g., 5). 5. Execute the operation.
+
+Test Data: First number: 20, Second number: 5","The result of the division is displayed correctly (e.g., 4)",TC-004
+Handle division by zero,Basic Arithmetic Operations,Positive,High,User has access to the calculator,"1. Open the calculator. 2. Enter the first number (e.g., 20). 3. Select the division operation. 4. Enter zero as the second number. 5. Execute the operation.
+
+Test Data: First number: 20, Second number: 0",An error message is displayed indicating that division by zero is not allowed,TC-005
+Attempt division by zero,Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Enter '20' as the first number. 2. Enter '0' as the second number. 3. Select the division operation or proceed to calculate all operations.
+
+Test Data: First number: 20, Second number: 0","The system displays an error message indicating division by zero is not allowed and does not show a result for the division operation. Other operations (addition, subtraction, multiplication) may still display results if applicable.",TC-006
+Submit non-numeric input for calculation,Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Enter 'abc' as the first number. 2. Enter '5' as the second number. 3. Attempt to proceed with calculation.
+
+Test Data: First number: abc, Second number: 5",The system rejects the input and displays an error message indicating that only numeric values are allowed for calculation.,TC-007
+Submit empty input for calculation,Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Leave the first number field empty. 2. Enter '5' as the second number. 3. Attempt to proceed with calculation.
+
+Test Data: First number: (empty), Second number: 5",The system rejects the input and displays an error message indicating that both fields must be filled with numeric values.,TC-008
+Submit extremely large numbers causing integer overflow,Basic Calculator Operations,Negative,Medium,Calculator application is open and ready for input,"1. Enter '2147483647' as the first number. 2. Enter '1' as the second number. 3. Select the addition operation or proceed to calculate all operations.
+
+Test Data: First number: 2147483647, Second number: 1",The system either displays an incorrect result due to integer overflow or shows an error message indicating the numbers are too large to process correctly.,TC-009
+Submit negative numbers for division,Basic Calculator Operations,Negative,Low,Calculator application is open and ready for input,"1. Enter '-20' as the first number. 2. Enter '-5' as the second number. 3. Select the division operation or proceed to calculate all operations.
+
+Test Data: First number: -20, Second number: -5","The system successfully calculates the division result as 4, confirming that negative numbers are handled correctly for division.",TC-010
+Submit decimal numbers where integers are expected,Basic Calculator Operations,Negative,Medium,Calculator application is open and ready for input,"1. Enter '20.5' as the first number. 2. Enter '5' as the second number. 3. Attempt to proceed with calculation.
+
+Test Data: First number: 20.5, Second number: 5",The system either truncates the decimal part and calculates with the integer portion or displays an error message indicating that only whole numbers are accepted.,TC-011
+Verify addition of two integers at maximum boundary values,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first value as 2147483647 (maximum 32-bit signed integer).
+2. Enter the second value as 1.
+3. Execute the addition operation.
+4. Observe the result displayed for addition.
+
+Test Data: First value: 2147483647, Second value: 1","The application displays an error or overflow indication, as the result exceeds the maximum 32-bit signed integer value.",TC-012
+Verify addition of two integers at minimum boundary values,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first value as -2147483648 (minimum 32-bit signed integer).
+2. Enter the second value as -1.
+3. Execute the addition operation.
+4. Observe the result displayed for addition.
+
+Test Data: First value: -2147483648, Second value: -1","The application displays an error or underflow indication, as the result is below the minimum 32-bit signed integer value.",TC-013
+Verify addition of zero and a positive integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first value as 0.
+2. Enter the second value as 5.
+3. Execute the addition operation.
+4. Observe the result displayed for addition.
+
+Test Data: First value: 0, Second value: 5",The application displays the result as 5 for addition.,TC-014
+Verify addition of zero and a negative integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first value as 0.
+2. Enter the second value as -5.
+3. Execute the addition operation.
+4. Observe the result displayed for addition.
+
+Test Data: First value: 0, Second value: -5",The application displays the result as -5 for addition.,TC-015
+Verify subtraction of two integers at maximum boundary values,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first value as 2147483647 (maximum 32-bit signed integer).
+2. Enter the second value as -1.
+3. Execute the subtraction operation.
+4. Observe the result displayed for subtraction.
+
+Test Data: First value: 2147483647, Second value: -1","The application displays an error or overflow indication, as the result exceeds the maximum 32-bit signed integer value.",TC-016
+Verify subtraction of two integers at minimum boundary values,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first value as -2147483648 (minimum 32-bit signed integer).
+2. Enter the second value as 1.
+3. Execute the subtraction operation.
+4. Observe the result displayed for subtraction.
+
+Test Data: First value: -2147483648, Second value: 1","The application displays an error or underflow indication, as the result is below the minimum 32-bit signed integer value.",TC-017
+Verify subtraction of zero and a positive integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first value as 0.
+2. Enter the second value as 5.
+3. Execute the subtraction operation.
+4. Observe the result displayed for subtraction.
+
+Test Data: First value: 0, Second value: 5",The application displays the result as -5 for subtraction.,TC-018
+Verify subtraction of zero and a negative integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first value as 0.
+2. Enter the second value as -5.
+3. Execute the subtraction operation.
+4. Observe the result displayed for subtraction.
+
+Test Data: First value: 0, Second value: -5",The application displays the result as 5 for subtraction.,TC-019
+Verify multiplication of two integers at maximum boundary values,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first value as 2147483647 (maximum 32-bit signed integer).
+2. Enter the second value as 2.
+3. Execute the multiplication operation.
+4. Observe the result displayed for multiplication.
+
+Test Data: First value: 2147483647, Second value: 2","The application displays an error or overflow indication, as the result exceeds the maximum 32-bit signed integer value.",TC-020
+Verify multiplication of two integers at minimum boundary values,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first value as -2147483648 (minimum 32-bit signed integer).
+2. Enter the second value as 2.
+3. Execute the multiplication operation.
+4. Observe the result displayed for multiplication.
+
+Test Data: First value: -2147483648, Second value: 2","The application displays an error or underflow indication, as the result is below the minimum 32-bit signed integer value.",TC-021
+Verify multiplication of zero and a positive integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first value as 0.
+2. Enter the second value as 5.
+3. Execute the multiplication operation.
+4. Observe the result displayed for multiplication.
+
+Test Data: First value: 0, Second value: 5",The application displays the result as 0 for multiplication.,TC-022
+Verify multiplication of zero and a negative integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first value as 0.
+2. Enter the second value as -5.
+3. Execute the multiplication operation.
+4. Observe the result displayed for multiplication.
+
+Test Data: First value: 0, Second value: -5",The application displays the result as 0 for multiplication.,TC-023
+Verify division by zero,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first value as 10.
+2. Enter the second value as 0.
+3. Execute the division operation.
+4. Observe the result or error message displayed for division.
+
+Test Data: First value: 10, Second value: 0",The application displays an error message indicating 'Cannot divide by zero'.,TC-024
+Verify division of zero by a non-zero integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first value as 0.
+2. Enter the second value as 5.
+3. Execute the division operation.
+4. Observe the result displayed for division.
+
+Test Data: First value: 0, Second value: 5",The application displays the result as 0 for division.,TC-025
+Verify division of two integers resulting in a non-integer value,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first value as 5.
+2. Enter the second value as 2.
+3. Execute the division operation.
+4. Observe the result displayed for division.
+
+Test Data: First value: 5, Second value: 2",The application displays the result as 2 for division (integer division truncates the decimal part).,TC-026
+Verify division of two large integers at boundary values,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first value as 2147483647 (maximum 32-bit signed integer).
+2. Enter the second value as 1.
+3. Execute the division operation.
+4. Observe the result displayed for division.
+
+Test Data: First value: 2147483647, Second value: 1",The application displays the result as 2147483647 for division.,TC-027
+"Perform addition, subtraction, multiplication, and division with valid numbers",Basic Arithmetic Operations,Configuration,High,User has access to the calculator,"1. Open the calculator. 2. Enter two numbers. 3. Select the operation to perform (addition, subtraction, multiplication, division). 4. View the result.
+
+Test Data: Numbers: 20 and 5","The calculator displays the correct results for each operation: addition (25), subtraction (15), multiplication (100), and division (4)",TC-028
+Attempt to divide by zero,Division by Zero Handling,Configuration,Medium,User has access to the calculator,"1. Open the calculator. 2. Enter a number. 3. Enter zero as the divisor. 4. Select the division operation.
+
+Test Data: Number: 20, Divisor: 0",The calculator displays an error message indicating that division by zero is not allowed,TC-029
+Verify the calculator displays results for multiple operations,Calculator Display,Configuration,Medium,User has access to the calculator,"1. Open the calculator. 2. Enter two numbers. 3. Select multiple operations (addition, subtraction, multiplication, division) in sequence. 4. View the results for each operation.
+
+Test Data: Numbers: 10 and 2","The calculator displays the correct results for each operation in sequence: addition (12), subtraction (8), multiplication (20), and division (5)",TC-030
+Enter valid and invalid input,Calculator Input Validation,Configuration,Low,User has access to the calculator,"1. Open the calculator. 2. Enter valid numbers. 3. Enter invalid input (non-numeric characters). 4. Select an operation.
+
+Test Data: Valid numbers: 10 and 2, Invalid input: 'a' and 'b'",The calculator accepts valid input and displays an error message or does not accept invalid input,TC-031

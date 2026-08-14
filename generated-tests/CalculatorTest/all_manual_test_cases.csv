@@ -1,0 +1,205 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References,Source Ref
+Add two decimal numbers and display the result,Basic Arithmetic Operations,Positive,High,User is on the calculator application screen,"1. Enter the first number as 12.5. 2. Select the addition operation. 3. Enter the second number as 3.7. 4. Press the equals button to display the result.
+
+Test Data: First number: 12.5, Second number: 3.7",The result of the addition is displayed as 16.2,50947af-TC-001,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Subtract two decimal numbers and display the result,Basic Arithmetic Operations,Positive,High,User is on the calculator application screen,"1. Enter the first number as 20.8. 2. Select the subtraction operation. 3. Enter the second number as 5.3. 4. Press the equals button to display the result.
+
+Test Data: First number: 20.8, Second number: 5.3",The result of the subtraction is displayed as 15.5,50947af-TC-002,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Multiply two decimal numbers and display the result,Basic Arithmetic Operations,Positive,High,User is on the calculator application screen,"1. Enter the first number as 4.5. 2. Select the multiplication operation. 3. Enter the second number as 6.2. 4. Press the equals button to display the result.
+
+Test Data: First number: 4.5, Second number: 6.2",The result of the multiplication is displayed as 27.9,50947af-TC-003,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Divide two decimal numbers and display the result,Basic Arithmetic Operations,Positive,High,User is on the calculator application screen,"1. Enter the first number as 15.6. 2. Select the division operation. 3. Enter the second number as 3.0. 4. Press the equals button to display the result.
+
+Test Data: First number: 15.6, Second number: 3.0",The result of the division is displayed as 5.2,50947af-TC-004,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Handle division by zero with decimal input,Basic Arithmetic Operations,Positive,High,User is on the calculator application screen,"1. Enter the first number as 10.5. 2. Select the division operation. 3. Enter the second number as 0.0. 4. Press the equals button to display the result.
+
+Test Data: First number: 10.5, Second number: 0.0",An error message is displayed indicating that division by zero is not allowed,50947af-TC-005,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Attempt division by zero,Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Enter '20' as the first number. 2. Enter '0' as the second number. 3. Select the division operation or proceed to calculate all operations.
+
+Test Data: First number: 20, Second number: 0","The system displays an error message indicating division by zero is not allowed and does not show a result for the division operation. Other operations (addition, subtraction, multiplication) may still display results if applicable.",50947af-TC-006,50947af5f4fda8a56cedbe0e1544f2f71ee85a4b
+Submit non-numeric input for calculation,Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Enter 'abc' as the first number. 2. Enter '5' as the second number. 3. Attempt to proceed with calculation.
+
+Test Data: First number: abc, Second number: 5",The system rejects the input and displays an error message indicating that only numeric values are allowed for calculation.,50947af-TC-007,50947af5f4fda8a56cedbe0e1544f2f71ee85a4b
+Submit empty input for calculation where float values are expected,Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Leave the first input field empty. 2. Enter a valid numeric value (e.g., 5.5) in the second input field. 3. Click the 'Calculate' button.
+
+Test Data: First input: [empty], Second input: 5.5",The system rejects the input and displays an error message indicating that both fields must be filled with numeric values.,50947af-TC-008,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Submit extremely large numbers causing integer overflow,Basic Calculator Operations,Negative,Medium,Calculator application is open and ready for input,"1. Enter '2147483647' as the first number. 2. Enter '1' as the second number. 3. Select the addition operation or proceed to calculate all operations.
+
+Test Data: First number: 2147483647, Second number: 1",The system either displays an incorrect result due to integer overflow or shows an error message indicating the numbers are too large to process correctly.,50947af-TC-009,50947af5f4fda8a56cedbe0e1544f2f71ee85a4b
+Submit negative numbers for division,Basic Calculator Operations,Negative,Low,Calculator application is open and ready for input,"1. Enter '-20' as the first number. 2. Enter '-5' as the second number. 3. Select the division operation or proceed to calculate all operations.
+
+Test Data: First number: -20, Second number: -5","The system successfully calculates the division result as 4, confirming that negative numbers are handled correctly for division.",50947af-TC-010,50947af5f4fda8a56cedbe0e1544f2f71ee85a4b
+Submit decimal numbers for calculation where float values are now accepted,Basic Calculator Operations,Negative,Medium,Calculator application is open and ready for input,"1. Enter a decimal value (e.g., 5.5) in the first input field. 2. Enter a decimal value (e.g., 2.3) in the second input field. 3. Click the 'Calculate' button to perform all operations (addition, subtraction, multiplication, division).
+
+Test Data: First input: 5.5, Second input: 2.3","The system successfully calculates and displays results for all operations (addition, subtraction, multiplication, division) using the decimal values without truncation or error.",50947af-TC-011,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify addition of two floating-point numbers at maximum boundary values,Basic Arithmetic Operations,Boundary,High,User is on the calculator input screen,"1. Enter the first number as 3.4028235E38 (maximum 32-bit float value).
+2. Select the addition operation.
+3. Enter the second number as 3.4028235E38 (maximum 32-bit float value).
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 3.4028235E38, Second number: 3.4028235E38",The application displays an overflow indication or infinity symbol (∞) as the result exceeds the maximum representable float value.,50947af-TC-012,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify addition of two floating-point numbers at minimum boundary values,Basic Arithmetic Operations,Boundary,High,User is on the calculator input screen,"1. Enter the first number as -3.4028235E38 (minimum 32-bit float value).
+2. Select the addition operation.
+3. Enter the second number as -3.4028235E38 (minimum 32-bit float value).
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: -3.4028235E38, Second number: -3.4028235E38",The application displays an underflow indication or negative infinity symbol (-∞) as the result is below the minimum representable float value.,50947af-TC-013,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify addition of zero and a positive floating-point number,Basic Arithmetic Operations,Boundary,Medium,User is on the calculator input screen,"1. Enter the first number as 0.0.
+2. Select the addition operation.
+3. Enter the second number as 5.5.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 0.0, Second number: 5.5",The application displays the result as 5.5 for addition.,50947af-TC-014,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify addition of zero and a negative floating-point number,Basic Arithmetic Operations,Boundary,Medium,User is on the calculator input screen,"1. Enter the first number as 0.0.
+2. Select the addition operation.
+3. Enter the second number as -5.5.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 0.0, Second number: -5.5",The application displays the result as -5.5 for addition.,50947af-TC-015,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify subtraction of two floating-point numbers at maximum boundary values,Basic Arithmetic Operations,Boundary,High,User is on the calculator input screen,"1. Enter the first number as 3.4028235E38 (maximum 32-bit float value).
+2. Select the subtraction operation.
+3. Enter the second number as -3.4028235E38 (minimum 32-bit float value).
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 3.4028235E38, Second number: -3.4028235E38",The application displays an overflow indication or infinity symbol (∞) as the result exceeds the maximum representable float value.,50947af-TC-016,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify subtraction of two floating-point numbers at minimum boundary values,Basic Arithmetic Operations,Boundary,High,User is on the calculator input screen,"1. Enter the first number as -3.4028235E38 (minimum 32-bit float value).
+2. Select the subtraction operation.
+3. Enter the second number as 3.4028235E38 (maximum 32-bit float value).
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: -3.4028235E38, Second number: 3.4028235E38",The application displays an underflow indication or negative infinity symbol (-∞) as the result is below the minimum representable float value.,50947af-TC-017,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify subtraction of zero and a positive floating-point number,Basic Arithmetic Operations,Boundary,Medium,User is on the calculator input screen,"1. Enter the first number as 0.0.
+2. Select the subtraction operation.
+3. Enter the second number as 5.5.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 0.0, Second number: 5.5",The application displays the result as -5.5 for subtraction.,50947af-TC-018,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify subtraction of zero and a negative floating-point number,Basic Arithmetic Operations,Boundary,Medium,User is on the calculator input screen,"1. Enter the first number as 0.0.
+2. Select the subtraction operation.
+3. Enter the second number as -5.5.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 0.0, Second number: -5.5",The application displays the result as 5.5 for subtraction.,50947af-TC-019,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify multiplication of two floating-point numbers at maximum boundary values,Basic Arithmetic Operations,Boundary,High,User is on the calculator input screen,"1. Enter the first number as 3.4028235E38 (maximum 32-bit float value).
+2. Select the multiplication operation.
+3. Enter the second number as 2.0.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 3.4028235E38, Second number: 2.0",The application displays an overflow indication or infinity symbol (∞) as the result exceeds the maximum representable float value.,50947af-TC-020,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify multiplication of two floating-point numbers at minimum boundary values,Basic Arithmetic Operations,Boundary,High,User is on the calculator input screen,"1. Enter the first number as -3.4028235E38 (minimum 32-bit float value).
+2. Select the multiplication operation.
+3. Enter the second number as 2.0.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: -3.4028235E38, Second number: 2.0",The application displays an underflow indication or negative infinity symbol (-∞) as the result is below the minimum representable float value.,50947af-TC-021,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify multiplication of zero and a positive floating-point number,Basic Arithmetic Operations,Boundary,Medium,User is on the calculator input screen,"1. Enter the first number as 0.0.
+2. Select the multiplication operation.
+3. Enter the second number as 5.5.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 0.0, Second number: 5.5",The application displays the result as 0.0 for multiplication.,50947af-TC-022,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify multiplication of zero and a negative floating-point number,Basic Arithmetic Operations,Boundary,Medium,User is on the calculator input screen,"1. Enter the first number as 0.0.
+2. Select the multiplication operation.
+3. Enter the second number as -5.5.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 0.0, Second number: -5.5",The application displays the result as 0.0 for multiplication.,50947af-TC-023,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify division by zero with floating-point numbers,Basic Arithmetic Operations,Boundary,High,User is on the calculator input screen,"1. Enter the first number as 5.5.
+2. Select the division operation.
+3. Enter the second number as 0.0.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 5.5, Second number: 0.0",The application displays an error message indicating 'Cannot divide by zero' or infinity symbol (∞).,50947af-TC-024,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify division of zero by a non-zero floating-point number,Basic Arithmetic Operations,Boundary,Medium,User is on the calculator input screen,"1. Enter the first number as 0.0.
+2. Select the division operation.
+3. Enter the second number as 5.5.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 0.0, Second number: 5.5",The application displays the result as 0.0 for division.,50947af-TC-025,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify division of two floating-point numbers resulting in a non-integer value,Basic Arithmetic Operations,Boundary,High,User is on the calculator input screen,"1. Enter the first number as 10.5.
+2. Select the division operation.
+3. Enter the second number as 3.0.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 10.5, Second number: 3.0",The application displays the result as 3.5 for division (floating-point precision retained).,50947af-TC-026,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify division of two large floating-point numbers at boundary values,Basic Arithmetic Operations,Boundary,High,User is on the calculator input screen,"1. Enter the first number as 3.4028235E38 (maximum 32-bit float value).
+2. Select the division operation.
+3. Enter the second number as 1.0.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 3.4028235E38, Second number: 1.0",The application displays the result as 3.4028235E38 for division (maximum representable float value).,50947af-TC-027,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+"Perform addition, subtraction, multiplication, and division with valid numbers",Basic Arithmetic Operations,Configuration,High,User has access to the calculator,"1. Open the calculator. 2. Enter two numbers. 3. Select the operation to perform (addition, subtraction, multiplication, division). 4. View the result.
+
+Test Data: Numbers: 20 and 5","The calculator displays the correct results for each operation: addition (25), subtraction (15), multiplication (100), and division (4)",50947af-TC-028,50947af5f4fda8a56cedbe0e1544f2f71ee85a4b
+Attempt to divide by zero,Division by Zero Handling,Configuration,Medium,User has access to the calculator,"1. Open the calculator. 2. Enter a number. 3. Enter zero as the divisor. 4. Select the division operation.
+
+Test Data: Number: 20, Divisor: 0",The calculator displays an error message indicating that division by zero is not allowed,50947af-TC-029,50947af5f4fda8a56cedbe0e1544f2f71ee85a4b
+Verify the calculator displays results for multiple operations,Calculator Display,Configuration,Medium,User has access to the calculator,"1. Open the calculator. 2. Enter two numbers. 3. Select multiple operations (addition, subtraction, multiplication, division) in sequence. 4. View the results for each operation.
+
+Test Data: Numbers: 10 and 2","The calculator displays the correct results for each operation in sequence: addition (12), subtraction (8), multiplication (20), and division (5)",50947af-TC-030,50947af5f4fda8a56cedbe0e1544f2f71ee85a4b
+Enter valid and invalid input,Calculator Input Validation,Configuration,Low,User has access to the calculator,"1. Open the calculator. 2. Enter valid numbers. 3. Enter invalid input (non-numeric characters). 4. Select an operation.
+
+Test Data: Valid numbers: 10 and 2, Invalid input: 'a' and 'b'",The calculator accepts valid input and displays an error message or does not accept invalid input,50947af-TC-031,50947af5f4fda8a56cedbe0e1544f2f71ee85a4b
+Submit non-numeric input for calculation where float values are expected,Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Enter a non-numeric value (e.g., 'abc') in the first input field. 2. Enter a valid numeric value (e.g., 5.5) in the second input field. 3. Click the 'Calculate' button.
+
+Test Data: First input: abc, Second input: 5.5",The system rejects the input and displays an error message indicating that only numeric values are allowed for calculation.,1e702eb-TC-001,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Submit extremely large decimal numbers causing potential overflow,Basic Calculator Operations,Negative,Medium,Calculator application is open and ready for input,"1. Enter an extremely large decimal number (e.g., 1.7976931348623157E308) in the first input field. 2. Enter another extremely large decimal number (e.g., 1.7976931348623157E308) in the second input field. 3. Click the 'Calculate' button.
+
+Test Data: First input: 1.7976931348623157E308, Second input: 1.7976931348623157E308",The system either displays an incorrect result due to overflow or shows an error message indicating the numbers are too large to process correctly.,1e702eb-TC-002,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+"Submit a mix of valid and invalid decimal formats (e.g., multiple decimal points)",Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Enter a malformed decimal value (e.g., 5.5.5) in the first input field. 2. Enter a valid decimal value (e.g., 2.3) in the second input field. 3. Click the 'Calculate' button.
+
+Test Data: First input: 5.5.5, Second input: 2.3",The system rejects the input and displays an error message indicating that the input format is invalid and only numeric values with a single decimal point are allowed.,1e702eb-TC-003,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Submit scientific notation as input for calculation,Basic Calculator Operations,Negative,Medium,Calculator application is open and ready for input,"1. Enter a value in scientific notation (e.g., 1E3) in the first input field. 2. Enter a valid decimal value (e.g., 2.0) in the second input field. 3. Click the 'Calculate' button.
+
+Test Data: First input: 1E3, Second input: 2.0",The system either rejects the input and displays an error message indicating invalid format or successfully calculates the result if scientific notation is supported.,1e702eb-TC-004,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify addition of a very small floating-point number and zero,Basic Arithmetic Operations,Boundary,Medium,User is on the calculator input screen,"1. Enter the first number as 1.4E-45 (smallest positive 32-bit float value).
+2. Select the addition operation.
+3. Enter the second number as 0.0.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 1.4E-45, Second number: 0.0",The application displays the result as 1.4E-45 for addition (smallest positive float retained).,1e702eb-TC-005,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify subtraction of a very small floating-point number from zero,Basic Arithmetic Operations,Boundary,Medium,User is on the calculator input screen,"1. Enter the first number as 0.0.
+2. Select the subtraction operation.
+3. Enter the second number as 1.4E-45 (smallest positive 32-bit float value).
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 0.0, Second number: 1.4E-45",The application displays the result as -1.4E-45 for subtraction (smallest negative float retained).,1e702eb-TC-006,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify multiplication of a very small floating-point number and zero,Basic Arithmetic Operations,Boundary,Medium,User is on the calculator input screen,"1. Enter the first number as 1.4E-45 (smallest positive 32-bit float value).
+2. Select the multiplication operation.
+3. Enter the second number as 0.0.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 1.4E-45, Second number: 0.0",The application displays the result as 0.0 for multiplication.,1e702eb-TC-007,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify division of a very small floating-point number by a non-zero value,Basic Arithmetic Operations,Boundary,Medium,User is on the calculator input screen,"1. Enter the first number as 1.4E-45 (smallest positive 32-bit float value).
+2. Select the division operation.
+3. Enter the second number as 2.0.
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 1.4E-45, Second number: 2.0",The application displays the result as 7.0E-46 for division (smallest representable float retained).,1e702eb-TC-008,1e702eba97d8de77efc6eb8c07b2ab613f14b299
+Verify addition of two very small floating-point numbers,Basic Arithmetic Operations,Boundary,Medium,User is on the calculator input screen,"1. Enter the first number as 1.4E-45 (smallest positive 32-bit float value).
+2. Select the addition operation.
+3. Enter the second number as 1.4E-45 (smallest positive 32-bit float value).
+4. Press the equals button to calculate the result.
+5. Observe the displayed result.
+
+Test Data: First number: 1.4E-45, Second number: 1.4E-45",The application displays the result as 2.8E-45 for addition (smallest representable float retained).,1e702eb-TC-009,1e702eba97d8de77efc6eb8c07b2ab613f14b299

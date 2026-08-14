@@ -1,0 +1,100 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+User makes a transaction with a zero amount,Transaction Validation,Positive,High,User has a valid transaction ID,"1. Open the transaction page. 2. Enter a valid transaction ID. 3. Enter an amount of 0. 4. Submit the transaction.
+
+Test Data: Transaction ID: valid_id, Amount: 0",An error message is displayed indicating that the amount must be greater than zero,TC-001
+User makes a transaction with a negative amount,Transaction Validation,Positive,High,User has a valid transaction ID,"1. Open the transaction page. 2. Enter a valid transaction ID. 3. Enter an amount of -100. 4. Submit the transaction.
+
+Test Data: Transaction ID: valid_id, Amount: -100",An error message is displayed indicating that the amount must be greater than zero,TC-002
+Reject transaction with zero amount (updated validation rule),Transaction Processing,Negative,High,User is logged in and on the 'Record Transaction' screen,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Enter '0' as the transaction amount.
+4. Select any transaction type (e.g., 'Deposit').
+5. Click the 'Submit' button.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: '0'",System displays an error message: 'ERROR: Amount must be greater than zero' and does not record the transaction. The transaction is not added to the user's collected amounts.,6b7b2ad-TC-010
+Reject transaction with negative amount (updated validation rule),Transaction Processing,Negative,High,User is logged in and on the 'Record Transaction' screen,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Enter '-100.50' as the transaction amount.
+4. Select any transaction type (e.g., 'Deposit').
+5. Click the 'Submit' button.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: '-100.50'",System displays an error message: 'ERROR: Amount must be greater than zero' and does not record the transaction. The transaction is not added to the user's collected amounts.,6b7b2ad-TC-011
+Reject transaction with non-numeric amount (malformed input),Transaction Processing,Negative,High,User is logged in and on the 'Record Transaction' screen,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Enter 'abc' as the transaction amount.
+4. Select any transaction type (e.g., 'Deposit').
+5. Click the 'Submit' button.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: 'abc'","System displays an error message indicating the amount is invalid (e.g., 'ERROR: Invalid amount format') and does not record the transaction. The transaction is not added to the user's collected amounts.",TC-003
+Reject transaction with amount containing special characters,Transaction Processing,Negative,Medium,User is logged in and on the 'Record Transaction' screen,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Enter '$100.50' as the transaction amount.
+4. Select any transaction type (e.g., 'Deposit').
+5. Click the 'Submit' button.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: '$100.50'","System displays an error message indicating the amount is invalid (e.g., 'ERROR: Invalid amount format') and does not record the transaction. The transaction is not added to the user's collected amounts.",TC-004
+Reject transaction with whitespace-only amount,Transaction Processing,Negative,Medium,User is logged in and on the 'Record Transaction' screen,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Enter '   ' (three spaces) as the transaction amount.
+4. Select any transaction type (e.g., 'Deposit').
+5. Click the 'Submit' button.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: '   '","System displays an error message indicating the amount is invalid (e.g., 'ERROR: Invalid amount format') and does not record the transaction. The transaction is not added to the user's collected amounts.",TC-005
+Process transaction with zero amount (boundary value),Transaction Processing,Boundary,High,User has no prior transactions recorded for the day. User is logged in and on the transaction submission screen.,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Enter the amount as '0.00'.
+4. Leave the partial settlement flag unchecked.
+5. Submit the transaction.
+6. Observe the error message displayed.
+7. Navigate to the user's transaction summary screen and verify the collected amount.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: '0.00', Partial Settlement: false",Transaction is rejected with an error message: 'ERROR: Amount must be greater than zero.' The user's collected amount remains '0.00'.,6b7b2ad-TC-016
+Process transaction with negative amount (boundary value),Transaction Processing,Boundary,High,User has no prior transactions recorded for the day. User is logged in and on the transaction submission screen.,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Enter the amount as '-0.01'.
+4. Leave the partial settlement flag unchecked.
+5. Submit the transaction.
+6. Observe the error message displayed.
+7. Navigate to the user's transaction summary screen and verify the collected amount.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: '-0.01', Partial Settlement: false",Transaction is rejected with an error message: 'ERROR: Amount must be greater than zero.' The user's collected amount remains '0.00'.,6b7b2ad-TC-017
+Process transaction with smallest positive amount (boundary value),Transaction Processing,Boundary,High,User has no prior transactions recorded for the day. User is logged in and on the transaction submission screen.,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Enter the amount as '0.01'.
+4. Leave the partial settlement flag unchecked.
+5. Submit the transaction.
+6. Navigate to the user's transaction summary screen and verify the collected amount.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: '0.01', Partial Settlement: false",Transaction is processed successfully. The user's collected amount is updated to '0.01'.,TC-006
+Process transaction with very large positive amount (boundary value),Transaction Processing,Boundary,Medium,User has no prior transactions recorded for the day. User is logged in and on the transaction submission screen. Daily limit is set to '10000.00'.,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Enter the amount as '999999999999.99'.
+4. Leave the partial settlement flag unchecked.
+5. Submit the transaction.
+6. Observe the error message displayed.
+7. Navigate to the user's transaction summary screen and verify the collected amount.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: '999999999999.99', Partial Settlement: false",Transaction is rejected with an error message: 'ERROR: Daily limit exceeded.' The user's collected amount remains '0.00'.,TC-007
+Process transaction with amount exactly at daily limit (boundary value),Transaction Processing,Boundary,High,User has no prior transactions recorded for the day. User is logged in and on the transaction submission screen. Daily limit is set to '10000.00'.,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Enter the amount as '10000.00'.
+4. Leave the partial settlement flag unchecked.
+5. Submit the transaction.
+6. Navigate to the user's transaction summary screen and verify the collected amount.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: '10000.00', Partial Settlement: false",Transaction is processed successfully. The user's collected amount is updated to '10000.00'.,TC-008
+Process transaction with amount exceeding daily limit by smallest possible value (boundary value),Transaction Processing,Boundary,High,User has no prior transactions recorded for the day. User is logged in and on the transaction submission screen. Daily limit is set to '10000.00'.,"1. Enter a valid user ID (e.g., 'user123').
+2. Enter a valid transaction ID (e.g., 'txn456').
+3. Enter the amount as '10000.01'.
+4. Leave the partial settlement flag unchecked.
+5. Submit the transaction.
+6. Observe the error message displayed.
+7. Navigate to the user's transaction summary screen and verify the collected amount.
+
+Test Data: User ID: 'user123', Transaction ID: 'txn456', Amount: '10000.01', Partial Settlement: false",Transaction is rejected with an error message: 'ERROR: Daily limit exceeded.' The user's collected amount remains '0.00'.,TC-009
+Verify that zero transaction amounts are rejected with an updated error message,Transaction Processing Security,Security,High,User is logged in and on the transaction submission screen,"1. Enter a transaction amount of exactly 0.00. 2. Enter a valid transaction ID and description. 3. Submit the transaction. 4. Observe the error message displayed.
+
+Test Data: Amount: 0.00, Transaction ID: TXN12345, Description: Test zero amount",The transaction is rejected with a clear message indicating that the amount must be greater than zero.,6b7b2ad-TC-032
+Verify that negative transaction amounts are rejected with an updated validation rule,Transaction Processing Security,Security,High,User is logged in and on the transaction submission screen,"1. Enter a negative transaction amount (e.g., -10.00). 2. Enter a valid transaction ID and description. 3. Submit the transaction. 4. Observe the error message displayed.
+
+Test Data: Amount: -10.00, Transaction ID: TXN12346, Description: Test negative amount",The transaction is rejected with a clear message indicating that the amount must be greater than zero.,6b7b2ad-TC-031

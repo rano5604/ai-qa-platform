@@ -1,0 +1,574 @@
+[ {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "attemptCreateOrderWithExcessPaidAmount",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786522012516\",\n  \"shopPhone\": \"1234567890\",\n  \"latitude\": 23.8103,\n  \"longitude\": 90.4125,\n  \"ownerName\": \"Owner\",\n  \"email\": \"owner_1786522012516@example.com\",\n  \"address\": \"Dhaka\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":\"Area not found\",\"details\":\"uri=/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 413
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "attemptFetchDashboardSummaryAsUnauthorizedUser",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/auth/signin",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"username\": \"customer_1786522013410@example.com\",\n  \"password\": \"password\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":\"Bad credentials\",\"details\":\"uri=/api/auth/signin\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 130
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "attemptFetchDashboardSummaryWithoutAuthentication",
+  "requestMethod" : "GET",
+  "requestUri" : "http://localhost:8082/api/dashboard/summary",
+  "requestHeaders" : {
+    "Accept" : "*/*"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786522013582,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/dashboard/summary\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 25
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "attemptInvalidOrderItemStatusTransition",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786522013586\",\n  \"shopPhone\": \"1234567890\",\n  \"latitude\": 23.8103,\n  \"longitude\": 90.4125,\n  \"ownerName\": \"Owner\",\n  \"email\": \"owner_1786522013586@example.com\",\n  \"address\": \"Dhaka\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":\"Area not found\",\"details\":\"uri=/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 17
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "attemptUpdateNonExistentOrderItemStatus",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786522013609\",\n  \"shopPhone\": \"1234567890\",\n  \"latitude\": 23.8103,\n  \"longitude\": 90.4125,\n  \"ownerName\": \"Owner\",\n  \"email\": \"owner_1786522013609@example.com\",\n  \"address\": \"Dhaka\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":\"Area not found\",\"details\":\"uri=/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 12
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "createOrderWithFuturePaymentDate",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786522013627\",\n  \"shopPhone\": \"1234567890\",\n  \"latitude\": 23.8103,\n  \"longitude\": 90.4125,\n  \"ownerName\": \"Owner\",\n  \"email\": \"owner_1786522013627@example.com\",\n  \"address\": \"Dhaka\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":\"Area not found\",\"details\":\"uri=/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 15
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "createOrderWithMalformedPaymentDate",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786522013651\",\n  \"shopPhone\": \"1234567890\",\n  \"latitude\": 23.8103,\n  \"longitude\": 90.4125,\n  \"ownerName\": \"Owner\",\n  \"email\": \"owner_1786522013651@example.com\",\n  \"address\": \"Dhaka\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":\"Area not found\",\"details\":\"uri=/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 12
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "createOrderWithNegativePaidAmount",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786522013669\",\n  \"shopPhone\": \"1234567890\",\n  \"latitude\": 23.8103,\n  \"longitude\": 90.4125,\n  \"ownerName\": \"Owner\",\n  \"email\": \"owner_1786522013669@example.com\",\n  \"address\": \"Dhaka\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":\"Area not found\",\"details\":\"uri=/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 11
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "createOrderWithNonNumericPaidAmount",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786522013684\",\n  \"shopPhone\": \"1234567890\",\n  \"latitude\": 23.8103,\n  \"longitude\": 90.4125,\n  \"ownerName\": \"Owner\",\n  \"email\": \"owner_1786522013684@example.com\",\n  \"address\": \"Dhaka\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":\"Area not found\",\"details\":\"uri=/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 15
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "createOrderWithNullPaidAmount",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786522013703\",\n  \"shopPhone\": \"1234567890\",\n  \"latitude\": 23.8103,\n  \"longitude\": 90.4125,\n  \"ownerName\": \"Owner\",\n  \"email\": \"owner_1786522013703@example.com\",\n  \"address\": \"Dhaka\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":\"Area not found\",\"details\":\"uri=/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 12
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "verifyDashboardFinancialTotalsPerShop",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_A_1786522013719\",\n  \"shopPhone\": \"1234567890\",\n  \"latitude\": 23.8103,\n  \"longitude\": 90.4125,\n  \"ownerName\": \"Owner A\",\n  \"email\": \"owner_a_1786522013719@example.com\",\n  \"address\": \"Dhaka\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":\"Area not found\",\"details\":\"uri=/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 12
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "verifyInitialPaymentReflectedInEarningToday",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786522013736\",\n  \"shopPhone\": \"1234567890\",\n  \"latitude\": 23.8103,\n  \"longitude\": 90.4125,\n  \"ownerName\": \"Owner\",\n  \"email\": \"owner_1786522013736@example.com\",\n  \"address\": \"Dhaka\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":\"Area not found\",\"details\":\"uri=/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 17
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "verifyNegativeInitialPaymentIsRejected",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/orders",
+  "requestHeaders" : {
+    "Authorization" : "<redacted>",
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopId\": null,\n  \"customerName\": \"Alice Smith\",\n  \"customerPhone\": \"5551234567\",\n  \"customerGender\": \"FEMALE\",\n  \"paidAmount\": -1000,\n  \"deliveryDate\": \"2023-12-31\",\n  \"items\": [\n    {\n      \"itemId\": null,\n      \"measurementGroups\": [\n        {\n          \"specialInstruction\": \"None\",\n          \"makingCharge\": 500,\n          \"measurements\": []\n        }\n      ]\n    }\n  ]\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786522013772,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/orders\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 11
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "verifyNonNumericInitialPaymentIsRejected",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/orders",
+  "requestHeaders" : {
+    "Authorization" : "<redacted>",
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopId\": null,\n  \"customerName\": \"Bob Johnson\",\n  \"customerPhone\": \"5559876543\",\n  \"customerGender\": \"MALE\",\n  \"paidAmount\": \"abc\",\n  \"deliveryDate\": \"2023-12-31\",\n  \"items\": [\n    {\n      \"itemId\": null,\n      \"measurementGroups\": [\n        {\n          \"specialInstruction\": \"None\",\n          \"makingCharge\": 500,\n          \"measurements\": []\n        }\n      ]\n    }\n  ]\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786522013787,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/orders\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 9
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "verifyOrderItemCancellationDoesNotAllowNegativeDueAmount",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/items",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"nameEn\": \"Test Item 2\",\n  \"nameBn\": \"টেস্ট আইটেম ২\",\n  \"status\": \"ACTIVE\",\n  \"parameters\": []\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786522013802,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 11
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "verifyOversizedInitialPaymentIsRejected",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/orders",
+  "requestHeaders" : {
+    "Authorization" : "<redacted>",
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopId\": null,\n  \"customerName\": \"Charlie Brown\",\n  \"customerPhone\": \"5554567890\",\n  \"customerGender\": \"MALE\",\n  \"paidAmount\": 999999999999,\n  \"deliveryDate\": \"2023-12-31\",\n  \"items\": [\n    {\n      \"itemId\": null,\n      \"measurementGroups\": [\n        {\n          \"specialInstruction\": \"None\",\n          \"makingCharge\": 5000,\n          \"measurements\": []\n        }\n      ]\n    }\n  ]\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786522013824,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/orders\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 12
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "verifyPaymentDuringOrderCreationReflectsInTodaysEarnings",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786522013827\",\n  \"shopPhone\": \"1234567890\",\n  \"latitude\": 23.8103,\n  \"longitude\": 90.4125,\n  \"ownerName\": \"Owner\",\n  \"email\": \"owner_1786522013827@example.com\",\n  \"address\": \"Dhaka\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":\"Area not found\",\"details\":\"uri=/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 12
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "verifyTotalOrderAmountReflectsSumOfAllOrders",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786522013843\",\n  \"shopPhone\": \"1234567890\",\n  \"latitude\": 23.8103,\n  \"longitude\": 90.4125,\n  \"ownerName\": \"Owner\",\n  \"email\": \"owner_1786522013843@example.com\",\n  \"address\": \"Dhaka\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":\"Area not found\",\"details\":\"uri=/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 14
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_12878fa9cca486a5d76d28fae68ee1e4dff603e5",
+  "testMethodName" : "verifyZeroInitialPaymentDoesNotAffectEarningToday",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/orders",
+  "requestHeaders" : {
+    "Authorization" : "<redacted>",
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopId\": null,\n  \"customerName\": \"Jane Doe\",\n  \"customerPhone\": \"9876543210\",\n  \"customerGender\": \"FEMALE\",\n  \"paidAmount\": 0,\n  \"deliveryDate\": \"2023-12-31\",\n  \"items\": [\n    {\n      \"itemId\": null,\n      \"measurementGroups\": [\n        {\n          \"specialInstruction\": \"None\",\n          \"makingCharge\": 500,\n          \"measurements\": []\n        }\n      ]\n    }\n  ]\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 08:06:53 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786522013873,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/orders\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 9
+} ]

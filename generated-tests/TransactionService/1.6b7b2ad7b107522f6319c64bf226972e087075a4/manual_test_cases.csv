@@ -1,0 +1,210 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+User makes multiple transactions within the daily limit,Daily Transaction Limit,Positive,High,User has no existing transactions for the day,"1. Make a transaction of $1000. 2. Make another transaction of $2000. 3. Check the total collected amount for the user
+
+Test Data: Transaction amount: $1000, $2000",The total collected amount for the user is $3000,TC-001
+User makes a transaction that exactly reaches the daily limit,Daily Transaction Limit,Positive,High,User has no existing transactions for the day,"1. Make a transaction of $10000. 2. Check the total collected amount for the user
+
+Test Data: Transaction amount: $10000",The total collected amount for the user is $10000,TC-002
+User makes a transaction that exceeds the daily limit,Daily Transaction Limit,Positive,High,User has no existing transactions for the day,"1. Make a transaction of $10000. 2. Make another transaction of $0.01. 3. Check the error message
+
+Test Data: Transaction amount: $10000, $0.01",An error message is displayed indicating that the daily limit has been exceeded,TC-003
+User makes a transaction with a valid amount and transaction ID,Transaction Validation,Positive,Medium,User has no existing transactions for the day,"1. Make a transaction of $100 with a valid transaction ID. 2. Check the total collected amount for the user
+
+Test Data: Transaction amount: $100, Transaction ID: TXN001",The total collected amount for the user is $100,TC-004
+User makes a transaction with an invalid transaction ID,Transaction Validation,Positive,Medium,User has no existing transactions for the day,"1. Make a transaction of $100 with an empty transaction ID. 2. Check the error message
+
+Test Data: Transaction amount: $100, Transaction ID: ",An error message is displayed indicating that the transaction ID is invalid,TC-005
+Reject transaction with null user ID,Transaction Processing,Negative,High,User is logged into the transaction system and on the 'Record Transaction' screen,"1. Leave the 'User ID' field blank (null). 2. Enter a valid transaction ID (e.g., 'TXN001'). 3. Enter a valid amount (e.g., 100.00). 4. Ensure 'Partial Settlement' is unchecked. 5. Click 'Submit Transaction'.
+
+Test Data: User ID: [null], Transaction ID: 'TXN001', Amount: 100.00, Partial Settlement: false",System displays an error message: 'ERROR: User ID is null' and does not record the transaction. The transaction is not added to the user's collected amounts.,TC-006
+Reject transaction with empty user ID,Transaction Processing,Negative,High,User is logged into the transaction system and on the 'Record Transaction' screen,"1. Enter a blank space or empty string into the 'User ID' field. 2. Enter a valid transaction ID (e.g., 'TXN001'). 3. Enter a valid amount (e.g., 100.00). 4. Ensure 'Partial Settlement' is unchecked. 5. Click 'Submit Transaction'.
+
+Test Data: User ID: ' ' (blank), Transaction ID: 'TXN001', Amount: 100.00, Partial Settlement: false",System displays an error message: 'ERROR: User ID is empty' and does not record the transaction. The transaction is not added to the user's collected amounts.,TC-007
+Reject transaction with null transaction ID,Transaction Processing,Negative,High,User is logged into the transaction system and on the 'Record Transaction' screen,"1. Enter a valid user ID (e.g., 'USER001'). 2. Leave the 'Transaction ID' field blank (null). 3. Enter a valid amount (e.g., 100.00). 4. Ensure 'Partial Settlement' is unchecked. 5. Click 'Submit Transaction'.
+
+Test Data: User ID: 'USER001', Transaction ID: [null], Amount: 100.00, Partial Settlement: false",System displays an error message: 'ERROR: Transaction ID is invalid' and does not record the transaction. The transaction is not added to the user's collected amounts.,TC-008
+Reject transaction with empty transaction ID,Transaction Processing,Negative,High,User is logged into the transaction system and on the 'Record Transaction' screen,"1. Enter a valid user ID (e.g., 'USER001'). 2. Enter a blank space or empty string into the 'Transaction ID' field. 3. Enter a valid amount (e.g., 100.00). 4. Ensure 'Partial Settlement' is unchecked. 5. Click 'Submit Transaction'.
+
+Test Data: User ID: 'USER001', Transaction ID: ' ' (blank), Amount: 100.00, Partial Settlement: false",System displays an error message: 'ERROR: Transaction ID is invalid' and does not record the transaction. The transaction is not added to the user's collected amounts.,TC-009
+Reject transaction with zero amount,Transaction Processing,Negative,High,User is logged into the transaction system and on the 'Record Transaction' screen,"1. Enter a valid user ID (e.g., 'USER001'). 2. Enter a valid transaction ID (e.g., 'TXN001'). 3. Enter '0.00' into the 'Amount' field. 4. Ensure 'Partial Settlement' is unchecked. 5. Click 'Submit Transaction'.
+
+Test Data: User ID: 'USER001', Transaction ID: 'TXN001', Amount: 0.00, Partial Settlement: false",System displays an error message: 'ERROR: Transaction amount must be greater than zero' and does not record the transaction. The transaction is not added to the user's collected amounts.,TC-010
+Reject transaction with negative amount,Transaction Processing,Negative,High,User is logged into the transaction system and on the 'Record Transaction' screen,"1. Enter a valid user ID (e.g., 'USER001'). 2. Enter a valid transaction ID (e.g., 'TXN001'). 3. Enter '-100.00' into the 'Amount' field. 4. Ensure 'Partial Settlement' is unchecked. 5. Click 'Submit Transaction'.
+
+Test Data: User ID: 'USER001', Transaction ID: 'TXN001', Amount: -100.00, Partial Settlement: false",System displays an error message: 'ERROR: Transaction amount must be greater than zero' and does not record the transaction. The transaction is not added to the user's collected amounts.,TC-011
+Reject transaction exceeding daily limit,Transaction Processing,Negative,High,User has already recorded transactions totaling 9999.99 on the current day,"1. Enter the same user ID (e.g., 'USER001'). 2. Enter a new transaction ID (e.g., 'TXN002'). 3. Enter '0.02' into the 'Amount' field. 4. Ensure 'Partial Settlement' is unchecked. 5. Click 'Submit Transaction'.
+
+Test Data: User ID: 'USER001', Transaction ID: 'TXN002', Amount: 0.02, Partial Settlement: false",System displays an error message: 'ERROR: Daily transaction limit exceeded' and does not record the transaction. The transaction is not added to the user's collected amounts.,TC-012
+Reject duplicate transaction ID for the same user,Transaction Processing,Negative,High,User has already recorded a transaction with ID 'TXN001',"1. Enter the same user ID (e.g., 'USER001'). 2. Enter the same transaction ID ('TXN001'). 3. Enter a valid amount (e.g., 100.00). 4. Ensure 'Partial Settlement' is unchecked. 5. Click 'Submit Transaction'.
+
+Test Data: User ID: 'USER001', Transaction ID: 'TXN001', Amount: 100.00, Partial Settlement: false",System displays an error message: 'ERROR: Duplicate transaction ID' and does not record the transaction. The transaction is not added to the user's collected amounts.,TC-013
+Reject transaction with malformed amount (non-numeric),Transaction Processing,Negative,Medium,User is logged into the transaction system and on the 'Record Transaction' screen,"1. Enter a valid user ID (e.g., 'USER001'). 2. Enter a valid transaction ID (e.g., 'TXN001'). 3. Enter 'abc' into the 'Amount' field. 4. Ensure 'Partial Settlement' is unchecked. 5. Click 'Submit Transaction'.
+
+Test Data: User ID: 'USER001', Transaction ID: 'TXN001', Amount: 'abc', Partial Settlement: false","System displays an error message indicating the amount is invalid (e.g., 'ERROR: Invalid amount format') and does not record the transaction. The transaction is not added to the user's collected amounts.",TC-014
+Reject transaction with excessively large amount,Transaction Processing,Negative,Medium,User is logged into the transaction system and on the 'Record Transaction' screen,"1. Enter a valid user ID (e.g., 'USER001'). 2. Enter a valid transaction ID (e.g., 'TXN001'). 3. Enter '999999999999999999.99' into the 'Amount' field. 4. Ensure 'Partial Settlement' is unchecked. 5. Click 'Submit Transaction'.
+
+Test Data: User ID: 'USER001', Transaction ID: 'TXN001', Amount: 999999999999999999.99, Partial Settlement: false",System displays an error message: 'ERROR: Transaction amount exceeds maximum allowed value' and does not record the transaction. The transaction is not added to the user's collected amounts.,TC-015
+Process transaction with zero amount,Transaction Processing,Boundary,High,User is logged in and on the transaction entry screen,"1. Enter a valid user ID (e.g., 'USER001').
+2. Enter a valid transaction ID (e.g., 'TXN001').
+3. Enter '0.00' as the transaction amount.
+4. Leave 'Partial Settlement' unchecked.
+5. Submit the transaction.
+
+Test Data: User ID: 'USER001', Transaction ID: 'TXN001', Amount: '0.00', Partial Settlement: false",Transaction is rejected with an error message: 'ERROR: Amount must be greater than zero.' No amount is added to the user's collected total.,TC-016
+Process transaction with negative amount,Transaction Processing,Boundary,High,User is logged in and on the transaction entry screen,"1. Enter a valid user ID (e.g., 'USER001').
+2. Enter a valid transaction ID (e.g., 'TXN001').
+3. Enter '-100.00' as the transaction amount.
+4. Leave 'Partial Settlement' unchecked.
+5. Submit the transaction.
+
+Test Data: User ID: 'USER001', Transaction ID: 'TXN001', Amount: '-100.00', Partial Settlement: false",Transaction is rejected with an error message: 'ERROR: Amount must be greater than zero.' No amount is added to the user's collected total.,TC-017
+Process transaction with null user ID,Transaction Processing,Boundary,High,User is logged in and on the transaction entry screen,"1. Leave the user ID field blank.
+2. Enter a valid transaction ID (e.g., 'TXN001').
+3. Enter '100.00' as the transaction amount.
+4. Leave 'Partial Settlement' unchecked.
+5. Submit the transaction.
+
+Test Data: User ID: null, Transaction ID: 'TXN001', Amount: '100.00', Partial Settlement: false",Transaction is rejected with an error message: 'ERROR: User ID is null.' No amount is added to any user's collected total.,TC-018
+Process transaction with empty user ID,Transaction Processing,Boundary,High,User is logged in and on the transaction entry screen,"1. Enter a blank space in the user ID field.
+2. Enter a valid transaction ID (e.g., 'TXN001').
+3. Enter '100.00' as the transaction amount.
+4. Leave 'Partial Settlement' unchecked.
+5. Submit the transaction.
+
+Test Data: User ID: ' ', Transaction ID: 'TXN001', Amount: '100.00', Partial Settlement: false",Transaction is rejected with an error message: 'ERROR: User ID is empty.' No amount is added to any user's collected total.,TC-019
+Process transaction with null transaction ID,Transaction Processing,Boundary,High,User is logged in and on the transaction entry screen,"1. Enter a valid user ID (e.g., 'USER001').
+2. Leave the transaction ID field blank.
+3. Enter '100.00' as the transaction amount.
+4. Leave 'Partial Settlement' unchecked.
+5. Submit the transaction.
+
+Test Data: User ID: 'USER001', Transaction ID: null, Amount: '100.00', Partial Settlement: false",Transaction is rejected with an error message: 'ERROR: Transaction ID is invalid.' No amount is added to the user's collected total.,TC-020
+Process transaction with empty transaction ID,Transaction Processing,Boundary,High,User is logged in and on the transaction entry screen,"1. Enter a valid user ID (e.g., 'USER001').
+2. Enter a blank space in the transaction ID field.
+3. Enter '100.00' as the transaction amount.
+4. Leave 'Partial Settlement' unchecked.
+5. Submit the transaction.
+
+Test Data: User ID: 'USER001', Transaction ID: ' ', Amount: '100.00', Partial Settlement: false",Transaction is rejected with an error message: 'ERROR: Transaction ID is invalid.' No amount is added to the user's collected total.,TC-021
+Process transaction exactly at daily limit,Transaction Processing,Boundary,High,User 'USER001' has no prior transactions for the day,"1. Enter user ID 'USER001'.
+2. Enter transaction ID 'TXN001'.
+3. Enter '10000.00' as the transaction amount.
+4. Leave 'Partial Settlement' unchecked.
+5. Submit the transaction.
+6. Verify the user's collected amount.
+
+Test Data: User ID: 'USER001', Transaction ID: 'TXN001', Amount: '10000.00', Partial Settlement: false",Transaction is processed successfully. The user's collected amount is updated to '10000.00'.,TC-022
+Process transaction exceeding daily limit by 0.01,Transaction Processing,Boundary,High,User 'USER001' has no prior transactions for the day,"1. Enter user ID 'USER001'.
+2. Enter transaction ID 'TXN001'.
+3. Enter '10000.01' as the transaction amount.
+4. Leave 'Partial Settlement' unchecked.
+5. Submit the transaction.
+
+Test Data: User ID: 'USER001', Transaction ID: 'TXN001', Amount: '10000.01', Partial Settlement: false",Transaction is rejected with an error message: 'ERROR: Daily limit exceeded.' The user's collected amount remains '0.00'.,TC-023
+Process multiple transactions up to daily limit,Transaction Processing,Boundary,High,User 'USER001' has no prior transactions for the day,"1. Enter user ID 'USER001'.
+2. Enter transaction ID 'TXN001'.
+3. Enter '5000.00' as the transaction amount.
+4. Leave 'Partial Settlement' unchecked.
+5. Submit the transaction.
+6. Enter transaction ID 'TXN002'.
+7. Enter '5000.00' as the transaction amount.
+8. Submit the transaction.
+9. Verify the user's collected amount.
+
+Test Data: User ID: 'USER001', Transaction IDs: 'TXN001', 'TXN002', Amounts: '5000.00', '5000.00', Partial Settlement: false",Both transactions are processed successfully. The user's collected amount is updated to '10000.00'.,TC-024
+Process transaction exceeding daily limit after prior transactions,Transaction Processing,Boundary,High,User 'USER001' has prior transactions totaling '9999.99' for the day,"1. Enter user ID 'USER001'.
+2. Enter transaction ID 'TXN002'.
+3. Enter '0.02' as the transaction amount.
+4. Leave 'Partial Settlement' unchecked.
+5. Submit the transaction.
+
+Test Data: User ID: 'USER001', Transaction ID: 'TXN002', Amount: '0.02', Partial Settlement: false",Transaction is rejected with an error message: 'ERROR: Daily limit exceeded.' The user's collected amount remains '9999.99'.,TC-025
+Process transaction with very large amount,Transaction Processing,Boundary,Medium,User is logged in and on the transaction entry screen,"1. Enter a valid user ID (e.g., 'USER001').
+2. Enter a valid transaction ID (e.g., 'TXN001').
+3. Enter '999999999999999999.99' as the transaction amount.
+4. Leave 'Partial Settlement' unchecked.
+5. Submit the transaction.
+
+Test Data: User ID: 'USER001', Transaction ID: 'TXN001', Amount: '999999999999999999.99', Partial Settlement: false",Transaction is rejected with an error message: 'ERROR: Daily limit exceeded.' No amount is added to the user's collected total.,TC-026
+Process duplicate transaction ID for the same user,Transaction Processing,Boundary,High,User 'USER001' has a prior transaction with ID 'TXN001' for '1000.00',"1. Enter user ID 'USER001'.
+2. Enter transaction ID 'TXN001'.
+3. Enter '500.00' as the transaction amount.
+4. Leave 'Partial Settlement' unchecked.
+5. Submit the transaction.
+
+Test Data: User ID: 'USER001', Transaction ID: 'TXN001', Amount: '500.00', Partial Settlement: false",Transaction is rejected with an error message: 'ERROR: Duplicate transaction ID.' The user's collected amount remains unchanged at '1000.00'.,TC-027
+Process transaction with partial settlement flag,Transaction Processing,Boundary,Medium,User 'USER004' has no prior transactions for the day,"1. Enter user ID 'USER004'.
+2. Enter transaction ID 'TXN008'.
+3. Enter '500.00' as the transaction amount.
+4. Check 'Partial Settlement'.
+5. Submit the transaction.
+6. Verify the user's collected amount.
+
+Test Data: User ID: 'USER004', Transaction ID: 'TXN008', Amount: '500.00', Partial Settlement: true",Transaction is processed successfully. The user's collected amount is updated to '500.00'.,TC-028
+Process transaction with partial settlement exceeding daily limit,Transaction Processing,Boundary,High,User 'USER004' has prior transactions totaling '9500.00' for the day,"1. Enter user ID 'USER004'.
+2. Enter transaction ID 'TXN009'.
+3. Enter '600.00' as the transaction amount.
+4. Check 'Partial Settlement'.
+5. Submit the transaction.
+
+Test Data: User ID: 'USER004', Transaction ID: 'TXN009', Amount: '600.00', Partial Settlement: true",Transaction is rejected with an error message: 'ERROR: Daily limit exceeded.' The user's collected amount remains '9500.00'.,TC-029
+Verify that transactions exceeding the daily limit are rejected,Transaction Processing Security,Security,High,User has no prior transactions for the day,"1. Log in as a registered user. 2. Initiate a transaction of 10,000.00 (exactly the daily limit). 3. Initiate a second transaction of 0.01 (to exceed the limit). 4. Observe the system response for the second transaction.
+
+Test Data: User ID: USER001, Transaction ID: TXN001 (10,000.00), Transaction ID: TXN002 (0.01)",The first transaction is accepted. The second transaction is rejected with a clear message indicating the daily limit has been exceeded.,TC-030
+Verify that negative transaction amounts are rejected,Transaction Processing Security,Security,High,User is logged in and on the transaction initiation screen,"1. Initiate a transaction with a negative amount. 2. Observe the system response.
+
+Test Data: User ID: USER002, Transaction ID: TXN006, Amount: -100.00",The transaction is rejected with a clear message indicating that negative amounts are not allowed.,TC-031
+Verify that zero transaction amounts are rejected,Transaction Processing Security,Security,Medium,User is logged in and on the transaction initiation screen,"1. Initiate a transaction with a zero amount. 2. Observe the system response.
+
+Test Data: User ID: USER002, Transaction ID: TXN005, Amount: 0.00",The transaction is rejected with a clear message indicating that zero amounts are not allowed.,TC-032
+Verify that transactions with null or empty user IDs are rejected,Transaction Processing Security,Security,High,User is on the transaction initiation screen,"1. Attempt to initiate a transaction with a null user ID. 2. Attempt to initiate a transaction with an empty user ID. 3. Observe the system response for both attempts.
+
+Test Data: User ID: null, Transaction ID: TXN007, Amount: 100.00; User ID: '', Transaction ID: TXN008, Amount: 100.00",Both transactions are rejected with clear messages indicating invalid user IDs.,TC-033
+Verify that transactions with empty or null transaction IDs are rejected,Transaction Processing Security,Security,High,User is logged in and on the transaction initiation screen,"1. Attempt to initiate a transaction with a null transaction ID. 2. Attempt to initiate a transaction with an empty transaction ID. 3. Observe the system response for both attempts.
+
+Test Data: User ID: USER003, Transaction ID: null, Amount: 100.00; User ID: USER003, Transaction ID: '', Amount: 100.00",Both transactions are rejected with clear messages indicating invalid transaction IDs.,TC-034
+Verify that extremely large transaction amounts are rejected or handled securely,Transaction Processing Security,Security,High,User is logged in and on the transaction initiation screen,"1. Initiate a transaction with an extremely large amount. 2. Observe the system response.
+
+Test Data: User ID: USER005, Transaction ID: TXN009, Amount: 999999999999999999.99",The transaction is either rejected with a clear message or processed in a way that does not cause system instability or incorrect balance updates.,TC-035
+Verify that duplicate transaction IDs are handled securely,Transaction Processing Security,Security,Medium,User has already processed a transaction with a specific transaction ID,"1. Initiate a new transaction using the same transaction ID as a previously processed transaction. 2. Observe the system response.
+
+Test Data: User ID: USER001, Transaction ID: TXN001 (previously used), Amount: 100.00",The duplicate transaction is rejected with a clear message indicating the transaction ID has already been used.,TC-036
+Verify that transaction details are not exposed in error messages or logs,Transaction Processing Security,Security,High,User is on the transaction initiation screen,"1. Attempt to initiate a transaction with invalid data (e.g., null user ID). 2. Observe the error message displayed to the user. 3. Check system logs for any exposure of transaction details (e.g., amount, user ID).
+
+Test Data: User ID: null, Transaction ID: TXN007, Amount: 100.00",The error message displayed to the user is generic and does not include transaction details. System logs do not expose sensitive transaction details such as user ID or amount.,TC-037
+Verify that partial settlement transactions do not bypass daily limits,Transaction Processing Security,Security,High,User has no prior transactions for the day,"1. Initiate a partial settlement transaction of 10,000.00 (exactly the daily limit). 2. Initiate a second partial settlement transaction of 0.01 (to exceed the limit). 3. Observe the system response for the second transaction.
+
+Test Data: User ID: USER004, Transaction ID: TXN008 (10,000.00), Transaction ID: TXN009 (0.01)",The first partial settlement transaction is accepted. The second partial settlement transaction is rejected with a clear message indicating the daily limit has been exceeded.,TC-038
+Process a single valid transaction within daily limit,User Transaction Processing,Configuration,High,User is logged into the transaction system and has no prior transactions for the day,"1. Navigate to the 'New Transaction' screen. 2. Enter a valid user ID (e.g., 'USER001'). 3. Enter a unique transaction ID (e.g., 'TXN001'). 4. Enter a transaction amount of 1000.00. 5. Ensure 'Partial Settlement' is unchecked. 6. Click 'Submit'. 7. Open the 'Transaction Summary' screen for the user.
+
+Test Data: User ID: USER001, Transaction ID: TXN001, Amount: 1000.00, Partial Settlement: No",The transaction is successfully processed. The 'Transaction Summary' screen shows a total collected amount of 1000.00 for USER001.,TC-039
+Process multiple transactions for the same user within daily limit,User Transaction Processing,Configuration,High,User is logged into the transaction system and has no prior transactions for the day,"1. Navigate to the 'New Transaction' screen. 2. Enter a valid user ID (e.g., 'USER001'). 3. Enter a unique transaction ID (e.g., 'TXN001'). 4. Enter a transaction amount of 2000.00. 5. Ensure 'Partial Settlement' is unchecked. 6. Click 'Submit'. 7. Repeat steps 1-6 with a new transaction ID (e.g., 'TXN002') and amount of 3000.00. 8. Repeat steps 1-6 with a new transaction ID (e.g., 'TXN003') and amount of 5000.00. 9. Open the 'Transaction Summary' screen for the user.
+
+Test Data: User ID: USER001, Transaction IDs: TXN001, TXN002, TXN003, Amounts: 2000.00, 3000.00, 5000.00, Partial Settlement: No for all",All transactions are successfully processed. The 'Transaction Summary' screen shows a total collected amount of 10000.00 for USER001.,TC-040
+Process a transaction that exactly reaches the daily limit,User Transaction Processing,Configuration,High,User is logged into the transaction system and has prior transactions totaling 9000.00 for the day,"1. Navigate to the 'New Transaction' screen. 2. Enter a valid user ID (e.g., 'USER001'). 3. Enter a unique transaction ID (e.g., 'TXN004'). 4. Enter a transaction amount of 1000.00. 5. Ensure 'Partial Settlement' is unchecked. 6. Click 'Submit'. 7. Open the 'Transaction Summary' screen for the user.
+
+Test Data: User ID: USER001, Transaction ID: TXN004, Amount: 1000.00, Partial Settlement: No",The transaction is successfully processed. The 'Transaction Summary' screen shows a total collected amount of 10000.00 for USER001.,TC-041
+Process a partial settlement transaction,User Transaction Processing,Configuration,Medium,User is logged into the transaction system and has no prior transactions for the day,"1. Navigate to the 'New Transaction' screen. 2. Enter a valid user ID (e.g., 'USER004'). 3. Enter a unique transaction ID (e.g., 'TXN008'). 4. Enter a transaction amount of 500.00. 5. Check 'Partial Settlement'. 6. Click 'Submit'. 7. Open the 'Transaction Summary' screen for the user.
+
+Test Data: User ID: USER004, Transaction ID: TXN008, Amount: 500.00, Partial Settlement: Yes",The partial settlement transaction is successfully processed. The 'Transaction Summary' screen shows a total collected amount of 500.00 for USER004.,TC-042
+Verify Gradle wrapper downloads and uses the correct Gradle version (8.0-bin),Gradle Wrapper Configuration,Configuration,High,Clean environment with no existing Gradle wrapper or cached distributions,"1. Navigate to the project root directory. 2. Run './gradlew --version'. 3. Observe the Gradle version in the output.
+
+Test Data: distributionUrl=https://services.gradle.org/distributions/gradle-8.0-bin.zip (new)",The output shows Gradle version 8.0 and the build completes without errors related to Gradle version mismatch.,TC-043
+Verify the project builds successfully with the specified Java plugin and JUnit 5.9.1 dependencies,Gradle Build Configuration,Configuration,High,"Project setup with the new build.gradle file, no existing build artifacts","1. Navigate to the project root directory. 2. Run './gradlew clean build'. 3. Observe the build output for errors.
+
+Test Data: testImplementation platform('org.junit:junit-bom:5.9.1') and testImplementation 'org.junit.jupiter:junit-jupiter' (new)","The build completes successfully with no dependency resolution errors, and tests are executed using JUnit Platform.",TC-044
+Verify JUnit 5 tests are executed during the build process,Gradle Build Configuration,Configuration,High,"Project contains JUnit 5 test classes, build.gradle file is present","1. Navigate to the project root directory. 2. Run './gradlew test'. 3. Observe the test execution summary in the output.
+
+Test Data: test { useJUnitPlatform() } (new)","Test execution summary shows JUnit 5 tests were discovered and run, with no errors related to test platform configuration.",TC-045
+Verify the root project name is correctly set to 'TransactionService',Gradle Settings Configuration,Configuration,Medium,Project setup with the new settings.gradle file,"1. Navigate to the project root directory. 2. Run './gradlew projects'. 3. Observe the root project name in the output.
+
+Test Data: rootProject.name = 'TransactionService' (new)",The output lists the root project name as 'TransactionService'.,TC-046
+Verify IDE (IntelliJ) recognizes the Gradle project structure,IDE Gradle Configuration,Configuration,Medium,"IntelliJ IDEA installed, project imported as Gradle project","1. Open the project in IntelliJ IDEA. 2. Check the Gradle tool window. 3. Verify the project structure matches the Gradle configuration.
+
+Test Data: externalProjectPath=$PROJECT_DIR$ and modules configuration (new)","IntelliJ IDEA correctly imports the project as a Gradle project, and the Gradle tool window shows the expected project structure.",TC-047
+Verify IDE (IntelliJ) uses JDK 1.8 for project SDK and JDK 17 for language level,IDE Project Configuration,Configuration,Medium,"IntelliJ IDEA installed, project imported","1. Open the project in IntelliJ IDEA. 2. Navigate to File > Project Structure. 3. Check the Project SDK and Project language level settings.
+
+Test Data: project-jdk-name=""1.8"" and languageLevel=""JDK_17"" (new)",Project SDK is set to JDK 1.8 and Project language level is set to JDK 17 in IntelliJ IDEA.,TC-048
+Verify IDE (IntelliJ) recognizes the project as a Git repository,IDE Version Control Configuration,Configuration,Low,"IntelliJ IDEA installed, project imported, Git installed","1. Open the project in IntelliJ IDEA. 2. Check the Version Control tool window. 3. Verify the project is recognized as a Git repository.
+
+Test Data: vcs=""Git"" (new)","IntelliJ IDEA recognizes the project as a Git repository, and the Version Control tool window shows Git integration.",TC-049

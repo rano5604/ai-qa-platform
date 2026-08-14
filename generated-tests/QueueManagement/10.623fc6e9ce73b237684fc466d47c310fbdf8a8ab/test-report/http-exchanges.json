@@ -1,0 +1,835 @@
+[ {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "addNewItemWithMaximumAllowedNameLength",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/items",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\n  \"description\": \"Test item\",\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509069691,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 320
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "addNewItemWithNameExceedingMaximumAllowedLength",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/items",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\n  \"description\": \"Test item\",\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509069788,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 10
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "addNewServiceItem",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/items",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Oil Change_1786509069792\",\n  \"description\": \"Standard oil change service\",\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509069809,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 10
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "attemptPaymentForAlreadyPaidAppointment",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Area_1786509069817\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":null,\"details\":\"uri=/api/areas\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 11
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "attemptPaymentForCanceledAppointment",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Area_1786509069832\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":null,\"details\":\"uri=/api/areas\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 9
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "attemptToDeleteNonExistentServiceItem",
+  "requestMethod" : "DELETE",
+  "requestUri" : "http://localhost:8082/api/items/99999",
+  "requestHeaders" : {
+    "Accept" : "*/*"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509069870,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items/99999\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 21
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "createPaymentForAppointmentWithLargeAmount",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Area_1786509069873\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":null,\"details\":\"uri=/api/areas\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 9
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "createPaymentForAppointmentWithZeroTotalAmount",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/payments?appointmentId",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/x-www-form-urlencoded; charset=ISO-8859-1"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 500,
+  "responseStatusLine" : "HTTP/1.1 500 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"statusCode\":500,\"message\":\"Required request parameter 'appointmentId' for method parameter type Long is present but converted to null\",\"details\":\"uri=/api/payments\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 9
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "createPaymentForNonExistentAppointment",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/payments?appointmentId=99999",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/x-www-form-urlencoded; charset=ISO-8859-1"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":\"Appointment not found\",\"details\":\"uri=/api/payments\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 20
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "createServiceItemWithMissingRequiredFields",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/items",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"description\": \"Standard oil change service\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509069963,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 12
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "deleteExistingItem",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/items",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Item_1786509069967\",\n  \"description\": \"Test Item\",\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509069979,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 10
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "deleteExistingServiceItem",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/items",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Oil Change_1786509069983\",\n  \"description\": \"Standard oil change service\",\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509069996,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 12
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "deleteNonExistentItem",
+  "requestMethod" : "DELETE",
+  "requestUri" : "http://localhost:8082/api/items/99999",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509070029,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items/99999\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 15
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "deleteNonExistentItem2",
+  "requestMethod" : "DELETE",
+  "requestUri" : "http://localhost:8082/api/items/999",
+  "requestHeaders" : {
+    "Accept" : "*/*"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509070465,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items/999\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 13
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "failToProcessPaymentForIncompleteAppointment",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Area_1786509070468\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":null,\"details\":\"uri=/api/areas\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 10
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "processPaymentForIncompleteAppointment",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Area_1786509070485\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":null,\"details\":\"uri=/api/areas\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 9
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "retrieveAllServiceItems",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/items",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Oil Change_1786509070498\",\n  \"description\": \"Standard oil change service\",\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509070509,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 10
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "retrieveServiceItemById",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/items",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Oil Change_1786509070513\",\n  \"description\": \"Standard oil change service\",\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509070525,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 10
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "retrieveServiceItemByMalformedId",
+  "requestMethod" : "GET",
+  "requestUri" : "http://localhost:8082/api/items/abc",
+  "requestHeaders" : {
+    "Accept" : "*/*"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509070539,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items/abc\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 8
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "successfullyMarkCashPaymentAsReceived",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Area_1786509070542\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":null,\"details\":\"uri=/api/areas\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 9
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "successfullyProcessPaymentForCompletedAppointment",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Area_1786509070556\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":null,\"details\":\"uri=/api/areas\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 9
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "updateExistingItemWithEmptyName",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/items",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Original Item\",\n  \"description\": \"Original description\",\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509070580,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 9
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "updateExistingServiceItem",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/items",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Oil Change_1786509070583\",\n  \"description\": \"Standard oil change service\",\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509070591,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 7
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "updateNonExistentServiceItem",
+  "requestMethod" : "PUT",
+  "requestUri" : "http://localhost:8082/api/items/99999",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Oil Change\",\n  \"description\": \"Standard oil change service\",\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509070606,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items/99999\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 10
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "verifyItemSearchHandlesSpecialCharacters",
+  "requestMethod" : "GET",
+  "requestUri" : "http://localhost:8082/api/items/search?name=%3Cscript%3Ealert%281%29%3C%2Fscript%3E",
+  "requestHeaders" : {
+    "Accept" : "*/*"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509070624,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items/search\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 13
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "verifyItemSearchHandlesSqlInjection",
+  "requestMethod" : "GET",
+  "requestUri" : "http://localhost:8082/api/items/search?name=%27%20OR%20%271%27%3D%271",
+  "requestHeaders" : {
+    "Accept" : "*/*"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":1786509070638,\"status\":404,\"error\":\"Not Found\",\"message\":\"No message available\",\"path\":\"/api/items/search\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 10
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "verifyPaymentCannotBeProcessedForIncompleteAppointment",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Area_1786509070641\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":null,\"details\":\"uri=/api/areas\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 9
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_623fc6e9ce73b237684fc466d47c310fbdf8a8ab",
+  "testMethodName" : "verifyPaymentStatusSetToPaidAfterCashPayment",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8082/api/areas",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"name\": \"Area_1786509070655\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "1; mode=block",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Wed, 12 Aug 2026 04:31:09 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"statusCode\":404,\"message\":null,\"details\":\"uri=/api/areas\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 9
+} ]

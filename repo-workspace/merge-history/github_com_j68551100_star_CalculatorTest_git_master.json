@@ -1,0 +1,31 @@
+[ {
+  "mergeSha" : "50947af5f4fda8a56cedbe0e1544f2f71ee85a4b",
+  "preMergeSha" : "EMPTY_TREE",
+  "processedAt" : "2026-08-13T11:29:53.568321400Z",
+  "summary" : "Processed 5 changed source file(s) and 6 changed config file(s), parsed 5 class(es), impact radius 5 class(es). Mode=MANUAL: 0 business test case(s) (0 new, 0 updated), 0 automated test file(s). Method-level impact radius: 6 method(s).",
+  "status" : "SUCCESS",
+  "attemptCount" : 2,
+  "lastAttemptAt" : "2026-08-13T11:37:13.938455100Z",
+  "failureReason" : null,
+  "expectedCategories" : [ "SECURITY" ],
+  "generatedCategories" : [ "POSITIVE", "NEGATIVE", "BOUNDARY", "CONFIGURATION", "SECURITY" ],
+  "missingCategories" : [ ],
+  "testCaseCount" : 31,
+  "coveragePercent" : 100,
+  "incomplete" : false
+}, {
+  "mergeSha" : "1e702eba97d8de77efc6eb8c07b2ab613f14b299",
+  "preMergeSha" : "50947af5f4fda8a56cedbe0e1544f2f71ee85a4b",
+  "processedAt" : "2026-08-13T11:38:50.558088600Z",
+  "summary" : "Processed 1 changed source file(s) and 0 changed config file(s), parsed 1 class(es), impact radius 1 class(es). Mode=MANUAL: 32 business test case(s) (9 new, 23 updated), 0 automated test file(s). Method-level impact radius: 2 method(s).",
+  "status" : "SUCCESS",
+  "attemptCount" : 3,
+  "lastAttemptAt" : "2026-08-13T11:42:29.824094500Z",
+  "failureReason" : null,
+  "expectedCategories" : [ "POSITIVE", "NEGATIVE", "BOUNDARY", "SECURITY" ],
+  "generatedCategories" : [ "POSITIVE", "NEGATIVE", "BOUNDARY", "SECURITY" ],
+  "missingCategories" : [ ],
+  "testCaseCount" : 32,
+  "coveragePercent" : 100,
+  "incomplete" : false
+} ]

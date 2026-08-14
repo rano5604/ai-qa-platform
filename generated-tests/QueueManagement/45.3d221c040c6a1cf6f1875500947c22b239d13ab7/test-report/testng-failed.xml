@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [Command line suite]">
+  <test thread-count="5" name="Command line test(failed)">
+    <classes>
+      <class name="com.company.aiqa.generated.AutomationTest_3d221c040c6a1cf6f1875500947c22b239d13ab7">
+        <methods>
+          <include name="verifyOpenApiJsonAccessWithoutAuthentication"/>
+          <include name="verifyOpenApiAccessBlockedFromDisallowedOrigin"/>
+          <include name="setup"/>
+          <include name="verifyOpenApiAccessBlockedFromArbitraryOrigin"/>
+          <include name="attemptAccessWithInvalidServerUrl"/>
+          <include name="verifyLegacyOpenApiJsonAccessBlocked"/>
+          <include name="attemptAccessWithExcessivelyLongServerUrl"/>
+          <include name="verifyOpenApiAccessAllowedFromUpdatedOrigin"/>
+        </methods>
+      </class> <!-- com.company.aiqa.generated.AutomationTest_3d221c040c6a1cf6f1875500947c22b239d13ab7 -->
+    </classes>
+  </test> <!-- Command line test(failed) -->
+</suite> <!-- Failed suite [Command line suite] -->
