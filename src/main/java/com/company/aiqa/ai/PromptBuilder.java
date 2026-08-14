@@ -513,7 +513,44 @@ public class PromptBuilder {
                   Note the quoting: a string value keeps its quotes around the
                   placeholder, a numeric one has none.
                 - Translate the case's "Expected Result" into assertions: status code
-                  first, then response body fields via Hamcrest matchers.
+                  first, then - for a SUCCESS response only - body fields via Hamcrest
+                  matchers. Note the schemas below describe REQUEST payloads; you are
+                  never shown a RESPONSE schema, so assert only fields the case's own
+                  Expected Result actually names, and stay tolerant about where they
+                  sit: if creates come back wrapped as {"status":..,"data":{..}} the
+                  path is "data.id". Asserting a field the case never mentions is a
+                  guess, and a wrong guess reads as a product defect.
+                - ERROR RESPONSES: ASSERT THE STATUS, KEEP THE BODY GENERIC.
+                  You are shown the request schemas, never the ERROR schema, so you do
+                  not know what an error body looks like here. Different stacks return
+                  {"message":..}, {"error":..}, {"errors":[..]}, {"title":..,"detail":..}
+                  or an empty body, and a guessed field name fails on a server that is
+                  behaving perfectly correctly. That turns a passing system into a red
+                  report and buries the failures that matter.
+                  So for any case expecting an error:
+                    * The STATUS CODE is the assertion. It is the part of the contract
+                      you actually know. Very often it should be the only one.
+                    * Do NOT assert a JSON path in an error body - no .body("message",
+                      ..), no .body("error.code", ..). You are guessing the field name.
+                    * Do NOT assert exact error wording. Message text gets reworded and
+                      localized without the behavior changing at all.
+                    * Do NOT assert the error body is non-empty - plenty of APIs answer
+                      4xx with no body, and that is legitimate.
+                  When the manual case genuinely pins down wording, check it loosely
+                  against the WHOLE body, case-insensitively, and print the body when it
+                  fails so the report is diagnosable rather than just red:
+
+                      String body = given()
+                              .contentType(ContentType.JSON).body(invalidPayload)
+                              .when().post("/api/customers")
+                              .then().statusCode(anyOf(is(400), is(422)))
+                              .extract().asString();
+                      Assert.assertTrue(body.toLowerCase().contains("email"),
+                              "Expected the error to mention the offending field. Body was: " + body);
+
+                  Prefer asserting less and being right to asserting more and being
+                  wrong: an over-specified error assertion reports a defect that is not
+                  there, and someone has to spend time proving it is not there.
                 - MATCH THE STATUS TO THE EXPECTED RESULT, never assume 200/201.
                   Read what the case says should happen and assert THAT:
                     * expects success        -> 200, or 201 for a create
