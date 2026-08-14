@@ -97,6 +97,24 @@ public class QaPipelineService {
                 ? gitDiffService.computeChangedConfigFiles(request.getRepoPath(), request.getBaseRef(), request.getHeadRef())
                 : List.of();
 
+        // Build tooling (build.gradle, pom.xml, wrapper/version catalogs,
+        // Dockerfiles, CI pipelines) is recognized as config but carries no
+        // business logic, so there are no rules or outcomes to test - the
+        // checklist it produces just restates what a green build already
+        // proves. Dropped unless explicitly asked for.
+        if (!pipelineProperties.isBuildConfigTestCasesEnabled() && !configFiles.isEmpty()) {
+            List<ChangedFile> withoutBuildFiles = configFiles.stream()
+                    .filter(file -> !ConfigType.isBuildTooling(file.path()))
+                    .toList();
+            int dropped = configFiles.size() - withoutBuildFiles.size();
+            if (dropped > 0) {
+                log.info("Skipping {} build-tooling file(s) - no business logic to test. "
+                                + "Set aiqa.pipeline.build-config-test-cases-enabled=true to include them.",
+                        dropped);
+            }
+            configFiles = withoutBuildFiles;
+        }
+
         List<CommitInfo> commitLog = gitDiffService.getCommitLog(
                 request.getRepoPath(), request.getBaseRef(), request.getHeadRef());
 

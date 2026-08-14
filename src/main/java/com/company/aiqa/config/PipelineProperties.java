@@ -159,6 +159,24 @@ public class PipelineProperties {
     public boolean isConfigChangeDetectionEnabled() { return configChangeDetectionEnabled; }
     public void setConfigChangeDetectionEnabled(boolean configChangeDetectionEnabled) { this.configChangeDetectionEnabled = configChangeDetectionEnabled; }
 
+    /**
+     * Whether BUILD TOOLING changes (build.gradle, pom.xml, wrapper and version
+     * catalogs, Dockerfiles, CI pipeline definitions - see
+     * ConfigType.isBuildTooling) also produce config test cases. Off by default.
+     *
+     * <p>Config-change detection above deliberately casts a wide net, which
+     * swept in build files too: a commit that only fixed the Android toolchain
+     * generated a "Configuration" checklist asking a tester to verify the build
+     * resolves and packaging is unchanged. The build proves that itself, and the
+     * change contains no business logic - no conditions, no rules, no outcomes -
+     * so there is nothing meaningful to test and the cases are pure noise in the
+     * suite. Turn this on only if you specifically want build/release checklists.
+     */
+    private boolean buildConfigTestCasesEnabled = false;
+
+    public boolean isBuildConfigTestCasesEnabled() { return buildConfigTestCasesEnabled; }
+    public void setBuildConfigTestCasesEnabled(boolean buildConfigTestCasesEnabled) { this.buildConfigTestCasesEnabled = buildConfigTestCasesEnabled; }
+
     public String getOutputDir() { return outputDir; }
     public void setOutputDir(String outputDir) { this.outputDir = outputDir; }
 

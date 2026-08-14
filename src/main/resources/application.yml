@@ -139,6 +139,15 @@ aiqa:
     # being silently skipped for having no changed *source* files.
     config-change-detection-enabled: true
 
+    # Build tooling is recognized as config but carries no business logic, so
+    # the checklist it produces ("verify the build still resolves", "confirm
+    # packaging is unchanged") only restates what a green build already proves.
+    # Off by default, which drops build.gradle / pom.xml / wrapper files /
+    # version catalogs / lock files / package descriptors / Dockerfiles / CI
+    # pipelines from test generation. Turn on only if you specifically want
+    # build/release checklists. See ConfigType.isBuildTooling.
+    build-config-test-cases-enabled: false
+
   # Provider-agnostic clone/fetch credentials, shared by /generate-tests-from-branch,
   # the GitHub webhook, and the GitLab webhook alike. Add one entry per host you
   # need to read from - github.com, gitlab.com, a self-hosted GitLab, or a bare

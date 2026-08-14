@@ -172,6 +172,64 @@ public enum ConfigType {
         return Optional.empty();
     }
 
+    /**
+     * True when this path is BUILD TOOLING rather than application configuration:
+     * build scripts, dependency/version catalogs, wrapper metadata, container
+     * build files and CI pipeline definitions.
+     *
+     * <p>These are recognized config files, so without this they flow into the
+     * config test-case prompt and produce checklists like "verify the Gradle
+     * build still resolves" - which is what the build itself already proves. A
+     * commit that only retunes the toolchain has no business logic in it, so it
+     * has no business rules, conditions or outcomes to build a decision table
+     * from, and the test cases generated for it are noise.
+     *
+     * <p>Path-aware on purpose rather than a simple {@code switch} over the enum:
+     * gradle.properties and gradle-wrapper.properties classify as PROPERTIES and
+     * gradle/libs.versions.toml as TOML, so matching on type alone would let the
+     * most common Gradle toolchain files through.
+     */
+    public static boolean isBuildTooling(String path) {
+        if (path == null) {
+            return false;
+        }
+        String lower = path.toLowerCase(Locale.ROOT).replace('\\', '/');
+        String name = fileName(lower);
+
+        // Build scripts and project descriptors.
+        if (name.endsWith(".gradle") || name.endsWith(".gradle.kts")) return true;
+        if (name.equals("pom.xml")) return true;
+        if (name.equals("build.xml") || name.equals("ivy.xml")) return true;
+
+        // Wrapper / toolchain metadata and version catalogs.
+        if (name.equals("gradle.properties") || name.equals("gradle-wrapper.properties")) return true;
+        if (name.equals("maven-wrapper.properties") || name.equals("libs.versions.toml")) return true;
+        if (lower.startsWith("gradle/") || lower.contains("/gradle/wrapper/")) return true;
+        if (lower.startsWith(".mvn/") || lower.contains("/.mvn/")) return true;
+
+        // Package descriptors: the npm/Dart/Python/Ruby analogues of pom.xml.
+        if (name.equals("package.json") || name.equals("pubspec.yaml")) return true;
+        if (name.equals("pyproject.toml") || name.equals("gemfile")) return true;
+
+        // Dependency lock files. Machine-generated and often enormous - a
+        // resolved-version diff has nothing a tester can act on.
+        if (name.endsWith(".lock")) return true;
+        if (name.equals("package-lock.json") || name.equals("pnpm-lock.yaml")) return true;
+        if (name.equals("npm-shrinkwrap.json")) return true;
+
+        // Container build definitions.
+        if (name.equals("dockerfile") || name.startsWith("dockerfile.") || name.endsWith(".dockerfile")) return true;
+        if (name.equals(".dockerignore")) return true;
+
+        // CI pipeline definitions - these describe how the build runs, not what
+        // the product does.
+        if (lower.startsWith(".github/workflows/") || lower.contains("/.github/workflows/")) return true;
+        if (name.equals(".gitlab-ci.yml") || name.equals("jenkinsfile")) return true;
+        if (name.equals("azure-pipelines.yml") || name.equals(".travis.yml")) return true;
+
+        return false;
+    }
+
     private static String fileName(String lowerPath) {
         int slash = Math.max(lowerPath.lastIndexOf('/'), lowerPath.lastIndexOf('\\'));
         return slash >= 0 ? lowerPath.substring(slash + 1) : lowerPath;
