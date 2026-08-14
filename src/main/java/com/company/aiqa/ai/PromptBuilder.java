@@ -113,9 +113,22 @@ public class PromptBuilder {
                       (e.g. a status transition that shouldn't be allowed, a duplicate
                       that should be rejected, an operation on an already-finalized record)
                     - Calling an operation without the required preconditions met
-                    - Unauthorized/unauthenticated attempts, if any access control is visible or implied
+                    - Unauthorized/unauthenticated attempts, but ONLY if authentication or
+                      access control is actually visible in the diff or the provided code.
                     Every case's expectedResult must describe the rejection/error behavior,
                     not a successful outcome.
+
+                    Every case must be reachable in the code you were given. Do not
+                    assume surrounding machinery that was not shown to you - if there
+                    is no login, session, role or permission check in the provided
+                    code, then "user is not logged in" is not a valid precondition
+                    and that scenario does not exist. The same goes for databases,
+                    networks, files, queues or external services that are not there.
+                    A rejection the code cannot actually perform is a false test that
+                    a tester will waste time trying to run.
+
+                    If the change genuinely has no invalid-input surface, return an
+                    empty array rather than inventing one.
                     """;
             case "BOUNDARY" -> """
                     FOCUS: BOUNDARY and edge-value test cases only.
@@ -133,6 +146,47 @@ public class PromptBuilder {
                       far future, far past, timezone boundaries)
                     Every case must target a specific boundary value in testData, not a
                     generic "large" or "invalid" description - use concrete numbers/strings.
+
+                    SKIP BOUNDARIES THAT ARE ALREADY UNREACHABLE. A boundary is only
+                    worth testing for input the code actually accepts far enough to
+                    evaluate it. When a type, format or validation GATE rejects a whole
+                    class of input up front, every value in that class is rejected for
+                    the same reason regardless of its magnitude - so its boundaries are
+                    the same single case tested over and over.
+
+                    Think of it as a decision table: once "input is the accepted type"
+                    is false, the outcome is "reject" and the magnitude condition is
+                    a DON'T-CARE. Collapse those rows into the one type-rejection case
+                    (which belongs to NEGATIVE, not here) and do not enumerate them.
+
+                    Worked example - a parameter that accepts only integers:
+                    - The type gate rejecting 3.7 is ONE negative case. Do not then add
+                      "very large float", "float at max int", "negative float", "0.0" -
+                      they all fail identically at the same gate and prove nothing new.
+                    - Boundaries WORTH testing are the ones inside the accepted domain:
+                      the smallest and largest valid integer, zero, and one step past
+                      each end of any range the code actually enforces.
+                    The reverse holds when the parameter accepts only floats: the
+                    integer-rejection case is one negative case, not a family of them.
+
+                    DO NOT RE-TEST ONE BOUNDARY ACROSS EVERY OPERATION OR VARIANT.
+                    When the same edge value is fed through several operations, keep
+                    only the ones where the operation actually CHANGES the outcome:
+                    - Keep it when that pairing has its own distinct behavior - e.g.
+                      max integer + 1 overflows, and divide by zero is its own rule.
+                    - Drop it when the operation is incidental to the edge - e.g. once
+                      zero is shown to behave for one operation, repeating zero for
+                      every other operation proves nothing further.
+                    The operation and the boundary are independent dimensions; cover
+                    each meaningful pairing once, not the whole grid of combinations.
+
+                    Finally, stay inside your category: a case whose point is that
+                    input was REJECTED is a negative case, not a boundary case. If
+                    the only thing a case proves is that the wrong type was refused,
+                    it does not belong here at all.
+
+                    Prefer few cases that each prove a distinct rule over many that
+                    re-prove the same one.
                     """;
             case "SECURITY" -> """
                     FOCUS: SECURITY test cases only.
@@ -255,6 +309,22 @@ public class PromptBuilder {
                   be able to follow every step.
                 - Base every test case on logic actually present in the provided
                   diffs/methods - do not invent features that weren't shown.
+                - GROUNDING: every precondition, step and expected result must be
+                  something the provided code can actually do. Do not introduce
+                  authentication, login, sessions, users, roles, permissions,
+                  databases, networks, files or external services unless they
+                  appear in the code you were given. A calculator that takes two
+                  numbers has no "user is not logged in" state. When you catch
+                  yourself writing a precondition the code has no notion of, drop
+                  the case - it is not a test, it is a guess about a system that
+                  may not exist.
+                - NO REDUNDANT CASES: each case must prove a rule no other case
+                  already proves. If two cases fail at the same validation gate
+                  for the same reason, they are one case - keep the clearest and
+                  drop the rest. Coverage means every distinct rule and outcome is
+                  exercised once, not that every input value appears somewhere.
+                  A short suite where each case earns its place beats a long one
+                  that re-proves the same gate with different numbers.
                 %s
                 """.formatted(categoryGuidance, executionModeGuidance,
                         multiCategory
