@@ -1,16 +1,31 @@
 Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
-Invalid input type for calculation,Calculator Operations,Negative,High,User is on the calculator page,"1. Enter a non-numeric value in the first field. 2. Enter a numeric value in the second field. 3. Click the calculate button.
+Add two decimal numbers and display the result,Basic Arithmetic Operations,Positive,High,The calculator is in a ready state,"1. Enter the first decimal number, e.g. 10.5. 2. Enter the second decimal number, e.g. 1.2. 3. Perform the addition operation.
 
-Test Data: First field: 'abc', Second field: '10'",The system rejects the input and displays an error message indicating that only numeric values are allowed for calculation.,TC-001
-Missing input for calculation,Calculator Operations,Negative,Medium,User is on the calculator page,"1. Leave the first field empty. 2. Enter a numeric value in the second field. 3. Click the calculate button.
+Test Data: 10.5, 1.2",The result of the addition is displayed as 11.70,TC-001
+Subtract two decimal numbers and display the result,Basic Arithmetic Operations,Positive,High,The calculator is in a ready state,"1. Enter the first decimal number, e.g. 10.8. 2. Enter the second decimal number, e.g. 1.3. 3. Perform the subtraction operation.
 
-Test Data: First field: '', Second field: '10'",The system rejects the input and displays an error message indicating that both fields are required for calculation.,TC-002
-Invalid float input for calculation,Calculator Operations,Negative,Medium,User is on the calculator page,"1. Enter a string that cannot be parsed to a float in the first field. 2. Enter a numeric value in the second field. 3. Click the calculate button.
+Test Data: 10.8, 1.3",The result of the subtraction is displayed as 9.50,TC-002
+Multiply two decimal numbers and display the result,Basic Arithmetic Operations,Positive,High,The calculator is in a ready state,"1. Enter the first decimal number, e.g. 2.5. 2. Enter the second decimal number, e.g. 3.7. 3. Perform the multiplication operation.
 
-Test Data: First field: '10.0.0', Second field: '10'",The system rejects the input and displays an error message indicating that the input must be a valid float.,TC-003
-Unauthorized access to calculator,Calculator Operations,Negative,High,User is not logged in,"1. Try to access the calculator page without logging in. 2. Enter a numeric value in the first field. 3. Enter a numeric value in the second field. 4. Click the calculate button.
+Test Data: 2.5, 3.7",The result of the multiplication is displayed as 9.25,TC-003
+Divide two decimal numbers and display the result,Basic Arithmetic Operations,Positive,High,The calculator is in a ready state,"1. Enter the first decimal number, e.g. 10.2. 2. Enter the second decimal number, e.g. 2.1. 3. Perform the division operation.
 
-Test Data: First field: '10', Second field: '10'",The system redirects the user to the login page and does not allow access to the calculator.,TC-004
-Update to non-numeric input in the first field,Calculator Operations,Negative,High,User is on the calculator page,"1. Enter a non-numeric value in the first field. 2. Enter a numeric value in the second field. 3. Click the calculate button.
+Test Data: 10.2, 2.1",The result of the division is displayed as 4.86,TC-004
+Handle division by zero with decimal number input,Basic Arithmetic Operations,Positive,High,The calculator is in a ready state,"1. Enter the first decimal number, e.g. 10.5. 2. Enter zero as the second decimal number. 3. Perform the division operation.
 
-Test Data: First field: 'abc', Second field: '10'",The system rejects the input and displays an error message indicating that only numeric values are allowed for calculation.,50947af-TC-006
+Test Data: 10.5, 0",An error message is displayed indicating that division by zero is not allowed,50947af-TC-005
+Verify that extremely large floating-point numbers do not cause unexpected behavior or expose internal errors,Calculator Input Handling,Security,High,Calculator application is open and ready to accept input,"1. Enter the maximum possible floating-point value (e.g., 3.4028235E38) for both input fields. 2. Observe the displayed results for addition, subtraction, multiplication, and division.
+
+Test Data: First input: 3.4028235E38, Second input: 3.4028235E38","The calculator displays either the correct mathematical result or a clear error message indicating the value is too large to process, without exposing internal system details or crashing.",TC-005
+Verify that extremely small floating-point numbers do not cause unexpected behavior or expose internal errors,Calculator Input Handling,Security,Medium,Calculator application is open and ready to accept input,"1. Enter the minimum possible floating-point value (e.g., 1.4E-45) for both input fields. 2. Observe the displayed results for addition, subtraction, multiplication, and division.
+
+Test Data: First input: 1.4E-45, Second input: 1.4E-45","The calculator displays either the correct mathematical result or a clear error message indicating the value is too small to process, without exposing internal system details or crashing.",TC-006
+Verify that non-numeric input is rejected or handled gracefully,Calculator Input Handling,Security,High,Calculator application is open and ready to accept input,"1. Attempt to enter non-numeric characters (e.g., letters, symbols like '@', '#') into the input fields. 2. Observe the system's response.
+
+Test Data: First input: 'abc', Second input: '123@'","The calculator either prevents the entry of non-numeric characters or displays a clear error message indicating invalid input, without exposing internal system details.",TC-007
+"Verify that special floating-point values (NaN, Infinity) are handled gracefully",Calculator Input Handling,Security,Medium,"Calculator application is open and ready to accept input (if supported by the UI, otherwise simulate via direct input methods if applicable)","1. Enter 'NaN' (Not a Number) into one or both input fields. 2. Observe the displayed results. 3. Enter 'Infinity' into one or both input fields. 4. Observe the displayed results.
+
+Test Data: First input: 'NaN', Second input: 'Infinity'","The calculator displays a clear error message indicating invalid input or handles the special values appropriately (e.g., showing 'NaN' or 'Infinity' as results where mathematically correct), without exposing internal system details or crashing.",TC-008
+Verify that division by zero with floating-point inputs displays a clear error message,Calculator Operations,Security,High,Calculator application is open and ready to accept input,"1. Enter a non-zero floating-point value (e.g., 5.5) for the first input. 2. Enter 0.0 for the second input. 3. Observe the result of the division operation.
+
+Test Data: First input: 5.5, Second input: 0.0","The calculator displays a clear error message indicating division by zero is not allowed, without exposing internal system details.",6adbc85-TC-001

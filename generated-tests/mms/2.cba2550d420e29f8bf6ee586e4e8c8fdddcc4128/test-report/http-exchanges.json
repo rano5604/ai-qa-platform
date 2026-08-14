@@ -1,0 +1,459 @@
+[ {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "generateBanglaQrWithAllOptionalFields",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"accountType\": \"PERSONAL\",\n  \"merchantCategoryCode\": \"5411\",\n  \"merchantId\": \"MERCHANT12345\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"1234567890\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"Dhaka\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"notificationMobileNo\": \"8801712345678\",\n  \"terminalId\": \"TERM12345678\",\n  \"purposeOfTrx\": \"Bill Payment\",\n  \"acquirerInstitutionType\": \"BANK\",\n  \"acquirerId\": \"ACQ123\",\n  \"merchantLogo\": \"logo_base64_string\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:39 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126530011com.my.uuid0104BANK0206ACQ123031612345678901234565204541153030505802BD5913Test Merchant6005Dhaka021012345678900712TERM123456780812Bill Payment88570011com.my.uuid041621BD85CD615DA75E0518logo_base64_string890600020163043A51\",\"signature\":\"21BD85CD615DA75E\",\"crc\":\"3A51\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 854
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "generateBanglaQrWithEmptyMerchantName",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"accountType\": \"00\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACCT1234567890\",\n  \"merchantName\": \"\",\n  \"merchantCity\": \"DHAKA\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"notificationMobileNo\": \"8801712345678\",\n  \"terminalId\": \"TERM12345678\",\n  \"purposeOfTrx\": \"00\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ1234567890\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:41 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/generate-bangla-qr\",\"validationErrors\":{\"merchantName\":\"must not be blank\"},\"timestamp\":\"2026-08-14T09:05:41.288908954\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 555
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "generateBanglaQrWithEmptyNotificationMobileNo",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"accountType\": \"00\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACCT1234567890\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"DHAKA\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"notificationMobileNo\": \"\",\n  \"terminalId\": \"TERM12345678\",\n  \"purposeOfTrx\": \"00\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ1234567890\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:41 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126580011com.my.uuid0102010213ACQ1234567890031612345678901234565204411153030505802BD5913Test Merchant6005DHAKA0214ACCT12345678900712TERM1234567808020088350011com.my.uuid0416D94057D61ABAAB8489060002016304FE7B\",\"signature\":\"D94057D61ABAAB84\",\"crc\":\"FE7B\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 509
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "generateBanglaQrWithExactSignatureLength",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"accountType\": \"00\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACCT1234567890\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"DHAKA\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"notificationMobileNo\": \"8801712345678\",\n  \"terminalId\": \"TERM12345678\",\n  \"purposeOfTrx\": \"00\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ1234567890\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:42 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126580011com.my.uuid0102010213ACQ1234567890031612345678901234565204411153030505802BD5913Test Merchant6005DHAKA0214ACCT12345678900712TERM1234567808020088350011com.my.uuid0416DCCC7FA969F2E3538906000201630434A8\",\"signature\":\"DCCC7FA969F2E353\",\"crc\":\"34A8\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 466
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "generateBanglaQrWithInvalidSignatureLength",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"accountType\": \"00\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACCT1234567890\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"DHAKA\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"notificationMobileNo\": \"8801712345678\",\n  \"terminalId\": \"TERM12345678\",\n  \"purposeOfTrx\": \"00\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ1234567890\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:42 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126580011com.my.uuid0102010213ACQ1234567890031612345678901234565204411153030505802BD5913Test Merchant6005DHAKA0214ACCT12345678900712TERM1234567808020088350011com.my.uuid0416DCCC7FA969F2E3538906000201630434A8\",\"signature\":\"DCCC7FA969F2E353\",\"crc\":\"34A8\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 522
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "generateBanglaQrWithMerchantNameMaxLength",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"accountType\": \"00\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACCT1234567890\",\n  \"merchantName\": \"ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJ\",\n  \"merchantCity\": \"DHAKA\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"notificationMobileNo\": \"8801712345678\",\n  \"terminalId\": \"TERM12345678\",\n  \"purposeOfTrx\": \"00\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ1234567890\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:44 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126580011com.my.uuid0102010213ACQ1234567890031612345678901234565204411153030505802BD5988ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJ6005DHAKA0214ACCT12345678900712TERM1234567808020088350011com.my.uuid0416691E93966C8F5D81890600020163049C6D\",\"signature\":\"691E93966C8F5D81\",\"crc\":\"9C6D\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 502
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "generateBanglaQrWithMerchantNameOverMaxLength",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"accountType\": \"00\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACCT1234567890\",\n  \"merchantName\": \"ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJK\",\n  \"merchantCity\": \"DHAKA\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"notificationMobileNo\": \"8801712345678\",\n  \"terminalId\": \"TERM12345678\",\n  \"purposeOfTrx\": \"00\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ1234567890\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:44 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126580011com.my.uuid0102010213ACQ1234567890031612345678901234565204411153030505802BD5989ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJK6005DHAKA0214ACCT12345678900712TERM1234567808020088350011com.my.uuid041615B6F3947DDC3A118906000201630497B6\",\"signature\":\"15B6F3947DDC3A11\",\"crc\":\"97B6\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 471
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "generateBanglaQrWithMinNotificationMobileNo",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"accountType\": \"00\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACCT1234567890\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"DHAKA\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"notificationMobileNo\": \"1\",\n  \"terminalId\": \"TERM12345678\",\n  \"purposeOfTrx\": \"00\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ1234567890\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:45 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126580011com.my.uuid0102010213ACQ1234567890031612345678901234565204411153030505802BD5913Test Merchant6005DHAKA0214ACCT12345678900712TERM1234567808020088350011com.my.uuid0416D0305BBA75245CEE890600020163041172\",\"signature\":\"D0305BBA75245CEE\",\"crc\":\"1172\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 457
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "generateBanglaQrWithOptionalFieldsEmpty",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"merchantCategoryCode\": \"5411\",\n  \"merchantId\": \"MERCHANT12345\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"1234567890\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"Dhaka\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"terminalId\": \"TERM12345678\",\n  \"acquirerInstitutionType\": \"BANK\",\n  \"acquirerId\": \"ACQ123\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:45 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126530011com.my.uuid0104BANK0206ACQ123031612345678901234565204541153030505802BD5913Test Merchant6005Dhaka021012345678900712TERM1234567888350011com.my.uuid04163C7265154323061C8906000201630489D4\",\"signature\":\"3C7265154323061C\",\"crc\":\"89D4\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 541
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "generateBanglaQrWithPurposeOfTrxEmptyString",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"accountType\": \"00\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACCT1234567890\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"DHAKA\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"notificationMobileNo\": \"8801712345678\",\n  \"terminalId\": \"TERM12345678\",\n  \"purposeOfTrx\": \"\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ1234567890\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:46 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126580011com.my.uuid0102010213ACQ1234567890031612345678901234565204411153030505802BD5913Test Merchant6005DHAKA0214ACCT12345678900712TERM12345678080088350011com.my.uuid0416DCCC7FA969F2E35389060002016304DEFB\",\"signature\":\"DCCC7FA969F2E353\",\"crc\":\"DEFB\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 515
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "generateBanglaQrWithPurposeOfTrxOneCharacter",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"accountType\": \"00\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACCT1234567890\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"DHAKA\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"notificationMobileNo\": \"8801712345678\",\n  \"terminalId\": \"TERM12345678\",\n  \"purposeOfTrx\": \"1\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ1234567890\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:47 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126580011com.my.uuid0102010213ACQ1234567890031612345678901234565204411153030505802BD5913Test Merchant6005DHAKA0214ACCT12345678900712TERM123456780801188350011com.my.uuid0416DCCC7FA969F2E35389060002016304AD72\",\"signature\":\"DCCC7FA969F2E353\",\"crc\":\"AD72\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 529
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "generateBanglaQrWithQrVersionEmptyString",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"accountType\": \"00\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACCT1234567890\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"DHAKA\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"notificationMobileNo\": \"8801712345678\",\n  \"terminalId\": \"TERM12345678\",\n  \"purposeOfTrx\": \"00\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ1234567890\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:47 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/generate-bangla-qr\",\"validationErrors\":{\"qrVersion\":\"must not be blank\"},\"timestamp\":\"2026-08-14T09:05:47.619221018\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 493
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "generateBanglaQrWithQrVersionOneCharacter",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"1\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"accountType\": \"00\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACCT1234567890\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"DHAKA\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"notificationMobileNo\": \"8801712345678\",\n  \"terminalId\": \"TERM12345678\",\n  \"purposeOfTrx\": \"00\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ1234567890\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:48 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126580011com.my.uuid0102010213ACQ1234567890031612345678901234565204411153030505802BD5913Test Merchant6005DHAKA0214ACCT12345678900712TERM1234567808020088350011com.my.uuid0416DCCC7FA969F2E3538905000116304ECD5\",\"signature\":\"DCCC7FA969F2E353\",\"crc\":\"ECD5\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 413
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "generateBanglaQrWithRequiredFields",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"merchantCategoryCode\": \"5411\",\n  \"merchantId\": \"MERCHANT12345\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"1234567890\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"Dhaka\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"terminalId\": \"TERM12345678\",\n  \"acquirerInstitutionType\": \"BANK\",\n  \"acquirerId\": \"ACQ123\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:48 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126530011com.my.uuid0104BANK0206ACQ123031612345678901234565204541153030505802BD5913Test Merchant6005Dhaka021012345678900712TERM1234567888350011com.my.uuid04163C7265154323061C8906000201630489D4\",\"signature\":\"3C7265154323061C\",\"crc\":\"89D4\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 496
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "verifyGeneratedQrSignatureSecurity",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"accountType\": \"01\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACC123456789\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"Dhaka\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"notificationMobileNo\": \"8801712345678\",\n  \"terminalId\": \"TERM12345678\",\n  \"purposeOfTrx\": \"Test Payment\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ12345678\",\n  \"merchantLogo\": \"logo123\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:49 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126560011com.my.uuid0102010211ACQ12345678031612345678901234565204411153030505802BD5913Test Merchant6005Dhaka0212ACC1234567890712TERM123456780812Test Payment88460011com.my.uuid04166D9ACC46D12D20890507logo12389060002016304A495\",\"signature\":\"6D9ACC46D12D2089\",\"crc\":\"A495\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 500
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "verifyRejectionOnExcessiveSignatureLength",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACC123456789\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"Dhaka\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"terminalId\": \"TERM12345678\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ12345678\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:49 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126560011com.my.uuid0102010211ACQ12345678031612345678901234565204411153030505802BD5913Test Merchant6005Dhaka0212ACC1234567890712TERM1234567888350011com.my.uuid0416F4C2FCC2FAA9E37B89060002016304BE41\",\"signature\":\"F4C2FCC2FAA9E37B\",\"crc\":\"BE41\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 429
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "verifySensitiveDataNotExposedInResponse",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACC123456789\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"Dhaka\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"terminalId\": \"TERM12345678\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ12345678\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:50 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126560011com.my.uuid0102010211ACQ12345678031612345678901234565204411153030505802BD5913Test Merchant6005Dhaka0212ACC1234567890712TERM1234567888350011com.my.uuid0416F4C2FCC2FAA9E37B89060002016304BE41\",\"signature\":\"F4C2FCC2FAA9E37B\",\"crc\":\"BE41\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 534
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "verifySignatureChangesOnInputTampering",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACC123456789\",\n  \"merchantName\": \"Test Merchant\",\n  \"merchantCity\": \"Dhaka\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"terminalId\": \"TERM12345678\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ12345678\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:50 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126560011com.my.uuid0102010211ACQ12345678031612345678901234565204411153030505802BD5913Test Merchant6005Dhaka0212ACC1234567890712TERM1234567888350011com.my.uuid0416F4C2FCC2FAA9E37B89060002016304BE41\",\"signature\":\"F4C2FCC2FAA9E37B\",\"crc\":\"BE41\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 475
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "verifySignatureChangesOnInputTampering",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACC123456789\",\n  \"merchantName\": \"Tampered Merchant\",\n  \"merchantCity\": \"Dhaka\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"terminalId\": \"TERM12345678\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ12345678\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:51 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126560011com.my.uuid0102010211ACQ12345678031612345678901234565204411153030505802BD5917Tampered Merchant6005Dhaka0212ACC1234567890712TERM1234567888350011com.my.uuid0416E147B7D353F5727289060002016304DC0C\",\"signature\":\"E147B7D353F57272\",\"crc\":\"DC0C\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 476
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_cba2550d420e29f8bf6ee586e4e8c8fdddcc4128",
+  "testMethodName" : "verifySpecialCharactersHandledInQrData",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/generate-bangla-qr",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"qrVersion\": \"01\",\n  \"format\": \"01\",\n  \"method\": \"11\",\n  \"merchantCategoryCode\": \"4111\",\n  \"merchantId\": \"MERCHANT123\",\n  \"merchantPan\": \"1234567890123456\",\n  \"merchantAccountNo\": \"ACC123456789\",\n  \"merchantName\": \"Test<Merchant>\",\n  \"merchantCity\": \"Dhaka; rm -rf\",\n  \"merchantCountryCode\": \"BD\",\n  \"trxCurrencyCode\": \"050\",\n  \"terminalId\": \"TERM12345678\",\n  \"acquirerInstitutionType\": \"01\",\n  \"acquirerId\": \"ACQ12345678\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Fri, 14 Aug 2026 09:05:51 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"qrData\":\"00020101021126560011com.my.uuid0102010211ACQ12345678031612345678901234565204411153030505802BD5914Test<Merchant>6013Dhaka; rm -rf0212ACC1234567890712TERM1234567888350011com.my.uuid0416823E47EDA40D3EB989060002016304A712\",\"signature\":\"823E47EDA40D3EB9\",\"crc\":\"A712\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 745
+} ]

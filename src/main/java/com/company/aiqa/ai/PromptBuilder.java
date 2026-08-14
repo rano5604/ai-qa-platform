@@ -514,6 +514,31 @@ public class PromptBuilder {
                   placeholder, a numeric one has none.
                 - Translate the case's "Expected Result" into assertions: status code
                   first, then response body fields via Hamcrest matchers.
+                - MATCH THE STATUS TO THE EXPECTED RESULT, never assume 200/201.
+                  Read what the case says should happen and assert THAT:
+                    * expects success        -> 200, or 201 for a create
+                    * expects rejection of bad/invalid/malformed/missing input -> 400
+                    * expects "not found" / unknown id                         -> 404
+                    * expects a duplicate or conflicting state to be refused   -> 409
+                      (or 400 if the API uses that - never 2xx)
+                    * expects unauthenticated/forbidden, where auth exists     -> 401 / 403
+                  Asserting 2xx on a case that expects a rejection INVERTS the test: it
+                  fails when the server correctly refuses the bad input, and passes when
+                  the server wrongly accepts it. That is worse than having no test at
+                  all - it produces a red report for behavior that is actually correct,
+                  and hides the defect it was written to catch. If a case's scenario or
+                  name says fail/reject/invalid/duplicate/missing/unauthorized, its
+                  final assertion MUST be a 4xx.
+                - Keep PRECONDITION calls separate from the CASE'S OWN assertion. The
+                  setup calls that build the fixture assert 2xx because they must
+                  succeed; the one call the test case is actually about asserts whatever
+                  that case expects. A negative test still has 2xx on its setup - do not
+                  let that pull the final assertion to 2xx as well.
+                - Only assert an exact status the case actually pins down. Where an API
+                  could reasonably answer either of two codes, use
+                  anyOf(is(400), is(422)) rather than guessing one and getting a
+                  spurious failure - but never widen that to include a 2xx on a
+                  rejection case.
                 - Use ONLY matchers that actually exist in org.hamcrest.Matchers:
                   equalTo, containsString, startsWith, endsWith, notNullValue,
                   nullValue, hasKey, hasItem, hasItems, hasSize, empty, greaterThan,
@@ -567,6 +592,16 @@ public class PromptBuilder {
                 - Read each case's "Preconditions" field and satisfy it with real calls
                   before the assertion. That field is the specification for the setup,
                   not a comment to copy into the code.
+                - THIS APPLIES TO READS AND SEARCHES TOO, not just to updates and
+                  deletes. "Search for a customer by id" needs that customer POSTed
+                  first in the same test, then searched by the id that came back.
+                  Looking up an id you did not create tests nothing: it returns 404 or
+                  an empty list, and it fails for a reason that has nothing to do with
+                  the search logic you meant to exercise. The same holds for list or
+                  filter endpoints - create a record that MATCHES your filter first,
+                  otherwise an empty result is meaningless and the assertion is
+                  vacuous. Whenever a case reads, lists, searches or filters, ask what
+                  must exist for the result to be meaningful, and create exactly that.
                 - Extract the id with .extract().path(...). Match the path to the
                   response the create endpoint actually returns - if responses are
                   wrapped in an envelope like {"status":..,"data":{..}} the path is
@@ -586,9 +621,18 @@ public class PromptBuilder {
                   using those exact field names and, for an enum field, one of its
                   listed values. A field the schema doesn't list will be rejected or
                   ignored; a required one you omit fails the create outright.
-                - NEGATIVE cases are the exception: when the case is "operate on a
-                  resource that does not exist", a deliberately absent id like 999999 is
-                  CORRECT, and asserting 404 is the point. Do not create anything there.
+                - NEGATIVE cases handle their setup differently by KIND:
+                    * "operate on a resource that does not exist" - create NOTHING. A
+                      deliberately absent id like 999999 is CORRECT here, and asserting
+                      404 is the entire point.
+                    * "invalid/malformed/missing input" - build any fixture the call
+                      genuinely needs (2xx on that setup), then send the ONE bad field
+                      and assert 4xx. Keep everything else in the payload valid, so the
+                      failure can only be caused by the field under test.
+                    * "duplicate/conflict" - the first create is a PRECONDITION and
+                      asserts 2xx; the second, colliding call is the assertion and must
+                      assert 409 or 400. A duplicate test that asserts 2xx on the second
+                      call is asserting the bug rather than the rule.
                 - Chains matter: to pay for an appointment you must first create the
                   shop, then the appointment, then pay. Follow the chain with real calls
                   as far as the endpoint list allows.

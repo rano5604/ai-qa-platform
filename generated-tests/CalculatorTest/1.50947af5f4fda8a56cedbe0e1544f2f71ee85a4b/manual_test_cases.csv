@@ -1,166 +1,112 @@
 Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
-Add two integer numbers and display the result,Basic Arithmetic Operations,Positive,High,User has access to the calculator,"1. Open the calculator. 2. Enter the first integer number. 3. Select the addition operation. 4. Enter the second integer number. 5. Display the result.
+Add two integer numbers and display the result,Basic Arithmetic Operations,Positive,High,The calculator is initialized with two integer numbers,"1. Enter the first integer number. 2. Enter the second integer number. 3. Select the addition operation.
 
 Test Data: First number: 20, Second number: 5",The result of the addition is displayed as 25,TC-001
-Subtract two integer numbers and display the result,Basic Arithmetic Operations,Positive,High,User has access to the calculator,"1. Open the calculator. 2. Enter the first integer number. 3. Select the subtraction operation. 4. Enter the second integer number. 5. Display the result.
+Subtract two integer numbers and display the result,Basic Arithmetic Operations,Positive,High,The calculator is initialized with two integer numbers,"1. Enter the first integer number. 2. Enter the second integer number. 3. Select the subtraction operation.
 
 Test Data: First number: 20, Second number: 5",The result of the subtraction is displayed as 15,TC-002
-Multiply two integer numbers and display the result,Basic Arithmetic Operations,Positive,High,User has access to the calculator,"1. Open the calculator. 2. Enter the first integer number. 3. Select the multiplication operation. 4. Enter the second integer number. 5. Display the result.
+Multiply two integer numbers and display the result,Basic Arithmetic Operations,Positive,High,The calculator is initialized with two integer numbers,"1. Enter the first integer number. 2. Enter the second integer number. 3. Select the multiplication operation.
 
 Test Data: First number: 20, Second number: 5",The result of the multiplication is displayed as 100,TC-003
-Divide two integer numbers and display the result,Basic Arithmetic Operations,Positive,High,User has access to the calculator,"1. Open the calculator. 2. Enter the first integer number. 3. Select the division operation. 4. Enter the second integer number. 5. Display the result.
+Divide two integer numbers and display the result,Basic Arithmetic Operations,Positive,High,The calculator is initialized with two integer numbers,"1. Enter the first integer number. 2. Enter the second integer number. 3. Select the division operation.
 
 Test Data: First number: 20, Second number: 5",The result of the division is displayed as 4,TC-004
-Handle division by zero with integer input,Basic Arithmetic Operations,Positive,High,User has access to the calculator,"1. Open the calculator. 2. Enter the first integer number. 3. Select the division operation. 4. Enter zero as the second integer number. 5. Display the result.
+Handle division by zero with integer number input,Basic Arithmetic Operations,Positive,High,The calculator is initialized with an integer number and zero,"1. Enter the first integer number. 2. Enter zero as the second number. 3. Select the division operation.
 
 Test Data: First number: 20, Second number: 0",An error message is displayed indicating that division by zero is not allowed,TC-005
-Attempt division by zero via UI input,Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Enter '10' in the first input field. 2. Enter '0' in the second input field. 3. Click the 'Calculate' button.
+Attempt to divide by zero with integer values,Basic Calculator Operations,Negative,High,Calculator is open and ready for input,"1. Enter a non-zero integer in the first field (e.g., 10). 2. Enter 0 in the second field. 3. Submit the calculation.
 
-Test Data: First input: 10, Second input: 0","The system displays an error message indicating division by zero is not allowed and does not show a result for the division operation. Other operations (addition, subtraction, multiplication) are displayed as calculated.",50947af-TC-006
-Submit non-numeric input in the first field,Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Enter 'abc' in the first input field. 2. Enter '5' in the second input field. 3. Click the 'Calculate' button.
+Test Data: First field: 10, Second field: 0",The system rejects the operation and displays an error message indicating that division by zero is not allowed.,1714e14-TC-003
+Submit missing input in the first field for calculation,Basic Calculator Operations,Negative,High,Calculator is open and ready for input,"1. Leave the first field empty. 2. Enter a valid integer in the second field (e.g., 5). 3. Submit the calculation.
 
-Test Data: First input: abc, Second input: 5",The system rejects the input and displays an error message indicating that only numeric values are allowed for calculation.,50947af-TC-007
-Submit non-numeric input in the second field,Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Enter '10' in the first input field. 2. Enter 'xyz' in the second input field. 3. Click the 'Calculate' button.
+Test Data: First field: (empty), Second field: 5",The system rejects the input and displays an error message indicating that both fields are required for calculation.,1714e14-TC-002
+Submit missing input in the second field for calculation,Basic Calculator Operations,Negative,High,Calculator is open and ready for input,"1. Enter a valid integer in the first field (e.g., 5). 2. Leave the second field empty. 3. Submit the calculation.
 
-Test Data: First input: 10, Second input: xyz",The system rejects the input and displays an error message indicating that only numeric values are allowed for calculation.,TC-006
-Submit empty input in both fields,Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Leave the first input field empty. 2. Leave the second input field empty. 3. Click the 'Calculate' button.
+Test Data: First field: 5, Second field: (empty)",The system rejects the input and displays an error message indicating that both fields are required for calculation.,1e702eb-TC-002
+Submit non-integer numeric values (decimal) in the fields,Basic Calculator Operations,Negative,Medium,Calculator is open and ready for input,"1. Enter a decimal value in the first field (e.g., 5.5). 2. Enter a valid integer in the second field (e.g., 2). 3. Submit the calculation.
 
-Test Data: First input: [empty], Second input: [empty]",The system rejects the input and displays an error message indicating that both fields must be filled with numeric values.,50947af-TC-008
-Submit extremely large numbers causing integer overflow,Basic Calculator Operations,Negative,Medium,Calculator application is open and ready for input,"1. Enter '2147483647' in the first input field. 2. Enter '2147483647' in the second input field. 3. Click the 'Calculate' button.
+Test Data: First field: 5.5, Second field: 2",The system rejects the input and displays an error message indicating that only whole numbers (integers) are allowed for calculation.,1e702eb-TC-003
+Submit non-numeric input in the first field,Basic Calculator Operations,Negative,High,Calculator is open and ready for input,"1. Enter a non-numeric value in the first field (e.g., 'abc'). 2. Enter a valid integer in the second field (e.g., 5). 3. Submit the calculation.
 
-Test Data: First input: 2147483647, Second input: 2147483647",The system either displays an incorrect result due to integer overflow or shows an error message indicating the numbers are too large to process correctly.,50947af-TC-009
-Submit a mix of valid and invalid input (numeric and non-numeric),Basic Calculator Operations,Negative,Medium,Calculator application is open and ready for input,"1. Enter '10' in the first input field. 2. Enter '5abc' in the second input field. 3. Click the 'Calculate' button.
+Test Data: First field: abc, Second field: 5",The system rejects the input and displays an error message indicating that only numeric values are allowed for calculation.,50947af-TC-006
+Submit non-numeric input in the second field,Basic Calculator Operations,Negative,High,Calculator is open and ready for input,"1. Enter a valid integer in the first field (e.g., 5). 2. Enter a non-numeric value in the second field (e.g., 'xyz'). 3. Submit the calculation.
 
-Test Data: First input: 10, Second input: 5abc",The system rejects the input and displays an error message indicating that only numeric values are allowed for calculation.,TC-007
-Submit input with special characters,Basic Calculator Operations,Negative,Medium,Calculator application is open and ready for input,"1. Enter '10@' in the first input field. 2. Enter '5#' in the second input field. 3. Click the 'Calculate' button.
+Test Data: First field: 5, Second field: xyz",The system rejects the input and displays an error message indicating that only numeric values are allowed for calculation.,TC-006
+Submit a mix of valid integer and non-numeric values in the fields,Basic Calculator Operations,Negative,Medium,Calculator is open and ready for input,"1. Enter a non-numeric value in the first field (e.g., 'test'). 2. Enter a valid integer in the second field (e.g., 10). 3. Submit the calculation.
 
-Test Data: First input: 10@, Second input: 5#",The system rejects the input and displays an error message indicating that only numeric values are allowed for calculation.,TC-008
-Verify addition of two integers at maximum boundary values,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first integer value as 2147483647 (maximum 32-bit signed integer).
-2. Enter the second integer value as 1.
-3. Execute the addition operation.
-4. Observe the result displayed.
+Test Data: First field: test, Second field: 10",The system rejects the input and displays an error message indicating that only numeric values are allowed for calculation.,50947af-TC-007
+Submit input with special characters in the fields,Basic Calculator Operations,Negative,Medium,Calculator is open and ready for input,"1. Enter a special character in the first field (e.g., '@'). 2. Enter a valid integer in the second field (e.g., 5). 3. Submit the calculation.
 
-Test Data: First value: 2147483647, Second value: 1","The application displays an overflow indication or wraps around to a negative value (e.g., -2147483648) as the result exceeds the maximum representable integer value.",TC-009
-Verify addition of two integers at minimum boundary values,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first integer value as -2147483648 (minimum 32-bit signed integer).
-2. Enter the second integer value as -1.
-3. Execute the addition operation.
-4. Observe the result displayed.
+Test Data: First field: @, Second field: 5",The system rejects the input and displays an error message indicating that only numeric values are allowed for calculation.,1714e14-TC-001
+Submit scientific notation in the fields,Basic Calculator Operations,Negative,Medium,Calculator is open and ready for input,"1. Enter a value in scientific notation in the first field (e.g., '1e3'). 2. Enter a valid integer in the second field (e.g., 2). 3. Submit the calculation.
 
-Test Data: First value: -2147483648, Second value: -1","The application displays an underflow indication or wraps around to a positive value (e.g., 2147483647) as the result is below the minimum representable integer value.",TC-010
-Verify addition of zero and a positive integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first integer value as 0.
-2. Enter the second integer value as 100.
-3. Execute the addition operation.
-4. Observe the result displayed.
+Test Data: First field: 1e3, Second field: 2",The system rejects the input and displays an error message indicating that scientific notation is not allowed for calculation.,f602859-TC-003
+Submit a very large integer that exceeds typical integer limits,Basic Calculator Operations,Negative,Low,Calculator is open and ready for input,"1. Enter a very large integer in the first field (e.g., 2147483648). 2. Enter a valid integer in the second field (e.g., 1). 3. Submit the calculation.
 
-Test Data: First value: 0, Second value: 100",The application displays the result as 100 for addition.,TC-011
-Verify addition of zero and a negative integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first integer value as 0.
-2. Enter the second integer value as -100.
-3. Execute the addition operation.
-4. Observe the result displayed.
+Test Data: First field: 2147483648, Second field: 1",The system rejects the input and displays an error message indicating that the number is too large or invalid.,f602859-TC-004
+Verify addition of two integers at maximum boundary value (2147483647 + 1),Basic Arithmetic Operations,Boundary,High,Calculator application is running and ready to accept input.,"1. Enter the first number as 2147483647. 2. Select the addition operation. 3. Enter the second number as 1. 4. Execute the calculation.
 
-Test Data: First value: 0, Second value: -100",The application displays the result as -100 for addition.,TC-012
-Verify subtraction of two integers at maximum boundary values,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first integer value as 2147483647 (maximum 32-bit signed integer).
-2. Enter the second integer value as -1.
-3. Execute the subtraction operation.
-4. Observe the result displayed.
+Test Data: First number: 2147483647, Second number: 1",The application displays the result as -2147483648 for addition (integer overflow occurs).,50947af-TC-009
+Verify addition of two integers at minimum boundary value (-2147483648 + (-1)),Basic Arithmetic Operations,Boundary,High,Calculator application is running and ready to accept input.,"1. Enter the first number as -2147483648. 2. Select the addition operation. 3. Enter the second number as -1. 4. Execute the calculation.
 
-Test Data: First value: 2147483647, Second value: -1","The application displays an overflow indication or wraps around to a negative value (e.g., -2147483648) as the result exceeds the maximum representable integer value.",TC-013
-Verify subtraction of two integers at minimum boundary values,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first integer value as -2147483648 (minimum 32-bit signed integer).
-2. Enter the second integer value as 1.
-3. Execute the subtraction operation.
-4. Observe the result displayed.
+Test Data: First number: -2147483648, Second number: -1",The application displays the result as 2147483647 for addition (integer underflow occurs).,50947af-TC-010
+Verify subtraction of two integers at maximum boundary value (2147483647 - (-1)),Basic Arithmetic Operations,Boundary,High,Calculator application is running and ready to accept input.,"1. Enter the first number as 2147483647. 2. Select the subtraction operation. 3. Enter the second number as -1. 4. Execute the calculation.
 
-Test Data: First value: -2147483648, Second value: 1","The application displays an underflow indication or wraps around to a positive value (e.g., 2147483647) as the result is below the minimum representable integer value.",TC-014
-Verify subtraction of zero and a positive integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first integer value as 0.
-2. Enter the second integer value as 100.
-3. Execute the subtraction operation.
-4. Observe the result displayed.
+Test Data: First number: 2147483647, Second number: -1",The application displays the result as -2147483648 for subtraction (integer overflow occurs).,50947af-TC-013
+Verify subtraction of two integers at minimum boundary value (-2147483648 - 1),Basic Arithmetic Operations,Boundary,High,Calculator application is running and ready to accept input.,"1. Enter the first number as -2147483648. 2. Select the subtraction operation. 3. Enter the second number as 1. 4. Execute the calculation.
 
-Test Data: First value: 0, Second value: 100",The application displays the result as -100 for subtraction.,TC-015
-Verify subtraction of zero and a negative integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first integer value as 0.
-2. Enter the second integer value as -100.
-3. Execute the subtraction operation.
-4. Observe the result displayed.
+Test Data: First number: -2147483648, Second number: 1",The application displays the result as 2147483647 for subtraction (integer underflow occurs).,50947af-TC-014
+Verify multiplication of two integers at maximum boundary value (2147483647 * 2),Basic Arithmetic Operations,Boundary,High,Calculator application is running and ready to accept input.,"1. Enter the first number as 2147483647. 2. Select the multiplication operation. 3. Enter the second number as 2. 4. Execute the calculation.
 
-Test Data: First value: 0, Second value: -100",The application displays the result as 100 for subtraction.,TC-016
-Verify multiplication of two integers at maximum boundary values,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first integer value as 2147483647 (maximum 32-bit signed integer).
-2. Enter the second integer value as 2.
-3. Execute the multiplication operation.
-4. Observe the result displayed.
+Test Data: First number: 2147483647, Second number: 2",The application displays the result as -2 for multiplication (integer overflow occurs).,50947af-TC-017
+Verify multiplication of two integers at minimum boundary value (-2147483648 * 2),Basic Arithmetic Operations,Boundary,High,Calculator application is running and ready to accept input.,"1. Enter the first number as -2147483648. 2. Select the multiplication operation. 3. Enter the second number as 2. 4. Execute the calculation.
 
-Test Data: First value: 2147483647, Second value: 2",The application displays an overflow indication or wraps around to a negative value as the result exceeds the maximum representable integer value.,TC-017
-Verify multiplication of two integers at minimum boundary values,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first integer value as -2147483648 (minimum 32-bit signed integer).
-2. Enter the second integer value as 2.
-3. Execute the multiplication operation.
-4. Observe the result displayed.
+Test Data: First number: -2147483648, Second number: 2",The application displays the result as 0 for multiplication (integer overflow occurs).,50947af-TC-018
+Verify division by zero for integers,Basic Arithmetic Operations,Boundary,High,Calculator application is running and ready to accept input.,"1. Enter the first number as 100. 2. Select the division operation. 3. Enter the second number as 0. 4. Execute the calculation.
 
-Test Data: First value: -2147483648, Second value: 2",The application displays an underflow indication or wraps around to a positive value as the result is below the minimum representable integer value.,TC-018
-Verify multiplication of zero and a positive integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first integer value as 0.
-2. Enter the second integer value as 100.
-3. Execute the multiplication operation.
-4. Observe the result displayed.
+Test Data: First number: 100, Second number: 0",The application displays an error message indicating division by zero is not allowed.,TC-007
+Verify division of two integers at maximum boundary value (2147483647 / 1),Basic Arithmetic Operations,Boundary,High,Calculator application is running and ready to accept input.,"1. Enter the first number as 2147483647. 2. Select the division operation. 3. Enter the second number as 1. 4. Execute the calculation.
 
-Test Data: First value: 0, Second value: 100",The application displays the result as 0 for multiplication.,TC-019
-Verify multiplication of zero and a negative integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first integer value as 0.
-2. Enter the second integer value as -100.
-3. Execute the multiplication operation.
-4. Observe the result displayed.
+Test Data: First number: 2147483647, Second number: 1",The application displays the result as 2147483647 for division.,50947af-TC-021
+Verify division of two integers where the result is not an integer (5 / 2),Basic Arithmetic Operations,Boundary,Medium,Calculator application is running and ready to accept input.,"1. Enter the first number as 5. 2. Select the division operation. 3. Enter the second number as 2. 4. Execute the calculation.
 
-Test Data: First value: 0, Second value: -100",The application displays the result as 0 for multiplication.,TC-020
-Verify division by zero with integers,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first integer value as 100.
-2. Enter the second integer value as 0.
-3. Execute the division operation.
-4. Observe the result displayed.
+Test Data: First number: 5, Second number: 2",The application displays the result as 2 for division (integer division truncates the decimal part).,TC-008
+Verify addition of zero and a positive integer,Basic Arithmetic Operations,Boundary,Low,Calculator application is running and ready to accept input.,"1. Enter the first number as 0. 2. Select the addition operation. 3. Enter the second number as 100. 4. Execute the calculation.
 
-Test Data: First value: 100, Second value: 0",The application displays an error message indicating 'Cannot divide by zero'.,50947af-TC-024
-Verify division of zero by a non-zero integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first integer value as 0.
-2. Enter the second integer value as 100.
-3. Execute the division operation.
-4. Observe the result displayed.
+Test Data: First number: 0, Second number: 100",The application displays the result as 100 for addition.,TC-009
+Verify addition of zero and a negative integer,Basic Arithmetic Operations,Boundary,Low,Calculator application is running and ready to accept input.,"1. Enter the first number as 0. 2. Select the addition operation. 3. Enter the second number as -100. 4. Execute the calculation.
 
-Test Data: First value: 0, Second value: 100",The application displays the result as 0 for division.,50947af-TC-025
-Verify division of two integers resulting in a non-integer value,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready to accept input values,"1. Enter the first integer value as 7.
-2. Enter the second integer value as 2.
-3. Execute the division operation.
-4. Observe the result displayed.
+Test Data: First number: 0, Second number: -100",The application displays the result as -100 for addition.,TC-010
+Verify subtraction of zero and a positive integer,Basic Arithmetic Operations,Boundary,Low,Calculator application is running and ready to accept input.,"1. Enter the first number as 0. 2. Select the subtraction operation. 3. Enter the second number as 100. 4. Execute the calculation.
 
-Test Data: First value: 7, Second value: 2",The application displays the result as 3 for division (integer division truncates the decimal part).,50947af-TC-026
-Verify division of two large integers at boundary values,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input values,"1. Enter the first integer value as 2147483647 (maximum 32-bit signed integer).
-2. Enter the second integer value as 1.
-3. Execute the division operation.
-4. Observe the result displayed.
+Test Data: First number: 0, Second number: 100",The application displays the result as -100 for subtraction.,TC-011
+Verify subtraction of zero and a negative integer,Basic Arithmetic Operations,Boundary,Low,Calculator application is running and ready to accept input.,"1. Enter the first number as 0. 2. Select the subtraction operation. 3. Enter the second number as -100. 4. Execute the calculation.
 
-Test Data: First value: 2147483647, Second value: 1",The application displays the result as 2147483647 for division.,TC-021
-Perform addition with two positive integers,Basic Calculator Operations,Configuration,High,Calculator application is open and ready for input,"1. Enter the first number: 15. 2. Select the addition operation. 3. Enter the second number: 10. 4. Observe the result displayed.
+Test Data: First number: 0, Second number: -100",The application displays the result as 100 for subtraction.,TC-012
+Verify multiplication of zero and a positive integer,Basic Arithmetic Operations,Boundary,Low,Calculator application is running and ready to accept input.,"1. Enter the first number as 0. 2. Select the multiplication operation. 3. Enter the second number as 100. 4. Execute the calculation.
 
-Test Data: First number: 15, Second number: 10",The calculator displays the result of the addition as 25.,50947af-TC-028
-Perform subtraction with two positive integers where the result is positive,Basic Calculator Operations,Configuration,High,Calculator application is open and ready for input,"1. Enter the first number: 20. 2. Select the subtraction operation. 3. Enter the second number: 5. 4. Observe the result displayed.
+Test Data: First number: 0, Second number: 100",The application displays the result as 0 for multiplication.,TC-013
+Verify multiplication of zero and a negative integer,Basic Arithmetic Operations,Boundary,Low,Calculator application is running and ready to accept input.,"1. Enter the first number as 0. 2. Select the multiplication operation. 3. Enter the second number as -100. 4. Execute the calculation.
 
-Test Data: First number: 20, Second number: 5",The calculator displays the result of the subtraction as 15.,50947af-TC-028
-Perform multiplication with two positive integers,Basic Calculator Operations,Configuration,High,Calculator application is open and ready for input,"1. Enter the first number: 10. 2. Select the multiplication operation. 3. Enter the second number: 10. 4. Observe the result displayed.
+Test Data: First number: 0, Second number: -100",The application displays the result as 0 for multiplication.,TC-014
+Perform addition with two positive integers,Basic Calculator Operations,Configuration,High,Calculator application is running and ready to accept input,"1. Enter the first number as 10. 2. Enter the second number as 5. 3. Observe the output for the addition result.
 
-Test Data: First number: 10, Second number: 10",The calculator displays the result of the multiplication as 100.,50947af-TC-028
-Perform division with two positive integers resulting in an integer quotient,Basic Calculator Operations,Configuration,High,Calculator application is open and ready for input,"1. Enter the first number: 20. 2. Select the division operation. 3. Enter the second number: 5. 4. Observe the result displayed.
+Test Data: First number: 10, Second number: 5",The calculator displays the addition result as 15.,TC-015
+Perform subtraction with two positive integers where the result is positive,Basic Calculator Operations,Configuration,High,Calculator application is running and ready to accept input,"1. Enter the first number as 10. 2. Enter the second number as 5. 3. Observe the output for the subtraction result.
 
-Test Data: First number: 20, Second number: 5",The calculator displays the result of the division as 4.,50947af-TC-028
-Verify the calculator displays results for all operations in sequence with predefined inputs,Calculator Display,Configuration,High,Calculator application is open and ready for input,"1. Enter the first number: 20. 2. Enter the second number: 5. 3. Observe the results displayed for all operations: addition, subtraction, multiplication, and division.
+Test Data: First number: 10, Second number: 5",The calculator displays the subtraction result as 5.,TC-016
+Perform multiplication with two positive integers,Basic Calculator Operations,Configuration,High,Calculator application is running and ready to accept input,"1. Enter the first number as 10. 2. Enter the second number as 5. 3. Observe the output for the multiplication result.
+
+Test Data: First number: 10, Second number: 5",The calculator displays the multiplication result as 50.,TC-017
+Verify the calculator displays results for all operations in sequence with user-provided inputs,Basic Calculator Operations,Configuration,High,Calculator application is running and ready to accept input,"1. Enter the first number as 20. 2. Enter the second number as 5. 3. Observe the output for all operations in sequence.
 
 Test Data: First number: 20, Second number: 5","The calculator displays the correct results for each operation in sequence: addition (25), subtraction (15), multiplication (100), and division (4).",50947af-TC-030
-Verify the Gradle build resolves and executes successfully with the new configuration,Gradle Build Configuration,Configuration,High,Gradle is installed on the system. The project is checked out with the new build.gradle and settings.gradle files.,"1. Navigate to the project root directory. 2. Run the command: `./gradlew build`. 3. Observe the build output for errors or warnings.
+Verify the IDE correctly links the Gradle project and recognizes the project directory structure,IDE Gradle Project Configuration (gradle.xml),Configuration,High,"IDE (e.g., IntelliJ IDEA) is installed and the project is opened","1. Open the project in the IDE. 2. Check the Gradle tool window or project settings. 3. Verify the project root directory is recognized as a Gradle module. 4. Attempt to refresh the Gradle project.
 
-Test Data: New build.gradle with plugins: java, dependencies: JUnit 5.9.1, and test configuration: useJUnitPlatform()","The build completes successfully without errors, and all dependencies are resolved from Maven Central.",TC-022
-Verify the Gradle wrapper downloads and uses the correct Gradle version (8.0-bin),Gradle Wrapper Configuration,Configuration,High,The project is checked out with the new gradle-wrapper.properties file. No existing Gradle wrapper distribution is cached.,"1. Navigate to the project root directory. 2. Run the command: `./gradlew wrapper --version`. 3. Observe the output for the Gradle version.
+Test Data: Project directory path: '$PROJECT_DIR$'","The IDE recognizes the project as a Gradle project, the root module is linked without errors, and the Gradle refresh completes successfully",50947af-TC-026
+Verify the IDE project language level and JDK settings are compatible with the project,IDE Project Settings (misc.xml),Configuration,High,"IDE (e.g., IntelliJ IDEA) is installed and the project is opened","1. Open the project in the IDE. 2. Navigate to Project Structure settings. 3. Verify the Project SDK is set to '1.8' (Java 8). 4. Verify the Project language level is set to 'JDK_17'. 5. Check for any incompatibility warnings in the IDE.
 
-Test Data: New gradle-wrapper.properties with distributionUrl=https://services.gradle.org/distributions/gradle-8.0-bin.zip",The Gradle wrapper downloads version 8.0-bin and reports this version in the output.,TC-023
-Verify JUnit 5 tests run successfully with the new test configuration,Gradle Test Execution,Configuration,High,"The project is built successfully. A sample JUnit 5 test class exists in the project (e.g., CalculatorTest).","1. Navigate to the project root directory. 2. Run the command: `./gradlew test`. 3. Observe the test output for failures or errors.
+Test Data: Project SDK: '1.8' (Java 8), Language Level: 'JDK_17'","The IDE reports no incompatibility warnings, and the project SDK and language level are correctly configured",50947af-TC-025
+Verify the IDE recognizes the Git repository configuration for the project,IDE Version Control System Configuration (vcs.xml),Configuration,High,"IDE (e.g., IntelliJ IDEA) is installed, the project is opened, and Git is installed on the system","1. Open the project in the IDE. 2. Navigate to the Version Control settings or tool window. 3. Verify the project root directory is mapped to Git. 4. Attempt a basic Git operation (e.g., commit or push).
 
-Test Data: New build.gradle with testImplementation 'org.junit.jupiter:junit-jupiter' and test { useJUnitPlatform() }","All JUnit 5 tests execute successfully, and the test report shows no failures.",TC-024
-Verify the IDE project settings (language level and JDK) are compatible with the project,IDE Project Configuration (misc.xml),Configuration,Medium,"The project is opened in an IDE (e.g., IntelliJ IDEA) with the new .idea/misc.xml file.","1. Open the project in the IDE. 2. Navigate to Project Structure settings. 3. Verify the Project SDK and Language Level settings.
-
-Test Data: New misc.xml with languageLevel=""JDK_17"" and project-jdk-name=""1.8""","The IDE reports no incompatibility warnings, and the project SDK is set to Java 8 with language level 17 (or higher).",TC-025
-Verify the IDE recognizes the Gradle project structure correctly,IDE Project Configuration (gradle.xml),Configuration,Medium,"The project is opened in an IDE (e.g., IntelliJ IDEA) with the new .idea/gradle.xml file.","1. Open the project in the IDE. 2. Navigate to Gradle settings. 3. Verify the Gradle project path and linked modules.
-
-Test Data: New gradle.xml with externalProjectPath=""$PROJECT_DIR$"" and modules set to ""$PROJECT_DIR$""","The IDE correctly identifies the project as a Gradle project, and the root module is linked without errors.",TC-026
-Verify the IDE recognizes the Git repository configuration,IDE Version Control Configuration (vcs.xml),Configuration,Low,"The project is opened in an IDE (e.g., IntelliJ IDEA) with the new .idea/vcs.xml file. The project is in a Git repository.","1. Open the project in the IDE. 2. Navigate to Version Control settings. 3. Verify the VCS mapping for the project directory.
-
-Test Data: New vcs.xml with mapping directory=""$PROJECT_DIR$"" and vcs=""Git""","The IDE correctly identifies the project as a Git repository, and version control operations (e.g., commit, push) are available.",TC-027
+Test Data: VCS mapping: directory='$PROJECT_DIR$', vcs='Git'","The IDE correctly identifies the project as a Git repository, and version control operations (e.g., commit, push) are available and functional",50947af-TC-027

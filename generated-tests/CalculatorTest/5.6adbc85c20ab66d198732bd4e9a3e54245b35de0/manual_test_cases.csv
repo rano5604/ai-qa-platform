@@ -1,0 +1,16 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Add two integer numbers and display the result,Integer Arithmetic Operations,Positive,High,Two integer numbers are available for addition,"1. Enter the first integer number. 2. Enter the second integer number. 3. Select the addition operation.
+
+Test Data: 10, 15",The result of the addition is displayed as 25,50947af-TC-001
+Subtract two integer numbers and display the result,Integer Arithmetic Operations,Positive,High,Two integer numbers are available for subtraction,"1. Enter the first integer number. 2. Enter the second integer number. 3. Select the subtraction operation.
+
+Test Data: 25, 10",The result of the subtraction is displayed as 15,50947af-TC-002
+Multiply two integer numbers and display the result,Integer Arithmetic Operations,Positive,High,Two integer numbers are available for multiplication,"1. Enter the first integer number. 2. Enter the second integer number. 3. Select the multiplication operation.
+
+Test Data: 10, 10",The result of the multiplication is displayed as 100,50947af-TC-003
+Divide two integer numbers and display the result,Integer Arithmetic Operations,Positive,High,"Two integer numbers are available for division, with the second number not being zero","1. Enter the first integer number. 2. Enter the second integer number. 3. Select the division operation.
+
+Test Data: 20, 5",The result of the division is displayed as 4,50947af-TC-004
+Handle division by zero with integer number input,Integer Arithmetic Operations,Positive,High,"Two integer numbers are available for division, with the second number being zero","1. Enter the first integer number. 2. Enter zero as the second integer number. 3. Select the division operation.
+
+Test Data: 10, 0",An error message is displayed indicating that division by zero is not allowed,1714e14-TC-001

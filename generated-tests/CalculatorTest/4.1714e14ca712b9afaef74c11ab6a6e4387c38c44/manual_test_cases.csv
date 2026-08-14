@@ -1,0 +1,61 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Add two decimal numbers and display the precise sum,Basic Arithmetic Operations,Positive,High,Calculator application is open and ready for input,"1. Enter the first number as 5.25. 2. Select the addition operation. 3. Enter the second number as 6.50. 4. Submit the calculation.
+
+Test Data: First number: 5.25, Second number: 6.50",The result of the addition is displayed as 11.75,1e702eb-TC-001
+Subtract two decimal numbers and display the precise difference,Basic Arithmetic Operations,Positive,High,Calculator application is open and ready for input,"1. Enter the first number as 15.75. 2. Select the subtraction operation. 3. Enter the second number as 6.25. 4. Submit the calculation.
+
+Test Data: First number: 15.75, Second number: 6.25",The result of the subtraction is displayed as 9.50,1e702eb-TC-002
+Multiply two decimal numbers and display the precise product,Basic Arithmetic Operations,Positive,High,Calculator application is open and ready for input,"1. Enter the first number as 2.50. 2. Select the multiplication operation. 3. Enter the second number as 3.70. 4. Submit the calculation.
+
+Test Data: First number: 2.50, Second number: 3.70",The result of the multiplication is displayed as 9.25,1e702eb-TC-003
+Divide two decimal numbers and display the precise quotient,Basic Arithmetic Operations,Positive,High,Calculator application is open and ready for input,"1. Enter the first number as 17.50. 2. Select the division operation. 3. Enter the second number as 3.60. 4. Submit the calculation.
+
+Test Data: First number: 17.50, Second number: 3.60",The result of the division is displayed as 4.861111 (or rounded to 4.86 depending on display precision),1e702eb-TC-004
+Handle division by zero with decimal number input,Basic Arithmetic Operations,Positive,High,Calculator application is open and ready for input,"1. Enter the first number as 5.50. 2. Select the division operation. 3. Enter the second number as 0.00. 4. Submit the calculation.
+
+Test Data: First number: 5.50, Second number: 0.00",An error message is displayed indicating that division by zero is not allowed,TC-001
+Verify addition of two very large floating-point numbers,Basic Arithmetic Operations,Boundary,High,The application is open and ready for calculations,"1. Enter the first number: 3.4028235E38. 2. Enter the second number: 3.4028235E38. 3. Select the addition operation.
+
+Test Data: 3.4028235E38, 3.4028235E38","The application displays an overflow indication (e.g., 'Infinity' or an error message) for addition",TC-002
+Verify subtraction of two very large floating-point numbers,Basic Arithmetic Operations,Boundary,High,The application is open and ready for calculations,"1. Enter the first number: 3.4028235E38. 2. Enter the second number: -3.4028235E38. 3. Select the subtraction operation.
+
+Test Data: 3.4028235E38, -3.4028235E38","The application displays an overflow indication (e.g., 'Infinity' or an error message) for subtraction",TC-003
+Verify multiplication of two very large floating-point numbers,Basic Arithmetic Operations,Boundary,High,The application is open and ready for calculations,"1. Enter the first number: 3.4028235E38. 2. Enter the second number: 2. 3. Select the multiplication operation.
+
+Test Data: 3.4028235E38, 2","The application displays an overflow indication (e.g., 'Infinity' or an error message) for multiplication",TC-004
+Verify division of two very large floating-point numbers,Basic Arithmetic Operations,Boundary,High,The application is open and ready for calculations,"1. Enter the first number: 3.4028235E38. 2. Enter the second number: 1. 3. Select the division operation.
+
+Test Data: 3.4028235E38, 1",The application displays the result as 3.4028235E38 for division,TC-005
+Verify addition of zero and a very large floating-point number,Basic Arithmetic Operations,Boundary,Medium,The application is open and ready for calculations,"1. Enter the first number: 0. 2. Enter the second number: 3.4028235E38. 3. Select the addition operation.
+
+Test Data: 0, 3.4028235E38",The application displays the result as 3.4028235E38 for addition,TC-006
+Verify subtraction of zero and a very large floating-point number,Basic Arithmetic Operations,Boundary,Medium,The application is open and ready for calculations,"1. Enter the first number: 0. 2. Enter the second number: 3.4028235E38. 3. Select the subtraction operation.
+
+Test Data: 0, 3.4028235E38",The application displays the result as -3.4028235E38 for subtraction,TC-007
+Verify multiplication of zero and a very large floating-point number,Basic Arithmetic Operations,Boundary,Medium,The application is open and ready for calculations,"1. Enter the first number: 0. 2. Enter the second number: 3.4028235E38. 3. Select the multiplication operation.
+
+Test Data: 0, 3.4028235E38",The application displays the result as 0.0 for multiplication,TC-008
+Verify division by zero for floating-point numbers,Basic Arithmetic Operations,Boundary,High,The application is open and ready for calculations,"1. Enter the first number: 3.4028235E38. 2. Enter the second number: 0. 3. Select the division operation.
+
+Test Data: 3.4028235E38, 0",The application displays an error message indicating division by zero is not allowed,50947af-TC-007
+Verify division by zero with floating-point inputs displays a clear error message,Calculator Operations,Security,High,The calculator is in a state to perform division,"1. Enter a floating-point number as the dividend. 2. Enter zero as the divisor. 3. Perform the division operation.
+
+Test Data: Dividend: 10.5, Divisor: 0.0",A clear error message indicating division by zero is not allowed is displayed,6adbc85-TC-001
+Verify extremely large floating-point numbers do not cause unexpected behavior or expose internal errors,Calculator Input Handling,Security,Medium,The calculator is in a state to perform calculations,"1. Enter an extremely large floating-point number. 2. Perform a calculation with the entered number.
+
+Test Data: Input: 1.0E+308","The calculator displays either the correct mathematical result or a clear error message indicating the value is too large to process, without exposing internal system details or crashing",1e702eb-TC-005
+Verify extremely small floating-point numbers do not cause unexpected behavior or expose internal errors,Calculator Input Handling,Security,Medium,The calculator is in a state to perform calculations,"1. Enter an extremely small floating-point number. 2. Perform a calculation with the entered number.
+
+Test Data: Input: 1.0E-323","The calculator displays either the correct mathematical result or a clear error message indicating the value is too small to process, without exposing internal system details or crashing",1e702eb-TC-006
+Verify floating-point overflow in addition,Calculator Operations,Security,Medium,The calculator is in a state to perform addition,"1. Enter two extremely large floating-point numbers. 2. Perform the addition operation.
+
+Test Data: Input1: 1.0E+308, Input2: 1.0E+308","The calculator displays either the correct mathematical result or a clear error message indicating overflow, without exposing internal system details or crashing",TC-009
+Verify floating-point overflow in subtraction,Calculator Operations,Security,Medium,The calculator is in a state to perform subtraction,"1. Enter two extremely large floating-point numbers. 2. Perform the subtraction operation.
+
+Test Data: Input1: 1.0E+308, Input2: 1.0E+308","The calculator displays either the correct mathematical result or a clear error message indicating overflow, without exposing internal system details or crashing",TC-010
+Verify floating-point overflow in multiplication,Calculator Operations,Security,Medium,The calculator is in a state to perform multiplication,"1. Enter two extremely large floating-point numbers. 2. Perform the multiplication operation.
+
+Test Data: Input1: 1.0E+308, Input2: 1.0E+308","The calculator displays either the correct mathematical result or a clear error message indicating overflow, without exposing internal system details or crashing",TC-011
+Verify floating-point overflow in division,Calculator Operations,Security,Medium,The calculator is in a state to perform division,"1. Enter an extremely large floating-point number as the dividend. 2. Enter a small floating-point number as the divisor. 3. Perform the division operation.
+
+Test Data: Dividend: 1.0E+308, Divisor: 1.0E-308","The calculator displays either the correct mathematical result or a clear error message indicating overflow, without exposing internal system details or crashing",TC-012

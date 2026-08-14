@@ -1,0 +1,460 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a flat fee configuration for a merchant,Fee Configuration Management,Positive,High,A merchant exists with ID '123e4567-e89b-12d3-a456-426614174000' and a payment capability with code 'ONLINE_PAYMENT' exists,"1. Send a POST request to /api/v1/fees with the payload in testData. 2. Verify the response status is 201 CREATED and the response body matches the expected result.
+
+Test Data: {
+  ""merchantId"": ""123e4567-e89b-12d3-a456-426614174000"",
+  ""capabilityCode"": ""ONLINE_PAYMENT"",
+  ""feeType"": ""FLAT"",
+  ""flatAmount"": 5.00,
+  ""minFee"": 1.00,
+  ""maxFee"": 500.00,
+  ""currency"": ""SAR"",
+  ""effectiveFrom"": ""2023-10-01""
+}","Response status is 201 CREATED. Response body contains success=true, a message 'Fee configuration created', and a data object with:
+- merchantId: '123e4567-e89b-12d3-a456-426614174000'
+- capabilityCode: 'ONLINE_PAYMENT'
+- feeType: 'FLAT'
+- flatAmount: 5.00
+- minFee: 1.00
+- maxFee: 500.00
+- currency: 'SAR'
+- effectiveFrom: '2023-10-01'
+- active: true
+- id: a valid UUID
+- createdAt and updatedAt timestamps",TC-001
+Create a percentage fee configuration for a merchant category,Fee Configuration Management,Positive,High,A payment capability with code 'POS_PAYMENT' exists and no merchant-specific configuration exists for MCC '5411',"1. Send a POST request to /api/v1/fees with the payload in testData. 2. Verify the response status is 201 CREATED and the response body matches the expected result.
+
+Test Data: {
+  ""merchantCategoryCode"": ""5411"",
+  ""capabilityCode"": ""POS_PAYMENT"",
+  ""feeType"": ""PERCENTAGE"",
+  ""percentageRate"": 2.50,
+  ""minFee"": 1.00,
+  ""maxFee"": 1000.00,
+  ""currency"": ""SAR"",
+  ""effectiveFrom"": ""2023-10-01""
+}","Response status is 201 CREATED. Response body contains success=true, a message 'Fee configuration created', and a data object with:
+- merchantCategoryCode: '5411'
+- capabilityCode: 'POS_PAYMENT'
+- feeType: 'PERCENTAGE'
+- percentageRate: 2.50
+- minFee: 1.00
+- maxFee: 1000.00
+- currency: 'SAR'
+- effectiveFrom: '2023-10-01'
+- active: true
+- id: a valid UUID
+- createdAt and updatedAt timestamps",TC-002
+Retrieve all active fee configurations,Fee Configuration Management,Positive,Medium,At least one active fee configuration exists in the system,1. Send a GET request to /api/v1/fees. 2. Verify the response status is 200 OK and the response body contains the expected fee configurations.,"Response status is 200 OK. Response body contains success=true and a data object with:
+- content: array of fee configurations
+- page: 0
+- size: 20
+- totalElements: total count of active fee configurations
+- totalPages: total pages available
+- last: boolean indicating if this is the last page",TC-003
+Retrieve fee configuration by ID,Fee Configuration Management,Positive,Medium,A fee configuration exists with ID '123e4567-e89b-12d3-a456-426614174001',1. Send a GET request to /api/v1/fees/123e4567-e89b-12d3-a456-426614174001. 2. Verify the response status is 200 OK and the response body matches the expected result.,Response status is 200 OK. Response body contains success=true and a data object with the fee configuration details matching the ID '123e4567-e89b-12d3-a456-426614174001'.,TC-004
+Retrieve fee configurations for a specific merchant,Fee Configuration Management,Positive,High,A merchant exists with ID '123e4567-e89b-12d3-a456-426614174000' and has at least one active fee configuration,1. Send a GET request to /api/v1/merchants/123e4567-e89b-12d3-a456-426614174000/fees. 2. Verify the response status is 200 OK and the response body contains the expected fee configurations.,Response status is 200 OK. Response body contains success=true and a data array with fee configurations where merchantId is '123e4567-e89b-12d3-a456-426614174000' and active=true.,TC-005
+Assign a new payment capability to a merchant successfully,Merchant Payment Capability Assignment,Positive,High,A merchant with ID '123e4567-e89b-12d3-a456-426614174000' exists and a payment capability with ID '123e4567-e89b-12d3-a456-426614174001' exists,"1. Send a POST request to /api/v1/merchants/123e4567-e89b-12d3-a456-426614174000/capabilities with the payload in testData. 2. Verify the response status is 201 CREATED and the response body contains the assigned capability details.
+
+Test Data: {""capabilityId"": ""123e4567-e89b-12d3-a456-426614174001""}","The response status is 201 CREATED, and the response body includes the capabilityCode, capabilityName, merchantId, capabilityId, status as 'ACTIVE', and activatedAt timestamp.",TC-006
+Retrieve all payment capabilities assigned to a merchant successfully,Merchant Payment Capability Retrieval,Positive,High,A merchant with ID '123e4567-e89b-12d3-a456-426614174000' exists and has at least one assigned payment capability,1. Send a GET request to /api/v1/merchants/123e4567-e89b-12d3-a456-426614174000/capabilities. 2. Verify the response status is 200 OK and the response body contains a list of assigned capabilities.,"The response status is 200 OK, and the response body includes a list of capabilities with fields: capabilityCode, capabilityName, merchantId, capabilityId, status, activatedAt, and deactivatedAt (if applicable).",TC-007
+Create a new payment capability successfully,Payment Capability Creation,Positive,High,No existing payment capability with capabilityCode 'NEW_CAP' exists,"1. Send a POST request to /api/v1/capabilities with the payload in testData. 2. Verify the response status is 201 CREATED and the response body contains the created capability details.
+
+Test Data: {""capabilityCode"": ""NEW_CAP"", ""name"": ""New Payment Capability"", ""description"": ""A new payment capability for testing""}","The response status is 201 CREATED, and the response body includes the capabilityCode 'NEW_CAP', name 'New Payment Capability', description, and active status as true.",TC-008
+Retrieve all payment capabilities successfully,Payment Capability Retrieval,Positive,Medium,At least one payment capability exists in the system,1. Send a GET request to /api/v1/capabilities. 2. Verify the response status is 200 OK and the response body contains a list of payment capabilities.,"The response status is 200 OK, and the response body includes a list of payment capabilities with fields: id, capabilityCode, name, description, and active status.",TC-009
+Update an existing payment capability successfully,Payment Capability Update,Positive,Medium,A payment capability with ID '123e4567-e89b-12d3-a456-426614174002' exists,"1. Send a PUT request to /api/v1/capabilities/123e4567-e89b-12d3-a456-426614174002 with the payload in testData. 2. Verify the response status is 200 OK and the response body reflects the updated capability details.
+
+Test Data: {""name"": ""Updated Payment Capability"", ""description"": ""Updated description for testing"", ""active"": false}","The response status is 200 OK, and the response body includes the updated name, description, and active status as false.",TC-010
+Reject fee configuration creation with missing required capabilityCode,Fee Configuration - Input Validation,Negative,High,None,"1. Send a POST request to /api/v1/fees with the payload in testData.
+
+Test Data: {
+  ""merchantId"": null,
+  ""merchantCategoryCode"": ""5411"",
+  ""capabilityCode"": """",
+  ""feeType"": ""PERCENTAGE"",
+  ""percentageRate"": 2.50,
+  ""minFee"": 1.00,
+  ""maxFee"": 500.00,
+  ""currency"": ""SAR"",
+  ""effectiveFrom"": ""2025-01-01""
+}","The API responds with HTTP 400 Bad Request. The response body contains success=false, error='Validation Failed', and validationErrors includes 'capabilityCode: Capability code is required'.",TC-011
+Reject fee configuration creation with missing required feeType,Fee Configuration - Input Validation,Negative,High,None,"1. Send a POST request to /api/v1/fees with the payload in testData.
+
+Test Data: {
+  ""merchantId"": null,
+  ""merchantCategoryCode"": ""5411"",
+  ""capabilityCode"": ""ONLINE_PAYMENT"",
+  ""feeType"": null,
+  ""percentageRate"": 2.50,
+  ""minFee"": 1.00,
+  ""maxFee"": 500.00,
+  ""currency"": ""SAR"",
+  ""effectiveFrom"": ""2025-01-01""
+}","The API responds with HTTP 400 Bad Request. The response body contains success=false, error='Validation Failed', and validationErrors includes 'feeType: Fee type is required'.",TC-012
+Reject fee configuration creation with missing required effectiveFrom date,Fee Configuration - Input Validation,Negative,High,None,"1. Send a POST request to /api/v1/fees with the payload in testData.
+
+Test Data: {
+  ""merchantId"": null,
+  ""merchantCategoryCode"": ""5411"",
+  ""capabilityCode"": ""ONLINE_PAYMENT"",
+  ""feeType"": ""PERCENTAGE"",
+  ""percentageRate"": 2.50,
+  ""minFee"": 1.00,
+  ""maxFee"": 500.00,
+  ""currency"": ""SAR"",
+  ""effectiveFrom"": null
+}","The API responds with HTTP 400 Bad Request. The response body contains success=false, error='Validation Failed', and validationErrors includes 'effectiveFrom: Effective from date is required'.",TC-013
+Reject fee configuration creation with invalid feeType value,Fee Configuration - Input Validation,Negative,High,None,"1. Send a POST request to /api/v1/fees with the payload in testData.
+
+Test Data: {
+  ""merchantId"": null,
+  ""merchantCategoryCode"": ""5411"",
+  ""capabilityCode"": ""ONLINE_PAYMENT"",
+  ""feeType"": ""INVALID_TYPE"",
+  ""percentageRate"": 2.50,
+  ""minFee"": 1.00,
+  ""maxFee"": 500.00,
+  ""currency"": ""SAR"",
+  ""effectiveFrom"": ""2025-01-01""
+}",The API responds with HTTP 400 Bad Request. The response body contains success=false and an error message indicating 'INVALID_TYPE' is not a valid fee type.,TC-014
+Reject fee configuration creation with negative percentageRate,Fee Configuration - Input Validation,Negative,High,None,"1. Send a POST request to /api/v1/fees with the payload in testData.
+
+Test Data: {
+  ""merchantId"": null,
+  ""merchantCategoryCode"": ""5411"",
+  ""capabilityCode"": ""ONLINE_PAYMENT"",
+  ""feeType"": ""PERCENTAGE"",
+  ""percentageRate"": -2.50,
+  ""minFee"": 1.00,
+  ""maxFee"": 500.00,
+  ""currency"": ""SAR"",
+  ""effectiveFrom"": ""2025-01-01""
+}","The API responds with HTTP 400 Bad Request. The response body contains success=false, error='Validation Failed', and validationErrors includes a message indicating percentageRate must be positive.",TC-015
+Reject fee configuration creation with minFee greater than maxFee,Fee Configuration - Input Validation,Negative,High,None,"1. Send a POST request to /api/v1/fees with the payload in testData.
+
+Test Data: {
+  ""merchantId"": null,
+  ""merchantCategoryCode"": ""5411"",
+  ""capabilityCode"": ""ONLINE_PAYMENT"",
+  ""feeType"": ""PERCENTAGE"",
+  ""percentageRate"": 2.50,
+  ""minFee"": 600.00,
+  ""maxFee"": 500.00,
+  ""currency"": ""SAR"",
+  ""effectiveFrom"": ""2025-01-01""
+}",The API responds with HTTP 422 Unprocessable Entity. The response body contains success=false and an error message indicating minFee cannot be greater than maxFee.,TC-016
+Reject fee configuration update with invalid feeType value,Fee Configuration - Input Validation,Negative,High,A fee configuration exists with ID {id}.,"1. Send a PUT request to /api/v1/fees/{id} with the payload in testData.
+
+Test Data: {
+  ""feeType"": ""INVALID_TYPE"",
+  ""percentageRate"": 2.50,
+  ""minFee"": 1.00,
+  ""maxFee"": 500.00,
+  ""currency"": ""SAR"",
+  ""effectiveFrom"": ""2025-01-01""
+}",The API responds with HTTP 400 Bad Request. The response body contains success=false and an error message indicating 'INVALID_TYPE' is not a valid fee type.,TC-017
+Reject fee tier creation with missing required tierFrom,Fee Configuration - Input Validation,Negative,High,A fee configuration exists with ID {id}.,"1. Send a POST request to /api/v1/fees/{id}/tiers with the payload in testData.
+
+Test Data: {
+  ""tierFrom"": null,
+  ""tierTo"": 1000.00,
+  ""rate"": 2.50,
+  ""flatAmount"": 5.00
+}","The API responds with HTTP 400 Bad Request. The response body contains success=false, error='Validation Failed', and validationErrors includes 'tierFrom: Tier from is required'.",TC-018
+Reject fee tier creation with missing required tierTo,Fee Configuration - Input Validation,Negative,High,A fee configuration exists with ID {id}.,"1. Send a POST request to /api/v1/fees/{id}/tiers with the payload in testData.
+
+Test Data: {
+  ""tierFrom"": 0.00,
+  ""tierTo"": null,
+  ""rate"": 2.50,
+  ""flatAmount"": 5.00
+}","The API responds with HTTP 400 Bad Request. The response body contains success=false, error='Validation Failed', and validationErrors includes 'tierTo: Tier to is required'.",TC-019
+Reject fee tier creation with tierFrom greater than tierTo,Fee Configuration - Input Validation,Negative,High,A fee configuration exists with ID {id}.,"1. Send a POST request to /api/v1/fees/{id}/tiers with the payload in testData.
+
+Test Data: {
+  ""tierFrom"": 1000.00,
+  ""tierTo"": 500.00,
+  ""rate"": 2.50,
+  ""flatAmount"": 5.00
+}",The API responds with HTTP 422 Unprocessable Entity. The response body contains success=false and an error message indicating tierFrom cannot be greater than tierTo.,TC-020
+Reject capability assignment with missing required capabilityId,Merchant Capability - Input Validation,Negative,High,A merchant exists with ID {merchantId}.,"1. Send a POST request to /api/v1/merchants/{merchantId}/capabilities with the payload in testData.
+
+Test Data: {
+  ""capabilityId"": null
+}","The API responds with HTTP 400 Bad Request. The response body contains success=false, error='Validation Failed', and validationErrors includes 'capabilityId: Capability ID is required'.",TC-021
+Reject payment capability creation with missing required capabilityCode,Payment Capability - Input Validation,Negative,High,None,"1. Send a POST request to /api/v1/capabilities with the payload in testData.
+
+Test Data: {
+  ""capabilityCode"": """",
+  ""name"": ""Online Payment"",
+  ""description"": ""Accept payments via online channels""
+}","The API responds with HTTP 400 Bad Request. The response body contains success=false, error='Validation Failed', and validationErrors includes 'capabilityCode: Capability code is required'.",TC-022
+Reject payment capability creation with missing required name,Payment Capability - Input Validation,Negative,High,None,"1. Send a POST request to /api/v1/capabilities with the payload in testData.
+
+Test Data: {
+  ""capabilityCode"": ""ONLINE_PAYMENT"",
+  ""name"": """",
+  ""description"": ""Accept payments via online channels""
+}","The API responds with HTTP 400 Bad Request. The response body contains success=false, error='Validation Failed', and validationErrors includes 'name: Name is required'.",TC-023
+Reject payment capability creation with capabilityCode exceeding max length,Payment Capability - Input Validation,Negative,Medium,None,"1. Send a POST request to /api/v1/capabilities with the payload in testData.
+
+Test Data: {
+  ""capabilityCode"": ""ONLINE_PAYMENT_ONLINE_PAYMENT_ONLINE_PAYMENT_ONLINE_PAYMENT"",
+  ""name"": ""Online Payment"",
+  ""description"": ""Accept payments via online channels""
+}","The API responds with HTTP 400 Bad Request. The response body contains success=false, error='Validation Failed', and validationErrors includes a message indicating capabilityCode exceeds max length of 50.",TC-024
+Reject payment capability creation with name exceeding max length,Payment Capability - Input Validation,Negative,Medium,None,"1. Send a POST request to /api/v1/capabilities with the payload in testData.
+
+Test Data: {
+  ""capabilityCode"": ""ONLINE_PAYMENT"",
+  ""name"": ""Online Payment Online Payment Online Payment Online Payment Online Payment Online Payment"",
+  ""description"": ""Accept payments via online channels""
+}","The API responds with HTTP 400 Bad Request. The response body contains success=false, error='Validation Failed', and validationErrors includes a message indicating name exceeds max length of 100.",TC-025
+Reject payment capability creation with description exceeding max length,Payment Capability - Input Validation,Negative,Medium,None,"1. Send a POST request to /api/v1/capabilities with the payload in testData.
+
+Test Data: {
+  ""capabilityCode"": ""ONLINE_PAYMENT"",
+  ""name"": ""Online Payment"",
+  ""description"": ""Accept payments via online channels. This description is way too long and exceeds the maximum allowed length of 500 characters. It should be rejected by the system to ensure data integrity and compliance with business rules. The system must enforce this validation to prevent any issues with data storage or processing.""
+}","The API responds with HTTP 400 Bad Request. The response body contains success=false, error='Validation Failed', and validationErrors includes a message indicating description exceeds max length of 500.",TC-026
+Attempt to assign a capability to a non-existent merchant,Merchant Capability Assignment,Negative,High,No merchant exists with the specified merchantId,"1. Send a POST request to /api/v1/merchants/{merchantId}/capabilities/{capabilityId} with a merchantId that does not exist in the system and a valid capabilityId.
+
+Test Data: merchantId: '00000000-0000-0000-0000-000000000000', capabilityId: '123e4567-e89b-12d3-a456-426614174000'",The API responds with HTTP status 404 and an error message indicating that the merchant was not found.,TC-027
+Attempt to assign a non-existent capability to a merchant,Merchant Capability Assignment,Negative,High,"A merchant exists with the specified merchantId, but no capability exists with the specified capabilityId","1. Create a merchant using POST /api/v1/merchants with valid data. 2. Send a POST request to /api/v1/merchants/{merchantId}/capabilities/{capabilityId} with the merchantId from step 1 and a capabilityId that does not exist.
+
+Test Data: CreateMerchantRequest: { 'legalName': 'Test Merchant', 'tradeName': 'Test Trade', 'registrationNo': 'REG123456789', 'businessType': 'CORPORATION', 'contactEmail': 'test@example.com' }, merchantId: (from step 1), capabilityId: '00000000-0000-0000-0000-000000000000'",The API responds with HTTP status 404 and an error message indicating that the payment capability was not found.,TC-028
+Attempt to assign a duplicate capability to a merchant,Merchant Capability Assignment,Negative,High,"A merchant exists with the specified merchantId, and a capability exists with the specified capabilityId. The capability is already assigned to the merchant.","1. Create a merchant using POST /api/v1/merchants with valid data. 2. Create a capability using POST /api/v1/capabilities with valid data. 3. Assign the capability to the merchant using POST /api/v1/merchants/{merchantId}/capabilities/{capabilityId}. 4. Send the same POST request again to assign the same capability to the same merchant.
+
+Test Data: CreateMerchantRequest: { 'legalName': 'Test Merchant', 'tradeName': 'Test Trade', 'registrationNo': 'REG123456789', 'businessType': 'CORPORATION', 'contactEmail': 'test@example.com' }, CreateCapabilityRequest: { 'capabilityCode': 'DUPLICATE_TEST', 'name': 'Duplicate Test Capability' }, merchantId: (from step 1), capabilityId: (from step 2)",The API responds with HTTP status 409 and an error message indicating that the merchant capability already exists.,TC-029
+Attempt to create a payment capability with a duplicate capability code,Payment Capability Creation,Negative,High,A payment capability with the specified capabilityCode already exists in the system,"1. Create a payment capability using POST /api/v1/capabilities with a unique capabilityCode. 2. Send another POST request to /api/v1/capabilities with the same capabilityCode.
+
+Test Data: CreateCapabilityRequest (step 1): { 'capabilityCode': 'DUPLICATE_CODE', 'name': 'First Capability' }, CreateCapabilityRequest (step 2): { 'capabilityCode': 'DUPLICATE_CODE', 'name': 'Second Capability' }",The API responds with HTTP status 409 and an error message indicating that the payment capability with the given capabilityCode already exists.,TC-030
+Attempt to update the status of a non-existent merchant capability,Merchant Capability Status Update,Negative,High,No merchant capability mapping exists for the given merchantId and capabilityId,"1. Send a PATCH request to /api/v1/merchants/{merchantId}/capabilities/{capabilityId}/status with a status value and non-existent merchantId and capabilityId.
+
+Test Data: merchantId: '00000000-0000-0000-0000-000000000000', capabilityId: '00000000-0000-0000-0000-000000000000', status: 'INACTIVE'",The API responds with HTTP status 404 and an error message indicating that the merchant capability mapping was not found.,TC-031
+Attempt to update the status of a merchant capability with an invalid status value,Merchant Capability Status Update,Negative,High,A merchant capability mapping exists for the given merchantId and capabilityId,"1. Create a merchant using POST /api/v1/merchants with valid data. 2. Create a capability using POST /api/v1/capabilities with valid data. 3. Assign the capability to the merchant using POST /api/v1/merchants/{merchantId}/capabilities/{capabilityId}. 4. Send a PATCH request to /api/v1/merchants/{merchantId}/capabilities/{capabilityId}/status with an invalid status value.
+
+Test Data: CreateMerchantRequest: { 'legalName': 'Test Merchant', 'tradeName': 'Test Trade', 'registrationNo': 'REG123456789', 'businessType': 'CORPORATION', 'contactEmail': 'test@example.com' }, CreateCapabilityRequest: { 'capabilityCode': 'STATUS_TEST', 'name': 'Status Test Capability' }, merchantId: (from step 1), capabilityId: (from step 2), status: 'INVALID_STATUS'",The API responds with HTTP status 400 and an error message indicating that the status value is invalid.,TC-032
+Attempt to upload a document for a non-existent merchant,Merchant Document Upload,Negative,High,No merchant exists with the specified merchantId,"1. Send a POST request to /api/v1/merchants/{merchantId}/documents with a documentType and a file for a non-existent merchantId.
+
+Test Data: merchantId: '00000000-0000-0000-0000-000000000000', documentType: 'BUSINESS_LICENSE', file: (any valid file)",The API responds with HTTP status 404 and an error message indicating that the merchant was not found.,TC-033
+Attempt to delete a document belonging to a different merchant,Merchant Document Deletion,Negative,High,"Two merchants exist, and a document exists for one of them","1. Create two merchants using POST /api/v1/merchants with valid data. 2. Upload a document for the first merchant using POST /api/v1/merchants/{merchantId}/documents. 3. Send a DELETE request to /api/v1/merchants/{merchantId}/documents/{documentId} using the second merchant's ID and the document ID from step 2.
+
+Test Data: CreateMerchantRequest (both merchants): { 'legalName': 'Test Merchant', 'tradeName': 'Test Trade', 'registrationNo': (unique), 'businessType': 'CORPORATION', 'contactEmail': 'test@example.com' }, merchantId (step 3): (ID of second merchant), documentId: (from step 2)",The API responds with HTTP status 404 and an error message indicating that the document was not found.,TC-034
+Attempt to generate a QR code for a non-existent merchant,QR Code Generation,Negative,High,No merchant exists with the specified merchantId,"1. Send a POST request to /api/v1/qr-codes with a merchantId that does not exist and a valid qrType.
+
+Test Data: GenerateQrCodeRequest: { 'merchantId': '00000000-0000-0000-0000-000000000000', 'qrType': 'STATIC' }",The API responds with HTTP status 404 and an error message indicating that the merchant was not found.,TC-035
+Attempt to update the status of a non-existent QR code,QR Code Status Update,Negative,High,No QR code exists with the specified ID,"1. Send a PATCH request to /api/v1/qr-codes/{id}/status with a status value and a non-existent QR code ID.
+
+Test Data: id: '00000000-0000-0000-0000-000000000000', status: 'INACTIVE'",The API responds with HTTP status 404 and an error message indicating that the QR code was not found.,TC-036
+Attempt to update the status of a QR code with an invalid status value,QR Code Status Update,Negative,Medium,A QR code exists with the specified ID,"1. Generate a QR code using POST /api/v1/qr-codes with valid data. 2. Send a PATCH request to /api/v1/qr-codes/{id}/status with an invalid status value.
+
+Test Data: GenerateQrCodeRequest: { 'merchantId': (valid merchant ID), 'qrType': 'STATIC' }, id: (from step 1), status: 'INVALID_STATUS'",The API responds with HTTP status 400 and an error message indicating that the status value is invalid.,TC-037
+Attempt to create a merchant with a duplicate registration number,Merchant Creation,Negative,High,A merchant with the specified registration number already exists in the system,"1. Create a merchant using POST /api/v1/merchants with a unique registration number. 2. Send another POST request to /api/v1/merchants with the same registration number.
+
+Test Data: CreateMerchantRequest (step 1): { 'legalName': 'First Merchant', 'tradeName': 'First Trade', 'registrationNo': 'DUPLICATE_REG', 'businessType': 'CORPORATION', 'contactEmail': 'first@example.com' }, CreateMerchantRequest (step 2): { 'legalName': 'Second Merchant', 'tradeName': 'Second Trade', 'registrationNo': 'DUPLICATE_REG', 'businessType': 'CORPORATION', 'contactEmail': 'second@example.com' }",The API responds with HTTP status 409 and an error message indicating that the merchant with the given registration number already exists.,TC-038
+Attempt to update a non-existent merchant,Merchant Update,Negative,High,No merchant exists with the specified ID,"1. Send a PUT request to /api/v1/merchants/{id} with valid update data for a non-existent merchant ID.
+
+Test Data: id: '00000000-0000-0000-0000-000000000000', UpdateMerchantRequest: { 'legalName': 'Updated Merchant' }",The API responds with HTTP status 404 and an error message indicating that the merchant was not found.,TC-039
+Create fee configuration with minimum allowed flatAmount (0.00),Fee Configuration - Boundary Values for Numeric Fields,Boundary,High,A merchant exists with ID '123e4567-e89b-12d3-a456-426614174000' and capability 'ONLINE_PAYMENT' is available,"1. Send a POST request to /api/v1/fees with the payload in testData. 2. Verify the response status is 201 CREATED and the flatAmount in the response matches the input.
+
+Test Data: {""merchantId"": ""123e4567-e89b-12d3-a456-426614174000"", ""capabilityCode"": ""ONLINE_PAYMENT"", ""feeType"": ""FLAT"", ""flatAmount"": 0.00, ""minFee"": 0.00, ""maxFee"": 500.00, ""currency"": ""SAR"", ""effectiveFrom"": ""2023-01-01""}","The response status is 201 CREATED. The response body contains a success flag as true, and the flatAmount field is exactly 0.00.",TC-040
+Create fee configuration with maximum allowed flatAmount (999999999999.9999),Fee Configuration - Boundary Values for Numeric Fields,Boundary,High,A merchant exists with ID '123e4567-e89b-12d3-a456-426614174000' and capability 'ONLINE_PAYMENT' is available,"1. Send a POST request to /api/v1/fees with the payload in testData. 2. Verify the response status is 201 CREATED and the flatAmount in the response matches the input.
+
+Test Data: {""merchantId"": ""123e4567-e89b-12d3-a456-426614174000"", ""capabilityCode"": ""ONLINE_PAYMENT"", ""feeType"": ""FLAT"", ""flatAmount"": 999999999999.9999, ""minFee"": 0.00, ""maxFee"": 999999999999.9999, ""currency"": ""SAR"", ""effectiveFrom"": ""2023-01-01""}","The response status is 201 CREATED. The response body contains a success flag as true, and the flatAmount field is exactly 999999999999.9999.",TC-041
+Create fee configuration with flatAmount one step below minimum (negative value),Fee Configuration - Boundary Values for Numeric Fields,Boundary,High,A merchant exists with ID '123e4567-e89b-12d3-a456-426614174000' and capability 'ONLINE_PAYMENT' is available,"1. Send a POST request to /api/v1/fees with the payload in testData. 2. Verify the response status is 400 BAD_REQUEST and the validation error indicates flatAmount must be non-negative.
+
+Test Data: {""merchantId"": ""123e4567-e89b-12d3-a456-426614174000"", ""capabilityCode"": ""ONLINE_PAYMENT"", ""feeType"": ""FLAT"", ""flatAmount"": -0.01, ""minFee"": 0.00, ""maxFee"": 500.00, ""currency"": ""SAR"", ""effectiveFrom"": ""2023-01-01""}",The response status is 400 BAD_REQUEST. The response body contains a validation error for flatAmount indicating it must be non-negative.,TC-042
+Create fee configuration with flatAmount one step above maximum (1000000000000.0000),Fee Configuration - Boundary Values for Numeric Fields,Boundary,High,A merchant exists with ID '123e4567-e89b-12d3-a456-426614174000' and capability 'ONLINE_PAYMENT' is available,"1. Send a POST request to /api/v1/fees with the payload in testData. 2. Verify the response status is 400 BAD_REQUEST and the validation error indicates flatAmount exceeds maximum allowed value.
+
+Test Data: {""merchantId"": ""123e4567-e89b-12d3-a456-426614174000"", ""capabilityCode"": ""ONLINE_PAYMENT"", ""feeType"": ""FLAT"", ""flatAmount"": 1000000000000.0000, ""minFee"": 0.00, ""maxFee"": 500.00, ""currency"": ""SAR"", ""effectiveFrom"": ""2023-01-01""}",The response status is 400 BAD_REQUEST. The response body contains a validation error for flatAmount indicating it exceeds the maximum allowed value of 999999999999.9999.,TC-043
+Create fee configuration with minimum allowed percentageRate (0.0000),Fee Configuration - Boundary Values for Percentage Rate,Boundary,High,A merchant exists with ID '123e4567-e89b-12d3-a456-426614174000' and capability 'ONLINE_PAYMENT' is available,"1. Send a POST request to /api/v1/fees with the payload in testData. 2. Verify the response status is 201 CREATED and the percentageRate in the response matches the input.
+
+Test Data: {""merchantId"": ""123e4567-e89b-12d3-a456-426614174000"", ""capabilityCode"": ""ONLINE_PAYMENT"", ""feeType"": ""PERCENTAGE"", ""percentageRate"": 0.0000, ""minFee"": 0.00, ""maxFee"": 500.00, ""currency"": ""SAR"", ""effectiveFrom"": ""2023-01-01""}","The response status is 201 CREATED. The response body contains a success flag as true, and the percentageRate field is exactly 0.0000.",TC-044
+Create fee configuration with maximum allowed percentageRate (9999.9999),Fee Configuration - Boundary Values for Percentage Rate,Boundary,High,A merchant exists with ID '123e4567-e89b-12d3-a456-426614174000' and capability 'ONLINE_PAYMENT' is available,"1. Send a POST request to /api/v1/fees with the payload in testData. 2. Verify the response status is 201 CREATED and the percentageRate in the response matches the input.
+
+Test Data: {""merchantId"": ""123e4567-e89b-12d3-a456-426614174000"", ""capabilityCode"": ""ONLINE_PAYMENT"", ""feeType"": ""PERCENTAGE"", ""percentageRate"": 9999.9999, ""minFee"": 0.00, ""maxFee"": 500.00, ""currency"": ""SAR"", ""effectiveFrom"": ""2023-01-01""}","The response status is 201 CREATED. The response body contains a success flag as true, and the percentageRate field is exactly 9999.9999.",TC-045
+Create fee configuration with percentageRate one step above maximum (10000.0000),Fee Configuration - Boundary Values for Percentage Rate,Boundary,High,A merchant exists with ID '123e4567-e89b-12d3-a456-426614174000' and capability 'ONLINE_PAYMENT' is available,"1. Send a POST request to /api/v1/fees with the payload in testData. 2. Verify the response status is 400 BAD_REQUEST and the validation error indicates percentageRate exceeds maximum allowed value.
+
+Test Data: {""merchantId"": ""123e4567-e89b-12d3-a456-426614174000"", ""capabilityCode"": ""ONLINE_PAYMENT"", ""feeType"": ""PERCENTAGE"", ""percentageRate"": 10000.0000, ""minFee"": 0.00, ""maxFee"": 500.00, ""currency"": ""SAR"", ""effectiveFrom"": ""2023-01-01""}",The response status is 400 BAD_REQUEST. The response body contains a validation error for percentageRate indicating it exceeds the maximum allowed value of 9999.9999.,TC-046
+Create fee configuration with minFee equal to maxFee (500.00),Fee Configuration - Boundary Values for Min/Max Fee,Boundary,Medium,A merchant exists with ID '123e4567-e89b-12d3-a456-426614174000' and capability 'ONLINE_PAYMENT' is available,"1. Send a POST request to /api/v1/fees with the payload in testData. 2. Verify the response status is 201 CREATED and both minFee and maxFee in the response match the input.
+
+Test Data: {""merchantId"": ""123e4567-e89b-12d3-a456-426614174000"", ""capabilityCode"": ""ONLINE_PAYMENT"", ""feeType"": ""FLAT"", ""flatAmount"": 10.00, ""minFee"": 500.00, ""maxFee"": 500.00, ""currency"": ""SAR"", ""effectiveFrom"": ""2023-01-01""}","The response status is 201 CREATED. The response body contains a success flag as true, and both minFee and maxFee fields are exactly 500.00.",TC-047
+Create fee configuration with minFee one step above maxFee (500.01 vs 500.00),Fee Configuration - Boundary Values for Min/Max Fee,Boundary,High,A merchant exists with ID '123e4567-e89b-12d3-a456-426614174000' and capability 'ONLINE_PAYMENT' is available,"1. Send a POST request to /api/v1/fees with the payload in testData. 2. Verify the response status is 422 UNPROCESSABLE_ENTITY and the business error indicates minFee cannot be greater than maxFee.
+
+Test Data: {""merchantId"": ""123e4567-e89b-12d3-a456-426614174000"", ""capabilityCode"": ""ONLINE_PAYMENT"", ""feeType"": ""FLAT"", ""flatAmount"": 10.00, ""minFee"": 500.01, ""maxFee"": 500.00, ""currency"": ""SAR"", ""effectiveFrom"": ""2023-01-01""}",The response status is 422 UNPROCESSABLE_ENTITY. The response body contains a business error indicating minFee cannot be greater than maxFee.,TC-048
+Add fee tier with tierFrom equal to tierTo (1000.00),Fee Tier Configuration - Boundary Values for Tier Ranges,Boundary,High,A fee configuration exists with ID '123e4567-e89b-12d3-a456-426614174001' and feeType 'TIERED',"1. Send a POST request to /api/v1/fees/123e4567-e89b-12d3-a456-426614174001/tiers with the payload in testData. 2. Verify the response status is 422 UNPROCESSABLE_ENTITY and the business error indicates tierFrom must be less than tierTo.
+
+Test Data: {""tierFrom"": 1000.00, ""tierTo"": 1000.00, ""rate"": 2.50, ""flatAmount"": 5.00}",The response status is 422 UNPROCESSABLE_ENTITY. The response body contains a business error indicating tierFrom must be less than tierTo.,TC-049
+Add fee tier with tierFrom one step below tierTo (999.99 vs 1000.00),Fee Tier Configuration - Boundary Values for Tier Ranges,Boundary,High,A fee configuration exists with ID '123e4567-e89b-12d3-a456-426614174001' and feeType 'TIERED',"1. Send a POST request to /api/v1/fees/123e4567-e89b-12d3-a456-426614174001/tiers with the payload in testData. 2. Verify the response status is 201 CREATED and the tierFrom and tierTo in the response match the input.
+
+Test Data: {""tierFrom"": 999.99, ""tierTo"": 1000.00, ""rate"": 2.50, ""flatAmount"": 5.00}","The response status is 201 CREATED. The response body contains a success flag as true, and the tierFrom is 999.99 and tierTo is 1000.00.",TC-050
+Add fee tier with tierFrom equal to 0.00 (minimum allowed value),Fee Tier Configuration - Boundary Values for Tier Ranges,Boundary,High,A fee configuration exists with ID '123e4567-e89b-12d3-a456-426614174001' and feeType 'TIERED',"1. Send a POST request to /api/v1/fees/123e4567-e89b-12d3-a456-426614174001/tiers with the payload in testData. 2. Verify the response status is 201 CREATED and the tierFrom in the response is 0.00.
+
+Test Data: {""tierFrom"": 0.00, ""tierTo"": 1000.00, ""rate"": 2.50, ""flatAmount"": 5.00}","The response status is 201 CREATED. The response body contains a success flag as true, and the tierFrom field is exactly 0.00.",TC-051
+Add fee tier with tierFrom negative (invalid boundary),Fee Tier Configuration - Boundary Values for Tier Ranges,Boundary,High,A fee configuration exists with ID '123e4567-e89b-12d3-a456-426614174001' and feeType 'TIERED',"1. Send a POST request to /api/v1/fees/123e4567-e89b-12d3-a456-426614174001/tiers with the payload in testData. 2. Verify the response status is 400 BAD_REQUEST and the validation error indicates tierFrom must be non-negative.
+
+Test Data: {""tierFrom"": -0.01, ""tierTo"": 1000.00, ""rate"": 2.50, ""flatAmount"": 5.00}",The response status is 400 BAD_REQUEST. The response body contains a validation error for tierFrom indicating it must be non-negative.,TC-052
+Assign capability to merchant with minimum valid UUID values,Merchant Capability Assignment,Boundary,High,A merchant with ID '00000000-0000-0000-0000-000000000001' and a payment capability with ID '00000000-0000-0000-0000-000000000001' exist in the system,"1. Send a POST request to /api/v1/merchant-capabilities/assign with the payload in testData. 2. Verify the response status code is 201 and the response body contains the assigned capability details.
+
+Test Data: {""merchantId"": ""00000000-0000-0000-0000-000000000001"", ""capabilityId"": ""00000000-0000-0000-0000-000000000001""}","The response status code is 201. The response body contains a MerchantCapabilityResponse with merchantId '00000000-0000-0000-0000-000000000001', capabilityId '00000000-0000-0000-0000-000000000001', and status 'ACTIVE'.",TC-053
+Assign capability to merchant with maximum valid UUID values,Merchant Capability Assignment,Boundary,High,A merchant with ID 'ffffffff-ffff-ffff-ffff-ffffffffffff' and a payment capability with ID 'ffffffff-ffff-ffff-ffff-ffffffffffff' exist in the system,"1. Send a POST request to /api/v1/merchant-capabilities/assign with the payload in testData. 2. Verify the response status code is 201 and the response body contains the assigned capability details.
+
+Test Data: {""merchantId"": ""ffffffff-ffff-ffff-ffff-ffffffffffff"", ""capabilityId"": ""ffffffff-ffff-ffff-ffff-ffffffffffff""}","The response status code is 201. The response body contains a MerchantCapabilityResponse with merchantId 'ffffffff-ffff-ffff-ffff-ffffffffffff', capabilityId 'ffffffff-ffff-ffff-ffff-ffffffffffff', and status 'ACTIVE'.",TC-054
+Retrieve capabilities for merchant with minimum valid UUID value,Merchant Capability Retrieval,Boundary,High,A merchant with ID '00000000-0000-0000-0000-000000000001' has at least one assigned capability,1. Send a GET request to /api/v1/merchant-capabilities/merchant/00000000-0000-0000-0000-000000000001. 2. Verify the response status code is 200 and the response body contains the list of capabilities.,The response status code is 200. The response body contains a list with at least one MerchantCapabilityResponse for merchantId '00000000-0000-0000-0000-000000000001'.,TC-055
+Retrieve capabilities for merchant with maximum valid UUID value,Merchant Capability Retrieval,Boundary,High,A merchant with ID 'ffffffff-ffff-ffff-ffff-ffffffffffff' has at least one assigned capability,1. Send a GET request to /api/v1/merchant-capabilities/merchant/ffffffff-ffff-ffff-ffff-ffffffffffff. 2. Verify the response status code is 200 and the response body contains the list of capabilities.,The response status code is 200. The response body contains a list with at least one MerchantCapabilityResponse for merchantId 'ffffffff-ffff-ffff-ffff-ffffffffffff'.,TC-056
+Create payment capability with minimum length capability code,Payment Capability Creation,Boundary,High,No existing payment capability with code 'A' exists in the system,"1. Send a POST request to /api/v1/payment-capabilities with the payload in testData. 2. Verify the response status code is 201 and the response body contains the created capability details.
+
+Test Data: {""capabilityCode"": ""A"", ""name"": ""Test Capability"", ""description"": ""Test Description""}",The response status code is 201. The response body contains a PaymentCapabilityResponse with capabilityCode 'A' and active status true.,TC-057
+Create payment capability with maximum length capability code (100 characters),Payment Capability Creation,Boundary,High,No existing payment capability with code 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' exists in the system,"1. Send a POST request to /api/v1/payment-capabilities with the payload in testData. 2. Verify the response status code is 201 and the response body contains the created capability details.
+
+Test Data: {""capabilityCode"": ""AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"", ""name"": ""Test Capability"", ""description"": ""Test Description""}",The response status code is 201. The response body contains a PaymentCapabilityResponse with capabilityCode of 100 characters and active status true.,TC-058
+Generate QR code with minimum valid merchant ID,QR Code Generation,Boundary,High,A merchant with ID '00000000-0000-0000-0000-000000000001' exists in the system,"1. Send a POST request to /api/v1/qr-codes with the payload in testData. 2. Verify the response status code is 201 and the response body contains the generated QR code details.
+
+Test Data: {""merchantId"": ""00000000-0000-0000-0000-000000000001"", ""qrType"": ""STATIC""}",The response status code is 201. The response body contains a QrCodeResponse with merchantId '00000000-0000-0000-0000-000000000001' and status 'ACTIVE'.,TC-059
+Generate QR code with maximum valid merchant ID,QR Code Generation,Boundary,High,A merchant with ID 'ffffffff-ffff-ffff-ffff-ffffffffffff' exists in the system,"1. Send a POST request to /api/v1/qr-codes with the payload in testData. 2. Verify the response status code is 201 and the response body contains the generated QR code details.
+
+Test Data: {""merchantId"": ""ffffffff-ffff-ffff-ffff-ffffffffffff"", ""qrType"": ""STATIC""}",The response status code is 201. The response body contains a QrCodeResponse with merchantId 'ffffffff-ffff-ffff-ffff-ffffffffffff' and status 'ACTIVE'.,TC-060
+Create merchant with minimum length registration number (1 character),Merchant Creation,Boundary,High,No merchant with registration number 'A' exists in the system,"1. Send a POST request to /api/v1/merchants with the payload in testData. 2. Verify the response status code is 201 and the response body contains the created merchant details.
+
+Test Data: {""legalName"": ""Test Merchant"", ""tradeName"": ""Test Trade"", ""registrationNo"": ""A"", ""businessType"": ""CORPORATION"", ""contactEmail"": ""test@example.com""}",The response status code is 201. The response body contains a MerchantResponse with registrationNo 'A' and status 'PENDING'.,TC-061
+Create merchant with maximum length registration number (100 characters),Merchant Creation,Boundary,High,No merchant with registration number 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' exists in the system,"1. Send a POST request to /api/v1/merchants with the payload in testData. 2. Verify the response status code is 201 and the response body contains the created merchant details.
+
+Test Data: {""legalName"": ""Test Merchant"", ""tradeName"": ""Test Trade"", ""registrationNo"": ""AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"", ""businessType"": ""CORPORATION"", ""contactEmail"": ""test@example.com""}",The response status code is 201. The response body contains a MerchantResponse with registrationNo of 100 characters and status 'PENDING'.,TC-062
+Upload document with minimum file size (1 byte),Merchant Document Upload,Boundary,Medium,A merchant with ID '00000000-0000-0000-0000-000000000001' exists in the system and a 1-byte file is available for upload,"1. Send a POST request to /api/v1/merchants/00000000-0000-0000-0000-000000000001/documents with the file and documentType in testData. 2. Verify the response status code is 201 and the response body contains the uploaded document details.
+
+Test Data: documentType: BUSINESS_LICENSE, file: 1-byte file",The response status code is 201. The response body contains a MerchantDocumentResponse with fileSize 1 and status 'PENDING'.,TC-063
+Upload document with maximum supported file size (system limit),Merchant Document Upload,Boundary,Medium,A merchant with ID '00000000-0000-0000-0000-000000000001' exists in the system and a file of maximum supported size is available for upload,"1. Send a POST request to /api/v1/merchants/00000000-0000-0000-0000-000000000001/documents with the file and documentType in testData. 2. Verify the response status code is 201 and the response body contains the uploaded document details.
+
+Test Data: documentType: BUSINESS_LICENSE, file: maximum size file (e.g., 10MB or system limit)",The response status code is 201. The response body contains a MerchantDocumentResponse with fileSize at the system limit and status 'PENDING'.,TC-064
+Create a flat fee configuration for a merchant,Fee Configuration Management,Configuration,High,A merchant exists with ID '123e4567-e89b-12d3-a456-426614174000' and a payment capability with code 'ONLINE_PAYMENT' exists,"1. Send a POST request to /api/v1/fees with the payload in testData. 2. Verify the response status is 201 Created and the response body matches the expected result.
+
+Test Data: {
+  ""merchantId"": ""123e4567-e89b-12d3-a456-426614174000"",
+  ""capabilityCode"": ""ONLINE_PAYMENT"",
+  ""feeType"": ""FLAT"",
+  ""flatAmount"": 5.00,
+  ""minFee"": 1.00,
+  ""maxFee"": 500.00,
+  ""currency"": ""SAR"",
+  ""effectiveFrom"": ""2023-10-01""
+}","Response status is 201 Created. Response body contains success=true, a message 'Fee configuration created', and a data object with the created fee configuration including a valid UUID, the provided merchantId, capabilityCode, feeType, flatAmount, minFee, maxFee, currency, effectiveFrom, active=true, and an empty tiers list.",TC-065
+Create a percentage fee configuration for a merchant category,Fee Configuration Management,Configuration,High,A payment capability with code 'POS_PAYMENT' exists and no existing fee configuration for MCC '5411',"1. Send a POST request to /api/v1/fees with the payload in testData. 2. Verify the response status is 201 Created and the response body matches the expected result.
+
+Test Data: {
+  ""merchantCategoryCode"": ""5411"",
+  ""capabilityCode"": ""POS_PAYMENT"",
+  ""feeType"": ""PERCENTAGE"",
+  ""percentageRate"": 2.50,
+  ""minFee"": 1.00,
+  ""maxFee"": 1000.00,
+  ""currency"": ""SAR"",
+  ""effectiveFrom"": ""2023-10-01""
+}","Response status is 201 Created. Response body contains success=true, a message 'Fee configuration created', and a data object with the created fee configuration including a valid UUID, the provided merchantCategoryCode, capabilityCode, feeType, percentageRate, minFee, maxFee, currency, effectiveFrom, active=true, and an empty tiers list.",TC-066
+Retrieve all active fee configurations,Fee Configuration Management,Configuration,High,At least one active fee configuration exists in the system,1. Send a GET request to /api/v1/fees. 2. Verify the response status is 200 OK and the response body matches the expected result.,"Response status is 200 OK. Response body contains success=true and a data object with a paginated list of active fee configurations, including their UUIDs, merchantId or merchantCategoryCode, capabilityCode, feeType, and other relevant fields.",TC-067
+Retrieve a specific fee configuration by ID,Fee Configuration Management,Configuration,High,A fee configuration exists with ID '123e4567-e89b-12d3-a456-426614174001',1. Send a GET request to /api/v1/fees/123e4567-e89b-12d3-a456-426614174001. 2. Verify the response status is 200 OK and the response body matches the expected result.,"Response status is 200 OK. Response body contains success=true and a data object with the fee configuration details including its UUID, merchantId or merchantCategoryCode, capabilityCode, feeType, and other relevant fields.",TC-068
+Update an existing fee configuration,Fee Configuration Management,Configuration,High,A fee configuration exists with ID '123e4567-e89b-12d3-a456-426614174002' and is active,"1. Send a PUT request to /api/v1/fees/123e4567-e89b-12d3-a456-426614174002 with the payload in testData. 2. Verify the response status is 200 OK and the response body matches the expected result.
+
+Test Data: {
+  ""feeType"": ""PERCENTAGE"",
+  ""percentageRate"": 3.00,
+  ""minFee"": 2.00,
+  ""maxFee"": 1500.00,
+  ""currency"": ""SAR"",
+  ""effectiveFrom"": ""2023-11-01"",
+  ""active"": true
+}","Response status is 200 OK. Response body contains success=true, a message 'Fee configuration updated', and a data object with the updated fee configuration including the new percentageRate, minFee, maxFee, effectiveFrom, and active status.",TC-069
+Retrieve fee configurations for a specific merchant,Fee Configuration Management,Configuration,High,A merchant exists with ID '123e4567-e89b-12d3-a456-426614174000' and has at least one active fee configuration,1. Send a GET request to /api/v1/merchants/123e4567-e89b-12d3-a456-426614174000/fees. 2. Verify the response status is 200 OK and the response body matches the expected result.,"Response status is 200 OK. Response body contains success=true and a data array with the active fee configurations for the merchant, including their UUIDs, capabilityCode, feeType, and other relevant fields.",TC-070
+Create a new settlement account for a merchant with all valid details,Settlement Account Management,Configuration,High,A merchant with ID '123e4567-e89b-12d3-a456-426614174000' exists in the system,"1. Send a POST request to /api/v1/merchants/123e4567-e89b-12d3-a456-426614174000/settlement-accounts with the payload in testData. 2. Verify the response status code is 201 CREATED. 3. Verify the response body contains the created settlement account details matching the input.
+
+Test Data: {
+  ""accountName"": ""ABC Trading Company LLC"",
+  ""bankName"": ""Al Rajhi Bank"",
+  ""bankCode"": ""RJHI"",
+  ""branchCode"": ""001"",
+  ""accountNumber"": ""1234567890"",
+  ""iban"": ""SA0380000000608010167519"",
+  ""currency"": ""SAR"",
+  ""primary"": true
+}","The response status code is 201 CREATED. The response body contains a settlement account with: accountName='ABC Trading Company LLC', bankName='Al Rajhi Bank', bankCode='RJHI', branchCode='001', accountNumber='1234567890', iban='SA0380000000608010167519', currency='SAR', primary=true, and status='PENDING_VERIFICATION'.",TC-071
+Create a non-primary settlement account for a merchant,Settlement Account Management,Configuration,High,A merchant with ID '123e4567-e89b-12d3-a456-426614174000' exists in the system and already has a primary settlement account,"1. Send a POST request to /api/v1/merchants/123e4567-e89b-12d3-a456-426614174000/settlement-accounts with the payload in testData. 2. Verify the response status code is 201 CREATED. 3. Verify the response body contains the created settlement account details with primary=false.
+
+Test Data: {
+  ""accountName"": ""ABC Trading Company LLC - Secondary"",
+  ""bankName"": ""Al Rajhi Bank"",
+  ""bankCode"": ""RJHI"",
+  ""branchCode"": ""002"",
+  ""accountNumber"": ""0987654321"",
+  ""iban"": ""SA0380000000608010167520"",
+  ""currency"": ""SAR"",
+  ""primary"": false
+}","The response status code is 201 CREATED. The response body contains a settlement account with: accountName='ABC Trading Company LLC - Secondary', primary=false, and status='PENDING_VERIFICATION'. The existing primary account remains unchanged.",TC-072
+Update an existing settlement account with valid details,Settlement Account Management,Configuration,High,A settlement account with ID '123e4567-e89b-12d3-a456-426614174001' exists for merchant '123e4567-e89b-12d3-a456-426614174000',"1. Send a PUT request to /api/v1/settlement-accounts/123e4567-e89b-12d3-a456-426614174001 with the payload in testData. 2. Verify the response status code is 200 OK. 3. Verify the response body contains the updated settlement account details.
+
+Test Data: {
+  ""accountName"": ""Updated ABC Trading Company LLC"",
+  ""bankName"": ""Saudi National Bank"",
+  ""bankCode"": ""SNBC"",
+  ""branchCode"": ""003"",
+  ""accountNumber"": ""5555555555"",
+  ""iban"": ""SA0380000000608010167521"",
+  ""currency"": ""SAR""
+}","The response status code is 200 OK. The response body contains the updated settlement account with: accountName='Updated ABC Trading Company LLC', bankName='Saudi National Bank', bankCode='SNBC', branchCode='003', accountNumber='5555555555', iban='SA0380000000608010167521', and currency='SAR'.",TC-073
+Set an existing settlement account as primary for a merchant,Settlement Account Management,Configuration,High,"A merchant with ID '123e4567-e89b-12d3-a456-426614174000' has at least two settlement accounts, one of which is ID '123e4567-e89b-12d3-a456-426614174001' with primary=false",1. Send a PATCH request to /api/v1/settlement-accounts/123e4567-e89b-12d3-a456-426614174001/set-primary. 2. Verify the response status code is 200 OK. 3. Verify the response body shows the settlement account is now primary=true. 4. Verify the previously primary account is now primary=false.,The response status code is 200 OK. The response body contains the settlement account with primary=true. Any previously primary account for the same merchant is now primary=false.,TC-074
+Create a new store for a merchant with all valid details,Store Management,Configuration,High,A merchant with ID '123e4567-e89b-12d3-a456-426614174000' exists in the system,"1. Send a POST request to /api/v1/merchants/123e4567-e89b-12d3-a456-426614174000/stores with the payload in testData. 2. Verify the response status code is 201 CREATED. 3. Verify the response body contains the created store details matching the input.
+
+Test Data: {
+  ""name"": ""ABC Store - Riyadh Mall"",
+  ""contactPhone"": ""+966501234567"",
+  ""contactEmail"": ""riyadh.mall@abcstore.com"",
+  ""address"": ""Riyadh Mall, Level 2, Shop 201"",
+  ""city"": ""Riyadh"",
+  ""state"": ""Riyadh Province"",
+  ""postalCode"": ""11564"",
+  ""country"": ""SA"",
+  ""latitude"": 24.7136,
+  ""longitude"": 46.6753
+}","The response status code is 201 CREATED. The response body contains a store with: name='ABC Store - Riyadh Mall', contactPhone='+966501234567', contactEmail='riyadh.mall@abcstore.com', city='Riyadh', status='ACTIVE', and a generated storeCode.",TC-075
+Update an existing store with valid details,Store Management,Configuration,High,A store with ID '123e4567-e89b-12d3-a456-426614174002' exists for merchant '123e4567-e89b-12d3-a456-426614174000',"1. Send a PUT request to /api/v1/stores/123e4567-e89b-12d3-a456-426614174002 with the payload in testData. 2. Verify the response status code is 200 OK. 3. Verify the response body contains the updated store details.
+
+Test Data: {
+  ""name"": ""Updated ABC Store - Riyadh Mall"",
+  ""contactPhone"": ""+966507654321"",
+  ""contactEmail"": ""updated.riyadh.mall@abcstore.com"",
+  ""address"": ""Riyadh Mall, Level 3, Shop 301"",
+  ""city"": ""Riyadh"",
+  ""state"": ""Riyadh Province"",
+  ""postalCode"": ""11564"",
+  ""country"": ""SA"",
+  ""latitude"": 24.7137,
+  ""longitude"": 46.6754
+}","The response status code is 200 OK. The response body contains the updated store with: name='Updated ABC Store - Riyadh Mall', contactPhone='+966507654321', contactEmail='updated.riyadh.mall@abcstore.com', and address='Riyadh Mall, Level 3, Shop 301'.",TC-076
+Register a new terminal for a store with all valid details,Terminal Management,Configuration,High,A merchant with ID '123e4567-e89b-12d3-a456-426614174000' and a store with ID '123e4567-e89b-12d3-a456-426614174002' exist in the system,"1. Send a POST request to /api/v1/terminals with the payload in testData. 2. Verify the response status code is 201 CREATED. 3. Verify the response body contains the registered terminal details matching the input.
+
+Test Data: {
+  ""storeId"": ""123e4567-e89b-12d3-a456-426614174002"",
+  ""merchantId"": ""123e4567-e89b-12d3-a456-426614174000"",
+  ""serialNumber"": ""SN-ABC12345"",
+  ""model"": ""A920 Pro"",
+  ""manufacturer"": ""PAX Technology""
+}","The response status code is 201 CREATED. The response body contains a terminal with: storeId='123e4567-e89b-12d3-a456-426614174002', merchantId='123e4567-e89b-12d3-a456-426614174000', serialNumber='SN-ABC12345', model='A920 Pro', manufacturer='PAX Technology', status='INACTIVE', and a generated terminalTid.",TC-077
+Update an existing terminal with valid details,Terminal Management,Configuration,High,A terminal with ID '123e4567-e89b-12d3-a456-426614174003' exists in the system,"1. Send a PUT request to /api/v1/terminals/123e4567-e89b-12d3-a456-426614174003 with the payload in testData. 2. Verify the response status code is 200 OK. 3. Verify the response body contains the updated terminal details.
+
+Test Data: {
+  ""serialNumber"": ""SN-ABC12345-UPDATED"",
+  ""model"": ""A920 Pro Max"",
+  ""manufacturer"": ""PAX Technology""
+}","The response status code is 200 OK. The response body contains the updated terminal with: serialNumber='SN-ABC12345-UPDATED', model='A920 Pro Max', and manufacturer='PAX Technology'.",TC-078
+Generate a QR code for a merchant without specifying a store,QR Code Generation,Configuration,High,"A merchant with ID '123e4567-e89b-12d3-a456-426614174000' exists in the system with tradeName='ABC Trading', city='Riyadh', merchantCode='ABC123', merchantCategoryCode='5411', country='SA'","1. Send a POST request to /api/v1/qr/generate with the payload in testData. 2. Verify the response status code is 200 OK. 3. Verify the response body contains the generated QR code details.
+
+Test Data: {
+  ""merchantId"": ""123e4567-e89b-12d3-a456-426614174000"",
+  ""qrType"": ""STATIC""
+}","The response status code is 200 OK. The response body contains a QR code with: merchantId='123e4567-e89b-12d3-a456-426614174000', storeId=null, qrType='STATIC', status='ACTIVE', and a generated qrData payload containing the merchant details.",TC-079
+Generate a QR code for a merchant specifying a store,QR Code Generation,Configuration,High,A merchant with ID '123e4567-e89b-12d3-a456-426614174000' and a store with ID '123e4567-e89b-12d3-a456-426614174002' exist in the system,"1. Send a POST request to /api/v1/qr/generate with the payload in testData. 2. Verify the response status code is 200 OK. 3. Verify the response body contains the generated QR code details.
+
+Test Data: {
+  ""merchantId"": ""123e4567-e89b-12d3-a456-426614174000"",
+  ""storeId"": ""123e4567-e89b-12d3-a456-426614174002"",
+  ""qrType"": ""DYNAMIC""
+}","The response status code is 200 OK. The response body contains a QR code with: merchantId='123e4567-e89b-12d3-a456-426614174000', storeId='123e4567-e89b-12d3-a456-426614174002', qrType='DYNAMIC', status='ACTIVE', and a generated qrData payload containing the merchant and store details.",TC-080

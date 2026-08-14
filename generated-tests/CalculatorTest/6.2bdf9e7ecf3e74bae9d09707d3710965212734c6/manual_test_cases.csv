@@ -1,0 +1,70 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify addition of two floating-point numbers at maximum boundary value (3.4028235E38 + 1.0),Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready for input.,"1. Enter the first number as 3.4028235E38. 2. Select the addition operation. 3. Enter the second number as 1.0. 4. Execute the calculation.
+
+Test Data: First number: 3.4028235E38, Second number: 1.0",The application displays the result as 'Infinity' for addition due to floating-point overflow.,1714e14-TC-002
+Verify addition of two floating-point numbers at minimum boundary value (-3.4028235E38 + (-1.0)),Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready for input.,"1. Enter the first number as -3.4028235E38. 2. Select the addition operation. 3. Enter the second number as -1.0. 4. Execute the calculation.
+
+Test Data: First number: -3.4028235E38, Second number: -1.0",The application displays the result as '-Infinity' for addition due to floating-point underflow.,TC-001
+Verify addition of zero and a floating-point number at maximum boundary value (0 + 3.4028235E38),Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready for input.,"1. Enter the first number as 0. 2. Select the addition operation. 3. Enter the second number as 3.4028235E38. 4. Execute the calculation.
+
+Test Data: First number: 0, Second number: 3.4028235E38",The application displays the result as 3.4028235E38 for addition.,1714e14-TC-006
+Verify subtraction of two floating-point numbers at maximum boundary value (3.4028235E38 - (-1.0)),Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready for input.,"1. Enter the first number as 3.4028235E38. 2. Select the subtraction operation. 3. Enter the second number as -1.0. 4. Execute the calculation.
+
+Test Data: First number: 3.4028235E38, Second number: -1.0",The application displays the result as 'Infinity' for subtraction due to floating-point overflow.,1714e14-TC-003
+Verify subtraction of two floating-point numbers at minimum boundary value (-3.4028235E38 - 1.0),Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready for input.,"1. Enter the first number as -3.4028235E38. 2. Select the subtraction operation. 3. Enter the second number as 1.0. 4. Execute the calculation.
+
+Test Data: First number: -3.4028235E38, Second number: 1.0",The application displays the result as '-Infinity' for subtraction due to floating-point underflow.,TC-002
+Verify multiplication of two floating-point numbers at maximum boundary value (3.4028235E38 * 2.0),Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready for input.,"1. Enter the first number as 3.4028235E38. 2. Select the multiplication operation. 3. Enter the second number as 2.0. 4. Execute the calculation.
+
+Test Data: First number: 3.4028235E38, Second number: 2.0",The application displays the result as 'Infinity' for multiplication due to floating-point overflow.,1714e14-TC-004
+Verify multiplication of a floating-point number at maximum boundary value and zero (3.4028235E38 * 0),Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready for input.,"1. Enter the first number as 3.4028235E38. 2. Select the multiplication operation. 3. Enter the second number as 0. 4. Execute the calculation.
+
+Test Data: First number: 3.4028235E38, Second number: 0",The application displays the result as 0.0 for multiplication.,1714e14-TC-008
+Verify division of a floating-point number at maximum boundary value by 1 (3.4028235E38 / 1),Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready for input.,"1. Enter the first number as 3.4028235E38. 2. Select the division operation. 3. Enter the second number as 1. 4. Execute the calculation.
+
+Test Data: First number: 3.4028235E38, Second number: 1",The application displays the result as 3.4028235E38 for division.,1714e14-TC-014
+Verify division of a floating-point number just below maximum boundary by a very small number (3.4028234E38 / 1.4E-45),Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready for input.,"1. Enter the first number as 3.4028234E38. 2. Select the division operation. 3. Enter the second number as 1.4E-45. 4. Execute the calculation.
+
+Test Data: First number: 3.4028234E38, Second number: 1.4E-45",The application displays the result as 'Infinity' for division due to floating-point overflow.,TC-003
+Verify division of a very small floating-point number by itself (1.4E-45 / 1.4E-45),Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready for input.,"1. Enter the first number as 1.4E-45. 2. Select the division operation. 3. Enter the second number as 1.4E-45. 4. Execute the calculation.
+
+Test Data: First number: 1.4E-45, Second number: 1.4E-45",The application displays the result as 1.0 for division.,TC-004
+Verify addition of two very small floating-point numbers (1.4E-45 + 1.4E-45),Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready for input.,"1. Enter the first number as 1.4E-45. 2. Select the addition operation. 3. Enter the second number as 1.4E-45. 4. Execute the calculation.
+
+Test Data: First number: 1.4E-45, Second number: 1.4E-45",The application displays the result as 2.8E-45 for addition.,1e702eb-TC-009
+Verify division by zero for floating-point numbers,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready for input.,"1. Enter the first number as 10.5. 2. Select the division operation. 3. Enter the second number as 0. 4. Execute the calculation.
+
+Test Data: First number: 10.5, Second number: 0",The application displays an error message indicating division by zero is not allowed.,50947af-TC-007
+Verify addition of a floating-point number just below maximum boundary (3.4028234E38 + 1.0),Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready for input.,"1. Enter the first number as 3.4028234E38. 2. Select the addition operation. 3. Enter the second number as 1.0. 4. Execute the calculation.
+
+Test Data: First number: 3.4028234E38, Second number: 1.0",The application displays the result as 3.4028234E38 for addition (no overflow).,1714e14-TC-015
+Verify addition of a floating-point number just above minimum boundary (-3.4028234E38 + (-1.0)),Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready for input.,"1. Enter the first number as -3.4028234E38. 2. Select the addition operation. 3. Enter the second number as -1.0. 4. Execute the calculation.
+
+Test Data: First number: -3.4028234E38, Second number: -1.0",The application displays the result as -3.4028234E38 for addition (no underflow).,1714e14-TC-016
+Verify that extremely large floating-point numbers do not expose internal system errors or crash the calculator,Calculator Input Handling,Security,High,Calculator is open and ready for input,"1. Enter the largest possible positive floating-point number (e.g., 3.4028235E38) for the first operand. 2. Enter the same value for the second operand. 3. Select the addition operation. 4. Observe the result. 5. Repeat steps 1-4 for subtraction, multiplication, and division operations.
+
+Test Data: First operand: 3.4028235E38, Second operand: 3.4028235E38","The calculator displays either the correct mathematical result or a clear error message indicating the value is too large to process, without exposing internal system details (e.g., stack traces, memory addresses) or crashing.",1e702eb-TC-005
+Verify that extremely small floating-point numbers do not expose internal system errors or crash the calculator,Calculator Input Handling,Security,High,Calculator is open and ready for input,"1. Enter the smallest possible positive floating-point number (e.g., 1.4E-45) for the first operand. 2. Enter the same value for the second operand. 3. Select the addition operation. 4. Observe the result. 5. Repeat steps 1-4 for subtraction, multiplication, and division operations.
+
+Test Data: First operand: 1.4E-45, Second operand: 1.4E-45","The calculator displays either the correct mathematical result or a clear error message indicating the value is too small to process, without exposing internal system details (e.g., stack traces, memory addresses) or crashing.",1e702eb-TC-006
+"Verify that special floating-point values (NaN, Infinity) are handled gracefully without exposing internal errors",Calculator Input Handling,Security,High,Calculator is open and ready for input,"1. Enter 'NaN' as the first operand. 2. Enter any valid floating-point number as the second operand. 3. Select any operation (addition, subtraction, multiplication, division). 4. Observe the result. 5. Repeat steps 1-4 with 'Infinity' and '-Infinity' as the first operand.
+
+Test Data: First operand: NaN, Infinity, -Infinity; Second operand: 5.0","The calculator displays a clear error message indicating invalid input or handles the special values appropriately (e.g., showing 'NaN' or 'Infinity' as results where mathematically correct), without exposing internal system details or crashing.",1e702eb-TC-008
+Verify floating-point overflow in addition does not expose internal errors or crash the calculator,Calculator Operations,Security,High,Calculator is open and ready for input,"1. Enter a very large floating-point number (e.g., 1.7976931348623157E308) for the first operand. 2. Enter the same value for the second operand. 3. Select the addition operation. 4. Observe the result.
+
+Test Data: First operand: 1.7976931348623157E308, Second operand: 1.7976931348623157E308","The calculator displays either the correct mathematical result (e.g., 'Infinity') or a clear error message indicating overflow, without exposing internal system details or crashing.",1714e14-TC-009
+Verify floating-point overflow in subtraction does not expose internal errors or crash the calculator,Calculator Operations,Security,High,Calculator is open and ready for input,"1. Enter a very large negative floating-point number (e.g., -1.7976931348623157E308) for the first operand. 2. Enter a very large positive floating-point number (e.g., 1.7976931348623157E308) for the second operand. 3. Select the subtraction operation. 4. Observe the result.
+
+Test Data: First operand: -1.7976931348623157E308, Second operand: 1.7976931348623157E308","The calculator displays either the correct mathematical result (e.g., '-Infinity') or a clear error message indicating overflow, without exposing internal system details or crashing.",1714e14-TC-010
+Verify floating-point overflow in multiplication does not expose internal errors or crash the calculator,Calculator Operations,Security,High,Calculator is open and ready for input,"1. Enter a very large floating-point number (e.g., 1.7976931348623157E308) for the first operand. 2. Enter a large floating-point number (e.g., 2.0) for the second operand. 3. Select the multiplication operation. 4. Observe the result.
+
+Test Data: First operand: 1.7976931348623157E308, Second operand: 2.0","The calculator displays either the correct mathematical result (e.g., 'Infinity') or a clear error message indicating overflow, without exposing internal system details or crashing.",1714e14-TC-011
+Verify floating-point overflow in division does not expose internal errors or crash the calculator,Calculator Operations,Security,High,Calculator is open and ready for input,"1. Enter a very large floating-point number (e.g., 1.7976931348623157E308) for the first operand. 2. Enter a very small floating-point number (e.g., 1.0E-308) for the second operand. 3. Select the division operation. 4. Observe the result.
+
+Test Data: First operand: 1.7976931348623157E308, Second operand: 1.0E-308","The calculator displays either the correct mathematical result (e.g., 'Infinity') or a clear error message indicating overflow, without exposing internal system details or crashing.",1714e14-TC-012
+Verify division by zero with floating-point inputs displays a clear error message without exposing internal details,Calculator Operations,Security,High,Calculator is open and ready for input,"1. Enter any valid floating-point number for the first operand. 2. Enter '0.0' for the second operand. 3. Select the division operation. 4. Observe the result.
+
+Test Data: First operand: 5.0, Second operand: 0.0","A clear error message indicating division by zero is not allowed is displayed, without exposing internal system details (e.g., stack traces, memory addresses).",TC-005
+Verify that non-numeric input is rejected or handled gracefully without exposing internal errors,Calculator Input Handling,Security,High,Calculator is open and ready for input,"1. Attempt to enter a non-numeric value (e.g., 'abc', '!@#') for the first operand. 2. Attempt to enter a valid floating-point number for the second operand. 3. Select any operation. 4. Observe the result. 5. Repeat steps 1-4 with non-numeric input for the second operand.
+
+Test Data: First operand: 'abc', '!@#'; Second operand: 5.0","The calculator either prevents the entry of non-numeric values or displays a clear error message indicating only numeric values are accepted, without exposing internal system details or crashing.",TC-006

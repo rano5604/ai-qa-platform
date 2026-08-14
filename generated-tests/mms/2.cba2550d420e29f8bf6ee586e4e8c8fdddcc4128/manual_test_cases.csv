@@ -1,0 +1,387 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Generate a Bangla QR code with all required fields and minimal optional fields,Bangla QR Code Generation,Positive,High,"The system is configured with valid Bangla QR properties (guid, signingKey, signatureLength)","1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""merchantCategoryCode"": ""5411"",
+  ""merchantId"": ""MERCHANT12345"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""1234567890"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""Dhaka"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""terminalId"": ""TERM12345678"",
+  ""acquirerInstitutionType"": ""BANK"",
+  ""acquirerId"": ""ACQ123""
+}","The response status is 200 OK. The response body contains a qrData string (non-empty), a signature string (non-empty), and a crc string of exactly 4 characters.",TC-001
+Generate a Bangla QR code with all optional fields populated,Bangla QR Code Generation,Positive,High,"The system is configured with valid Bangla QR properties (guid, signingKey, signatureLength)","1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""accountType"": ""PERSONAL"",
+  ""merchantCategoryCode"": ""5411"",
+  ""merchantId"": ""MERCHANT12345"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""1234567890"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""Dhaka"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""notificationMobileNo"": ""8801712345678"",
+  ""terminalId"": ""TERM12345678"",
+  ""purposeOfTrx"": ""Bill Payment"",
+  ""acquirerInstitutionType"": ""BANK"",
+  ""acquirerId"": ""ACQ123"",
+  ""merchantLogo"": ""logo_base64_string""
+}","The response status is 200 OK. The response body contains a qrData string (non-empty), a signature string (non-empty), and a crc string of exactly 4 characters.",TC-002
+Generate a Bangla QR code with optional fields left empty,Bangla QR Code Generation,Positive,Medium,"The system is configured with valid Bangla QR properties (guid, signingKey, signatureLength)","1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""merchantCategoryCode"": ""5411"",
+  ""merchantId"": ""MERCHANT12345"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""1234567890"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""Dhaka"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""terminalId"": ""TERM12345678"",
+  ""acquirerInstitutionType"": ""BANK"",
+  ""acquirerId"": ""ACQ123""
+}","The response status is 200 OK. The response body contains a qrData string (non-empty), a signature string (non-empty), and a crc string of exactly 4 characters. The generated QR data does not include fields for accountType, notificationMobileNo, purposeOfTrx, or merchantLogo.",TC-003
+Generate Bangla QR with merchant name exactly 99 bytes (maximum allowed length for a single data element),Bangla QR Code Generation - EMV Data Element Length Boundaries,Boundary,High,None,"1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""accountType"": ""00"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACCT1234567890"",
+  ""merchantName"": ""ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJ"",
+  ""merchantCity"": ""DHAKA"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""notificationMobileNo"": ""8801712345678"",
+  ""terminalId"": ""TERM12345678"",
+  ""purposeOfTrx"": ""00"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ1234567890""
+}","The response status is 200 OK. The response body contains a qrData field with a valid EMV QR string, a signature field, and a crc field. The merchant name in the QR data is exactly 99 bytes long and correctly encoded.",TC-004
+Generate Bangla QR with merchant name 100 bytes (one byte over maximum allowed length for a single data element),Bangla QR Code Generation - EMV Data Element Length Boundaries,Boundary,High,None,"1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""accountType"": ""00"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACCT1234567890"",
+  ""merchantName"": ""ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJK"",
+  ""merchantCity"": ""DHAKA"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""notificationMobileNo"": ""8801712345678"",
+  ""terminalId"": ""TERM12345678"",
+  ""purposeOfTrx"": ""00"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ1234567890""
+}",The response status is 400 BAD_REQUEST. The response body contains an error indicating that the EMV QR data element length cannot exceed 99 bytes.,TC-005
+Generate Bangla QR with empty merchant name (minimum length boundary),Bangla QR Code Generation - EMV Data Element Length Boundaries,Boundary,High,None,"1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""accountType"": ""00"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACCT1234567890"",
+  ""merchantName"": """",
+  ""merchantCity"": ""DHAKA"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""notificationMobileNo"": ""8801712345678"",
+  ""terminalId"": ""TERM12345678"",
+  ""purposeOfTrx"": ""00"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ1234567890""
+}",The response status is 400 BAD_REQUEST. The response body contains a validation error indicating that merchantName must not be blank.,TC-006
+Generate Bangla QR with signature length exactly matching configured signatureLength (maximum allowed),Bangla QR Code Generation - Signature Length Boundaries,Boundary,High,The system is configured with qr.bangla.signatureLength=64,"1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""accountType"": ""00"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACCT1234567890"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""DHAKA"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""notificationMobileNo"": ""8801712345678"",
+  ""terminalId"": ""TERM12345678"",
+  ""purposeOfTrx"": ""00"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ1234567890""
+}","The response status is 200 OK. The response body contains a signature field exactly 64 characters long, a qrData field, and a crc field.",TC-007
+Generate Bangla QR with signature length less than configured signatureLength (invalid boundary),Bangla QR Code Generation - Signature Length Boundaries,Boundary,High,The system is configured with qr.bangla.signatureLength=65 and the generated signature is only 64 characters long,"1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""accountType"": ""00"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACCT1234567890"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""DHAKA"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""notificationMobileNo"": ""8801712345678"",
+  ""terminalId"": ""TERM12345678"",
+  ""purposeOfTrx"": ""00"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ1234567890""
+}",The response status is 500 INTERNAL_SERVER_ERROR. The response body contains an error indicating that the generated signature length is less than the configured length.,TC-008
+Generate Bangla QR with notificationMobileNo exactly 1 character (minimum non-empty length for optional field),Bangla QR Code Generation - Optional Field Boundaries,Boundary,Medium,None,"1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""accountType"": ""00"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACCT1234567890"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""DHAKA"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""notificationMobileNo"": ""1"",
+  ""terminalId"": ""TERM12345678"",
+  ""purposeOfTrx"": ""00"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ1234567890""
+}","The response status is 200 OK. The response body contains a qrData field with the notificationMobileNo correctly encoded, a signature field, and a crc field.",TC-009
+Generate Bangla QR with notificationMobileNo as empty string (boundary for optional field),Bangla QR Code Generation - Optional Field Boundaries,Boundary,Medium,None,"1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""accountType"": ""00"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACCT1234567890"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""DHAKA"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""notificationMobileNo"": """",
+  ""terminalId"": ""TERM12345678"",
+  ""purposeOfTrx"": ""00"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ1234567890""
+}","The response status is 200 OK. The response body contains a qrData field without the notificationMobileNo data element, a signature field, and a crc field.",TC-010
+Generate Bangla QR with purposeOfTrx exactly 1 character (minimum non-empty length for optional field),Bangla QR Code Generation - Optional Field Boundaries,Boundary,Medium,None,"1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""accountType"": ""00"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACCT1234567890"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""DHAKA"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""notificationMobileNo"": ""8801712345678"",
+  ""terminalId"": ""TERM12345678"",
+  ""purposeOfTrx"": ""1"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ1234567890""
+}","The response status is 200 OK. The response body contains a qrData field with the purposeOfTrx correctly encoded, a signature field, and a crc field.",TC-011
+Generate Bangla QR with purposeOfTrx as empty string (boundary for optional field),Bangla QR Code Generation - Optional Field Boundaries,Boundary,Medium,None,"1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""accountType"": ""00"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACCT1234567890"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""DHAKA"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""notificationMobileNo"": ""8801712345678"",
+  ""terminalId"": ""TERM12345678"",
+  ""purposeOfTrx"": """",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ1234567890""
+}","The response status is 200 OK. The response body contains a qrData field without the purposeOfTrx data element, a signature field, and a crc field.",TC-012
+Generate Bangla QR with qrVersion exactly 1 character (minimum non-empty length),Bangla QR Code Generation - QR Version Boundaries,Boundary,Medium,None,"1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""qrVersion"": ""1"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""accountType"": ""00"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACCT1234567890"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""DHAKA"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""notificationMobileNo"": ""8801712345678"",
+  ""terminalId"": ""TERM12345678"",
+  ""purposeOfTrx"": ""00"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ1234567890""
+}","The response status is 200 OK. The response body contains a qrData field with the qrVersion correctly encoded, a signature field, and a crc field.",TC-013
+Generate Bangla QR with qrVersion as empty string (invalid boundary),Bangla QR Code Generation - QR Version Boundaries,Boundary,High,None,"1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response status and body.
+
+Test Data: {
+  ""qrVersion"": """",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""accountType"": ""00"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACCT1234567890"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""DHAKA"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""notificationMobileNo"": ""8801712345678"",
+  ""terminalId"": ""TERM12345678"",
+  ""purposeOfTrx"": ""00"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ1234567890""
+}",The response status is 400 BAD_REQUEST. The response body contains a validation error indicating that qrVersion must not be blank.,TC-014
+Verify that the generated QR signature is derived from a secure HMAC-SHA256 process and matches the expected length,Bangla QR Code Generation - Signature Security,Security,High,"System is configured with a valid signing key and signature length in properties (e.g., qr.bangla.signingKey=test1234567890abcdef and qr.bangla.signatureLength=8)","1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Observe the response body fields 'signature' and 'crc'.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""accountType"": ""01"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACC123456789"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""Dhaka"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""notificationMobileNo"": ""8801712345678"",
+  ""terminalId"": ""TERM12345678"",
+  ""purposeOfTrx"": ""Test Payment"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ12345678"",
+  ""merchantLogo"": ""logo123""
+}","The response returns HTTP 200 OK with a 'signature' field exactly matching the last N characters of the HMAC-SHA256 hash of the signature data (where N is the configured signatureLength), and the 'crc' field is a 4-character hex string.",TC-015
+"Verify that altering any field in the request changes the generated signature, proving the signature is sensitive to input tampering",Bangla QR Code Generation - Signature Data Integrity,Security,High,"System is configured with a valid signing key and signature length (e.g., qr.bangla.signingKey=test1234567890abcdef and qr.bangla.signatureLength=8)","1. Send a POST request to /generate-bangla-qr with the original payload in testData. 2. Record the 'signature' value from the response. 3. Send a second POST request to /generate-bangla-qr with the modified payload (merchantName changed to 'Tampered Merchant'). 4. Compare the 'signature' value in the second response to the first.
+
+Test Data: Original: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACC123456789"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""Dhaka"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""terminalId"": ""TERM12345678"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ12345678""
+}
+Modified: {
+  ""merchantName"": ""Tampered Merchant""
+}","The response for the modified payload returns HTTP 200 OK, but the 'signature' field is different from the original, proving the signature is sensitive to input changes.",TC-016
+Verify that the signing key and GUID are never exposed in the response or logs,Bangla QR Code Generation - Sensitive Data Exposure,Security,High,"System is configured with a signing key and GUID (e.g., qr.bangla.signingKey=secret123 and qr.bangla.guid=GUID12345)","1. Send a POST request to /generate-bangla-qr with the payload in testData. 2. Inspect the response body fields 'qrData', 'signature', and 'crc' for any occurrence of the signing key or GUID. 3. Check application logs for the same.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACC123456789"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""Dhaka"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""terminalId"": ""TERM12345678"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ12345678""
+}","The response returns HTTP 200 OK, and neither the signing key nor GUID appears in any response field or application logs.",TC-017
+Verify that the system rejects signature generation if the configured signature length exceeds the actual HMAC-SHA256 output length,Bangla QR Code Generation - Signature Length Enforcement,Security,High,"System is configured with a signature length larger than the HMAC-SHA256 output (e.g., qr.bangla.signatureLength=100)","1. Send a POST request to /generate-bangla-qr with the payload in testData.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACC123456789"",
+  ""merchantName"": ""Test Merchant"",
+  ""merchantCity"": ""Dhaka"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""terminalId"": ""TERM12345678"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ12345678""
+}","The response returns HTTP 500 Internal Server Error, indicating the signature length configuration is invalid.",TC-018
+Verify that special characters in merchant fields do not break QR encoding or enable injection attacks,Bangla QR Code Generation - Input Injection in QR Data,Security,High,None,"1. Send a POST request to /generate-bangla-qr with the payload in testData, containing special characters in merchantName and merchantCity. 2. Observe the 'qrData' field in the response for proper encoding and absence of injection sequences.
+
+Test Data: {
+  ""qrVersion"": ""01"",
+  ""format"": ""01"",
+  ""method"": ""11"",
+  ""merchantCategoryCode"": ""4111"",
+  ""merchantId"": ""MERCHANT123"",
+  ""merchantPan"": ""1234567890123456"",
+  ""merchantAccountNo"": ""ACC123456789"",
+  ""merchantName"": ""Test<Merchant>"",
+  ""merchantCity"": ""Dhaka; rm -rf"",
+  ""merchantCountryCode"": ""BD"",
+  ""trxCurrencyCode"": ""050"",
+  ""terminalId"": ""TERM12345678"",
+  ""acquirerInstitutionType"": ""01"",
+  ""acquirerId"": ""ACQ12345678""
+}","The response returns HTTP 200 OK, and the 'qrData' field contains the special characters properly encoded without breaking the QR structure or introducing injection sequences.",TC-019
