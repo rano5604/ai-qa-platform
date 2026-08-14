@@ -61,6 +61,7 @@ D:\eclipse_workspace\ai-qa-platform\src\main\java\com\company\aiqa\ai\GeminiServ
 D:\eclipse_workspace\ai-qa-platform\src\main\java\com\company\aiqa\config\RouterProperties.java
 D:\eclipse_workspace\ai-qa-platform\src\main\java\com\company\aiqa\ai\PromptBuilder.java
 D:\eclipse_workspace\ai-qa-platform\src\main\java\com\company\aiqa\webhook\GitLabWebhookService.java
+D:\eclipse_workspace\ai-qa-platform\src\main\java\com\company\aiqa\service\TestCaseDownloadService.java
 D:\eclipse_workspace\ai-qa-platform\src\main\java\com\company\aiqa\service\GeneratedRunLocator.java
 D:\eclipse_workspace\ai-qa-platform\src\main\java\com\company\aiqa\model\GenerateTestsRequest.java
 D:\eclipse_workspace\ai-qa-platform\src\main\java\com\company\aiqa\model\GenerateAutomationRequest.java

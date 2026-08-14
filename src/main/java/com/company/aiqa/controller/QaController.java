@@ -13,7 +13,14 @@ import com.company.aiqa.model.MergeHistoryEntry;
 import com.company.aiqa.service.AutomationExecutionService;
 import com.company.aiqa.service.AutomationGenerationService;
 import com.company.aiqa.service.QaPipelineService;
+import com.company.aiqa.service.TestCaseDownloadService;
 import jakarta.validation.Valid;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -31,15 +39,18 @@ public class QaController {
     private final MergeHistoryService mergeHistoryService;
     private final AutomationGenerationService automationGenerationService;
     private final AutomationExecutionService automationExecutionService;
+    private final TestCaseDownloadService testCaseDownloadService;
 
     public QaController(QaPipelineService pipelineService,
                         MergeHistoryService mergeHistoryService,
                         AutomationGenerationService automationGenerationService,
-                        AutomationExecutionService automationExecutionService) {
+                        AutomationExecutionService automationExecutionService,
+                        TestCaseDownloadService testCaseDownloadService) {
         this.pipelineService = pipelineService;
         this.mergeHistoryService = mergeHistoryService;
         this.automationGenerationService = automationGenerationService;
         this.automationExecutionService = automationExecutionService;
+        this.testCaseDownloadService = testCaseDownloadService;
     }
 
     /**
@@ -243,5 +254,48 @@ public class QaController {
     @GetMapping("/merge-history/incomplete")
     public List<MergeHistoryEntry> incompleteMerges(@RequestParam String repoUrl, @RequestParam String branch) {
         return mergeHistoryService.findIncomplete(repoUrl, branch);
+    }
+
+    /**
+     * Downloads generated manual test cases as a CSV attachment.
+     *
+     * <p>The generate endpoints return {@code manualTestCasesCsvPath}, but that
+     * is a path on the SERVER's disk - no use to a caller on another machine.
+     * This returns the file itself.
+     *
+     * <p>Identify the project by either {@code projectName} or {@code repoUrl}.
+     * With {@code commitHash} you get that single run's cases; without it, the
+     * project-wide rollup of every commit generated so far.
+     *
+     * <p>{@code commitHash} must be the FULL hash - folders are named for the
+     * full hash, so an abbreviated one finds nothing and answers 404. The
+     * {@code manualTestCasesDownloadUrl} on a generate response is already
+     * built correctly; prefer copying that over assembling this by hand.
+     *
+     * Examples:
+     * GET /api/v1/test-cases/download?projectName=CalculatorTest&commitHash=f602859d2281e871e60c4eb18a0942e83bcf3717
+     * GET /api/v1/test-cases/download?repoUrl=https://github.com/org/repo.git
+     */
+    @GetMapping("/test-cases/download")
+    public ResponseEntity<byte[]> downloadTestCases(@RequestParam(required = false) String projectName,
+                                                    @RequestParam(required = false) String repoUrl,
+                                                    @RequestParam(required = false) String commitHash) {
+        TestCaseDownloadService.Download download =
+                testCaseDownloadService.load(projectName, repoUrl, commitHash);
+
+        return ResponseEntity.ok()
+                .contentType(new MediaType("text", "csv", StandardCharsets.UTF_8))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        ContentDisposition.attachment().filename(download.fileName()).build().toString())
+                .body(download.content());
+    }
+
+    /**
+     * Turns a bad projectName/commitHash - or one with nothing generated yet -
+     * into a 404 with the reason, rather than a 500 and a stack trace.
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleNotFound(IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 }

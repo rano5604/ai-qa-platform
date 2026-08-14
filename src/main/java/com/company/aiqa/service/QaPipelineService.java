@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -134,7 +136,7 @@ public class QaPipelineService {
         if (changedFiles.isEmpty() && configFiles.isEmpty()) {
             // Nothing to generate is a legitimately COMPLETE outcome, not a
             // gap - otherwise an empty merge would be re-attempted forever.
-            return new GenerateTestsResponse(0, 0, 0, 0, commitLog, List.of(), null, List.of(),
+            return new GenerateTestsResponse(0, 0, 0, 0, commitLog, List.of(), null, null, List.of(),
                     List.of(), List.of(), List.of(), 100, MergeStatus.SUCCESS,
                     "No changed source or configuration files found between %s and %s.".formatted(
                             request.getBaseRef(), request.getHeadRef()));
@@ -414,6 +416,7 @@ public class QaPipelineService {
                 commitLog,
                 businessTestCases,
                 manualCsvPath,
+                downloadUrlFor(projectName, request.getHeadRef(), manualCsvPath),
                 generatedTests,
                 expectedCategories,
                 List.copyOf(generatedCategories),
@@ -583,7 +586,7 @@ public class QaPipelineService {
         if (alreadyProcessed && !Boolean.TRUE.equals(request.getForce())) {
             log.info("Merge {} on branch '{}' already processed - skipping (pass \"force\": true to reprocess).",
                     mergeInfo.mergeSha(), request.getBranch());
-            return new GenerateTestsResponse(0, 0, 0, 0, List.of(), List.of(), null, List.of(),
+            return new GenerateTestsResponse(0, 0, 0, 0, List.of(), List.of(), null, null, List.of(),
                     List.of(), List.of(), List.of(), 100, MergeStatus.SUCCESS,
                     "Merge %s on branch '%s' was already processed previously - nothing new to do. "
                             .formatted(mergeInfo.mergeSha(), request.getBranch())
@@ -715,7 +718,7 @@ public class QaPipelineService {
                         merge.mergeSha(), request.getBranch(), e.getMessage(), e);
                 failed++;
                 results.add(new MergeRunResult(merge.mergeSha(), merge.preMergeSha(), Instant.now().toString(),
-                        new GenerateTestsResponse(0, 0, 0, 0, List.of(), List.of(), null, List.of(),
+                        new GenerateTestsResponse(0, 0, 0, 0, List.of(), List.of(), null, null, List.of(),
                                 List.of(), List.of(), List.of(), 0, MergeStatus.FAILED,
                                 "FAILED: " + e.getMessage() + " (recorded as FAILED - a later backfill will retry it)")));
                 continue;
@@ -745,6 +748,26 @@ public class QaPipelineService {
 
         return new GenerateTestsBackfillResponse(
                 allMerges.size(), alreadyProcessed, succeeded, failed, results, caughtUp, summary);
+    }
+
+    /**
+     * Relative URL for downloading this run's CSV, or null when the run wrote
+     * no CSV (nothing generated) - a link to a file that isn't there is worse
+     * than no link, since a caller would retry it as though it were transient.
+     *
+     * <p>Deliberately relative: the service has no reliable view of the host,
+     * scheme or proxy prefix the caller reached it through, and guessing wrong
+     * produces a URL that looks authoritative and doesn't work.
+     */
+    private String downloadUrlFor(String projectName, String commitRef, String csvPath) {
+        if (csvPath == null || projectName == null || projectName.isBlank()) {
+            return null;
+        }
+        String query = "projectName=" + URLEncoder.encode(projectName, StandardCharsets.UTF_8);
+        if (commitRef != null && !commitRef.isBlank()) {
+            query += "&commitHash=" + URLEncoder.encode(commitRef, StandardCharsets.UTF_8);
+        }
+        return "/api/v1/test-cases/download?" + query;
     }
 
     /**

@@ -109,6 +109,13 @@ public class PromptBuilder {
                     wrong, missing, malformed, or the caller isn't allowed to do this?":
                     - Required fields missing or null
                     - Wrong data type or malformed format (e.g. text where a number/date/ID is expected)
+                    - Input the code used to accept but no longer does. When the diff
+                      TIGHTENS what a parameter takes, this is the most important case
+                      in the whole suite: it is the only one that fails against the old
+                      behavior and passes against the new. For a parameter narrowed to
+                      whole numbers, cover a decimal (2.5), a whole-looking decimal
+                      (4.0), a value beyond the new type's range, and a numeric string -
+                      each rejected, with the error the user actually sees.
                     - Values that violate an explicit business rule visible in the code
                       (e.g. a status transition that shouldn't be allowed, a duplicate
                       that should be rejected, an operation on an already-finalized record)
@@ -212,9 +219,19 @@ public class PromptBuilder {
                       the visible validation doesn't obviously catch.
                     - Rate limiting / abuse: repeated rapid calls to a sensitive operation,
                       if no visible throttling exists.
-                    If the diff genuinely has no security-relevant surface (e.g. a pure
-                    UI label change), return an empty array rather than inventing
-                    irrelevant security cases.
+                    ORDINARY INPUT VALIDATION IS NOT SECURITY. A type or format check
+                    rejecting a decimal, a letter or an oversized number is correctness,
+                    and NEGATIVE already covers it. It becomes a security case only when
+                    getting past it would enable an actual attack - injection, reading
+                    another user's data, leaking a secret, crashing the service. Do not
+                    re-file "reject 3.5 where a whole number is required" as security by
+                    rewording it.
+
+                    Most small local changes - arithmetic, formatting, a type narrowing
+                    on an internal method - have NO security surface at all. Return an
+                    empty array for those. An empty array is the correct, expected
+                    answer here far more often than not, and is always better than a
+                    reworded copy of another category's case.
                     """;
             default -> """
                     FOCUS: POSITIVE (happy-path) test cases only.
@@ -225,6 +242,17 @@ public class PromptBuilder {
                     positive coverage is the easy part: focus your limited case count on
                     the distinct legitimate scenarios actually implied by the diff, not
                     trivial restatements of the same scenario with different numbers.
+
+                    EVERY case here uses VALID input and ends in SUCCESS. If a case's
+                    expectedResult is an error, a rejection, a warning or a refusal, it
+                    is not a positive case - drop it, someone else is writing it. Never
+                    put a value the code refuses in "testData".
+
+                    When the change TIGHTENED what is accepted, your job is only to
+                    show the still-valid input keeps working correctly - e.g. whole
+                    numbers still add, subtract, multiply and divide as before. Proving
+                    the newly-refused input is refused is the NEGATIVE category's job,
+                    not yours.
                     """;
         };
     }
@@ -266,6 +294,41 @@ public class PromptBuilder {
 
                 Think in terms of what the FEATURE does from a user/business
                 perspective - not test syntax, not classes, not code structure.
+
+                PROVE THE CHANGE, DON'T JUST DESCRIBE THE FEATURE.
+                A diff has a BEFORE and an AFTER. Your job is to prove the code
+                now behaves as the AFTER and no longer as the BEFORE. Apply one
+                simple test to every case you write:
+
+                    Would this case have passed BEFORE the change too?
+
+                If yes, it does not prove anything about this commit. At least one
+                case must FAIL against the old behavior and PASS against the new.
+                Read the diff for what was REMOVED, NARROWED or TIGHTENED, not just
+                what is present now - the removed half is usually where the proof is.
+
+                PROVE IT FROM YOUR OWN CATEGORY, NEVER ANOTHER'S.
+                Every category proves the change from its own angle, and the FOCUS
+                section below is the only angle you are allowed to take. When input
+                is narrowed or tightened, the rejection cases belong to NEGATIVE and
+                to NEGATIVE ONLY - a POSITIVE, BOUNDARY or SECURITY case whose
+                expectedResult is "the input is refused" is a negative case filed
+                under the wrong heading, and the caller generates the categories
+                separately, so it lands as a duplicate rather than as coverage.
+                If your category has no honest angle on this change, return an empty
+                array. That is a valid answer and far better than restating another
+                category's case in your own words.
+
+                When the change is a BUG FIX, prove the defect is gone.
+                - Identify the exact condition that triggered the bug and put the
+                  concrete data that reproduces it in "testData" - the specific
+                  values, not "invalid input". A fix case with vague data cannot be
+                  re-run to confirm the fix held.
+                - "expectedResult" states the CORRECTED behavior, and the scenario
+                  should make clear this is the case that previously failed.
+                - Add focused regression cases for the behavior immediately around
+                  the fix - the neighbouring paths a fix like this most easily
+                  breaks - not a re-test of the whole feature.
 
                 %s
 

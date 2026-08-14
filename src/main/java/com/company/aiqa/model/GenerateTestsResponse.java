@@ -10,7 +10,14 @@ public record GenerateTestsResponse(
         int impactedMethodCount,
         List<CommitInfo> commitLog,
         List<ManualTestCase> businessTestCases,
+        /** Where the CSV was written on the SERVER - not reachable by a remote caller. */
         String manualTestCasesCsvPath,
+        /**
+         * Relative URL that returns the CSV above as a download, so a caller on
+         * another machine can actually retrieve what this run produced.
+         * Null when the run generated nothing.
+         */
+        String manualTestCasesDownloadUrl,
         List<TestCaseResult> generatedTests,
 
         /** Categories this run set out to produce (all configured ones, or just the missing ones on a resume). */
