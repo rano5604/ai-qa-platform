@@ -563,9 +563,23 @@ public class PromptBuilder {
                   fails when the server correctly refuses the bad input, and passes when
                   the server wrongly accepts it. That is worse than having no test at
                   all - it produces a red report for behavior that is actually correct,
-                  and hides the defect it was written to catch. If a case's scenario or
-                  name says fail/reject/invalid/duplicate/missing/unauthorized, its
-                  final assertion MUST be a 4xx.
+                  and hides the defect it was written to catch.
+
+                  THE "EXPECTED RESULT" TEXT DECIDES THE STATUS - NOT the case's title,
+                  not its Type column. Read what the Expected Result actually says the
+                  system does, and assert that:
+                    * "An error message ... is displayed", "is rejected", "is not
+                      saved"                                            -> 4xx
+                    * "A success message ... is displayed", "were skipped", "the rest
+                      were saved"                                       -> 2xx
+                  A title beginning "Fail to ..." does NOT by itself mean 4xx. Plenty of
+                  APIs handle a bad or duplicate input by succeeding and reporting what
+                  they skipped - e.g. a case titled "Fail to add duplicate holidays"
+                  whose Expected Result is "a success message: some holidays were
+                  already declared and were skipped" is a 200, and asserting 4xx there
+                  invents a failure. Equally, a case typed "Positive" whose Expected
+                  Result is "An error message ... already exists" is a 4xx. When title
+                  and Expected Result disagree, the Expected Result wins every time.
                 - Keep PRECONDITION calls separate from the CASE'S OWN assertion. The
                   setup calls that build the fixture assert 2xx because they must
                   succeed; the one call the test case is actually about asserts whatever
