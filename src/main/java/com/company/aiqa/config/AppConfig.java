@@ -12,7 +12,8 @@ import java.time.Duration;
 @Configuration
 @EnableConfigurationProperties({OpenAIProperties.class, PipelineProperties.class, GitHubProperties.class,
         GitLabProperties.class, GitProperties.class, LlmProperties.class, GeminiProperties.class,
-        RouterProperties.class})
+        RouterProperties.class, com.company.aiqa.replay.ReplayProperties.class,
+        com.company.aiqa.openapi.OpenApiProperties.class})
 public class AppConfig {
 
     @Bean

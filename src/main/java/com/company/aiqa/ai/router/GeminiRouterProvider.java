@@ -103,7 +103,7 @@ public class GeminiRouterProvider implements AiProvider {
         } catch (RestClientResponseException e) {
             String responseBody = e.getResponseBodyAsString();
             log.warn("gemini HTTP {} (model={}) - body: {}",
-                    e.getStatusCode().value(), model, responseBody.isBlank() ? "[empty]" : responseBody);
+                    e.getStatusCode().value(), model, ProviderLogs.oneLine(responseBody.isBlank() ? "[empty]" : responseBody));
             throw new IllegalStateException(
                     "gemini HTTP %d: %s".formatted(e.getStatusCode().value(),
                             responseBody.isBlank() ? e.getMessage() : responseBody), e);

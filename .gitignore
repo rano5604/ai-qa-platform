@@ -1,0 +1,21 @@
+# Build output. These were tracked, so every build showed ~80 modified .class
+# files and any real change had to be found among them.
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local repo clones the platform makes on demand - re-created by syncRepo, and
+# each one is a full third-party checkout. Merge history under it IS tracked,
+# since that is the platform's own state.
+repo-workspace/*
+!repo-workspace/merge-history/

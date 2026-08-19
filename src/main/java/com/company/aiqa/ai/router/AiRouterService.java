@@ -76,13 +76,25 @@ public class AiRouterService implements LlmClient {
     private List<AiProvider> buildChain(RestClient restClient, RouterProperties props, List<String> names) {
         List<AiProvider> chain = new ArrayList<>();
         for (String name : names) {
-            BiFunction<RestClient, RouterProperties, AiProvider> factory = REGISTRY.get(name.trim().toLowerCase());
-            if (factory == null) {
-                log.warn("Unknown provider '{}' in aiqa.router.chain - skipping. Known providers: {}",
-                        name, REGISTRY.keySet());
+            String key = name.trim().toLowerCase();
+            BiFunction<RestClient, RouterProperties, AiProvider> factory = REGISTRY.get(key);
+            if (factory != null) {
+                chain.add(factory.apply(restClient, props));
                 continue;
             }
-            chain.add(factory.apply(restClient, props));
+            // Anything else the catalog knows - cerebras, deepseek, openrouter,
+            // anthropic and the rest. REGISTRY holds only the five that predate
+            // the catalog and read dedicated properties; without this fallback
+            // naming any other provider in the chain logged a warning and was
+            // dropped, even though the platform knows its URL and wire format
+            // and would happily call it with a per-request key.
+            AiProvider fromCatalog = buildFromServerConfig(key);
+            if (fromCatalog != null) {
+                chain.add(fromCatalog);
+                continue;
+            }
+            log.warn("Unknown provider '{}' in aiqa.router.chain - skipping. Known providers: {}",
+                    name, LlmProviderCatalog.knownProviders());
         }
         return chain;
     }
@@ -90,6 +102,21 @@ public class AiRouterService implements LlmClient {
     @Override
     public String complete(String systemPrompt, String userPrompt) {
         return runChain(providers, systemPrompt, userPrompt, NO_KEYS_HINT);
+    }
+
+    /**
+     * True only when some provider in the chain could actually be called.
+     *
+     * <p>Chain SIZE is not the test: the chain is built from
+     * aiqa.router.chain regardless of whether each entry has a key, so with the
+     * default chain and no keys at all it still holds five providers that would
+     * each fail on first use. AiProvider.available() is the real question -
+     * "configured enough to even try" - and a keyless local runtime like Ollama
+     * answers true, which is correct: it needs no credential.
+     */
+    @Override
+    public boolean hasServerSideCredentials() {
+        return providers.stream().anyMatch(p -> p.available() && p.requiresCredential());
     }
 
     /** Appended to the failure message when a run had no request-supplied credentials to work with. */
@@ -226,7 +253,48 @@ public class AiRouterService implements LlmClient {
     }
 
     /** Server-configured model override for a provider, falling back to the catalog default. */
+    /**
+     * Builds a chain provider from the catalog plus server configuration, for
+     * a name REGISTRY doesn't cover.
+     *
+     * <p>The credential comes from {@code aiqa.router.keys.<name>} and the
+     * model from {@code aiqa.router.models.<name>}, falling back to the
+     * catalog's default. A provider with no key configured is still added: it
+     * reports available()=false and the chain skips it, exactly as a keyless
+     * gemini or groq does today - so a half-finished configuration degrades to
+     * "that one is inactive" rather than to a startup warning nobody reads.
+     *
+     * @return null when the catalog has never heard of this name
+     */
+    private AiProvider buildFromServerConfig(String name) {
+        LlmProviderCatalog.Entry entry = LlmProviderCatalog.find(name).orElse(null);
+        if (entry == null) {
+            return null;
+        }
+        String key = properties.getKeys().get(name);
+        String model = configuredModelFor(name, entry.defaultModel());
+
+        return switch (entry.wireFormat()) {
+            case OPENAI_COMPAT -> new CatalogOpenAiProvider(restClient, name, entry.baseUrl(), key, model);
+            case ANTHROPIC -> new AnthropicProvider(restClient, entry.baseUrl(), key, model);
+            case GEMINI -> {
+                RouterProperties p = geminiProps(key, model);
+                yield new GeminiRouterProvider(restClient, p);
+            }
+            case OLLAMA -> {
+                RouterProperties p = new RouterProperties();
+                p.setOllamaHost(key == null || key.isBlank() ? entry.baseUrl() : key);
+                p.setOllamaModel(model);
+                yield new OllamaProvider(restClient, p);
+            }
+        };
+    }
+
     private String configuredModelFor(String name, String catalogDefault) {
+        String generic = properties.getModels().get(name);
+        if (generic != null && !generic.isBlank()) {
+            return generic;
+        }
         String configured = switch (name) {
             case "gemini" -> properties.getGeminiModel();
             case "groq" -> properties.getGroqModel();
@@ -282,8 +350,8 @@ public class AiRouterService implements LlmClient {
                 // window, anything else briefly - so the next request rotates
                 // straight past it instead of repeating the same dead call.
                 cooldownRegistry.recordFailure(provider.name(), e);
-                log.warn("AI router: model '{}' failed ({}); rotating to next.", provider.name(),
-                        message.length() > 200 ? message.substring(0, 200) : message);
+                log.warn("AI router: model '{}' failed ({}); rotating to next.",
+                        provider.name(), ProviderLogs.oneLine(message, 160));
                 errors.add(provider.name() + ": " + message);
             }
         }

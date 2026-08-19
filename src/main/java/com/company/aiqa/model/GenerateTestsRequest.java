@@ -4,11 +4,43 @@ import jakarta.validation.constraints.NotBlank;
 
 /**
  * Payload for POST /api/v1/generate-tests
+ *
+ * <p>Identify the repository by EITHER {@code repoPath} (a checkout already on
+ * this machine) OR {@code repoUrl} (cloned on demand, reusing an existing clone
+ * and fetching it when one is already present). Supplying repoUrl means a
+ * caller can target any commit of any repo in a single call, instead of having
+ * to run a branch endpoint first just to get the clone on disk.
  */
 public class GenerateTestsRequest {
 
-    @NotBlank
+    /**
+     * Path to a checkout on this machine. Optional when {@link #repoUrl} is
+     * given; when both are set this wins, since a caller naming an exact
+     * directory means that directory.
+     */
     private String repoPath;
+
+    /**
+     * Remote to clone/fetch when repoPath is absent, e.g.
+     * "https://github.com/org/repo.git". The clone is reused across runs - it
+     * lands under aiqa.git.workspace-dir keyed by URL - so repeated calls
+     * fetch rather than re-clone.
+     */
+    private String repoUrl;
+
+    /**
+     * Read token for repoUrl. Optional when the server already has a matching
+     * entry under aiqa.git.hosts (or aiqa.git.default-token). Never logged or
+     * persisted; applies to this call only.
+     */
+    private String accessToken;
+
+    /**
+     * Optional hint for how accessToken is sent: "GITHUB" (token as username),
+     * "GITLAB"/"GENERIC" (token as password). Leave unset to auto-detect from
+     * repoUrl's hostname.
+     */
+    private String provider;
 
     @NotBlank
     private String baseRef;   // e.g. "origin/main" or a commit SHA
@@ -73,6 +105,15 @@ public class GenerateTestsRequest {
 
     public String getRepoPath() { return repoPath; }
     public void setRepoPath(String repoPath) { this.repoPath = repoPath; }
+
+    public String getRepoUrl() { return repoUrl; }
+    public void setRepoUrl(String repoUrl) { this.repoUrl = repoUrl; }
+
+    public String getAccessToken() { return accessToken; }
+    public void setAccessToken(String accessToken) { this.accessToken = accessToken; }
+
+    public String getProvider() { return provider; }
+    public void setProvider(String provider) { this.provider = provider; }
 
     public String getBaseRef() { return baseRef; }
     public void setBaseRef(String baseRef) { this.baseRef = baseRef; }

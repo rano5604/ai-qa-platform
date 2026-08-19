@@ -31,7 +31,7 @@ aiqa:
     # Check https://ai.google.dev/api/models against your own key if this
     # 404s - Gemini model availability changes over time (1.5 and 2.0 series
     # have both been retired as of mid-2026).
-    model: gemini-2.5-flash
+    model: gemini-3.6-flash
     api-key: ${GEMINI_API_KEY:}
     timeout-seconds: 60
     temperature: 0.2
@@ -47,14 +47,19 @@ aiqa:
   #   Mistral:    https://docs.mistral.ai/getting-started/models/
   #   GitHub Models: https://github.com/marketplace/models
   router:
-    chain: [gemini, groq, mistral, github, ollama]
+    # Order matters: groq sits AFTER cerebras because its on-demand tier
+    # rejects the automation prompt on size (HTTP 413) even with the context
+    # trimmed, so trying it first only wastes a round trip.
+    chain: [gemini, cerebras, groq, mistral, github, ollama]
     timeout-seconds: 60
     max-tokens: 8192
     gemini-api-key: ${GEMINI_API_KEY:}
-    gemini-model: gemini-2.5-flash
+    gemini-model: gemini-3.6-flash
     gemini-base-url: https://generativelanguage.googleapis.com/v1beta
     groq-api-key: ${GROQ_API_KEY:}
-    groq-model: llama-3.3-70b-versatile
+    # llama-3.3-70b-versatile was decommissioned - GET /openai/v1/models on your
+    # own key to see what it can actually reach before changing this.
+    groq-model: openai/gpt-oss-120b
     mistral-api-key: ${MISTRAL_API_KEY:}
     mistral-model: mistral-large-latest
     # A GitHub personal-access token (https://github.com/settings/tokens) - not the same as aiqa.git.hosts' clone token.
@@ -63,6 +68,52 @@ aiqa:
     # Local Ollama - no key needed, install from https://ollama.com and run `ollama serve`.cmd
     ollama-host: ${OLLAMA_HOST:http://localhost:11434}
     ollama-model: qwen2.5-coder:7b
+
+    # Every other provider LlmProviderCatalog knows - cerebras, deepseek,
+    # openrouter, together, fireworks, xai, nvidia, cohere, anthropic, ... -
+    # is configured here rather than with two more fields each. Add the name to
+    # "chain" above AND a key below; a name in the chain with no key is simply
+    # inactive, which is silent, so check both when a provider never gets
+    # called. Model is optional and defaults to the catalog's.
+    keys:
+      cerebras: ${CEREBRAS_API_KEY:}
+    models:
+      # Cerebras ids carry no hyphen after "llama" - llama3.3-70b, llama3.1-8b -
+      # and a wrong one answers 404 model_not_found, not 401. Confirm against
+      # your own account before changing it:
+      #   curl -H "Authorization: Bearer $CEREBRAS_API_KEY" https://api.cerebras.ai/v1/models
+      cerebras: llama3.3-70b
+
+  # The "Send again" button in an execution report re-issues a captured
+  # request. A report opened from disk has no origin, so the browser blocks a
+  # direct call unless the service under test allows cross-origin requests -
+  # the platform therefore makes the call server-side, where no such rule
+  # exists. Guarded by a per-process token embedded in the reports this process
+  # writes, so a random web page cannot use it as a proxy.
+  report:
+    replay:
+      enabled: true
+      # Only needed when the report is read somewhere that cannot see this
+      # platform on localhost - a shared drive, a teammate's machine.
+      platform-base-url: ""
+      timeout-seconds: 30
+
+  # Reading the target's own OpenAPI document. Where the document lives is read
+  # out of the project under test - springdoc.api-docs.path and
+  # server.servlet.context-path in its application.yml - so nothing here names
+  # a URL; pass "openApiUrls" on the request for a service that does not follow
+  # the conventions.
+  openapi:
+    enabled: true
+    timeout-millis: 5000
+    max-attempts: 6
+    # The contract competes with the endpoint list and the implementation source
+    # for one context window, and the automation prompt is already big enough to
+    # be rejected outright by some providers. Raise this only if the model is
+    # visibly missing schemas it needed.
+    max-prompt-chars: 22000
+    max-depth: 3
+    max-fields-per-schema: 45
 
   pipeline:
     output-dir: generated-tests

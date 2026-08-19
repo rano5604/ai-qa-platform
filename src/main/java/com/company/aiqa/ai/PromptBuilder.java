@@ -125,6 +125,19 @@ public class PromptBuilder {
                     Every case's expectedResult must describe the rejection/error behavior,
                     not a successful outcome.
 
+                    A NARROWED TYPE IS NOT A NEW VALIDATION RULE. If a field changed
+                    from a decimal to a whole number, do NOT assume decimals are now
+                    refused - most frameworks quietly CONVERT instead, storing 19.99 as
+                    19 and accepting "50" as 50, with a perfectly successful response.
+                    Rejection happens only where something in the code actually performs
+                    it: a validation annotation, an explicit check that throws. If you
+                    cannot see that, the expected result is "the value is accepted and
+                    silently converted" - and THAT is the case worth writing, because
+                    quietly turning a 19.99 price into 19 loses money without any error.
+                    Say plainly what is stored, so the tester can spot the loss. Only a
+                    value that cannot be represented at all - too large for the type -
+                    is genuinely refused.
+
                     Every case must be reachable in the code you were given. Do not
                     assume surrounding machinery that was not shown to you - if there
                     is no login, session, role or permission check in the provided
@@ -153,6 +166,32 @@ public class PromptBuilder {
                       far future, far past, timezone boundaries)
                     Every case must target a specific boundary value in testData, not a
                     generic "large" or "invalid" description - use concrete numbers/strings.
+
+                    TAKE THE LIMIT FROM THE CODE, NEVER INVENT ONE. Only write a boundary
+                    case for a limit you can actually SEE in the diff or the provided
+                    source - a length check, a range test, a max constant. If the code
+                    shows no limit for a field, you have no boundary to test there; do
+                    not assume 255, 100, or any other familiar-looking number. When the
+                    limit lives in configuration rather than in the code shown to you,
+                    describe it relatively ("one character beyond the configured
+                    maximum") instead of guessing a figure that will be wrong.
+
+                    STATE THE UNIT, AND HONOUR IT. A limit measured in BYTES is not the
+                    same as one measured in characters. If the code measures bytes -
+                    getBytes(...).length, a byte[] size, a database column in bytes -
+                    then say so in testData and include a MULTI-BYTE case, because that
+                    is where real systems break: in UTF-8, Latin text is 1 byte per
+                    character but Bangla, Arabic, Chinese and emoji are 2-4, so a
+                    99-BYTE ceiling is hit at roughly 33 Bangla characters while 99
+                    Latin characters still fit. For any byte-measured field, cover: at
+                    the limit in plain ASCII, one past it, and a multi-byte value that
+                    crosses the limit with far fewer characters than expected.
+
+                    MAKE testData MATCH WHAT THE CASE SAYS. If a case is "exactly at the
+                    maximum", the value in testData must really be that size - state it
+                    as a count the tester can reproduce ("the letter A repeated 99
+                    times"), never a hand-typed string whose length nobody can verify at
+                    a glance and which is usually wrong.
 
                     SKIP BOUNDARIES THAT ARE ALREADY UNREACHABLE. A boundary is only
                     worth testing for input the code actually accepts far enough to
@@ -330,6 +369,46 @@ public class PromptBuilder {
                   the fix - the neighbouring paths a fix like this most easily
                   breaks - not a re-test of the whole feature.
 
+                PRECONDITIONS ARE PART OF THE TEST, NOT A NOTE ABOVE IT.
+                Code rarely reaches the rule you want to test on the first check.
+                Before it gets there it verifies its own requirements, and the FIRST
+                one that fails is what the tester will actually observe. A case that
+                leaves an earlier requirement unmet does not test what its title says
+                - it silently tests that earlier check instead, and it will keep
+                "passing" while the rule you meant to cover goes unexercised.
+
+                So, for every case: walk the code from the entry point to the
+                behaviour under test and list what has to already be true to get
+                there. That takes whatever form the project uses -
+
+                - something referenced must already exist (a parent record, an
+                  account, a configured entry, a file, a registered device);
+                - something must be in a particular state (approved, active,
+                  enabled, unlocked, not already used, not expired);
+                - an earlier step of the flow must have happened (registered before
+                  ordering, uploaded before processing, opened before editing);
+                - a quantity or collection must be there to act on (a non-empty
+                  cart, available stock, remaining balance or quota);
+                - a setting or toggle must be present and switched on.
+
+                Put every one of them in "preconditions", concretely: name what must
+                exist or be true, and say it in terms of what a tester does through
+                the product to get there ("a merchant account has been created and
+                approved", not "merchant row present in DB"). Then write "steps" as
+                if that state is already in place.
+
+                Three limits on this:
+                - GROUND THEM IN THE CODE, like everything else. Only a requirement
+                  the given code actually checks belongs here. Do not add a login,
+                  an approval or a permission the code has no notion of.
+                - IF A TESTER CANNOT REACH THE STATE, DROP THE CASE. A precondition
+                  that can only be set up by editing storage directly or changing a
+                  setting and restarting is not something a test run can establish.
+                - A MISSING PRECONDITION IS ONE CASE, NOT ONE PER OPERATION. "The
+                  referenced account does not exist" is a single NEGATIVE case for
+                  that rule. Repeating it for every operation that shares the check
+                  proves the same gate over and over.
+
                 %s
 
                 %s
@@ -356,7 +435,7 @@ public class PromptBuilder {
                   {
                     "feature": "string - the business feature/module this validates, e.g. 'Transaction Totals Calculation'",
                     "scenario": "string - one-line description of what's being verified",
-                    "preconditions": "string - required state before the test, e.g. 'User has at least one bank transaction recorded'",
+                    "preconditions": "string - everything that must already exist or be true for the steps to reach the behaviour under test, e.g. 'A savings account exists and has at least one recorded transaction'",
                     "steps": "string - numbered steps a human would follow, e.g. '1. Add an income transaction of 1000 from Bank. 2. Add an expense of 100 from Bank. 3. Open the totals summary.'",
                     "testData": "string - concrete example input values to use",
                     "expectedResult": "string - the specific observable outcome, in business terms, not implementation details",
@@ -381,6 +460,23 @@ public class PromptBuilder {
                   yourself writing a precondition the code has no notion of, drop
                   the case - it is not a test, it is a guess about a system that
                   may not exist.
+                - A TESTER MUST BE ABLE TO RUN IT. Every case has to be executable by
+                  someone using the product normally - filling in fields, calling the
+                  API. If proving it would need a config value changed, the service
+                  restarted, a row edited directly in the database, or an internal
+                  component forced to fail, then it is not a test case for this suite;
+                  leave it out. "Verify the system rejects the request when the
+                  configured signature length exceeds the hash output" is a code review
+                  observation, not something a tester can set up or a request can
+                  trigger. The same goes for expecting a crash or an internal server
+                  error as the correct outcome: correct software answers a bad request
+                  with a clear rejection, so make the rejection the expected result.
+                - DO NOT QUOTE VALUES YOU CANNOT SEE. Never state an exact configured
+                  number - a signature length, a page size, a timeout - unless it
+                  appears in the code you were given. Describe it by its role ("the
+                  configured maximum") so the case stays correct whatever the setting
+                  is. An invented figure turns into a hard assertion downstream and
+                  fails against a perfectly healthy system.
                 - NO REDUNDANT CASES: each case must prove a rule no other case
                   already proves. If two cases fail at the same validation gate
                   for the same reason, they are one case - keep the clearest and
@@ -411,6 +507,18 @@ public class PromptBuilder {
      */
     public String buildBusinessTestCaseUserPrompt(List<ChangedFile> changedFiles, List<ClassInfo> classes,
                                                    ImpactResult impact, List<ManualTestCase> existingTestCases) {
+        return buildBusinessTestCaseUserPrompt(changedFiles, classes, impact, existingTestCases, "");
+    }
+
+    /**
+     * @param relatedImplementation source of the collaborators the changed code
+     *        calls into, or "" when unavailable. The diff shows WHAT changed;
+     *        the rules that decide whether a change is even reachable usually
+     *        live one call away, in a service the diff never touches.
+     */
+    public String buildBusinessTestCaseUserPrompt(List<ChangedFile> changedFiles, List<ClassInfo> classes,
+                                                   ImpactResult impact, List<ManualTestCase> existingTestCases,
+                                                   String relatedImplementation) {
         StringBuilder sb = new StringBuilder();
         appendContext(sb, changedFiles, classes, impact);
 
@@ -425,6 +533,8 @@ public class PromptBuilder {
                         .append(" -> ").append(truncate(tc.expectedResult(), 200))
                         .append("\n");
             }
+
+        appendRelatedImplementation(sb, relatedImplementation);
             sb.append("\n");
         }
 
@@ -476,6 +586,27 @@ public class PromptBuilder {
                   case's scenario, and put its Test Case ID in a comment above the
                   method so a human can trace script back to case.
                 - For assertions beyond the response body use org.testng.Assert.
+                - IMPORTS: emit exactly this block, verbatim, in every file, before
+                  anything else. A missing import fails the compile and loses every
+                  test in the file, so err towards importing more than you need - an
+                  unused import costs nothing:
+
+                      import io.restassured.RestAssured;
+                      import io.restassured.http.ContentType;
+                      import io.restassured.response.Response;
+                      import org.testng.Assert;
+                      import org.testng.annotations.AfterClass;
+                      import org.testng.annotations.BeforeClass;
+                      import org.testng.annotations.Test;
+                      import static io.restassured.RestAssured.given;
+                      import static org.hamcrest.Matchers.*;
+
+                  Then call it class-qualified - Assert.assertTrue(..),
+                  Assert.assertNotEquals(..). Do NOT write
+                  "import static org.testng.Assert.assertTrue;" and then call
+                  "Assert.assertTrue(..)": that static-imports the METHOD while the
+                  call names the CLASS, which was never imported, and it fails with
+                  "cannot find symbol: variable Assert".
                 - Use ONLY the HTTP methods and paths listed under "## API endpoints" -
                   never invent or guess a path.
                 - Build request payloads from the case's own test data where given;
@@ -514,15 +645,33 @@ public class PromptBuilder {
                   placeholder, a numeric one has none.
                 - Translate the case's "Expected Result" into assertions: status code
                   first, then - for a SUCCESS response only - body fields via Hamcrest
-                  matchers. Note the schemas below describe REQUEST payloads; you are
-                  never shown a RESPONSE schema, so assert only fields the case's own
-                  Expected Result actually names, and stay tolerant about where they
-                  sit: if creates come back wrapped as {"status":..,"data":{..}} the
-                  path is "data.id". Asserting a field the case never mentions is a
-                  guess, and a wrong guess reads as a product defect.
+                  matchers.
+                  WHERE A RESPONSE FIELD LIVES: if an "API contract" section is present
+                  it lists every documented response field at its full JSON path, which
+                  is exactly the path REST Assured takes. Copy it. When the contract
+                  shows "data.id string(uuid)", the extraction is
+                  .extract().path("data.id") and nothing else - not "id", not a guess,
+                  not a fallback chain. Same for an assertion: .body("data.feeType", ..).
+                  An array element is written "data[].code" in the contract and is
+                  reached as "data[0].code" or with hasItem(..).
+                  With NO contract section you are never shown a response shape, so
+                  assert only fields the case's own Expected Result actually names, and
+                  stay tolerant about where they sit: if creates come back wrapped as
+                  {"status":..,"data":{..}} the path is "data.id".
+                  Either way, asserting a field the case never mentions is a guess, and
+                  a wrong guess reads as a product defect.
                 - ERROR RESPONSES: ASSERT THE STATUS, KEEP THE BODY GENERIC.
-                  You are shown the request schemas, never the ERROR schema, so you do
-                  not know what an error body looks like here. Different stacks return
+                  An "API contract" section settles this whenever it is present AND
+                  documents the status you are asserting: if it lists fields for a 400
+                  or a 409, those field names are real and you may assert them at the
+                  paths given. If it documents only 2xx - which is what springdoc
+                  produces unless somebody wrote @ApiResponse annotations, and so what
+                  you will usually see - then it tells you NOTHING about errors and
+                  every rule below applies in full. Silence in the contract is not
+                  permission; it is the absence of information.
+
+                  Otherwise you are shown the request schemas, never the ERROR schema,
+                  so you do not know what an error body looks like here. Stacks return
                   {"message":..}, {"error":..}, {"errors":[..]}, {"title":..,"detail":..}
                   or an empty body, and a guessed field name fails on a server that is
                   behaving perfectly correctly. That turns a passing system into a red
@@ -536,21 +685,158 @@ public class PromptBuilder {
                       localized without the behavior changing at all.
                     * Do NOT assert the error body is non-empty - plenty of APIs answer
                       4xx with no body, and that is legitimate.
-                  When the manual case genuinely pins down wording, check it loosely
-                  against the WHOLE body, case-insensitively, and print the body when it
-                  fails so the report is diagnosable rather than just red:
+                  THE DEFAULT FOR AN ERROR CASE IS THE STATUS CODE AND NOTHING ELSE:
 
-                      String body = given()
-                              .contentType(ContentType.JSON).body(invalidPayload)
+                      given().contentType(ContentType.JSON).body(invalidPayload)
                               .when().post("/api/customers")
-                              .then().statusCode(anyOf(is(400), is(422)))
+                              .then().statusCode(anyOf(is(400), is(422)));
+
+                  That is a complete, correct negative test. Do not add a body check to
+                  make it look more thorough - you will usually be adding a guess.
+                  Most frameworks answer a rejected request with a GENERIC envelope
+                  that names no field at all. Spring Boot's default is exactly this:
+
+                      {"timestamp":"..","status":400,"error":"Bad Request","path":"/orders"}
+
+                  There is no "price", no "email", no field name anywhere in it. So an
+                  assertion that the body mentions the offending field FAILS on a
+                  service that just behaved perfectly - it returned 400 for bad input,
+                  which is the whole point of the test. The status assertion already
+                  proved the rule; the body check only added a way to be wrong.
+
+                  Add a body assertion ONLY when the manual case QUOTES the message
+                  text it expects - actual words in quotes in the Expected Result, not
+                  a general statement that an error is shown. In that case match those
+                  quoted words loosely against the whole body, case-insensitively, and
+                  print the body on failure so the report is diagnosable:
+
+                      String body = given().contentType(ContentType.JSON).body(payload)
+                              .when().post("/api/slots")
+                              .then().statusCode(anyOf(is(400), is(409)))
+                              .extract().asString();
+                      Assert.assertTrue(body.toLowerCase().contains("already exists"),
+                              "Expected the quoted message. Body was: " + body);
+
+                  Never assert that an error body mentions a FIELD NAME. Prefer
+                  asserting less and being right to asserting more and being wrong: an
+                  over-specified error assertion reports a defect that is not there,
+                  and someone has to spend time proving it is not there.
+
+                  NO JSON PATH ON AN ERROR RESPONSE - NOT ONE, INCLUDING THE
+                  ENVELOPE'S OWN FIELDS. Never write .body("success", ..),
+                  .body("error", ..), .body("message", ..), .body("code", ..),
+                  .body("errors[0]...", ..) or any other path against a 4xx/5xx
+                  response. You have been shown the code that REJECTS the request; you
+                  have not been shown the shape it rejects it with, and services differ
+                  completely. One real example: a service whose success responses look
+                  like {"success":true,"data":{..}} answers a rejected request with
+                  {"status":400,"error":"Validation Failed","message":"Input validation
+                  failed","path":".."} - no "success" field anywhere. Asserting
+                  .body("success", is(false)) there fails against a service that
+                  behaved perfectly, and the report shows a defect that does not exist.
+                  The status code is the assertion for an error case. When you also
+                  need text, take the WHOLE body as a string and search it
+                  case-insensitively - that works whatever the envelope turns out to
+                  be:
+
+                      String body = given()...post("/api/v1/merchants")
+                              .then().statusCode(400)
                               .extract().asString();
                       Assert.assertTrue(body.toLowerCase().contains("email"),
-                              "Expected the error to mention the offending field. Body was: " + body);
+                              "Body was: " + body);
 
-                  Prefer asserting less and being right to asserting more and being
-                  wrong: an over-specified error assertion reports a defect that is not
-                  there, and someone has to spend time proving it is not there.
+                  And only do that when the case QUOTES the words AND you can see the
+                  service producing them in the implementation source. A service whose
+                  handler returns a fixed "Input validation failed" for every rejection
+                  will never contain the field-specific sentence a manual case imagined.
+                - NEVER ASSERT A CONSTANT YOU WERE NOT SHOWN. Signature/token lengths,
+                  page sizes, timeouts, retry counts and similar live in configuration
+                  you cannot see from here. Asserting hasLength(64) on a signature whose
+                  configured length is actually something else fails on a perfectly
+                  healthy service, and the number is a guess even when it looks
+                  authoritative. Unless the exact value appears in the manual case or
+                  the source you were given, assert the SHAPE instead:
+                      .body("signature", notNullValue())
+                      .body("signature", not(emptyString()))
+                  Two tests must never assert two DIFFERENT lengths for the same field -
+                  that is a guess contradicting itself, and at least one of them is
+                  guaranteed to fail.
+                - COUNT, DO NOT ESTIMATE. When a case turns on an exact size - "name at
+                  exactly 99 characters", "list of 50" - the value you emit must really
+                  be that size. A name described as 99 characters that is actually 88
+                  does not test the boundary at all: it sits well inside the limit and
+                  passes for the wrong reason, while its sibling "100" case fails because
+                  it is under the limit too. If a limit is measured in BYTES, remember
+                  multi-byte characters: Bangla, Arabic, Chinese and emoji are 2-4 bytes
+                  each in UTF-8, so a 99-BYTE limit is reached at ~33 Bangla characters.
+                  Build such values with an explicit repeat, e.g.
+                  "a".repeat(99), rather than by typing a literal you cannot verify.
+                - ONLY AUTOMATE WHAT A REQUEST CAN REACH. If proving a case would require
+                  changing server configuration, restarting the service, editing a
+                  database directly, or forcing an internal failure, it CANNOT be done
+                  over HTTP from here - OMIT it. In particular, never send an ordinary
+                  valid payload and assert 5xx: a 500 is the service breaking, not a
+                  business rule, and no request body can make a correctly configured
+                  service crash on demand. If you cannot name the field in YOUR request
+                  that causes the failure, the case does not belong in this file.
+                - BE CONSISTENT ACROSS TESTS. Two tests sending the SAME payload to the
+                  SAME endpoint must assert the SAME status - if one expects 200 and
+                  another 500, one of them is certainly wrong, and a reviewer cannot
+                  tell which. Likewise, a test's name must match what it actually sends:
+                  a method called ...WithOptionalFieldsEmpty must send those fields as
+                  empty strings, not omit them (omitting them is a different test, and
+                  usually a duplicate of the happy path you already wrote).
+                - NUMERIC BODY ASSERTIONS ARE TYPE-BRITTLE - COMPARE NUMERICALLY.
+                  A JSON number arrives as Integer, Float, Double or BigDecimal
+                  depending on its value and the parser's mood, and Hamcrest's
+                  equalTo is TYPE-STRICT: equalTo(999.99f) fails against 999.99 read
+                  as a Double or BigDecimal, and against 999, reporting the useless
+                  "JSON path price doesn't match. Expected: <999.99F> Actual: <999>".
+                  Never write equalTo with a typed numeric literal - no 999.99f, no
+                  0.0F, no 10L. Instead extract the value and compare as a number,
+                  which works whatever type it arrived as:
+
+                      Number price = given().contentType(ContentType.JSON).body(body)
+                              .when().post("/orders")
+                              .then().statusCode(200)
+                              .extract().path("price");
+                      Assert.assertEquals(price.doubleValue(), 999.99, 0.001,
+                              "price should round-trip unchanged");
+
+                  For a whole number use equalTo(19) - an int literal is safe because
+                  whole JSON numbers parse as Integer. Strings, booleans and null are
+                  unambiguous too, so equalTo("Alice") is fine.
+                - ONLY ASSERT A VALUE THIS TEST PUT THERE. Asserting that order 2
+                  belongs to "Bob" tests whatever happens to be in the database today,
+                  so it fails the moment someone else's data is there - and it passes
+                  for no good reason when it does pass. Create the record, keep the
+                  value you sent, and assert that value came back. Never assert against
+                  a record you did not create in this same test.
+                - A NARROWED TYPE DOES NOT MEAN THE API NOW REJECTS THINGS. This is the
+                  single most common wrong assumption. Changing a field from double to
+                  int adds NO validation - the JSON layer silently CONVERTS instead:
+                    * 19.99 into an int field -> accepted, stored as 19 (200, not 400)
+                    * "50" as a string -> accepted, coerced to 50 (200)
+                    * -1 -> accepted; nothing rejects negatives unless something says so
+                    * a value too large for the type -> 400, because it cannot be parsed
+                      at all - that is a parse failure, not a business rule
+                  Before asserting ANY rejection, look for the thing that does the
+                  rejecting: @Valid on the parameter plus @Min/@Max/@Positive/@NotNull
+                  on the field, or an explicit if-check that throws. If you cannot point
+                  to it in the code you were given, the API almost certainly ACCEPTS the
+                  value, and asserting 4xx will fail against a service behaving exactly
+                  as written.
+                - WHEN INPUT IS SILENTLY CONVERTED, ASSERT THE CONVERSION. That is the
+                  real, testable contract, and it is a stronger test than a wrong 4xx:
+
+                      given().contentType(ContentType.JSON).body(bodyWithPrice1999)
+                              .when().post("/orders")
+                              .then().statusCode(200)
+                              .body("price", equalTo(19));   // 19.99 truncates to 19
+
+                  This passes today, documents the data loss for a reviewer, and starts
+                  failing the moment someone adds validation or changes the rounding -
+                  which is exactly when a tester wants to be told.
                 - MATCH THE STATUS TO THE EXPECTED RESULT, never assume 200/201.
                   Read what the case says should happen and assert THAT:
                     * expects success        -> 200, or 201 for a create
@@ -641,8 +927,23 @@ public class PromptBuilder {
 
                 Rules for this:
                 - Read each case's "Preconditions" field and satisfy it with real calls
-                  before the assertion. That field is the specification for the setup,
-                  not a comment to copy into the code.
+                  before the assertion. That field is a comment to act on, not one to
+                  copy into the code.
+                - THAT FIELD IS THE FLOOR, NOT THE LIMIT. It was written by someone
+                  describing the feature, so it is often partial and sometimes empty -
+                  and a missing line there is never permission to skip the setup. The
+                  endpoint list and the implementation source below are the authority.
+                  For the request this case makes, work out what the service requires
+                  BEFORE it can reach the rule under test - a resource it loads by id
+                  and rejects when absent, a status or flag it insists on, a step that
+                  must have run first - and build every one of them with real calls,
+                  whether the case mentions them or not. Assume nothing exists on the
+                  target: any id you send must come from a create in this same test,
+                  and any state must be reached by calling the endpoint that sets it.
+                  A test that skips a prerequisite the code requires does not fail
+                  honestly - it fails AT the prerequisite, so the rule it is named
+                  after is never exercised and the report shows a 404 that reads like
+                  an application defect.
                 - THIS APPLIES TO READS AND SEARCHES TOO, not just to updates and
                   deletes. "Search for a customer by id" needs that customer POSTed
                   first in the same test, then searched by the id that came back.
@@ -656,22 +957,127 @@ public class PromptBuilder {
                 - Extract the id with .extract().path(...). Match the path to the
                   response the create endpoint actually returns - if responses are
                   wrapped in an envelope like {"status":..,"data":{..}} the path is
-                  "data.id", not "id".
+                  "data.id", not "id". This is the ONE place a path is worth using,
+                  because a null id fails loudly on the next line rather than
+                  masquerading as a defect - and the "Request payload schemas" and
+                  implementation source below tell you the real shape. If neither shows
+                  you the response envelope, take the first path that can be true:
+
+                      Response created = given()...post("/api/v1/merchants").then()
+                              .statusCode(anyOf(is(200), is(201))).extract().response();
+                      String merchantId = created.path("data.id") != null
+                              ? created.path("data.id") : created.path("id");
+                      Assert.assertNotNull(merchantId, "Precondition failed: no id in " + created.asString());
+                - NEVER PUT AN ID IN AN INSTANCE FIELD. This is the single biggest
+                  cause of broken generated suites. Writing
+
+                      private String merchantId;              // WRONG
+
+                  and then using it in .post("/merchants/{id}", merchantId) makes the
+                  test depend on some OTHER test having run first and filled it in.
+                  TestNG guarantees no order, so the field is usually still null and
+                  the run dies with "Unnamed path parameter cannot be null (path
+                  parameter at index 0 is null)" - before a single request is sent, so
+                  the report shows an ERROR with no request/response to diagnose. It is
+                  worse still when nothing assigns the field at all, which is easy to
+                  do and impossible to see by reading one method.
+                  Every id MUST be a LOCAL variable, created inside the very test that
+                  uses it:
+
+                      @Test
+                      public void createSettlementAccountWithMaxLengthIban() {
+                          String merchantId = given().contentType(ContentType.JSON).body(merchantBody)
+                                  .when().post("/api/v1/merchants")
+                                  .then().statusCode(anyOf(is(200), is(201)))
+                                  .extract().path("data.id");        // local, not a field
+                          Assert.assertNotNull(merchantId, "Precondition failed: no merchant id returned");
+
+                          given().contentType(ContentType.JSON).body(accountBody)
+                                  .when().post("/api/v1/merchants/{merchantId}/settlement-accounts", merchantId)
+                                  .then().statusCode(201);
+                      }
+
+                  Yes, this repeats the create across tests. That repetition is the
+                  point: each test then passes on its own, in any order, twice in a
+                  row, and a failure means something is actually wrong.
+                  The ONLY instance fields allowed are immutable constants shared by
+                  every test - a base path, a fixed payload template. Never an id,
+                  never anything a test assigns.
+                - IDS ARE OFTEN NOT NUMBERS. Declare an extracted id as String unless
+                  you have seen it is numeric: many APIs use UUIDs, and
+                  "Integer feeId = ....extract().path(\"id\")" throws
+                  "class java.lang.String cannot be cast to class java.lang.Integer"
+                  at runtime - an ERROR, after a successful 201, which reads like the
+                  API broke when it did exactly what it should. String works for a
+                  UUID and for a number used in a path, so prefer it.
                 - A test that MUTATES or DELETES its subject must create its own, never
                   share one with another test. Tests must pass in any order and pass
                   twice in a row.
                 - Put only READ-ONLY shared fixtures in @BeforeClass. Anything a test
                   changes belongs inside that test.
                 - Clean up what you created in @AfterClass where a DELETE endpoint
-                  exists, so repeated runs don't pile up rows. Ignore cleanup failures.
-                - Use unique values for anything that must not collide - a fixed name or
-                  email fails on the second run. Do this with a %%d placeholder and
-                  .formatted(System.currentTimeMillis()), NEVER by writing
-                  + System.currentTimeMillis() inside the text block.
-                - Build every payload from the "Request payload schemas" section below,
-                  using those exact field names and, for an enum field, one of its
-                  listed values. A field the schema doesn't list will be rejected or
-                  ignored; a required one you omit fails the create outright.
+                  exists, so repeated runs don't pile up rows. CLEANUP MUST NEVER
+                  ASSERT: no .then().statusCode(..) and no Assert in an @AfterClass.
+                  A failing assertion there is reported as a suite-level ERROR that
+                  is nothing to do with any test - e.g. asserting on DELETE when the
+                  API has no DELETE answers 405 and turns a green run red. Fire the
+                  request and ignore the outcome entirely:
+
+                      given().when().delete("/orders/{id}", createdId);
+
+                  If the endpoint list has no DELETE for that resource, write no
+                  cleanup at all rather than calling a path that does not exist.
+                - GUARD EVERY ID YOU EXTRACT. .extract().path("id") returns null when
+                  the create failed or the id sits under a different key, and passing
+                  null into .get("/orders/{id}", id) dies with "Unnamed path parameter
+                  cannot be null" - an ERROR that hides which precondition actually
+                  broke. Check it immediately, so the failure names its own cause:
+
+                      Integer orderId = ... .extract().path("id");
+                      Assert.assertNotNull(orderId, "Precondition failed: create returned no id");
+
+                  Never use a literal id you did not create for a case that expects to
+                  FIND something - only for a case that expects 404.
+                - EVERY IDENTIFYING VALUE IN EVERY CREATE MUST BE UNIQUE PER RUN.
+                  Not most creates - every one, in every test. The fields that bite
+                  are the ones a service indexes: registration and licence numbers,
+                  codes, SKUs, serial numbers, references, emails, usernames, phone
+                  numbers, slugs. A fixed "REG123456" passes the first time you ever
+                  run the suite and returns 409 forever after, and five tests that
+                  each hardcoded the same one collide with each other inside a single
+                  run. Neither is a defect in the service, but both read as one.
+                  Do it with a %%d placeholder and .formatted(System.currentTimeMillis()),
+                  NEVER by writing + System.currentTimeMillis() inside the text block:
+
+                      String body = \"""
+                          {
+                            "registrationNo": "CR-%%d",
+                            "contactEmail": "m%%d@example.com"
+                          }
+                          \""".formatted(System.currentTimeMillis(), System.currentTimeMillis());
+
+                  The ONE exception is a duplicate/conflict case, where the second
+                  create must repeat the FIRST CALL'S OWN value to earn its 409. Hold
+                  that value in a local and use it twice - never share a hardcoded one
+                  with another test, which collides by accident rather than by design.
+                - Build every payload from the "API contract" section when there is
+                  one, and from "Request payload schemas" otherwise, using those exact
+                  field names and, for an enum field, one of its listed values. A field
+                  the schema doesn't list will be rejected or ignored; a required one
+                  you omit fails the create outright.
+                - TAKE EVERY LIMIT FROM THE CONTRACT, NEVER FROM YOUR OWN SENSE OF WHAT
+                  IS REASONABLE. The contract writes them next to the field -
+                  "(maxLength 50)", "(minimum 0)", "enum[FLAT|PERCENTAGE|TIERED]". A
+                  boundary case uses THAT number: 50 characters for a maxLength of 50,
+                  51 to go past it. A test that asserts a 64-character limit against a
+                  service configured for 16 fails forever and reads as a defect. If the
+                  contract states no limit for a field, there is no documented limit,
+                  and a boundary case for it cannot be written - say so rather than
+                  inventing one.
+                - A field typed string(uuid) in the contract must receive a real UUID.
+                  Never send a placeholder, a name, or the text of a variable that was
+                  never set - "null" is four characters of text, not an absent value,
+                  and a service given it answers 500 for something that cannot exist.
                 - NEGATIVE cases handle their setup differently by KIND:
                     * "operate on a resource that does not exist" - create NOTHING. A
                       deliberately absent id like 999999 is CORRECT here, and asserting
@@ -687,6 +1093,13 @@ public class PromptBuilder {
                 - Chains matter: to pay for an appointment you must first create the
                   shop, then the appointment, then pay. Follow the chain with real calls
                   as far as the endpoint list allows.
+                - A PRECONDITION IS NOT ALWAYS A CREATE. When the case requires
+                  something to be in a state - approved, activated, enabled, verified,
+                  cancelled - creating it is only half the setup; call the endpoint
+                  that moves it into that state as well, and assert 2xx on that call
+                  like any other setup step. Sending the real request against a
+                  freshly-created record that is still in its initial state exercises
+                  the state check, not the rule the case is about.
                 - If a precondition CANNOT be built from the listed endpoints, OMIT that
                   test case entirely. A silently 404-ing test is worse than no test - it
                   looks like a defect in the application.
@@ -710,13 +1123,41 @@ public class PromptBuilder {
      */
     public String buildApiAutomationUserPrompt(List<ManualTestCase> cases, List<ClassInfo> classes,
                                                List<TypeSchema> payloadSchemas) {
+        return buildApiAutomationUserPrompt(cases, classes, payloadSchemas, "", "");
+    }
+
+    public String buildApiAutomationUserPrompt(List<ManualTestCase> cases, List<ClassInfo> classes,
+                                               List<TypeSchema> payloadSchemas, String implementationSource) {
+        return buildApiAutomationUserPrompt(cases, classes, payloadSchemas, implementationSource, "");
+    }
+
+    /**
+     * @param implementationSource source of the controllers/services behind the
+     *        endpoints, or "" when unavailable. Endpoint signatures alone say
+     *        nothing about what a handler REQUIRES to already exist - that a fee
+     *        cannot be created until its merchant does, say - so without this the
+     *        model invents an id, gets 404/500, and writes assertions that could
+     *        never have passed.
+     * @param apiContract the target's own OpenAPI document, rendered, or "" when
+     *        no document could be reached. This is the only section that
+     *        describes a RESPONSE. Without it every assertion about a returned
+     *        body is a guess, and the two guesses that cost whole runs were
+     *        asserting an error envelope the service does not use and reading
+     *        an id from "id" when it sits at "data.id".
+     */
+    public String buildApiAutomationUserPrompt(List<ManualTestCase> cases, List<ClassInfo> classes,
+                                               List<TypeSchema> payloadSchemas,
+                                               String implementationSource,
+                                               String apiContract) {
         StringBuilder sb = new StringBuilder();
 
         appendApiEndpoints(sb, classes);
         if (sb.isEmpty()) {
             sb.append("## API endpoints\n\nNone were detected in this commit.\n\n");
         }
+        appendApiContract(sb, apiContract);
         appendPayloadSchemas(sb, payloadSchemas);
+        appendImplementation(sb, implementationSource);
 
         sb.append("## Manual test cases to automate\n\n");
         for (ManualTestCase tc : cases) {
@@ -779,7 +1220,7 @@ public class PromptBuilder {
                   {
                     "feature": "string - the config area affected, e.g. 'LLM Provider Timeout Configuration'",
                     "scenario": "string - one-line description of what's being verified",
-                    "preconditions": "string - required state before the test",
+                    "preconditions": "string - what must already exist or be true before step 1 - the config deployed, and any data or state the affected operation itself requires",
                     "steps": "string - numbered steps a human would follow to verify this, e.g. '1. Deploy with the updated config. 2. Trigger the affected operation. 3. Observe behavior/logs.'",
                     "testData": "string - concrete example values (old vs new) relevant to this check",
                     "expectedResult": "string - the specific observable outcome, in business/operational terms",
@@ -797,6 +1238,12 @@ public class PromptBuilder {
                   with irrelevant cases.
                 - A non-technical tester must be able to follow every step - describe
                   observable/operational behavior, not code internals.
+                - A setting only shows its effect through an operation that reads it,
+                  and that operation has its own requirements. State them in
+                  "preconditions" - the data that must already exist, the state it
+                  must be in, the earlier step that must have run - otherwise the
+                  case fails on the way to the setting and proves nothing about the
+                  change.
                 """;
     }
 
@@ -962,6 +1409,56 @@ public class PromptBuilder {
      * entirely when the diff has no detected endpoints (a UI-only or
      * non-controller change), rather than printing an empty, noisy section.
      */
+    /**
+     * Source of the code around the change, so business rules are READ rather
+     * than assumed.
+     *
+     * <p>A diff shows what changed, but the rule that governs it often sits in a
+     * collaborator the diff never touches - a service that checks a parent
+     * record exists before doing anything, a validator that rejects a value, a
+     * default applied when a field is absent. Without that code the model writes
+     * plausible-sounding cases whose preconditions can never hold and whose
+     * expected results contradict what the system actually does.
+     */
+    private void appendRelatedImplementation(StringBuilder sb, String relatedImplementation) {
+        if (relatedImplementation == null || relatedImplementation.isBlank()) {
+            return;
+        }
+        sb.append("""
+                ## Related implementation (source)
+
+                The code the change reaches into: the services, validators and
+                repositories the changed classes call. This is the AUTHORITY on how the
+                feature behaves - the diff alone only shows what was edited. Read it and
+                let it decide every case you write:
+
+                - PRECONDITIONS. This code is where they are visible: a lookup that
+                  fails when the thing is absent, a status or flag checked before the
+                  work is done, a step that assumes an earlier one ran. Every such
+                  check is a precondition of the behaviour behind it - list it in
+                  "preconditions" as required by the PRECONDITIONS rule above. A case
+                  whose setup the system cannot reach is not a test, it is a guess.
+                - WHAT IS ACTUALLY REJECTED. Only a check present in this code produces
+                  an error. Where there is no check, the value is accepted however wrong
+                  it looks - and "accepted when it should not be" is itself the case
+                  worth writing, stated as what the system really does.
+                - DEFAULTS AND CONVERSIONS. A field filled in when omitted, a value
+                  rounded, truncated or coerced - each is a rule a tester can observe,
+                  and each is invisible in the diff.
+                - THE REAL ORDER OF OPERATIONS. When several checks apply, the first one
+                  to fail is the error the user sees. Expected results must match that
+                  order, not the order the fields appear in - and if the check you are
+                  testing sits behind another one, satisfying that earlier check is a
+                  precondition of your case, not a second thing to assert.
+
+                Ground every case in this code. If nothing here supports a scenario you
+                were considering, do not write it.
+
+                """);
+        sb.append(relatedImplementation).append("\n\n");
+    }
+
+
     private void appendApiEndpoints(StringBuilder sb, List<ClassInfo> classes) {
         List<MethodInfo> handlers = classes.stream()
                 .flatMap(c -> c.methods().stream())
@@ -1005,13 +1502,76 @@ public class PromptBuilder {
      * an invented field means a rejected create, a precondition that never got
      * built, and a 404 later that looks like an application defect.
      */
+    /**
+     * The real implementation behind the endpoints, so preconditions can be READ
+     * rather than guessed.
+     *
+     * <p>A handler that loads a parent entity and throws when it is absent makes
+     * every test for that endpoint depend on creating the parent first. That
+     * requirement appears neither in the endpoint signature nor in the request
+     * schema - it lives in the method body. Supplying it is the difference
+     * between a suite that runs and one that 404s through every case.
+     */
+    private void appendImplementation(StringBuilder sb, String implementationSource) {
+        if (implementationSource == null || implementationSource.isBlank()) {
+            return;
+        }
+        sb.append("""
+                ## Endpoint implementation (source)
+
+                The controllers and services behind the endpoints above. READ THESE
+                BEFORE WRITING ANY TEST - they are the authority on three things the
+                endpoint list cannot tell you:
+
+                1. WHAT MUST ALREADY EXIST. Where a handler loads another entity and
+                   throws if it is missing, every test for that endpoint must create
+                   that entity first, over the API, and use the id it returns. Follow
+                   the whole chain: if a fee requires a merchant, create the merchant.
+                2. WHAT IS ACTUALLY VALIDATED, and therefore what can be rejected.
+                   Only a check visible here - a validation annotation, an explicit
+                   throw - produces a 4xx. Where the code checks nothing the value is
+                   accepted however wrong it looks, and asserting a rejection fails
+                   against a service behaving exactly as written.
+                3. WHAT THE RESPONSE REALLY LOOKS LIKE - field names, whether the body
+                   is wrapped in an envelope, and whether an id is a UUID String or a
+                   number. Extract ids using the shape shown here.
+
+                If a case cannot be set up from these endpoints and this code, OMIT it
+                rather than inventing an id and hoping.
+
+                """);
+        sb.append(implementationSource).append("\n\n");
+    }
+
+
+    /**
+     * The contract section, already rendered and budgeted by ApiContractRenderer.
+     * Placed before the source-derived schemas because it outranks them: those
+     * describe the DTOs at this commit, this describes what the service you are
+     * about to call actually accepts and returns.
+     */
+    private void appendApiContract(StringBuilder sb, String apiContract) {
+        if (apiContract == null || apiContract.isBlank()) {
+            return;
+        }
+        sb.append(apiContract);
+        if (!apiContract.endsWith("\n\n")) {
+            sb.append("\n");
+        }
+    }
+
     private void appendPayloadSchemas(StringBuilder sb, List<TypeSchema> schemas) {
         if (schemas == null || schemas.isEmpty()) {
             return;
         }
         sb.append("## Request payload schemas (read from the project's source)\n\n");
         sb.append("These are the ACTUAL fields. Use these names exactly - do not invent, ")
-                .append("rename or guess a field, and do not omit one marked required.\n\n");
+                .append("rename or guess a field, and do not omit one marked required.\n")
+                .append("If an \"API contract\" section appears above, IT WINS on any disagreement: ")
+                .append("it is what the deployed service accepts, while these are the types at this ")
+                .append("commit. A field here that the contract does not list is one the target may ")
+                .append("not have yet - send it anyway, since testing this commit is the point, but ")
+                .append("do not build an assertion on it.\n\n");
 
         for (TypeSchema schema : schemas) {
             if ("enum".equals(schema.kind())) {

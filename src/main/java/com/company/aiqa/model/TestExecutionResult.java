@@ -39,4 +39,32 @@ public record TestExecutionResult(
      * wasn't running.
      */
     public enum Status { PASSED, FAILED, ERROR, SKIPPED }
+
+    /**
+     * Marker on a failure that came from a {@code @BeforeClass}/{@code @BeforeMethod}
+     * rather than a test.
+     *
+     * <p>TestNG's XML distinguishes a configuration method from a test method,
+     * but that distinction was being thrown away after being folded into the
+     * message text - so every reader downstream had to re-derive it, and the
+     * report ended up telling people their target was unreachable when the
+     * setup had in fact reached it and been refused. Producing and recognising
+     * the prefix in one place keeps the two ends from drifting.
+     */
+    private static final String SETUP_PREFIX = "Setup method '";
+
+    /** The failure message for a configuration method, as the report reads it back. */
+    public static String setupFailureMessage(String methodName, String message) {
+        return SETUP_PREFIX + methodName + "' failed: " + message;
+    }
+
+    /**
+     * Whether this result is a configuration method that failed - the single
+     * most consequential thing that can happen in a run, because TestNG then
+     * SKIPS every test in the class. Thirty-four tests that never executed are
+     * not thirty-four findings.
+     */
+    public boolean isSetupFailure() {
+        return failureMessage != null && failureMessage.startsWith(SETUP_PREFIX);
+    }
 }

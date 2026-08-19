@@ -1,13 +1,20 @@
 package com.company.aiqa.service;
 
 import com.company.aiqa.config.PipelineProperties;
+import com.company.aiqa.error.NotFoundException;
+import com.company.aiqa.execution.ExecutionReportWriter;
+import com.company.aiqa.execution.RunDiagnosis;
 import com.company.aiqa.execution.RestAssuredTestExecutionService;
 import com.company.aiqa.model.ExecuteAutomationRequest;
 import com.company.aiqa.model.ExecuteAutomationResponse;
 import com.company.aiqa.model.TestCaseResult;
 import com.company.aiqa.model.TestExecutionSummary;
+import com.company.aiqa.replay.ReplayProperties;
+import com.company.aiqa.replay.ReplayService;
+import com.company.aiqa.testcase.AutomationScriptMerger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -55,13 +62,32 @@ public class AutomationExecutionService {
     private final PipelineProperties pipelineProperties;
     private final RestAssuredTestExecutionService executionService;
     private final GeneratedRunLocator runLocator;
+    private final AutomationScriptMerger scriptMerger;
+    private final ExecutionReportWriter reportWriter;
 
     public AutomationExecutionService(PipelineProperties pipelineProperties,
                                       RestAssuredTestExecutionService executionService,
-                                      GeneratedRunLocator runLocator) {
+                                      GeneratedRunLocator runLocator,
+                                      AutomationScriptMerger scriptMerger,
+                                      ReplayService replayService,
+                                      ReplayProperties replayProperties,
+                                      @Value("${server.port:8080}") int serverPort) {
         this.pipelineProperties = pipelineProperties;
         this.executionService = executionService;
         this.runLocator = runLocator;
+        this.scriptMerger = scriptMerger;
+        // The report is read on the reader's machine, so it needs an
+        // absolute address for this platform - and localhost is right for
+        // the normal case of both being the same machine. Override with
+        // aiqa.report.replay.platform-base-url when they are not.
+        String platform = replayProperties.getPlatformBaseUrl();
+        if (platform == null || platform.isBlank()) {
+            platform = "http://localhost:" + serverPort;
+        }
+        this.reportWriter = replayProperties.isEnabled()
+                ? new ExecutionReportWriter(platform.replaceAll("/+$", "") + "/api/v1/replay",
+                        replayService.token())
+                : new ExecutionReportWriter();
     }
 
     public ExecuteAutomationResponse execute(ExecuteAutomationRequest request) {
@@ -72,14 +98,14 @@ public class AutomationExecutionService {
         String runOutputDir = runLocator.runOutputDir(baseOutputDir, projectName, request.getCommitHash());
 
         if (!Files.isDirectory(Path.of(runOutputDir))) {
-            throw new IllegalArgumentException(
+            throw new NotFoundException(
                     "No generated-tests folder for commit %s at %s. Generate automation for this commit first: POST /api/v1/generate-automation."
                             .formatted(request.getCommitHash(), runOutputDir));
         }
 
         List<TestCaseResult> scripts = loadScripts(runOutputDir, request.getScriptFileName());
         if (scripts.isEmpty()) {
-            throw new IllegalArgumentException(
+            throw new NotFoundException(
                     ("No automation script found in %s. This endpoint only RUNS scripts that already exist - "
                             + "generate them first with POST /api/v1/generate-automation.")
                             .formatted(runOutputDir));
@@ -89,12 +115,23 @@ public class AutomationExecutionService {
                 ? request.getBaseUri()
                 : DEFAULT_BASE_URI;
 
+        // Scripts written before the merger guaranteed this have no setup at
+        // all, so REST Assured would use its own default and quietly ignore the
+        // target this call names - see AutomationScriptMerger.withBaseUriHonoured.
+        scripts = scripts.stream().map(scriptMerger::withBaseUriHonoured).toList();
+
         List<String> fileNames = scripts.stream().map(TestCaseResult::testFileName).toList();
         log.info("Executing {} script(s) for commit {} against {}: {}",
                 scripts.size(), request.getCommitHash(), baseUri, fileNames);
 
-        TestExecutionSummary execution = executionService.execute(
-                scripts, baseUri, Path.of(runOutputDir, REPORT_DIR_NAME));
+        Path reportDir = Path.of(runOutputDir, REPORT_DIR_NAME);
+        TestExecutionSummary execution = executionService.execute(scripts, baseUri, reportDir);
+
+        // TestNG's own report shows verdicts only - the captured traffic sits
+        // beside it in http-exchanges.json with nothing joining the two. This
+        // writes the report a reviewer can actually triage from: each verdict
+        // with the exact request sent and response received underneath it.
+        Path evidenceReport = reportWriter.write(execution, reportDir, projectName, request.getCommitHash());
 
         String summary = ("Commit %s: ran %d script file(s) against %s - %d test(s): %d passed, %d failed, "
                 + "%d error(s), %d skipped (%d/%d script(s) compiled).")
@@ -107,6 +144,15 @@ public class AutomationExecutionService {
         }
         if (execution.reportPath() != null) {
             summary += " TestNG report: %s.".formatted(execution.reportPath());
+        }
+        if (evidenceReport != null) {
+            summary += " Report with request/response evidence: %s.".formatted(evidenceReport.toAbsolutePath());
+        }
+        // Whether these verdicts can be read as defects at all - a run whose
+        // tests all died setting up their fixtures proves nothing about the
+        // rules they name, and that has to reach the caller, not just the HTML.
+        for (String finding : RunDiagnosis.of(execution)) {
+            summary += " WARNING: " + finding;
         }
         log.info(summary);
 
@@ -127,7 +173,7 @@ public class AutomationExecutionService {
         if (scriptFileName != null && !scriptFileName.isBlank()) {
             Path explicit = dir.resolve(scriptFileName.trim());
             if (!Files.isRegularFile(explicit)) {
-                throw new IllegalArgumentException("No such script in %s: %s".formatted(runOutputDir, scriptFileName));
+                throw new NotFoundException("No such script in %s: %s".formatted(runOutputDir, scriptFileName));
             }
             return List.of(readScript(explicit));
         }

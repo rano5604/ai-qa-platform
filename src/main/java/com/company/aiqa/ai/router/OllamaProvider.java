@@ -39,6 +39,10 @@ public class OllamaProvider implements AiProvider {
     @Override
     public boolean available() { return true; }
 
+    /** Local runtime - no API key exists to configure. */
+    @Override
+    public boolean requiresCredential() { return false; }
+
     @Override
     public String model() { return model; }
 
@@ -66,7 +70,7 @@ public class OllamaProvider implements AiProvider {
         } catch (RestClientResponseException e) {
             String responseBody = e.getResponseBodyAsString();
             log.warn("ollama HTTP {} (model={}) - body: {}",
-                    e.getStatusCode().value(), model, responseBody.isBlank() ? "[empty]" : responseBody);
+                    e.getStatusCode().value(), model, ProviderLogs.oneLine(responseBody.isBlank() ? "[empty]" : responseBody));
             throw new IllegalStateException(
                     "ollama HTTP %d: %s".formatted(e.getStatusCode().value(),
                             responseBody.isBlank() ? e.getMessage() : responseBody), e);

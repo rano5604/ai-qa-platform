@@ -69,8 +69,7 @@ public abstract class AbstractOpenAiCompatProvider implements AiProvider {
         } catch (RestClientResponseException e) {
             String responseBody = e.getResponseBodyAsString();
             log.warn("{} HTTP {} calling {} (model={}) - body: {}",
-                    name(), e.getStatusCode().value(), endpoint, model,
-                    responseBody.isBlank() ? "[empty]" : responseBody);
+                    name(), e.getStatusCode().value(), endpoint, model, ProviderLogs.oneLine(responseBody.isBlank() ? "[empty]" : responseBody));
             throw new IllegalStateException(
                     "%s HTTP %d: %s".formatted(name(), e.getStatusCode().value(),
                             responseBody.isBlank() ? e.getMessage() : responseBody), e);

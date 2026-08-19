@@ -51,7 +51,7 @@ public final class LlmProviderCatalog {
     static {
         // --- OpenAI and the many providers that copied its API ---
         add("openai", WireFormat.OPENAI_COMPAT, "https://api.openai.com/v1", "gpt-4o-mini");
-        add("groq", WireFormat.OPENAI_COMPAT, "https://api.groq.com/openai/v1", "llama-3.3-70b-versatile");
+        add("groq", WireFormat.OPENAI_COMPAT, "https://api.groq.com/openai/v1", "openai/gpt-oss-120b");
         add("mistral", WireFormat.OPENAI_COMPAT, "https://api.mistral.ai/v1", "mistral-large-latest");
         add("deepseek", WireFormat.OPENAI_COMPAT, "https://api.deepseek.com/v1", "deepseek-chat");
         add("openrouter", WireFormat.OPENAI_COMPAT, "https://openrouter.ai/api/v1", "meta-llama/llama-3.3-70b-instruct:free");
@@ -59,7 +59,7 @@ public final class LlmProviderCatalog {
         add("fireworks", WireFormat.OPENAI_COMPAT, "https://api.fireworks.ai/inference/v1", "accounts/fireworks/models/llama-v3p3-70b-instruct");
         add("perplexity", WireFormat.OPENAI_COMPAT, "https://api.perplexity.ai", "sonar");
         add("xai", WireFormat.OPENAI_COMPAT, "https://api.x.ai/v1", "grok-2-latest");
-        add("cerebras", WireFormat.OPENAI_COMPAT, "https://api.cerebras.ai/v1", "llama-3.3-70b");
+        add("cerebras", WireFormat.OPENAI_COMPAT, "https://api.cerebras.ai/v1", "llama3.3-70b");
         add("nvidia", WireFormat.OPENAI_COMPAT, "https://integrate.api.nvidia.com/v1", "meta/llama-3.3-70b-instruct");
         add("cohere", WireFormat.OPENAI_COMPAT, "https://api.cohere.ai/compatibility/v1", "command-r-plus");
         add("github", WireFormat.OPENAI_COMPAT, "https://models.github.ai/inference", "openai/gpt-4o-mini");

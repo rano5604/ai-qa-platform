@@ -38,6 +38,12 @@
         <!-- Explicit (rather than relying on the transitive copy via
              spring-boot-starter-web) so ObjectMapper/JsonNode resolve
              cleanly even before a full Spring context is on the classpath -->
+        <!-- An OpenAPI document is as often YAML as JSON. -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>

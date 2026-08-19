@@ -274,7 +274,7 @@ public class RestAssuredTestExecutionService {
                 }
 
                 if (isConfig && failureMessage != null) {
-                    failureMessage = "Setup method '" + methodName + "' failed: " + failureMessage;
+                    failureMessage = TestExecutionResult.setupFailureMessage(methodName, failureMessage);
                 }
 
                 results.add(new TestExecutionResult(

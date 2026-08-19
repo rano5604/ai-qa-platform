@@ -156,29 +156,7 @@ public class ManualTestCaseGenerator {
     }
 
     private JsonNode parseJsonArray(String llmJsonResponse) {
-        String cleaned = stripMarkdownFences(llmJsonResponse);
-        try {
-            JsonNode node = objectMapper.readTree(cleaned);
-            if (!node.isArray()) {
-                throw new IllegalStateException("Expected a JSON array from the LLM but got: " + node.getNodeType());
-            }
-            return node;
-        } catch (IOException e) {
-            throw new IllegalStateException(
-                    "Could not parse LLM response as business-test-case JSON array: " + e.getMessage()
-                            + "\nRaw response:\n" + llmJsonResponse, e);
-        }
-    }
-
-    private String stripMarkdownFences(String text) {
-        String trimmed = text.trim();
-        if (trimmed.startsWith("```")) {
-            trimmed = trimmed.replaceFirst("^```(json)?", "").trim();
-            if (trimmed.endsWith("```")) {
-                trimmed = trimmed.substring(0, trimmed.length() - 3).trim();
-            }
-        }
-        return trimmed;
+        return LlmJsonArray.parse(objectMapper, llmJsonResponse, "business test cases");
     }
 
     /**

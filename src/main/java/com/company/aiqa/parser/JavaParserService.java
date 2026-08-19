@@ -7,8 +7,6 @@ import com.company.aiqa.model.MethodInfo;
 import com.company.aiqa.model.SourceLanguage;
 import com.company.aiqa.model.TypeSchema;
 import com.company.aiqa.git.GitDiffService;
-import com.github.javaparser.ParserConfiguration;
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -58,17 +56,6 @@ public class JavaParserService {
             "DeleteMapping", "DELETE",
             "PatchMapping", "PATCH"
     );
-
-    static {
-        // StaticJavaParser defaults to an old language level that rejects
-        // records (14+), text blocks (15+), sealed classes (17+), and
-        // pattern matching in switch (21+) - all common in real codebases.
-        // BLEEDING_EDGE tracks the latest preview/finalized features
-        // supported by the javaparser-core version on the classpath, so
-        // this stays current without needing to hardcode a specific level.
-        StaticJavaParser.getConfiguration()
-                .setLanguageLevel(ParserConfiguration.LanguageLevel.BLEEDING_EDGE);
-    }
 
     /** Parses every changed (non-deleted) *.java file into zero or more ClassInfo entries. */
     public List<ClassInfo> parseChangedFiles(List<ChangedFile> changedFiles) {
@@ -209,7 +196,7 @@ public class JavaParserService {
             if (content == null) {
                 return null;
             }
-            CompilationUnit cu = StaticJavaParser.parse(content);
+            CompilationUnit cu = JavaSources.parse(content);
 
             for (TypeDeclaration<?> type : cu.getTypes()) {
                 if (!typeName.equals(type.getNameAsString())) {
@@ -303,7 +290,7 @@ public class JavaParserService {
     }
 
     private List<ClassInfo> parseSingleFile(ChangedFile file) {
-        CompilationUnit cu = StaticJavaParser.parse(file.fileContent());
+        CompilationUnit cu = JavaSources.parse(file.fileContent());
 
         String packageName = cu.getPackageDeclaration()
                 .map(pd -> pd.getName().asString())

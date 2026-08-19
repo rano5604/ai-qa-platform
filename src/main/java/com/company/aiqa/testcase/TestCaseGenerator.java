@@ -118,30 +118,7 @@ public class TestCaseGenerator {
     }
 
     private JsonNode parseJsonArray(String llmJsonResponse) {
-        String cleaned = stripMarkdownFences(llmJsonResponse);
-        try {
-            JsonNode node = objectMapper.readTree(cleaned);
-            if (!node.isArray()) {
-                throw new IllegalStateException("Expected a JSON array from the LLM but got: " + node.getNodeType());
-            }
-            return node;
-        } catch (IOException e) {
-            throw new IllegalStateException(
-                    "Could not parse LLM response as JSON test-case array: " + e.getMessage()
-                            + "\nRaw response:\n" + llmJsonResponse, e);
-        }
-    }
-
-    /** Defensive: some models wrap JSON in ```json ... ``` fences despite instructions. */
-    private String stripMarkdownFences(String text) {
-        String trimmed = text.trim();
-        if (trimmed.startsWith("```")) {
-            trimmed = trimmed.replaceFirst("^```(json)?", "").trim();
-            if (trimmed.endsWith("```")) {
-                trimmed = trimmed.substring(0, trimmed.length() - 3).trim();
-            }
-        }
-        return trimmed;
+        return LlmJsonArray.parse(objectMapper, llmJsonResponse, "automated test files");
     }
 
     private String writeToDisk(String outputDir, String fileName, String content) {

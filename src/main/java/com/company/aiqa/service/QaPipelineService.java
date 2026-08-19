@@ -9,6 +9,7 @@ import com.company.aiqa.git.GitDiffService;
 import com.company.aiqa.git.MergeHistoryService;
 import com.company.aiqa.git.RepoSyncService;
 import com.company.aiqa.impact.ImpactAnalysisService;
+import com.company.aiqa.llm.LlmKeyStore;
 import com.company.aiqa.model.*;
 import com.company.aiqa.parser.SourceParsingService;
 import com.company.aiqa.project.ProjectShapeAnalyzer;
@@ -53,6 +54,7 @@ public class QaPipelineService {
     private final ManualTestCaseGenerator manualTestCaseGenerator;
     private final PipelineProperties pipelineProperties;
     private final ProjectShapeAnalyzer projectShapeAnalyzer;
+    private final LlmKeyStore llmKeyStore;
 
     public QaPipelineService(GitDiffService gitDiffService,
                               RepoSyncService repoSyncService,
@@ -65,7 +67,8 @@ public class QaPipelineService {
                               TestCaseGenerator testCaseGenerator,
                               ManualTestCaseGenerator manualTestCaseGenerator,
                               PipelineProperties pipelineProperties,
-                              ProjectShapeAnalyzer projectShapeAnalyzer) {
+                              ProjectShapeAnalyzer projectShapeAnalyzer,
+                              LlmKeyStore llmKeyStore) {
         this.gitDiffService = gitDiffService;
         this.repoSyncService = repoSyncService;
         this.mergeHistoryService = mergeHistoryService;
@@ -78,12 +81,23 @@ public class QaPipelineService {
         this.manualTestCaseGenerator = manualTestCaseGenerator;
         this.pipelineProperties = pipelineProperties;
         this.projectShapeAnalyzer = projectShapeAnalyzer;
+        this.llmKeyStore = llmKeyStore;
     }
 
     private static final ImpactResult EMPTY_IMPACT =
             new ImpactResult(java.util.Set.of(), java.util.Set.of(), 0, java.util.Set.of(), java.util.Set.of());
 
     public GenerateTestsResponse run(GenerateTestsRequest request) {
+        requireLlmCredentials(request.getLlmKeys());
+
+        // 0. Make sure we have a checkout to diff. A caller may name a local
+        // path or a remote URL; with a URL the clone is reused when it already
+        // exists and fetched rather than re-cloned, so asking for several
+        // commits of the same repo costs one clone. Mutating the request here
+        // means every later step - diffing, parsing, reading collaborator
+        // source - sees a real path without knowing where it came from.
+        request.setRepoPath(resolveRepoCheckout(request));
+
         // 1. Git Diff
         List<ChangedFile> changedFiles = gitDiffService.computeChangedSourceFiles(
                 request.getRepoPath(), request.getBaseRef(), request.getHeadRef());
@@ -192,8 +206,26 @@ public class QaPipelineService {
         // category; on a RESUME (see runFromBranch/backfill) the caller passes
         // only the categories a previous attempt left missing, so completed
         // work is never regenerated.
+        // The rules a tester needs are usually one call away from the diff: a
+        // service that refuses to act until a parent record exists, a validator,
+        // a default. Impact analysis knows which classes those are but carries
+        // only their names, so without this the model has never seen the code
+        // that decides how the feature behaves. Computed once - it is identical
+        // for every category and batch.
+        final String relatedImplementation = changedFiles.isEmpty()
+                ? ""
+                : collectRelatedImplementation(request, impact, changedFiles);
+
         List<String> expectedCategories = resolveCategories(request, !configFiles.isEmpty());
         List<String> generatedCategories = new ArrayList<>();
+        // Categories whose calls all succeeded but that produced nothing. This
+        // is a normal outcome, not a failure: the prompts tell the model to
+        // return nothing rather than pad a category that doesn't apply to the
+        // change (SECURITY on a diff with no auth surface is the common case).
+        // Tracked separately purely so the summary can say so - a run that
+        // reports 100% coverage and 0 SECURITY cases otherwise looks like
+        // something quietly went wrong.
+        List<String> emptyCategories = new ArrayList<>();
 
         // 4 & 5. Send Context to LLM -> Generate Test Cases (business and/or automated)
         if (mode == TestCaseMode.MANUAL || mode == TestCaseMode.BOTH) {
@@ -240,6 +272,7 @@ public class QaPipelineService {
                 // is split, since that's what actually drives prompt size.
                 List<List<ChangedFile>> batches = partition(changedFiles, batchSize);
                 boolean categoryFullyCovered = true;
+                int casesBeforeGroup = merged.size();
 
                 for (int i = 0; i < batches.size(); i++) {
                     List<ChangedFile> batch = batches.get(i);
@@ -255,14 +288,15 @@ public class QaPipelineService {
                             batch,
                             categorySystemPrompt,
                             files -> promptBuilder.buildBusinessTestCaseUserPrompt(
-                                    files, classesFor(files, classes), impact, existing),
+                                    files, classesFor(files, classes), impact, existing,
+                                    relatedImplementation),
                             response -> {
                                 List<ManualTestCase> cases = manualTestCaseGenerator.parse(
                                         response, capitalizedCategory, idCursor[0], groupForParser);
                                 idCursor[0] += (int) cases.stream().filter(tc -> "NEW".equals(tc.action())).count();
                                 merged.addAll(cases);
                             },
-                            request.getLlmKeys(),
+                            llmKeyStore.resolveFor(request.getLlmKeys()),
                             "Categories %s batch %d/%d".formatted(group, i + 1, batches.size()));
 
                     if (!covered) {
@@ -275,6 +309,11 @@ public class QaPipelineService {
                 // resume re-runs the group's categories together.
                 if (categoryFullyCovered) {
                     generatedCategories.addAll(group);
+                    if (merged.size() == casesBeforeGroup) {
+                        emptyCategories.addAll(group);
+                        log.info("Categories {} produced no test cases - the model was asked for them and "
+                                + "answered that none apply to this change. Counted as covered, not retried.", group);
+                    }
                 } else {
                     failedCategories.addAll(group);
                 }
@@ -303,6 +342,7 @@ public class QaPipelineService {
                 // .yml files sent all of them in a single prompt.
                 List<List<ChangedFile>> configBatches = partition(configFiles, batchSize);
                 boolean configFullyCovered = true;
+                int casesBeforeConfig = merged.size();
 
                 for (int i = 0; i < configBatches.size(); i++) {
                     final List<ManualTestCase> existingConfig = existingConfigCases;
@@ -316,7 +356,7 @@ public class QaPipelineService {
                                 idCursor[0] += (int) cases.stream().filter(tc -> "NEW".equals(tc.action())).count();
                                 merged.addAll(cases);
                             },
-                            request.getLlmKeys(),
+                            llmKeyStore.resolveFor(request.getLlmKeys()),
                             "Configuration batch %d/%d".formatted(i + 1, configBatches.size()));
 
                     if (!covered) {
@@ -326,6 +366,9 @@ public class QaPipelineService {
 
                 if (configFullyCovered) {
                     generatedCategories.add(CONFIG_CATEGORY);
+                    if (merged.size() == casesBeforeConfig) {
+                        emptyCategories.add(CONFIG_CATEGORY);
+                    }
                 } else {
                     failedCategories.add(CONFIG_CATEGORY);
                 }
@@ -359,7 +402,7 @@ public class QaPipelineService {
                         codeSystemPrompt,
                         files -> promptBuilder.buildUserPrompt(files, classesFor(files, classes), impact),
                         response -> allGenerated.addAll(testCaseGenerator.generateAndWrite(response, runOutputDir)),
-                        request.getLlmKeys(),
+                        llmKeyStore.resolveFor(request.getLlmKeys()),
                         "Automated batch %d/%d".formatted(i + 1, codeBatches.size()));
 
                 if (!covered) {
@@ -393,6 +436,11 @@ public class QaPipelineService {
         }
         if (automatedFailure != null) {
             summary += " WARNING: automated test generation failed: " + automatedFailure;
+        }
+        if (!emptyCategories.isEmpty()) {
+            summary += " %d categor%s applicable to this change and correctly returned no test cases: %s."
+                    .formatted(emptyCategories.size(), emptyCategories.size() == 1 ? "y was not" : "ies were not",
+                            emptyCategories);
         }
 
         List<String> missingCategories = expectedCategories.stream()
@@ -483,7 +531,13 @@ public class QaPipelineService {
                         + "rather than dropping these diffs.", label, files.size());
                 return splitAndRecurse(files, systemPrompt, userPromptBuilder, responseHandler, keys, label);
             }
-            log.error("{}: LLM call failed for {} file(s): {}", label, files.size(), e.getMessage(), e);
+            // One line per failed batch, not a stack trace each time: a run with
+            // no working provider fails identically for every batch and category,
+            // and printing the full trace 12 times buried the single fact that
+            // mattered under ~2,000 lines of Tomcat frames. The stack adds nothing
+            // here anyway - the path is always the same - so it goes to debug.
+            log.error("{}: LLM call failed for {} file(s): {}", label, files.size(), com.company.aiqa.ai.router.ProviderLogs.compactFailure(e));
+            log.debug("{}: full failure detail", label, e);
             return false;
         }
     }
@@ -576,6 +630,7 @@ public class QaPipelineService {
      * once /generate-tests-from-branch/backfill has covered everything older.
      */
     public GenerateTestsResponse runFromBranch(GenerateTestsFromBranchRequest request) {
+        requireLlmCredentials(request.getLlmKeys());
         CredentialScheme scheme = resolveScheme(request.getProvider());
         String localPath = repoSyncService.syncRepo(request.getRepoUrl(), request.getAccessToken(), scheme);
 
@@ -683,6 +738,7 @@ public class QaPipelineService {
      * failure so a subsequent backfill call will retry just that merge.
      */
     public GenerateTestsBackfillResponse runBackfillAndCatchUp(GenerateTestsFromBranchRequest request) {
+        requireLlmCredentials(request.getLlmKeys());
         CredentialScheme scheme = resolveScheme(request.getProvider());
         String localPath = repoSyncService.syncRepo(request.getRepoUrl(), request.getAccessToken(), scheme);
 
@@ -759,6 +815,135 @@ public class QaPipelineService {
      * scheme or proxy prefix the caller reached it through, and guessing wrong
      * produces a URL that looks authoritative and doesn't work.
      */
+    /**
+     * Character budget for the collaborator source fed to the manual prompt.
+     * Large enough to carry the services a change actually reaches, small enough
+     * that it cannot crowd out the diff or the existing test cases.
+     */
+    private static final int MAX_RELATED_SOURCE_CHARS = 50_000;
+
+    /**
+     * Source of the classes the change reaches into but the diff does not show.
+     *
+     * <p>Impact analysis already knows WHICH classes a change touches, but it
+     * carries only their names, so the prompt has never seen the code that
+     * decides how the feature behaves. That code is where preconditions live -
+     * a service that refuses to act until a parent record exists, a validator
+     * that rejects a value, a default filled in when a field is omitted. Without
+     * it the model writes cases whose setup the system can never satisfy, and
+     * expected results that contradict what the code plainly does.
+     *
+     * <p>Deliberately driven by the impact graph rather than by any feature or
+     * project: whatever a commit touches, its collaborators come along.
+     * Files already present in the diff are skipped - the model has those.
+     */
+    /**
+     * The local checkout to work from: the caller's path when given, otherwise
+     * a clone of repoUrl.
+     *
+     * <p>repoPath wins when both are set - naming an exact directory is an
+     * explicit instruction, and silently cloning over it would be surprising.
+     * With only a URL, RepoSyncService reuses any existing clone and fetches
+     * it, so this is cheap to call repeatedly for different commits of one
+     * repo.
+     */
+    /**
+     * Refuses to start when there is no model to call.
+     *
+     * <p>Checked before any git or LLM work: without this the run clones,
+     * diffs, parses and builds every prompt, then fails on the first call with
+     * a provider-level error that reads like an outage rather than like
+     * "nobody configured a key". Failing here says exactly what to do.
+     *
+     * <p>Credentials may come from three places, and any one is enough: keys on
+     * the request, keys set via POST /api/v1/llm-keys, or server configuration.
+     */
+    private void requireLlmCredentials(LlmKeys requestKeys) {
+        boolean onRequest = requestKeys != null && !requestKeys.isEmpty();
+        if (onRequest || llmKeyStore.isConfigured() || llmClient.hasServerSideCredentials()) {
+            return;
+        }
+        throw new IllegalStateException(
+                "No LLM credentials are configured, so there is no model to generate with. "
+                        + "Configure them once with POST /api/v1/llm-keys, e.g. "
+                        + "{\"gemini\": \"...\", \"mistral\": \"...\"} - after that no generation "
+                        + "request needs an \"llmKeys\" field. GET /api/v1/llm-keys lists every "
+                        + "provider this build supports.");
+    }
+
+    private String resolveRepoCheckout(GenerateTestsRequest request) {
+        String repoPath = request.getRepoPath();
+        if (repoPath != null && !repoPath.isBlank()) {
+            return repoPath;
+        }
+        String repoUrl = request.getRepoUrl();
+        if (repoUrl == null || repoUrl.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Supply either \"repoPath\" (a checkout on this machine) or \"repoUrl\" "
+                            + "(cloned on demand) so there is something to diff.");
+        }
+        String localPath = repoSyncService.syncRepo(
+                repoUrl, request.getAccessToken(), resolveScheme(request.getProvider()));
+        log.info("Resolved repoUrl {} to local checkout {}", repoUrl, localPath);
+        return localPath;
+    }
+
+    private String collectRelatedImplementation(GenerateTestsRequest request,
+                                                ImpactResult impact,
+                                                List<ChangedFile> changedFiles) {
+        java.util.Set<String> alreadyShown = changedFiles.stream()
+                .map(ChangedFile::path)
+                .collect(java.util.stream.Collectors.toSet());
+
+        java.util.Set<String> wantedSimpleNames = new java.util.LinkedHashSet<>();
+        impact.impactedClasses().forEach(name ->
+                wantedSimpleNames.add(name.substring(name.lastIndexOf('.') + 1)));
+        impact.directlyChangedClasses().forEach(name ->
+                wantedSimpleNames.add(name.substring(name.lastIndexOf('.') + 1)));
+        if (wantedSimpleNames.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int included = 0;
+        try (GitDiffService.SourceAtCommit source =
+                     gitDiffService.openSourceAtCommit(request.getRepoPath(), request.getHeadRef())) {
+            for (String path : source.paths()) {
+                if (alreadyShown.contains(path) || !SourceLanguage.isSupported(path)) {
+                    continue;
+                }
+                String fileName = path.substring(path.lastIndexOf('/') + 1);
+                String simpleName = fileName.contains(".")
+                        ? fileName.substring(0, fileName.lastIndexOf('.'))
+                        : fileName;
+                if (!wantedSimpleNames.contains(simpleName)) {
+                    continue;
+                }
+                String body = source.read(path);
+                if (body == null || body.isBlank()) {
+                    continue;
+                }
+                if (sb.length() + body.length() > MAX_RELATED_SOURCE_CHARS) {
+                    // Stop at a file boundary: half a class can read as though a
+                    // check simply is not there, which is worse than omitting it.
+                    break;
+                }
+                sb.append("### ").append(path).append("\n```java\n")
+                        .append(body).append("\n```\n\n");
+                included++;
+            }
+        } catch (Exception e) {
+            // Context is an enhancement, never a reason to fail generation.
+            log.warn("Could not read related implementation ({}), generating from the diff alone.",
+                    e.getMessage());
+            return "";
+        }
+
+        log.info("Related implementation for the prompt: {} collaborator file(s), {} chars.",
+                included, sb.length());
+        return sb.toString();
+    }
+
     private String downloadUrlFor(String projectName, String commitRef, String csvPath) {
         if (csvPath == null || projectName == null || projectName.isBlank()) {
             return null;

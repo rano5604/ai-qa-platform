@@ -41,7 +41,21 @@ public class ProviderCooldownRegistry {
 
     private static final Logger log = LoggerFactory.getLogger(ProviderCooldownRegistry.class);
 
+    /**
+     * Only for a quota that really is exhausted for the day - see
+     * {@link #isDailyQuota}. This used to apply to EVERY 429, which turned a
+     * per-minute rate limit that clears in 30 seconds into an hour with no
+     * provider at all: three consecutive mms runs reported "cooling down until"
+     * for a model that had been ready again within a minute of the first one.
+     */
     private static final Duration QUOTA_COOLDOWN = Duration.ofMinutes(60);
+
+    /**
+     * A rate limit that names no delay. Short, because the common case is a
+     * per-minute window - and a provider benched slightly too long costs a run,
+     * while one benched slightly too briefly costs a single wasted request.
+     */
+    private static final Duration RATE_LIMIT_COOLDOWN = Duration.ofMinutes(2);
     private static final Duration ERROR_COOLDOWN = Duration.ofMinutes(5);
 
     /** provider name -> instant it becomes eligible again. */
@@ -85,10 +99,32 @@ public class ProviderCooldownRegistry {
             return;
         }
 
+        // A wrong model id or a rejected key fails identically on every call,
+        // for as long as the configuration says so. Benching it replaces the
+        // one message that names the problem - "Model does not exist or you do
+        // not have access to it" - with "cooling down until ...", so the
+        // operator sees a temporary-looking symptom instead of the sentence
+        // telling them exactly what to change. Cost of not benching: one fast
+        // 404 per call until it's fixed.
+        if (isConfigurationFailure(failure)) {
+            log.warn("Model '{}' is misconfigured, not benched: {}. Fix the model id or key - a cooldown would "
+                    + "only hide this behind 'cooling down' on every later run.",
+                    provider, ProviderLogs.oneLine(collectMessages(failure)));
+            return;
+        }
+
         boolean exhausted = isQuotaFailure(failure);
-        Duration cooldown = exhausted
-                ? retryAfter(failure).orElse(QUOTA_COOLDOWN)
-                : ERROR_COOLDOWN;
+        Duration cooldown;
+        if (!exhausted) {
+            cooldown = ERROR_COOLDOWN;
+        } else {
+            // Providers usually say how long to wait - a Retry-After header,
+            // Gemini's "retryDelay": "31s", Groq's "try again in 7.5s". Taking
+            // them at their word beats any constant we could pick.
+            cooldown = retryAfter(failure)
+                    .or(() -> statedDelay(failure))
+                    .orElse(isDailyQuota(failure) ? QUOTA_COOLDOWN : RATE_LIMIT_COOLDOWN);
+        }
 
         Instant until = Instant.now().plus(cooldown);
         benchedUntil.put(key(provider), until);
@@ -135,6 +171,71 @@ public class ProviderCooldownRegistry {
     }
 
     /** Recognises the quota/rate-limit signals used across the major providers. */
+    /**
+     * A failure that will repeat identically until someone edits configuration:
+     * a model id the provider doesn't have, or a credential it won't accept.
+     *
+     * <p>Distinct from a quota failure, which resolves on its own with time,
+     * and from a transient one, which may resolve on the next call. Neither
+     * cooldown helps here - only a change to the config does.
+     */
+    static boolean isConfigurationFailure(Throwable failure) {
+        String text = messagesOf(failure).toLowerCase(Locale.ROOT);
+        // Checked before the credential words below, since "model_not_found"
+        // is the more specific and more common misconfiguration.
+        if (text.contains("model_not_found")
+                || text.contains("model does not exist")
+                || text.contains("does not exist or you do not have access")
+                || text.contains("unknown model")
+                || text.contains("model not found")) {
+            return true;
+        }
+        return text.contains("api key not valid")
+                || text.contains("invalid api key")
+                || text.contains("incorrect api key")
+                || text.contains("api_key_invalid")
+                || text.contains("invalid_api_key");
+    }
+
+    /** "retryDelay": "31s" (Gemini) and "try again in 7.5s" / "in 1m30s" (OpenAI-compatible). */
+    private static final java.util.regex.Pattern STATED_DELAY = java.util.regex.Pattern.compile(
+            "(?:retrydelay\"?\\s*[:=]\\s*\"?|try again in\\s+)(?:(\\d+)m)?(\\d+(?:\\.\\d+)?)s");
+
+    /**
+     * The wait the provider itself named in the response body, as opposed to
+     * the Retry-After header - most of them put it in one place or the other,
+     * rarely both.
+     */
+    private java.util.Optional<Duration> statedDelay(Throwable failure) {
+        java.util.regex.Matcher m = STATED_DELAY.matcher(collectMessages(failure).toLowerCase(Locale.ROOT));
+        if (!m.find()) {
+            return java.util.Optional.empty();
+        }
+        try {
+            long minutes = m.group(1) == null ? 0 : Long.parseLong(m.group(1));
+            double seconds = Double.parseDouble(m.group(2));
+            // Round up: waiting a fraction of a second too little just fails again.
+            return java.util.Optional.of(Duration.ofMinutes(minutes).plusSeconds((long) Math.ceil(seconds)));
+        } catch (NumberFormatException e) {
+            return java.util.Optional.empty();
+        }
+    }
+
+    /**
+     * Whether the quota is gone for the day rather than for this minute. Only
+     * this deserves the hour-long bench; a per-minute window clears while a
+     * single batch is still running.
+     */
+    private boolean isDailyQuota(Throwable failure) {
+        String text = collectMessages(failure).toLowerCase(Locale.ROOT);
+        return text.contains("per day")
+                || text.contains("perday")
+                || text.contains("daily")
+                || text.contains("insufficient_quota")
+                || text.contains("exceeded your current quota")
+                || text.contains("billing");
+    }
+
     private boolean isQuotaFailure(Throwable failure) {
         String message = collectMessages(failure).toLowerCase(Locale.ROOT);
         return message.contains("429")

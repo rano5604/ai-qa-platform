@@ -1,5 +1,6 @@
 package com.company.aiqa.controller;
 
+import com.company.aiqa.error.NotFoundException;
 import com.company.aiqa.git.MergeHistoryService;
 import com.company.aiqa.model.ExecuteAutomationRequest;
 import com.company.aiqa.model.ExecuteAutomationResponse;
@@ -64,6 +65,13 @@ public class QaController {
      * Supply "llmKeys" to choose which models run this request. A model is
      * used only if its key is present; anything left out is inactive and is
      * never called (no wasted attempt, no "not configured" noise).
+     *
+     * <p>Identify the repo by EITHER "repoPath" (a checkout already on this
+     * machine) OR "repoUrl" (cloned on demand; an existing clone is reused and
+     * fetched). With "repoUrl" a single call can target any commit of any repo,
+     * with no clone step of your own. For one specific commit, set "headRef" to
+     * it and "baseRef" to its parent - or to the literal "EMPTY_TREE" when it is
+     * the repository's first commit, which has no parent.
      *
      * Example:
      * POST /api/v1/generate-tests
@@ -291,11 +299,42 @@ public class QaController {
     }
 
     /**
-     * Turns a bad projectName/commitHash - or one with nothing generated yet -
-     * into a 404 with the reason, rather than a 500 and a stack trace.
+     * Something the caller asked for isn't there - a commit with nothing
+     * generated for it yet, a script file that doesn't exist - answered as 404
+     * with the reason rather than a 500 and a stack trace.
+     */
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<String> handleNotFound(NotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    /**
+     * A malformed or contradictory request - a missing repoPath/repoUrl, an
+     * unresolvable ref, an unknown provider - answered as 400.
+     *
+     * <p>These used to share the 404 handler above, so "supply either repoPath
+     * or repoUrl" came back as Not Found and read like the endpoint itself was
+     * wrong. 404 now means only what it says; see {@link NotFoundException}.
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleNotFound(IllegalArgumentException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    public ResponseEntity<String> handleBadRequest(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    /**
+     * A request the server cannot act on yet - no LLM credentials configured,
+     * most often - answered as 400 WITH the explanation.
+     *
+     * <p>Without this it surfaced as a bare 500 "Internal Server Error" and no
+     * message at all, which reads like the platform crashed rather than like a
+     * setup step nobody has done. The body carries the instruction, since that
+     * is the only place a caller will see it.
+     */
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<java.util.Map<String, Object>> handleNotReady(IllegalStateException e) {
+        java.util.Map<String, Object> body = new java.util.LinkedHashMap<>();
+        body.put("error", e.getMessage());
+        body.put("configureAt", "POST /api/v1/llm-keys");
+        return ResponseEntity.badRequest().body(body);
     }
 }

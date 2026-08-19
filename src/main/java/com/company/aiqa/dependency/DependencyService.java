@@ -1,10 +1,10 @@
 package com.company.aiqa.dependency;
 
+import com.company.aiqa.parser.JavaSources;
 import com.company.aiqa.model.ClassInfo;
 import com.company.aiqa.model.DependencyGraph;
 import com.company.aiqa.model.MethodInfo;
 import com.company.aiqa.model.SourceLanguage;
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
@@ -100,7 +100,7 @@ public class DependencyService {
     private void indexJavaFile(Path path, List<String> changedSimpleNames, DependencyGraph graph) {
         try {
             String content = Files.readString(path);
-            CompilationUnit cu = StaticJavaParser.parse(content);
+            CompilationUnit cu = JavaSources.parse(content);
 
             for (TypeDeclaration<?> type : cu.getTypes()) {
                 String owner = type.getNameAsString();
@@ -209,7 +209,7 @@ public class DependencyService {
                                               DependencyGraph graph) {
         try {
             String content = Files.readString(path);
-            CompilationUnit cu = StaticJavaParser.parse(content);
+            CompilationUnit cu = JavaSources.parse(content);
 
             for (TypeDeclaration<?> type : cu.getTypes()) {
                 String ownerClass = type.getNameAsString();

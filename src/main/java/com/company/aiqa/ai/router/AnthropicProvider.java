@@ -84,8 +84,7 @@ public class AnthropicProvider implements AiProvider {
             return text;
         } catch (RestClientResponseException e) {
             String responseBody = e.getResponseBodyAsString();
-            log.warn("anthropic HTTP {} (model={}) - body: {}", e.getStatusCode().value(), model,
-                    responseBody.isBlank() ? "[empty]" : responseBody);
+            log.warn("anthropic HTTP {} (model={}) - body: {}", e.getStatusCode().value(), model, ProviderLogs.oneLine(responseBody.isBlank() ? "[empty]" : responseBody));
             throw new IllegalStateException("anthropic HTTP %d: %s".formatted(
                     e.getStatusCode().value(), responseBody.isBlank() ? e.getMessage() : responseBody), e);
         }

@@ -2,6 +2,8 @@ package com.company.aiqa.model;
 
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.List;
+
 /**
  * Payload for POST /api/v1/generate-automation.
  *
@@ -74,6 +76,17 @@ public class GenerateAutomationRequest {
     /** Per-request LLM credentials - same semantics as everywhere else, see LlmKeys. */
     private LlmKeys llmKeys;
 
+    /**
+     * OpenAPI document URLs, which skip discovery entirely.
+     *
+     * <p>Discovery reads the repo's own configuration and is right for a
+     * service that follows the usual conventions. This is for the ones that do
+     * not: a document served from a gateway, a spec behind a different host, or
+     * a component whose config lives somewhere the scan does not look. Supplying
+     * one URL replaces ALL discovery, not just the component it belongs to.
+     */
+    private List<String> openApiUrls;
+
     public String getRepoUrl() { return repoUrl; }
     public void setRepoUrl(String repoUrl) { this.repoUrl = repoUrl; }
 
@@ -100,6 +113,9 @@ public class GenerateAutomationRequest {
 
     public String getProjectName() { return projectName; }
     public void setProjectName(String projectName) { this.projectName = projectName; }
+
+    public List<String> getOpenApiUrls() { return openApiUrls; }
+    public void setOpenApiUrls(List<String> openApiUrls) { this.openApiUrls = openApiUrls; }
 
     public LlmKeys getLlmKeys() { return llmKeys; }
     public void setLlmKeys(LlmKeys llmKeys) { this.llmKeys = llmKeys; }

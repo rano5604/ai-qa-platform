@@ -20,6 +20,23 @@ public interface AiProvider {
     /** Cheap check - is this provider configured enough to even try (e.g. has an API key)? */
     boolean available();
 
+    /**
+     * True when this provider needs a credential to work.
+     *
+     * <p>Separates "has a key" from "needs no key": a local runtime such as
+     * Ollama always reports {@link #available()} true because it takes no API
+     * key, yet it cannot tell whether anything is actually listening. Counting
+     * that as "credentials are configured" made the platform accept a run with
+     * no usable model at all, produce zero test cases, and report FAILED with a
+     * summary that never mentioned the real cause. Keyless providers therefore
+     * do not satisfy the credential check on their own - configure one
+     * explicitly (POST /api/v1/llm-keys with, say, {"ollama": "local"}) to say
+     * you really do have it running.
+     */
+    default boolean requiresCredential() {
+        return true;
+    }
+
     /** Model id this provider is currently configured to call - for logging/metadata only. */
     String model();
 

@@ -25,4 +25,19 @@ public interface LlmClient {
     default String complete(String systemPrompt, String userPrompt, LlmKeys keys) {
         return complete(systemPrompt, userPrompt);
     }
+
+    /**
+     * True when this client can call a model using credentials the SERVER
+     * already holds - configuration or environment - with nothing supplied per
+     * request.
+     *
+     * <p>Lets the pipeline refuse a run up front, with a message explaining how
+     * to configure keys, instead of building every prompt and discovering there
+     * was never anything to send them to. Defaults to true: the single-provider
+     * implementations are constructed from server config, so if one exists it
+     * has credentials.
+     */
+    default boolean hasServerSideCredentials() {
+        return true;
+    }
 }

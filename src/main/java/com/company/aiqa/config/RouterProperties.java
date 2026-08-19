@@ -3,7 +3,9 @@ package com.company.aiqa.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Binds the "aiqa.router" section of application.yml - the Java
@@ -48,6 +50,21 @@ public class RouterProperties {
     private String ollamaHost = "http://localhost:11434";
     private String ollamaModel = "qwen2.5-coder:7b";
 
+    /**
+     * Credentials for any other provider in LlmProviderCatalog, keyed by its
+     * catalog name - {@code aiqa.router.keys.cerebras: ${CEREBRAS_API_KEY:}}.
+     *
+     * <p>The five fields above predate the catalog and stay for compatibility;
+     * everything else goes here rather than growing two more fields per
+     * provider. Without this a provider the catalog knows perfectly well could
+     * only be reached by sending its key on every request, because the chain
+     * had nowhere to read one from.
+     */
+    private Map<String, String> keys = new LinkedHashMap<>();
+
+    /** Model id per provider, same keying - {@code aiqa.router.models.cerebras: llama-3.3-70b}. Falls back to the catalog default. */
+    private Map<String, String> models = new LinkedHashMap<>();
+
     public List<String> getChain() { return chain; }
     public void setChain(List<String> chain) { this.chain = chain; }
 
@@ -88,5 +105,11 @@ public class RouterProperties {
     public void setOllamaHost(String ollamaHost) { this.ollamaHost = ollamaHost; }
 
     public String getOllamaModel() { return ollamaModel; }
+
+    public Map<String, String> getKeys() { return keys; }
+    public void setKeys(Map<String, String> keys) { this.keys = keys == null ? new LinkedHashMap<>() : keys; }
+
+    public Map<String, String> getModels() { return models; }
+    public void setModels(Map<String, String> models) { this.models = models == null ? new LinkedHashMap<>() : models; }
     public void setOllamaModel(String ollamaModel) { this.ollamaModel = ollamaModel; }
 }

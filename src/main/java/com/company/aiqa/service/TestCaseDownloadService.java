@@ -1,6 +1,7 @@
 package com.company.aiqa.service;
 
 import com.company.aiqa.config.PipelineProperties;
+import com.company.aiqa.error.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -76,7 +77,7 @@ public class TestCaseDownloadService {
         }
 
         if (!Files.isRegularFile(resolved)) {
-            throw new IllegalArgumentException(
+            throw new NotFoundException(
                     "No generated test cases found at " + baseDir.relativize(resolved)
                             + ". Run test generation for this project/commit first.");
         }
