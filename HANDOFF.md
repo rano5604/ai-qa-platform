@@ -1,13 +1,13 @@
 # AI-QA Platform — handoff
 
-Written 2026-08-18, updated 2026-08-19. Everything here is **uncommitted work on branch
-`feat/automation-generation-and-execution`** (last commit `69fc609`).
+Written 2026-08-18, updated through 2026-08-25. Everything here is **uncommitted work
+on branch `feat/automation-generation-and-execution`** (last real commit `3661153`).
 
 Delete this file once the work is merged — it exists to carry context into a new
 chat, not to live in the repo.
 
 ```bash
-mvn -Dtest='!AiQaPlatformApplicationTests' test    # 101 unit tests, all passing
+mvn -Dtest='!AiQaPlatformApplicationTests' test    # 155 unit tests, all passing
 ```
 
 The Spring Boot app runs on `:8080`. **Anything you change needs a restart
@@ -449,6 +449,39 @@ the direct call. `aiqa.report.replay.enabled=false` removes the endpoint.
 
 ---
 
+### 4.3 Downloading the execution report itself
+
+`execute-automation` writes `aiqa-report.html` to the SERVER's disk and, until
+now, only ever named that local path in the response summary - no use to a
+caller on another machine, the exact problem `GET /api/v1/test-cases/download`
+already solved for the manual-case CSV. Same shape, second file type:
+
+- `ExecutionReportDownloadService` mirrors `TestCaseDownloadService` -
+  resolution delegated to `GeneratedRunLocator` so it looks in exactly the
+  folder execution wrote to (`<runOutputDir>/test-report/aiqa-report.html`),
+  the same path-traversal guard on `projectName` (normalize, then check the
+  resolved path still starts under the output dir - `resolveProjectName`'s
+  fallback regex keeps `.` and `-`, so a bare `..` survives it otherwise).
+- `AutomationExecutionService.REPORT_DIR_NAME` went from `private` to `public`
+  so both classes read the same constant instead of a second hardcoded
+  `"test-report"` that could drift from it - the same reasoning
+  `GeneratedRunLocator`'s own javadoc gives for sharing folder arithmetic
+  between generation and execution.
+- Unlike the CSV endpoint, `commitHash` is **required** - a report is
+  intrinsically per-run, there is no project-wide rollup to fall back to.
+- `ExecuteAutomationResponse` gained `executionReportDownloadUrl`, built the
+  same way `manualTestCasesDownloadUrl` is - so a caller copies a ready-made
+  relative URL instead of assembling `/api/v1/execution-report/download` by
+  hand.
+
+`GET /api/v1/execution-report/download?projectName=mms&commitHash=<sha>` was
+run live against the real mms report already on disk - 200, correct
+`Content-Disposition` filename, and the downloaded bytes diffed byte-identical
+against the source file. 400 on a missing `commitHash`, 404 naming
+`execute-automation` when none has run yet, 400 `"Invalid projectName."` on a
+`../../etc` traversal attempt - all four checked against a live instance, not
+just the unit tests.
+
 ## 5. Providers and credentials
 
 Chain: `[gemini, cerebras, groq, mistral, github, ollama]`.
@@ -459,6 +492,50 @@ Chain: `[gemini, cerebras, groq, mistral, github, ollama]`.
 | cerebras | key authenticates; catalog default corrected to `llama3.3-70b` (no hyphen after "llama") — **confirm against your own account** |
 | groq | key valid, but `openai/gpt-oss-120b` on the on-demand tier **413s** on the automation prompt even with context trimmed |
 | mistral | **402** — needs a paid subscription |
+
+### 5.1 The silent fallback to a provider you have no key for
+
+On 2026-08-20 an mms backfill failed 16 times with *"No OpenAI API key
+configured"* while working Gemini, Groq and Mistral keys sat in the
+environment. The chain was never consulted, because `AiRouterService` did not
+exist. Three separate things had to be true, and each is now closed:
+
+- **`OpenAIService` carried `matchIfMissing = true`.** So an unresolvable
+  `aiqa.llm.provider` selected OpenAI rather than failing. The server had been
+  started from the IDE with **no `target/classes/application.yml` on the
+  classpath at all** - the classpath root was `target/classes`, which held only
+  `com/`. The flag is gone; the property now selects a bean or the application
+  does not start.
+- **Nothing in the logs said which client was wired.** `PipelineProperties`
+  hardcodes the same output dir, batch size and category list the yml sets, and
+  8080 is Spring's own default, so a run with *zero* configuration loaded
+  produced logs identical to a healthy one right up to the first LLM call. The
+  fault was found by reading the running process's classpath, not its output.
+  `LlmClientStartupReport` now logs the implementation, the property value and
+  whether credentials exist, on `ApplicationReadyEvent` - never a key or any
+  part of one.
+- **`hasServerSideCredentials()` defaults to `true`** on the interface, on the
+  reasoning that a single-provider bean built from server config must have
+  credentials. It is built from `aiqa.llm.provider` alone; the key is a separate
+  property and routinely empty. Answering true defeated
+  `QaPipelineService.requireLlmCredentials`, whose entire job is refusing a
+  keyless run before a prompt is built - so one clear refusal became one
+  identical error per category per batch. `OpenAIService` and `GeminiService`
+  now check the key.
+
+**The ordering is the part that nearly went wrong.** The check first lived in
+`LlmProperties.@PostConstruct`. Startup did fail - but Spring got there first,
+through `LlmClientStartupReport`'s own constructor, reporting *"No qualifying
+bean of type 'LlmClient' available"*: true, generic, and silent about whether
+the property was mistyped or the whole file was missing. A check that fires
+after the generic failure adds nothing. It is now a `BeanFactoryPostProcessor`
+(`AppConfig.llmProviderValidator`), which runs before any regular bean, and
+both messages were verified live by booting the real context with
+`-Dspring.config.name=absent-config` and with `-Daiqa.llm.provider=groq`.
+
+Note what this does **not** fix: `target/classes/application.yml` is build
+output. `mvn clean` deletes it and something removed it once already. The
+guarantee is only that a process in that state refuses to start and says why.
 
 Three routing fixes:
 
@@ -526,21 +603,224 @@ matters most — it carries repo write access.
   `AllProvidersFailedException` (whose first line is the constant header "All
   providers failed:" — reporting "the first line" told you nothing 34 times).
   Shared by the pipeline and automation generation.
+- **A commit that changes nothing still gets a folder.** `run` returned early
+  on an empty diff before it had computed an output path, so the commit
+  produced nothing on disk at all. The sequence numbers under
+  `generated-tests/<project>/` then had holes - QueueManagement was missing 4,
+  5, 19 and 20 - and a hole reads exactly like a commit that failed or was
+  never processed, which is a question someone has to go and answer from the
+  merge history. The output-path block now sits above that return, and the
+  folder is created holding `no-changes.txt`, whose entire content is the same
+  sentence the API response carries. `writeNoChangesNote` never throws: this
+  path has already succeeded with nothing to record, and turning it into a
+  failure would have every later backfill retry a merge that is complete.
 - **`.gitignore` added.** `target/` (106 files) and the `repo-workspace/` clones
   are out of the index — the clones were tracked as **gitlinks with no
   `.gitmodules`**, so their SHA changed on every fetch. `repo-workspace/merge-history/`
   stays tracked; it is the platform's own state. The removals are staged;
   `git reset` undoes them.
 - **API surface**: `POST/GET/DELETE /api/v1/llm-keys` (in-memory only, never
-  logged or returned), `GET /api/v1/test-cases/download`, `POST /api/v1/replay`,
+  logged or returned), `GET /api/v1/test-cases/download`,
+  `GET /api/v1/execution-report/download` (§4.3), `POST /api/v1/replay`,
   and `repoPath` is optional on `/generate-tests` — pass `repoUrl` and it clones
   on demand.
 
+### 6.4 Untangling "identify the project" from "reach the remote"
+
+Three endpoints took `repoUrl` for reasons that had stopped being true, and one
+question - "has this branch moved?" - had no endpoint at all.
+
+- **`/generate-automation` no longer takes `repoUrl`.** It never fetched
+  anything: the manual cases come from the commit's own CSV already on disk,
+  and the API surface comes from an existing local clone found by matching
+  project name - `resolveLocalRepo` already scanned `aiqa.git.workspace-dir`
+  by name, `repoUrl` was read only as a fallback way to compute that same
+  name. `projectName` is now `@NotBlank` on `GenerateAutomationRequest`, and
+  the field is gone rather than merely unused - checked empirically (a request
+  body with an unrecognized field does not 400 in this app, so a caller still
+  sending `repoUrl` is unaffected, same as `accessToken`/`provider` already
+  were).
+- **`/merge-history` and `/merge-history/incomplete` now take `projectName`,
+  not `repoUrl`.** Both only ever read local state - no clone, no fetch, no
+  credential - but `MergeHistoryService`'s storage key is `(repoUrl, branch)`,
+  built from the raw origin URL, not a project name. `GitDiffService`
+  gained `findOriginUrlForProject(workspaceDir, projectName)` - the reverse of
+  `resolveProjectName` - which scans local clones for the one whose derived
+  name matches and reads back its actual `origin` URL, the exact string the
+  storage key needs. Needs a clone to already exist, which it will for any
+  project merge history exists for at all. `resolveProjectName` was refactored
+  to share the same `readOriginUrl` JGit read rather than duplicate it.
+- **New: `POST /generate-tests-from-branch/check-new-commits`.** The one
+  operation in this family that legitimately still needs `repoUrl` and a
+  credential, because "is there anything new" is a question about the
+  *remote*, not local state. Runs the same `syncRepo` + merge walk
+  `runBackfillAndCatchUp` does, stopped before the first call to `run()` - so
+  it costs a clone/fetch but zero LLM calls, meant as a cheap check before
+  deciding whether a real backfill is worth running.
+
+All three were run against the real endpoints, not just unit tests, using a
+local throwaway repo as the "remote" (no network needed, same `syncRepo` code
+path either way): `check-new-commits` correctly reported both commits as new
+before any processing, `alreadyProcessed: 2, hasNewCommits: false` after a
+zero-cost backfill (both commits touched only a `.txt` file), and picked up a
+third commit added afterward without restarting anything. `/merge-history` and
+`/merge-history/incomplete` by `projectName` returned the same history a
+`repoUrl` lookup would have; an unknown project name gave a 404 naming the
+fix. `/generate-automation` 400s with no `projectName`, and a request still
+carrying `repoUrl` in its body proceeds unaffected.
+
 ---
+
+### 6.2 A category with no input is not a category you covered
+
+A backfill reported *"2 newly completed"* against a `generated-tests/mms/`
+holding **one** folder. Both of those merges are config-only, and three things
+compounded:
+
+- `partition(changedFiles, 40)` returns an empty list for an empty list, so the
+  per-batch loop never ran and `categoryFullyCovered` kept its initial `true`.
+  Four source-diff categories were credited **without a single LLM call**.
+- `expectedCategories` includes CONFIGURATION when config files changed, so that
+  loop credited CONFIGURATION too - while the dedicated config block below it,
+  whose call had genuinely failed, added CONFIGURATION to `failedCategories`.
+  One summary named the same category as both covered and failed, and
+  `missingCategories` came out empty: **SUCCESS at 100% with zero test cases**,
+  on a run whose only real call failed. `isProcessed` then skipped it forever.
+- The CSV write was gated on `!businessTestCases.isEmpty()`, so a commit that
+  generated nothing left no folder at all - indistinguishable from a commit the
+  backfill never touched.
+
+Not applicable is now a third outcome alongside generated and missing: a
+category with no batches is recorded in `notApplicableCategories`, excluded from
+the coverage denominator, and never retried. Both halves matter - crediting it
+inflates coverage, and merely refusing to credit it would strand the merge as
+permanently incomplete against files that do not exist. `coverageOf` is the one
+place this is decided, extracted so `ConfigOnlyMergeCoverageTest` can pin the
+real shapes.
+
+And every processed commit now leaves a folder. When no CSV is written the
+folder holds `no-test-cases.txt` carrying the run summary verbatim, so the
+folder and the API response can never disagree. One filename for all of the
+reasons - nothing changed, every category failed, the model correctly had
+nothing to say - because the rule a reader needs is "a commit folder with no CSV
+has a note saying why", and that only works with one name to look for.
+
+Four merges were already stuck SUCCESS-with-nothing when this was found (mms
+`0dfaf7fe`, `4c8ad09e`; FoodFrenzy `9e66910c`, `4242dc7f`). Their history entries
+were deleted so a backfill re-attempts them; the fix does not retroactively
+unstick anything, because `isProcessed` never looks at whether output exists.
+
+### 6.1 What a resume must not destroy
+
+A backfill of the mms initial commit turned 34 manual cases into 5. The
+mechanism is worth stating plainly because two of the three bugs behind it read
+as reasonable code.
+
+**The write replaced instead of merging.** A resume regenerates only the
+categories that failed last time, and the per-commit CSV was written with
+`writeCsv(businessTestCases, ...)` - this run's output, over the whole file. For
+a full run that is correct. For a partial one it discards everything the earlier
+run produced for categories it never touched, and the automation pass reads
+exactly that file. `writeCsvPreservingOtherCategories` now keeps what the resume
+did not regenerate.
+
+Merging on test case id is not available: `idCursor` restarts at TC-001 on every
+run, so the resume's TC-001..TC-005 are different cases from the existing
+TC-001..TC-005 and matching on id overwrites the wrong rows. **The category is
+what a resume replaces, so the category is what the merge keys on.** Surviving
+cases keep their ids - anyone may have referenced them - and the fresh ones are
+renumbered past the highest survivor, because duplicate ids in this file are
+worse than renumbered ones: the automation pass names its test methods from them.
+
+**The summary described the damage as something else.** It said *"2 categories
+failed and produced no test cases: [NEGATIVE, BOUNDARY]"* in a response whose
+`businessTestCases` field held five Negative cases. Both halves came from the
+same `categoryFullyCovered` flag, which is all-or-nothing across file batches:
+one failed batch marks the group as failed, while `merged` keeps the cases the
+other batches returned. Failing and producing nothing are now reported as the
+different things they are, and `MergeStatus.FAILED` is reserved for a run that
+produced nothing at all - which matters, because `MergeHistoryService` preserves
+a FAILED status verbatim and only recomputes a PARTIAL one from accumulated
+progress.
+
+**Splitting could not fix the underlying failure.** The root commit is 126 files
+and 113 classes, and `generateWithSplitting` halves the file list on a too-large
+rejection - but the collaborator source rides along in full on every call, so the
+prompt fails identically at 40 files and at 1. Same lesson as §5's automation
+note, in the other pipeline. When splitting bottoms out at one file,
+`shrinkContext` now halves the shared implementation context on a line boundary,
+drops it below 4k rather than leaving a fragment, and shares the reduced size
+with every later call in the run.
+
+None of this makes the root commit generate under an 8000 TPM ceiling - see
+§8. It stops the run from destroying the previous run's work on the way to
+failing.
+
+### 6.3 A direct /generate-tests call didn't know a folder already existed
+
+Backfill and `/generate-tests-from-branch` have always resumed correctly:
+`buildInnerRequest` looks the merge up in history and sets `onlyCategories` to
+just what's missing, which routes the write through
+`writeCsvPreservingOtherCategories` instead of a full replace. A raw
+`POST /generate-tests` never went through that lookup - it computed its output
+folder as `<seq>.<hash>` from whatever `commitSequence` the caller passed (or
+bare `<hash>` if they passed none), with no check for whether a folder for that
+commit already existed under a DIFFERENT name. Passing the wrong sequence, or
+none, created a sibling folder instead of finding the real one - a resume's
+`onlyCategories` then merged into an empty directory rather than the one
+holding the earlier attempt's output.
+
+`QaPipelineService.run` now asks `GeneratedRunLocator` first - the same lookup
+download and execution already used, which knows both shapes a folder can be
+named. An existing folder always wins, whatever shape it is; `commitSequence`
+only shapes a **fresh** folder's name, unchanged from before. The decision is
+split out as `resolveRunOutputDir` (static, no I/O) precisely so it's testable
+without a filesystem - see `RunOutputDirResolutionTest`. Verified live too:
+a folder was pre-created as `3.<hash>`, `/generate-tests` was called for that
+same commit with NO `commitSequence`, and the response's note landed inside
+the existing `3.<hash>` folder - no bare-hash sibling was created.
+
+**Automation generation now does the equivalent for scripts.** Every call used
+to re-read the whole `manual_test_cases.csv` and regenerate automation for
+every case in it, then overwrite the merged file wholesale - correct in that it
+can't produce duplicate methods, but it re-spends an LLM call on every case
+every time, including ones a prior run already covered.
+
+The automation prompt already required a trace-back comment above every
+`@Test` ("put its Test Case ID in a comment above the method so a human can
+trace script back to case") - that convention is now read back, not just
+written. Before generating, `AutomationGenerationService` computes the merged
+file's deterministic name (`AutomationScriptMerger.mergedFileName`, from the
+commit hash alone), reads it if present, and extracts covered ids
+(`alreadyAutomatedCaseIds`, tolerant of blank lines and CRLF between the
+comment and the annotation). Only the cases NOT already covered are sent to the
+model; if none remain, the call returns immediately with 0 LLM calls and the
+file untouched. Otherwise the existing file is prepended to the fresh batch
+before merging, so `AutomationScriptMerger.merge` - unmodified - does the same
+job it already does for same-run batches: one `@BeforeClass` survives, a method
+NAME collision is renamed rather than dropped. Existing methods go first in
+that list on purpose, so an existing fixture stays the authority and any new
+batch's setup is absorbed into it, not the other way around.
+
+**What this does not prove, which matters given the mechanism.** The trace-back
+comment is a prompt instruction, not a code-enforced format - a method the
+model wrote without one, or with a malformed one, reads as NOT yet automated.
+The failure mode is a redundant method next run, renamed by the collision
+handling above, never a lost one - `alreadyAutomatedCaseIds` can only ever
+under-count coverage, never over-count it.
+
+Both new methods were run against a real commit through the actual
+`/generate-automation` endpoint, not just unit tests: a case already covered by
+an existing script produced a response reporting `alreadyAutomated: 1`, an
+unmodified file (byte-identical SHA-256 before and after), and no LLM call in
+the logs; adding one genuinely new case to the same CSV then produced
+`alreadyAutomated: 1` alongside `1 new case(s) generated`, and the merged file
+on disk held both methods - the original's body untouched, the new one
+appended under its own `// TC-002`.
 
 ## 7. Test coverage
 
-101 unit tests, 15 classes — the first real tests in this repo beyond the
+155 unit tests, 24 classes — the first real tests in this repo beyond the
 context-load smoke test.
 
 | Class | n | Covers |
@@ -553,6 +833,15 @@ context-load smoke test.
 | `ReplayServiceTest` | 4 | token guard, never-throws contract |
 | `ExecutionReportWriterTest` | 4 | §4.2 — `</script>` in a payload, editor controls present |
 | `SetupFailureReportTest` | 6 | §4.1.1 — the dead-setup run, from the real mms fixture |
+| `ResumeCsvMergeTest` | 6 | §6.1 — a resume keeps the categories it did not regenerate |
+| `PartialCoverageReportingTest` | 8 | §6.1 — partial-vs-empty wording, context shrinking |
+| `NoChangesNoteTest` | 4 | §6 — every processed commit gets a folder; the note never throws |
+| `LlmClientSelectionTest` | 7 | §5.1 — provider validation, blank keys report no credentials |
+| `ConfigOnlyMergeCoverageTest` | 6 | §6.2 — a category with no input is neither covered nor missing |
+| `ExecutionReportDownloadServiceTest` | 6 | §4.3 — traversal guard, both run-folder shapes, byte-identical read |
+| `RunOutputDirResolutionTest` | 5 | §6.3 — an existing folder always wins over a fresh, differently-shaped one |
+| `GitDiffServiceTest` | 6 | §6.4 — findOriginUrlForProject: the reverse of resolveProjectName |
+| `AutomationScriptMergerTest` (extended) | +8 | §6.3 — id extraction, incremental merge, collision-rename backstop |
 | `JavaSourcesTest` | 3 | modern syntax parses on another thread |
 | `ProviderLogsTest` | 3 | provider reasons survive flattening |
 | `CompileSalvagerPruneTest` | 10 | §3.4 — unreachable fixtures dropped, shadowed locals kept |
@@ -568,13 +857,24 @@ verifiable by a live run, and several have never been through one — see §8.
 
 ## 8. Open items, in priority order
 
-1. **Still no end-to-end run on the current build.** The 2026-08-18 17:20 mms
-   run was made by a **stale server** and proves nothing about this code. The
-   merged script contains no `@BeforeClass` at all, which
-   `ensureBaseUriIsHonoured` cannot leave behind, and the orphan-field prune -
-   which drops 21 methods when run against that same file today - plainly never
-   ran. Read nothing in that report as evidence. Restart on this build,
-   regenerate mms, run it, and expect roughly 13 tests rather than 34.
+1. **The current build has now run end to end, and produced one test.** That
+   is progress and a warning in equal measure. On 2026-08-19 the generated
+   `AutomationTest_3836dee...` carried every marker of the new code working: a
+   `@BeforeClass` setting `RestAssured.baseURI`, extraction at `data.id`, an
+   assertion on `data.tierFrom`, and a payload of exactly `capabilityCode` /
+   `feeType` / `effectiveFrom` / `currency` with `TIERED` from the declared
+   enum - `CreateFeeConfigRequest` verbatim, against yesterday's
+   `"merchantId": "null"`.
+
+   What it does NOT show is a working suite. The 11:53 generation lost all 34
+   cases to providers (§8.3), so only one test existed to run; the 12:31
+   execution then died in `@BeforeClass` on the merchant 422 (§10) and skipped
+   it. **No green run has ever happened.** The prune, the base-URI repair and
+   the contract are proven to execute; nothing yet proves they produce a suite
+   that passes.
+
+   (The older 2026-08-18 17:20 report is a **stale-server artefact** and is not
+   evidence of anything - see §11.)
 2. **The uniqueness rule needs a live check.** It was in the committed prompt,
    so the model had it and ignored it in 5 of 8 merchant creates: two used
    `System.currentTimeMillis()` and got 201, five hardcoded `REG123456` and got
@@ -583,29 +883,77 @@ verifiable by a live run, and several have never been through one — see §8.
    next run still hardcodes, it has proven unreliable twice and belongs in code,
    per the working rule in §1 — but that rewrite is AST surgery on payloads and
    should not be attempted before the evidence exists.
-3. **The contract has never been through a generation.** It is unit-tested and
-   verified end-to-end against the live mms document — 71 operations, correct
-   `data.id` paths, `maxLength 50` on `capabilityCode` — but no script has yet
-   been generated with it in the prompt. Watch three things in the next run:
-   whether ids are extracted at `data.id` rather than `id`, whether boundary
-   cases use the contract's own limits, and whether any 4xx body assertion
-   appears despite the note saying no error shape is documented.
-4. **Groq cannot serve the automation prompt** on the on-demand tier even at
+3. **The mms initial commit still cannot be generated**, and it is the reason
+   `main` reports "NOT fully caught up". 126 files / 113 classes is the largest
+   prompt this pipeline builds, against a Groq on-demand ceiling of 8000 TPM and
+   a rate-limited Gemini. The context now shrinks instead of failing
+   identically, but shrinking cannot close a 3x gap on its own - a working
+   provider, a paid tier, or a smaller batch size is what finishes it.
+4. **The 29 cases lost from that commit's CSV are recoverable but not
+   recovered.** `generated-tests/mms/all_manual_test_cases.csv` kept all 136
+   rows for `3836dee` (71 Boundary, 33 Configuration, 23 Negative, 9 Security),
+   each carrying a `Source Ref` and a `3836dee-TC-nnn` reference, so the
+   per-commit file can be rebuilt from it. Nothing does that automatically yet.
+5. **The contract has been through one generation, of one test - too small a
+   sample to trust.** Id extraction at `data.id` and contract-shaped payloads
+   are confirmed (§8.1). Two things it was meant to fix have still never been
+   observed, because no case exercising them survived: whether boundary cases
+   take their limits from the contract (`maxLength 50` on `capabilityCode`
+   rather than a guess), and whether the model stays off 4xx body assertions
+   given the note saying mms documents no error shape. Check both on the first
+   run that generates more than a handful of tests.
+6. **Groq cannot serve the automation prompt** on the on-demand tier even at
    minimum context. Either accept it as a fallback that runs with less context,
    move to a paid tier, or shrink the system prompt itself (it is ~900 lines).
-5. **The Cerebras model id is unverified** against the account — `llama3.3-70b`
+7. **The Cerebras model id is unverified** against the account — `llama3.3-70b`
    is the documented form, but list the models to be sure.
-6. **Groq's default model is a judgement call.** `openai/gpt-oss-120b` answered,
+8. **Groq's default model is a judgement call.** `openai/gpt-oss-120b` answered,
    but has never been compared for test-generation quality.
-7. **The request editor has not been driven in a real browser.** Its logic is
+9. **The request editor has not been driven in a real browser.** Its logic is
    verified by running the report's own emitted script against a DOM stub under
    Node — fill, read, toggle, reset, edited-detection and the empty-URL guard
    all pass, and the emitted JS parses clean — but nobody has clicked it in
    Chrome. The layout in particular is unverified.
-8. **Nothing is committed.** Now including the whole `com.company.aiqa.openapi`
-   package (6 source files, 4 test files) and a `jackson-dataformat-yaml`
-   dependency, on top of the earlier 24 modified files, 10 new source files and
-   9 new test files, plus staged removals of `target/` and the gitlinks.
+10. **Nothing is committed.** `git status` is the authority; the counts below
+   drift. New in this stretch of work:
+
+   - `src/main/java/com/company/aiqa/openapi/` — 8 source files (§3.5), plus a
+     `jackson-dataformat-yaml` dependency in `pom.xml` and an `aiqa.openapi.*`
+     block in `application.yml`.
+   - 8 new test classes: `SwaggerLocatorTest`, `OpenApiContractExtractorTest`,
+     `OpenApiSpecLoaderTest`, `ApiContractRendererTest`,
+     `ExecutionReportWriterTest`, `SetupFailureReportTest`, `ResumeCsvMergeTest`,
+     `PartialCoverageReportingTest`.
+   - Modified: `CompileSalvager` (§3.4), `RunDiagnosis` and
+     `ExecutionReportWriter` (§4.1, §4.1.1, §4.2), `TestExecutionResult` and
+     `RestAssuredTestExecutionService` (§4.1.1), `QaPipelineService` and
+     `ManualTestCaseGenerator` (§6.1), `PromptBuilder`,
+     `AutomationGenerationService`, `GenerateAutomationRequest`, `AppConfig`,
+     plus `QaPipelineService.writeNoChangesNote` and `NoChangesNoteTest` (§6),
+     and `OpenAIService` / `GeminiService` / `LlmProperties` / `AppConfig` /
+     new `LlmClientStartupReport` + `LlmClientSelectionTest` (§5.1).
+
+   **Since §5.1, still uncommitted, still not re-enumerated file-by-file below
+   because `git status` is the authority and this list would only drift again -
+   see the sections themselves for what changed and why:**
+   - §4.3 — new `ExecutionReportDownloadService` + `execution-report/download`.
+   - §6.2 — `Coverage`/`coverageOf` extracted, `notApplicableCategories`, the
+     `no-test-cases.txt` note generalized.
+   - §6.3 — `QaPipelineService.resolveRunOutputDir` (folder reuse),
+     `AutomationScriptMerger.mergedFileName` / `alreadyAutomatedCaseIds`
+     (incremental automation generation).
+   - §6.4 — `repoUrl` removed from `GenerateAutomationRequest`;
+     `/merge-history` and `/merge-history/incomplete` take `projectName`
+     (`GitDiffService.findOriginUrlForProject`); new
+     `POST /generate-tests-from-branch/check-new-commits`.
+   - `postman/` — an Insomnia export and a Postman v2.1 collection covering
+     every endpoint, handed to the user directly rather than tracked from a
+     design doc. Neither is source; commit only if the user wants them kept
+     in the repo.
+
+   On top of the earlier uncommitted work, plus staged removals of `target/`
+   and the gitlinks. `repo-workspace/` and `generated-tests/` also carry
+   untracked run output that is not source and should not be committed.
 
 ---
 
@@ -684,6 +1032,10 @@ for a non-existent order.
 
 ## 11. Traps that would cost a day to rediscover
 
+- **A partial re-run that writes the same file as a full one will delete what
+  it did not regenerate.** Any "resume only the missing parts" path needs to
+  know whether its writer replaces or merges. Here the writer was shared with
+  the full-run path, so nothing looked wrong at either call site.
 - **A running server is the build it started with, and a report never says so.**
   Three sessions have now lost hours to this. There are two tells in an
   artefact: a merged script with no `@BeforeClass` (the merger always adds one),
@@ -712,3 +1064,13 @@ for a non-existent order.
   that reports "the first line of the message" reports nothing.
 - **Surefire needs the network on first run** (it downloads
   `surefire-junit-platform`); `mvn -o test` fails until then.
+- **`repo-workspace/merge-history/github_com_acquiring_system_mms_git_main.json`
+  is currently in a state `git status` shows two ways at once**: staged as a
+  61-line deletion (relative to the committed version, which still holds the
+  pre-§6.2 stuck entries) AND untracked, because a fresh file with different
+  content - `0dfaf7fe`/`4c8ad09e` now correctly PARTIAL instead of falsely
+  SUCCESS - has been written to the same path since. Both halves are real and
+  neither is wrong; it just means a bare `git add -A` would stage a delete +
+  re-add instead of the clean modification it should be. Read the working-tree
+  file before touching this one - it is the CORRECT post-§6.2 state, not
+  something to discard.

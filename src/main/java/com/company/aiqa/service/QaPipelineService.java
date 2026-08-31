@@ -19,8 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -42,6 +44,19 @@ public class QaPipelineService {
 
     private static final Logger log = LoggerFactory.getLogger(QaPipelineService.class);
 
+    /**
+     * Name of the note left in a commit's run folder whenever the run produced
+     * no manual CSV - whether nothing changed, every category failed, or the
+     * model correctly had nothing to say. Its whole content is the run summary
+     * the API response carries, so the folder and the response never disagree
+     * about why there are no test cases.
+     *
+     * <p>One filename for all of those on purpose: the rule a reader needs is
+     * "a commit folder with no CSV has a note saying why", and that only works
+     * if there is one name to look for.
+     */
+    private static final String NO_TEST_CASES_FILE = "no-test-cases.txt";
+
     private final GitDiffService gitDiffService;
     private final RepoSyncService repoSyncService;
     private final MergeHistoryService mergeHistoryService;
@@ -55,6 +70,7 @@ public class QaPipelineService {
     private final PipelineProperties pipelineProperties;
     private final ProjectShapeAnalyzer projectShapeAnalyzer;
     private final LlmKeyStore llmKeyStore;
+    private final GeneratedRunLocator runLocator;
 
     public QaPipelineService(GitDiffService gitDiffService,
                               RepoSyncService repoSyncService,
@@ -68,7 +84,8 @@ public class QaPipelineService {
                               ManualTestCaseGenerator manualTestCaseGenerator,
                               PipelineProperties pipelineProperties,
                               ProjectShapeAnalyzer projectShapeAnalyzer,
-                              LlmKeyStore llmKeyStore) {
+                              LlmKeyStore llmKeyStore,
+                              GeneratedRunLocator runLocator) {
         this.gitDiffService = gitDiffService;
         this.repoSyncService = repoSyncService;
         this.mergeHistoryService = mergeHistoryService;
@@ -80,6 +97,7 @@ public class QaPipelineService {
         this.testCaseGenerator = testCaseGenerator;
         this.manualTestCaseGenerator = manualTestCaseGenerator;
         this.pipelineProperties = pipelineProperties;
+        this.runLocator = runLocator;
         this.projectShapeAnalyzer = projectShapeAnalyzer;
         this.llmKeyStore = llmKeyStore;
     }
@@ -147,13 +165,52 @@ public class QaPipelineService {
                     changedFiles.size(), batchSize, batchCount(changedFiles.size(), batchSize));
         }
 
+        String baseOutputDir = request.getOutputDir() != null
+                ? request.getOutputDir()
+                : pipelineProperties.getOutputDir();
+
+        // Every project gets its own subfolder (named from the repo's "origin"
+        // remote - see GitDiffService.resolveProjectName) under the configured
+        // output dir, so pointing this platform at more than one repo doesn't
+        // mix their test cases into one shared master catalog.
+        String projectName = gitDiffService.resolveProjectName(request.getRepoPath());
+        String outputDir = Path.of(baseOutputDir, projectName).toString();
+
+        // Each run gets its own subfolder keyed by headRef, so a backfill
+        // processing many merges (or repeated single-merge calls) never
+        // overwrites a previous run's output - this was silently happening
+        // before, since every run wrote to the same fixed "manual_test_cases.csv" /
+        // TestFileName.java under the same shared outputDir.
+        //
+        // An existing folder for this commit is reused whenever one is found -
+        // checked via GeneratedRunLocator, which already knows both shapes a
+        // folder can be named (backfill's "<seq>.<hash>", or the bare hash a
+        // caller gets by leaving commitSequence unset). Without this, a direct
+        // POST /generate-tests for a commit backfill had already produced -
+        // made with no commitSequence, or the wrong one - created a SIBLING
+        // folder instead of finding the real one, so a resume's onlyCategories
+        // merged into a folder holding nothing to merge with. Only a commit
+        // with NO folder yet falls through to fresh creation, which is where
+        // commitSequence still matters - it is what gives a backfilled folder
+        // its ordering the very first time.
+        String located = runLocator.runOutputDir(baseOutputDir, projectName, request.getHeadRef());
+        String runOutputDir = resolveRunOutputDir(Files.isDirectory(Path.of(located)), located, outputDir,
+                request.getHeadRef(), request.getCommitSequence());
+
         if (changedFiles.isEmpty() && configFiles.isEmpty()) {
             // Nothing to generate is a legitimately COMPLETE outcome, not a
             // gap - otherwise an empty merge would be re-attempted forever.
+            String noChanges = "No changed source or configuration files found between %s and %s.".formatted(
+                    request.getBaseRef(), request.getHeadRef());
+            // The commit still gets its folder, holding that one sentence.
+            // Without it the sequence numbers under generated-tests/<project>/
+            // have holes, and a hole is indistinguishable from a commit that
+            // failed or was never processed - so someone goes looking for
+            // output that was never owed. An empty-but-present folder answers
+            // the question the numbering raises.
+            writeRunNote(runOutputDir, noChanges);
             return new GenerateTestsResponse(0, 0, 0, 0, commitLog, List.of(), null, null, List.of(),
-                    List.of(), List.of(), List.of(), 100, MergeStatus.SUCCESS,
-                    "No changed source or configuration files found between %s and %s.".formatted(
-                            request.getBaseRef(), request.getHeadRef()));
+                    List.of(), List.of(), List.of(), 100, MergeStatus.SUCCESS, noChanges);
         }
 
         // 2. Parse Changed Source Files (skipped entirely for a config-only
@@ -175,25 +232,6 @@ public class QaPipelineService {
         // since there's no screen for a tester to walk through.
         boolean apiOnly = !classes.isEmpty() && projectShapeAnalyzer.isApiOnly(request.getRepoPath(), classes);
 
-        String baseOutputDir = request.getOutputDir() != null
-                ? request.getOutputDir()
-                : pipelineProperties.getOutputDir();
-
-        // Every project gets its own subfolder (named from the repo's "origin"
-        // remote - see GitDiffService.resolveProjectName) under the configured
-        // output dir, so pointing this platform at more than one repo doesn't
-        // mix their test cases into one shared master catalog.
-        String projectName = gitDiffService.resolveProjectName(request.getRepoPath());
-        String outputDir = Path.of(baseOutputDir, projectName).toString();
-
-        // Each run gets its own subfolder keyed by headRef, so a backfill
-        // processing many merges (or repeated single-merge calls) never
-        // overwrites a previous run's output - this was silently happening
-        // before, since every run wrote to the same fixed "manual_test_cases.csv" /
-        // TestFileName.java under the same shared outputDir.
-        String runOutputDir = Path.of(outputDir,
-                runFolderName(request.getHeadRef(), request.getCommitSequence())).toString();
-
         TestCaseMode mode = resolveMode(request.getTestCaseMode());
 
         List<ManualTestCase> businessTestCases = List.of();
@@ -212,9 +250,16 @@ public class QaPipelineService {
         // only their names, so without this the model has never seen the code
         // that decides how the feature behaves. Computed once - it is identical
         // for every category and batch.
-        final String relatedImplementation = changedFiles.isEmpty()
-                ? ""
-                : collectRelatedImplementation(request, impact, changedFiles);
+        // Shared and mutable on purpose. Splitting a batch shrinks the DIFF in
+        // the prompt but not this - the collaborator source rides along in full
+        // on every call, so a run whose fixed context alone exceeds the
+        // provider's ceiling fails identically at 40 files and at 1. When
+        // splitting runs out of room, this is what gives way, and the smaller
+        // value is then used by every later call in the run.
+        final java.util.concurrent.atomic.AtomicReference<String> relatedImplementation =
+                new java.util.concurrent.atomic.AtomicReference<>(changedFiles.isEmpty()
+                        ? ""
+                        : collectRelatedImplementation(request, impact, changedFiles));
 
         List<String> expectedCategories = resolveCategories(request, !configFiles.isEmpty());
         List<String> generatedCategories = new ArrayList<>();
@@ -226,6 +271,22 @@ public class QaPipelineService {
         // reports 100% coverage and 0 SECURITY cases otherwise looks like
         // something quietly went wrong.
         List<String> emptyCategories = new ArrayList<>();
+        // Only meaningful on a resume: how many cases the earlier run had
+        // produced that this one preserved, and how many the file ends up
+        // holding. Without them the summary reports the run's own output as
+        // though it were the whole file.
+        int keptFromEarlierRun = 0;
+        int casesInCsv = 0;
+        // A category whose batches did not all succeed, but which produced
+        // cases from the ones that did. It is neither covered nor empty, and
+        // reporting it as "failed and produced no test cases" - which the
+        // summary did - is false in front of the cases themselves.
+        List<String> partiallyGeneratedCategories = new ArrayList<>();
+        int casesFromIncompleteCategories = 0;
+        // Categories this change gave no input to at all - the source-diff
+        // categories on a config-only merge. Not a failure and not an
+        // achievement; see the batches.isEmpty() branch below.
+        List<String> notApplicableCategories = new ArrayList<>();
 
         // 4 & 5. Send Context to LLM -> Generate Test Cases (business and/or automated)
         if (mode == TestCaseMode.MANUAL || mode == TestCaseMode.BOTH) {
@@ -274,6 +335,21 @@ public class QaPipelineService {
                 boolean categoryFullyCovered = true;
                 int casesBeforeGroup = merged.size();
 
+                // No batches means no source files, so nothing was ever asked
+                // of these categories. Crediting them as covered - which the
+                // loop below did by leaving categoryFullyCovered at its initial
+                // true - is what let a config-only merge whose ONLY real call
+                // failed be recorded as SUCCESS at 100%. It also put
+                // CONFIGURATION in generatedCategories from here while the
+                // dedicated config block below put it in failedCategories, so
+                // one summary reported it as both. Not applicable is a third
+                // outcome: neither generated nor missing, and excluded from the
+                // coverage denominator so it is never retried forever either.
+                if (batches.isEmpty()) {
+                    notApplicableCategories.addAll(group);
+                    continue;
+                }
+
                 for (int i = 0; i < batches.size(); i++) {
                     List<ChangedFile> batch = batches.get(i);
                     final List<ManualTestCase> existing = existingForCategory;
@@ -289,7 +365,7 @@ public class QaPipelineService {
                             categorySystemPrompt,
                             files -> promptBuilder.buildBusinessTestCaseUserPrompt(
                                     files, classesFor(files, classes), impact, existing,
-                                    relatedImplementation),
+                                    relatedImplementation.get()),
                             response -> {
                                 List<ManualTestCase> cases = manualTestCaseGenerator.parse(
                                         response, capitalizedCategory, idCursor[0], groupForParser);
@@ -297,7 +373,8 @@ public class QaPipelineService {
                                 merged.addAll(cases);
                             },
                             llmKeyStore.resolveFor(request.getLlmKeys()),
-                            "Categories %s batch %d/%d".formatted(group, i + 1, batches.size()));
+                            "Categories %s batch %d/%d".formatted(group, i + 1, batches.size()),
+                            relatedImplementation);
 
                     if (!covered) {
                         categoryFullyCovered = false;
@@ -316,6 +393,13 @@ public class QaPipelineService {
                     }
                 } else {
                     failedCategories.addAll(group);
+                    if (merged.size() > casesBeforeGroup) {
+                        // Some batches answered. Those cases are real and are
+                        // kept; the category is still incomplete because the
+                        // files in the failed batch were never looked at.
+                        partiallyGeneratedCategories.addAll(group);
+                        casesFromIncompleteCategories += merged.size() - casesBeforeGroup;
+                    }
                 }
             }
 
@@ -371,13 +455,34 @@ public class QaPipelineService {
                     }
                 } else {
                     failedCategories.add(CONFIG_CATEGORY);
+                    if (merged.size() > casesBeforeConfig) {
+                        partiallyGeneratedCategories.add(CONFIG_CATEGORY);
+                        casesFromIncompleteCategories += merged.size() - casesBeforeConfig;
+                    }
                 }
             }
 
             businessTestCases = merged;
 
             if (!businessTestCases.isEmpty()) {
-                manualCsvPath = manualTestCaseGenerator.writeCsv(businessTestCases, runOutputDir, "manual_test_cases.csv");
+                // A RESUME regenerates only the categories that failed last
+                // time, so writing its output over the file would discard every
+                // case the earlier run produced for the categories it is NOT
+                // touching. A full run has regenerated everything and should
+                // replace.
+                boolean resume = request.getOnlyCategories() != null && !request.getOnlyCategories().isEmpty();
+                if (resume) {
+                    ManualTestCaseGenerator.RunCsvMerge write = manualTestCaseGenerator
+                            .writeCsvPreservingOtherCategories(businessTestCases, runOutputDir,
+                                    "manual_test_cases.csv", expectedCategories);
+                    manualCsvPath = write.path();
+                    keptFromEarlierRun = write.kept();
+                    casesInCsv = write.merged().size();
+                } else {
+                    manualCsvPath = manualTestCaseGenerator.writeCsv(businessTestCases, runOutputDir,
+                            "manual_test_cases.csv");
+                    casesInCsv = businessTestCases.size();
+                }
                 // Merge into the master catalog: NEW cases are appended,
                 // UPDATE cases replace the existing row they reference - see
                 // ManualTestCaseGenerator.upsertMasterCsv. This is what makes
@@ -430,10 +535,12 @@ public class QaPipelineService {
             summary += " Files were processed in %d batch(es) of up to %d - all %d file(s) covered."
                     .formatted(batchCount(changedFiles.size(), batchSize), batchSize, changedFiles.size());
         }
-        if (!failedCategories.isEmpty()) {
-            summary += " WARNING: %d categor%s failed and produced no test cases: %s.".formatted(
-                    failedCategories.size(), failedCategories.size() == 1 ? "y" : "ies", failedCategories);
-        }
+        // Two different things used to be reported as one. A category that
+        // produced nothing and a category that produced eleven cases before a
+        // batch failed are both "not covered", but only the first produced no
+        // test cases - and the run whose summary said so was returning five.
+        summary += categoryWarnings(failedCategories, partiallyGeneratedCategories,
+                casesFromIncompleteCategories);
         if (automatedFailure != null) {
             summary += " WARNING: automated test generation failed: " + automatedFailure;
         }
@@ -443,17 +550,40 @@ public class QaPipelineService {
                             emptyCategories);
         }
 
-        List<String> missingCategories = expectedCategories.stream()
-                .filter(c -> !generatedCategories.contains(c))
-                .toList();
-        int coveragePercent = expectedCategories.isEmpty() ? 100
-                : (int) Math.round(100.0 * generatedCategories.size() / expectedCategories.size());
-        MergeStatus status = missingCategories.isEmpty() ? MergeStatus.SUCCESS
-                : (generatedCategories.isEmpty() ? MergeStatus.FAILED : MergeStatus.PARTIAL);
+        if (!notApplicableCategories.isEmpty()) {
+            summary += " %d categor%s no input from this change and %s not attempted: %s."
+                    .formatted(notApplicableCategories.size(),
+                            notApplicableCategories.size() == 1 ? "y had" : "ies had",
+                            notApplicableCategories.size() == 1 ? "was" : "were",
+                            notApplicableCategories);
+        }
+
+        Coverage coverage = coverageOf(expectedCategories, notApplicableCategories, generatedCategories,
+                !businessTestCases.isEmpty() || !generatedTests.isEmpty());
+        List<String> missingCategories = coverage.missing();
+        int coveragePercent = coverage.coveragePercent();
+        MergeStatus status = coverage.status();
 
         if (!missingCategories.isEmpty()) {
             summary += " Coverage %d%% - missing categor%s: %s (a later run will regenerate just these)."
                     .formatted(coveragePercent, missingCategories.size() == 1 ? "y" : "ies", missingCategories);
+        }
+        // On a resume the run's own output is not what the file holds, and
+        // reporting only the former reads as though the rest had been lost -
+        // which, before writeCsvPreservingOtherCategories, it had been.
+        if (keptFromEarlierRun > 0) {
+            summary += " Resume: kept %d case(s) from categories this run did not regenerate; %s now holds %d."
+                    .formatted(keptFromEarlierRun, "manual_test_cases.csv", casesInCsv);
+        }
+
+        // Every processed commit leaves a folder. Before this, the CSV write
+        // was gated on having cases, so a commit that generated nothing left
+        // nothing at all - and a backfill reporting "2 newly completed" against
+        // a directory holding one folder is indistinguishable from a backfill
+        // that silently skipped them. The note carries the run summary, so the
+        // folder says exactly what the API said.
+        if (manualCsvPath == null && generatedTests.isEmpty()) {
+            writeRunNote(runOutputDir, summary);
         }
 
         return new GenerateTestsResponse(
@@ -477,6 +607,13 @@ public class QaPipelineService {
 
     /** Category name used for config-file test cases - kept in one place since it's both a prompt label and a coverage key. */
     private static final String CONFIG_CATEGORY = "CONFIGURATION";
+
+    /**
+     * Below this, the surviving implementation context is too fragmentary to
+     * tell the model anything - half a method body is worse than none - so the
+     * next shrink drops it entirely rather than halving again.
+     */
+    private static final int MIN_RELATED_IMPLEMENTATION_CHARS = 4_000;
 
     /**
      * Sends one LLM call for {@code files}, splitting the file set in half and
@@ -508,6 +645,22 @@ public class QaPipelineService {
                                            java.util.function.Consumer<String> responseHandler,
                                            LlmKeys keys,
                                            String label) {
+        return generateWithSplitting(files, systemPrompt, userPromptBuilder, responseHandler, keys, label, null);
+    }
+
+    /**
+     * @param shrinkableContext run-level context carried on every call regardless
+     *        of how few files remain - the collaborator source. Splitting cannot
+     *        reduce it, so when a single file is still rejected as too large this
+     *        is what gives way. Null when the caller has no such context.
+     */
+    private boolean generateWithSplitting(List<ChangedFile> files,
+                                           String systemPrompt,
+                                           java.util.function.Function<List<ChangedFile>, String> userPromptBuilder,
+                                           java.util.function.Consumer<String> responseHandler,
+                                           LlmKeys keys,
+                                           String label,
+                                           java.util.concurrent.atomic.AtomicReference<String> shrinkableContext) {
         if (files.isEmpty()) {
             return true;
         }
@@ -518,7 +671,8 @@ public class QaPipelineService {
         if (userPrompt.length() + systemPrompt.length() > budget && files.size() > 1) {
             log.info("{}: prompt for {} file(s) is {} chars (budget {}) - splitting in half so no diff is skipped.",
                     label, files.size(), userPrompt.length() + systemPrompt.length(), budget);
-            return splitAndRecurse(files, systemPrompt, userPromptBuilder, responseHandler, keys, label);
+            return splitAndRecurse(files, systemPrompt, userPromptBuilder, responseHandler, keys, label,
+                    shrinkableContext);
         }
 
         try {
@@ -526,10 +680,19 @@ public class QaPipelineService {
             responseHandler.accept(response);
             return true;
         } catch (Exception e) {
-            if (com.company.aiqa.ai.router.ProviderCooldownRegistry.isPromptTooLarge(e) && files.size() > 1) {
-                log.warn("{}: provider rejected the prompt for {} file(s) as too long - splitting and retrying "
-                        + "rather than dropping these diffs.", label, files.size());
-                return splitAndRecurse(files, systemPrompt, userPromptBuilder, responseHandler, keys, label);
+            if (com.company.aiqa.ai.router.ProviderCooldownRegistry.isPromptTooLarge(e)) {
+                if (files.size() > 1) {
+                    log.warn("{}: provider rejected the prompt for {} file(s) as too long - splitting and retrying "
+                            + "rather than dropping these diffs.", label, files.size());
+                    return splitAndRecurse(files, systemPrompt, userPromptBuilder, responseHandler, keys, label,
+                            shrinkableContext);
+                }
+                // One file left and still too large: there is no diff left to
+                // split, so the fixed context is the only thing that can go.
+                if (shrinkContext(shrinkableContext, label)) {
+                    return generateWithSplitting(files, systemPrompt, userPromptBuilder, responseHandler, keys,
+                            label, shrinkableContext);
+                }
             }
             // One line per failed batch, not a stack trace each time: a run with
             // no working provider fails identically for every batch and category,
@@ -547,15 +710,77 @@ public class QaPipelineService {
                                      java.util.function.Function<List<ChangedFile>, String> userPromptBuilder,
                                      java.util.function.Consumer<String> responseHandler,
                                      LlmKeys keys,
-                                     String label) {
+                                     String label,
+                                     java.util.concurrent.atomic.AtomicReference<String> shrinkableContext) {
         int mid = files.size() / 2;
         // Both halves are attempted even if the first fails, so one bad half
         // doesn't hide the other half's results.
         boolean first = generateWithSplitting(files.subList(0, mid), systemPrompt, userPromptBuilder,
-                responseHandler, keys, label);
+                responseHandler, keys, label, shrinkableContext);
         boolean second = generateWithSplitting(files.subList(mid, files.size()), systemPrompt, userPromptBuilder,
-                responseHandler, keys, label);
+                responseHandler, keys, label, shrinkableContext);
         return first && second;
+    }
+
+    /**
+     * Halves the run's shared implementation context, on a line boundary, and
+     * drops it entirely once halving would leave something too fragmentary to
+     * help. Returns false when there is nothing left to give up, which is the
+     * signal to report the batch as failed.
+     *
+     * <p>Deliberately shared across the run: the batch that discovers the
+     * ceiling pays for the discovery once, and every later call in the run
+     * starts from the smaller context instead of rediscovering it.
+     */
+    /**
+     * The warning sentences for categories that did not complete.
+     *
+     * <p>Two different outcomes used to share one sentence. A category that
+     * produced nothing and a category that produced eleven cases before a batch
+     * failed are both "not covered", but only the first produced no test cases -
+     * and the run whose summary said "2 categories failed and produced no test
+     * cases" was returning five of them, in the same response, two fields up.
+     * Someone reading that has to decide which half of their own report to
+     * believe.
+     */
+    static String categoryWarnings(List<String> failedCategories, List<String> partiallyGenerated,
+                                   int casesFromIncomplete) {
+        StringBuilder warnings = new StringBuilder();
+        List<String> producedNothing = failedCategories.stream()
+                .filter(c -> !partiallyGenerated.contains(c))
+                .toList();
+        if (!producedNothing.isEmpty()) {
+            warnings.append(" WARNING: %d categor%s failed and produced no test cases: %s.".formatted(
+                    producedNothing.size(), producedNothing.size() == 1 ? "y" : "ies", producedNothing));
+        }
+        if (!partiallyGenerated.isEmpty()) {
+            warnings.append((" WARNING: %d categor%s incomplete - %d case(s) were generated before a batch "
+                    + "failed, and are kept, but the files in the failed batch were never examined: %s.").formatted(
+                    partiallyGenerated.size(), partiallyGenerated.size() == 1 ? "y is" : "ies are",
+                    casesFromIncomplete, partiallyGenerated));
+        }
+        return warnings.toString();
+    }
+
+    static boolean shrinkContext(java.util.concurrent.atomic.AtomicReference<String> context, String label) {
+        if (context == null) {
+            return false;
+        }
+        String current = context.get();
+        if (current == null || current.isEmpty()) {
+            return false;
+        }
+        int half = current.length() / 2;
+        String smaller = "";
+        if (half >= MIN_RELATED_IMPLEMENTATION_CHARS) {
+            int boundary = current.lastIndexOf('\n', half);
+            smaller = current.substring(0, boundary > 0 ? boundary : half);
+        }
+        context.set(smaller);
+        log.warn("{}: a single file is still too large for the provider. The diff cannot be split further, so the "
+                + "related implementation context is cut from {} to {} char(s) and the call retried - every later "
+                + "batch in this run uses the smaller context too.", label, current.length(), smaller.length());
+        return true;
     }
 
     /** Splits a list into consecutive chunks of at most {@code size}; a list at or under the limit yields one chunk. */
@@ -807,6 +1032,41 @@ public class QaPipelineService {
     }
 
     /**
+     * Answers "has this branch moved since it was last backfilled?" without
+     * generating anything - the same clone/fetch and merge walk
+     * runBackfillAndCatchUp does, stopped before the first call to run().
+     *
+     * <p>This is the one merge-history-adjacent operation that legitimately
+     * needs the network and a credential: /merge-history and
+     * /merge-history/incomplete only ever read what is already recorded
+     * locally, but "is there anything NEW" is a question about the remote,
+     * and there is no way to answer it without asking the remote.
+     */
+    public CheckNewCommitsResponse checkForNewCommits(CheckNewCommitsRequest request) {
+        CredentialScheme scheme = resolveScheme(request.getProvider());
+        String localPath = repoSyncService.syncRepo(request.getRepoUrl(), request.getAccessToken(), scheme);
+        String projectName = gitDiffService.resolveProjectName(localPath);
+
+        List<MergeCommitInfo> allMerges = gitDiffService.findAllMergeCommits(localPath, request.getBranch());
+        List<String> newCommitShas = allMerges.stream()
+                .map(MergeCommitInfo::mergeSha)
+                .filter(sha -> !mergeHistoryService.isProcessed(request.getRepoUrl(), request.getBranch(), sha))
+                .toList();
+
+        boolean hasNewCommits = !newCommitShas.isEmpty();
+        String summary = hasNewCommits
+                ? ("%d of %d merge commit(s) on '%s' are not yet processed. "
+                        + "Run POST /generate-tests-from-branch/backfill to catch up.")
+                        .formatted(newCommitShas.size(), allMerges.size(), request.getBranch())
+                : "Branch '%s' is fully caught up - all %d merge commit(s) are already processed."
+                        .formatted(request.getBranch(), allMerges.size());
+        log.info(summary);
+
+        return new CheckNewCommitsResponse(projectName, request.getRepoUrl(), request.getBranch(),
+                allMerges.size(), allMerges.size() - newCommitShas.size(), newCommitShas, hasNewCommits, summary);
+    }
+
+    /**
      * Relative URL for downloading this run's CSV, or null when the run wrote
      * no CSV (nothing generated) - a link to a file that isn't there is worse
      * than no link, since a caller would retry it as though it were transient.
@@ -1005,6 +1265,58 @@ public class QaPipelineService {
         return null;
     }
 
+    /** What a run's category bookkeeping adds up to. */
+    record Coverage(List<String> applicable, List<String> missing, int coveragePercent, MergeStatus status) {}
+
+    /**
+     * Turns the category lists into a coverage percentage and a status.
+     *
+     * <p>The load-bearing part is {@code notApplicable}. Coverage is measured
+     * against what the change actually gave the pipeline something to do with:
+     * counting a category the commit could never exercise either inflates the
+     * percentage (when it is credited, which is how a config-only merge whose
+     * only real call failed was recorded SUCCESS at 100% and then skipped
+     * forever) or strands the merge as permanently incomplete (when it is not).
+     *
+     * <p>FAILED stays reserved for a run that produced nothing at all. A run
+     * holding cases is PARTIAL however few categories completed, and the
+     * distinction is load-bearing: MergeHistoryService preserves a FAILED
+     * status verbatim and only recomputes a PARTIAL one from accumulated
+     * progress, so calling a productive run FAILED freezes it there.
+     */
+    /**
+     * Which folder a commit's generation output belongs in: the one already on
+     * disk, or - only when nothing is there yet - a freshly named one.
+     *
+     * <p>Split out from the I/O so the decision itself is testable without a
+     * filesystem. {@code located} is whatever GeneratedRunLocator resolved
+     * (which already knows both folder shapes - bare hash, and backfill's
+     * "&lt;seq&gt;.&lt;hash&gt;"); {@code locatedExists} is the caller's own
+     * {@code Files.isDirectory} check on it, done once, before this is called.
+     *
+     * <p>Existing wins unconditionally - even a bare-hash folder is reused in
+     * preference to minting a "&lt;seq&gt;.&lt;hash&gt;" sibling, because two
+     * folders for one commit is the exact problem this exists to prevent.
+     * commitSequence only ever matters for the fresh-creation branch: it gives
+     * a commit its ordering the first time a folder is made for it, same as
+     * before this method existed.
+     */
+    static String resolveRunOutputDir(boolean locatedExists, String located, String outputDir,
+                                       String headRef, Integer commitSequence) {
+        return locatedExists ? located : Path.of(outputDir, runFolderName(headRef, commitSequence)).toString();
+    }
+
+    static Coverage coverageOf(List<String> expected, List<String> notApplicable,
+                                List<String> generated, boolean producedSomething) {
+        List<String> applicable = expected.stream().filter(c -> !notApplicable.contains(c)).toList();
+        List<String> missing = applicable.stream().filter(c -> !generated.contains(c)).toList();
+        int percent = applicable.isEmpty() ? 100
+                : (int) Math.round(100.0 * (applicable.size() - missing.size()) / applicable.size());
+        MergeStatus status = missing.isEmpty() ? MergeStatus.SUCCESS
+                : (generated.isEmpty() && !producedSomething ? MergeStatus.FAILED : MergeStatus.PARTIAL);
+        return new Coverage(applicable, missing, percent, status);
+    }
+
     /**
      * The run folder for one commit: {@code <seq>.<commitHash>} when the
      * sequence is known, plain {@code <commitHash>} otherwise.
@@ -1018,13 +1330,33 @@ public class QaPipelineService {
      * sequence from the hash unambiguously, which is what lets the automation
      * side find a commit's folder again by matching on the hash after it.
      */
-    private String runFolderName(String headRef, Integer sequence) {
+    private static String runFolderName(String headRef, Integer sequence) {
         String hash = sanitizeForPath(headRef);
         return sequence == null ? hash : sequence + "." + hash;
     }
 
+    /**
+     * Creates the commit's run folder and writes the "nothing to generate"
+     * sentence into it.
+     *
+     * Deliberately never throws: this runs on a path that has already
+     * succeeded and has nothing to record, so failing to leave a note must not
+     * turn that into a failed merge which a later backfill then retries
+     * forever. A warning in the log is the whole remedy.
+     */
+    static void writeRunNote(String runOutputDir, String message) {
+        Path note = Path.of(runOutputDir, NO_TEST_CASES_FILE);
+        try {
+            Files.createDirectories(Path.of(runOutputDir));
+            Files.writeString(note, message + System.lineSeparator(), StandardCharsets.UTF_8);
+            log.info("No test cases for this commit - wrote {}", note);
+        } catch (IOException e) {
+            log.warn("Could not write {}: {}", note, e.getMessage());
+        }
+    }
+
     /** Turns a ref (sha, branch name, etc.) into a filesystem-safe folder name. */
-    private String sanitizeForPath(String ref) {
+    private static String sanitizeForPath(String ref) {
         if (ref == null || ref.isBlank()) {
             return "run";
         }

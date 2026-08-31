@@ -29,6 +29,8 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Folds the per-batch automation scripts generated for one commit into a
@@ -219,6 +221,56 @@ public class AutomationScriptMerger {
         String fileName = className + ".java";
         log.info("Merged {} script(s) into {} ({} member(s)).", scripts.size(), fileName, members.size());
         return new TestCaseResult(className, fileName, sb.toString(), null);
+    }
+
+    /**
+     * The file name one commit's automation always merges into, computed from
+     * the commit hash alone. Public so a caller can check for - and read - the
+     * existing file BEFORE generating anything, which is what makes
+     * incremental generation possible: {@link #alreadyAutomatedCaseIds} reads
+     * that file to find out what a fresh LLM call doesn't need to redo.
+     */
+    public String mergedFileName(String commitHash) {
+        return CLASS_PREFIX + sanitizeForClassName(commitHash) + ".java";
+    }
+
+    /**
+     * Matches the trace-back comment the automation prompt requires above
+     * every {@code @Test} method: "put its Test Case ID in a comment above the
+     * method so a human can trace script back to case." Loose on purpose - any
+     * amount of whitespace, any blank lines between the comment and the
+     * annotation - because this reads whatever the model actually wrote, not a
+     * format this class controls.
+     */
+    private static final Pattern TC_ID_ABOVE_TEST =
+            Pattern.compile("//\\s*(TC-\\d+)\\s*\\R+\\s*@Test", Pattern.CASE_INSENSITIVE);
+
+    /**
+     * Which manual test case IDs an existing merged script already has a
+     * {@code @Test} method for, read from the trace-back comment above each
+     * one.
+     *
+     * <p>This is the ONLY signal available - the platform does not track
+     * "case X was automated in run Y" anywhere else - so it inherits that
+     * comment's reliability exactly. The instruction lives in the prompt, not
+     * in code, which per this project's own rule ("when a prompt instruction
+     * proves unreliable, enforce it in code") is not a guarantee. A method
+     * whose comment the model omitted or malformed reads as NOT yet automated,
+     * so the worst case is a redundant method generated again next run -
+     * {@link #merge} renames it on a name collision rather than losing either
+     * copy. It is never mistaken the other way: nothing here can make an
+     * actually-uncovered case look covered, only the reverse.
+     */
+    public Set<String> alreadyAutomatedCaseIds(String existingScriptSource) {
+        if (existingScriptSource == null || existingScriptSource.isBlank()) {
+            return Set.of();
+        }
+        Set<String> ids = new LinkedHashSet<>();
+        Matcher m = TC_ID_ABOVE_TEST.matcher(existingScriptSource);
+        while (m.find()) {
+            ids.add(m.group(1).toUpperCase(java.util.Locale.ROOT));
+        }
+        return ids;
     }
 
     /** Keeps only characters legal in a Java identifier. */

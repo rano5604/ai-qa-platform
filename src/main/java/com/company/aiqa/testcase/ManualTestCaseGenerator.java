@@ -13,9 +13,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Step: "Generate Test Cases" (manual/business variant).
@@ -166,6 +171,92 @@ public class ManualTestCaseGenerator {
      * auto-maps in TestRail's CSV import wizard without manual remapping.
      * Returns the file's absolute path.
      */
+    /**
+     * What a resume wrote, and what it kept.
+     *
+     * @param merged every case now in the file - the kept ones followed by the
+     *               freshly generated ones, renumbered so no two share an id
+     */
+    public record RunCsvMerge(String path, int kept, List<ManualTestCase> merged) {
+    }
+
+    /**
+     * Writes the per-commit CSV for a RESUME, keeping the cases belonging to
+     * categories this run did not regenerate.
+     *
+     * <p>{@link #writeCsv} replaces the file with whatever it is handed, which
+     * is correct for a full run and destructive for a partial one. A resume
+     * generates only the categories that failed last time, so handing its
+     * output to writeCsv threw away everything the earlier run had produced:
+     * a real mms commit went from 34 cases to 5, and the automation pass -
+     * which reads exactly this file - would then have seen five.
+     *
+     * <p>Merging on test case id is not an option: {@code idCursor} restarts at
+     * TC-001 on every run, so the resume's TC-001..TC-005 are different cases
+     * from the existing TC-001..TC-005 and matching them would overwrite the
+     * wrong rows. The category is the thing the resume actually replaces, so
+     * the category is what this keys on.
+     *
+     * <p>Ids are reassigned to the fresh cases, continuing past the highest id
+     * that survived, because duplicate ids in this file are worse than
+     * renumbered ones - the automation pass names its test methods from them.
+     */
+    public RunCsvMerge writeCsvPreservingOtherCategories(List<ManualTestCase> freshCases, String outputDir,
+                                                         String fileName, Collection<String> regeneratedCategories) {
+        List<ManualTestCase> existing = loadRunCsv(outputDir, fileName);
+        if (existing.isEmpty() || regeneratedCategories == null || regeneratedCategories.isEmpty()) {
+            return new RunCsvMerge(writeCsv(freshCases, outputDir, fileName), 0, List.copyOf(freshCases));
+        }
+
+        Set<String> regenerated = regeneratedCategories.stream()
+                .filter(c -> c != null)
+                .map(c -> c.trim().toUpperCase(Locale.ROOT))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        List<ManualTestCase> kept = existing.stream()
+                .filter(tc -> tc.type() == null
+                        || !regenerated.contains(tc.type().trim().toUpperCase(Locale.ROOT)))
+                .toList();
+
+        int nextId = kept.stream().mapToInt(tc -> parseId(tc.testCaseId())).max().orElse(0) + 1;
+        List<ManualTestCase> merged = new ArrayList<>(kept);
+        for (ManualTestCase fresh : freshCases) {
+            merged.add(withId(fresh, "TC-%03d".formatted(nextId++)));
+        }
+
+        String path = writeCsv(merged, outputDir, fileName);
+        log.info("Resume wrote {} to {}: {} fresh case(s) for {}, {} existing case(s) kept from the other "
+                        + "categories ({} replaced).",
+                merged.size(), fileName, freshCases.size(), regenerated, kept.size(),
+                existing.size() - kept.size());
+        return new RunCsvMerge(path, kept.size(), List.copyOf(merged));
+    }
+
+    /** "TC-014" -> 14. Anything unparseable sorts as 0 rather than failing the merge. */
+    private int parseId(String testCaseId) {
+        if (testCaseId == null) {
+            return 0;
+        }
+        int digits = 0;
+        boolean seen = false;
+        for (int i = 0; i < testCaseId.length(); i++) {
+            char c = testCaseId.charAt(i);
+            if (Character.isDigit(c)) {
+                digits = digits * 10 + (c - '0');
+                seen = true;
+            } else if (seen) {
+                break;
+            }
+        }
+        return digits;
+    }
+
+    private ManualTestCase withId(ManualTestCase tc, String id) {
+        return new ManualTestCase(id, tc.feature(), tc.scenario(), tc.preconditions(), tc.steps(),
+                tc.testData(), tc.expectedResult(), tc.priority(), tc.type(), tc.relatedFile(),
+                tc.action(), tc.existingTestCaseId());
+    }
+
     public String writeCsv(List<ManualTestCase> testCases, String outputDir, String fileName) {
         try {
             Path dir = Path.of(outputDir);

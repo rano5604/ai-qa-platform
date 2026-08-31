@@ -1,7 +1,11 @@
 package com.company.aiqa.controller;
 
+import com.company.aiqa.config.GitProperties;
 import com.company.aiqa.error.NotFoundException;
+import com.company.aiqa.git.GitDiffService;
 import com.company.aiqa.git.MergeHistoryService;
+import com.company.aiqa.model.CheckNewCommitsRequest;
+import com.company.aiqa.model.CheckNewCommitsResponse;
 import com.company.aiqa.model.ExecuteAutomationRequest;
 import com.company.aiqa.model.ExecuteAutomationResponse;
 import com.company.aiqa.model.GenerateAutomationRequest;
@@ -13,6 +17,7 @@ import com.company.aiqa.model.GenerateTestsResponse;
 import com.company.aiqa.model.MergeHistoryEntry;
 import com.company.aiqa.service.AutomationExecutionService;
 import com.company.aiqa.service.AutomationGenerationService;
+import com.company.aiqa.service.ExecutionReportDownloadService;
 import com.company.aiqa.service.QaPipelineService;
 import com.company.aiqa.service.TestCaseDownloadService;
 import jakarta.validation.Valid;
@@ -41,17 +46,47 @@ public class QaController {
     private final AutomationGenerationService automationGenerationService;
     private final AutomationExecutionService automationExecutionService;
     private final TestCaseDownloadService testCaseDownloadService;
+    private final ExecutionReportDownloadService executionReportDownloadService;
+    private final GitDiffService gitDiffService;
+    private final GitProperties gitProperties;
 
     public QaController(QaPipelineService pipelineService,
                         MergeHistoryService mergeHistoryService,
                         AutomationGenerationService automationGenerationService,
                         AutomationExecutionService automationExecutionService,
-                        TestCaseDownloadService testCaseDownloadService) {
+                        TestCaseDownloadService testCaseDownloadService,
+                        ExecutionReportDownloadService executionReportDownloadService,
+                        GitDiffService gitDiffService,
+                        GitProperties gitProperties) {
         this.pipelineService = pipelineService;
         this.mergeHistoryService = mergeHistoryService;
         this.automationGenerationService = automationGenerationService;
         this.automationExecutionService = automationExecutionService;
         this.testCaseDownloadService = testCaseDownloadService;
+        this.executionReportDownloadService = executionReportDownloadService;
+        this.gitDiffService = gitDiffService;
+        this.gitProperties = gitProperties;
+    }
+
+    /**
+     * Resolves projectName to the repo URL merge history is actually keyed by,
+     * by finding the matching local clone and reading its own origin remote.
+     * merge-history/incomplete work purely on local state - no network call,
+     * no credential - so a project name is enough as long as a clone exists;
+     * one always will if this repo has ever been through
+     * /generate-tests-from-branch or the backfill, since that is what put the
+     * history there in the first place.
+     */
+    private String resolveRepoUrlForHistory(String projectName) {
+        String repoUrl = gitDiffService.findOriginUrlForProject(gitProperties.getWorkspaceDir(), projectName);
+        if (repoUrl == null) {
+            throw new NotFoundException(
+                    ("No local clone of project '%s' found under %s. Merge history is keyed by the repo's "
+                            + "origin URL, and none is known for this project name - run "
+                            + "/generate-tests-from-branch or the backfill for it at least once first.")
+                            .formatted(projectName, gitProperties.getWorkspaceDir()));
+        }
+        return repoUrl;
     }
 
     /**
@@ -164,6 +199,31 @@ public class QaController {
     }
 
     /**
+     * Checks whether repoUrl's branch has merge commits the platform has not
+     * seen yet, WITHOUT generating anything - a cheap way to decide whether
+     * running the backfill above is worth it right now.
+     *
+     * <p>This is the one merge-history-related endpoint that genuinely needs
+     * the network (and, for a private repo, a credential): it clones/fetches
+     * repoUrl to see its current state, the same as /generate-tests-from-branch
+     * and the backfill do. /merge-history and /merge-history/incomplete, by
+     * contrast, only read what's already recorded locally and take a
+     * projectName instead.
+     *
+     * Example:
+     * POST /api/v1/generate-tests-from-branch/check-new-commits
+     * {
+     *   "repoUrl": "https://github.com/rano5604/FinFlow.git",
+     *   "branch": "Release",
+     *   "accessToken": "ghp_..."
+     * }
+     */
+    @PostMapping("/generate-tests-from-branch/check-new-commits")
+    public CheckNewCommitsResponse checkNewCommits(@Valid @RequestBody CheckNewCommitsRequest request) {
+        return pipelineService.checkForNewCommits(request);
+    }
+
+    /**
      * Turns the manual test cases ALREADY generated for one commit into
      * runnable REST Assured automation - API testing only.
      *
@@ -184,8 +244,7 @@ public class QaController {
      * Example:
      * POST /api/v1/generate-automation
      * {
-     *   "repoUrl": "https://github.com/org/repo.git",
-     *   "branch": "main",
+     *   "projectName": "repo",
      *   "commitHash": "4df458deab5a8d8d4748696d753b4aa54fdcf304",
      *   "baseUri": "http://localhost:8080",
      *   "llmKeys": { "gemini": "AIza..." }
@@ -214,7 +273,11 @@ public class QaController {
      * a failure can be triaged without re-running anything by hand
      * (credential-bearing headers are redacted). TestNG's own HTML/XML report
      * is left in the commit's folder under test-report/ and its path is
-     * returned in testExecutionSummary.reportPath.
+     * returned in testExecutionSummary.reportPath - a path on the SERVER's
+     * disk. The evidence report (verdicts plus the actual request/response
+     * behind each one) is downloadable instead: see
+     * executionReportDownloadUrl on the response, or
+     * GET /api/v1/execution-report/download directly.
      *
      * baseUri overrides the default baked in at generation time, so the same
      * commit's scripts can be pointed at any environment without regenerating.
@@ -234,15 +297,21 @@ public class QaController {
     }
 
     /**
-     * Lists every merge this repo+branch has recorded as processed, oldest
+     * Lists every merge this project+branch has recorded as processed, oldest
      * first - useful for confirming a backfill covered what you expected,
      * or for auditing what's already been run.
      *
-     * Example: GET /api/v1/merge-history?repoUrl=https://github.com/rano5604/FinFlow.git&branch=Release
+     * <p>Identified by projectName, not repoUrl: this reads local state only -
+     * no clone, no fetch, no credential - so the repo URL merge history is
+     * actually keyed by is resolved from an existing local clone instead of
+     * asked for. Needs that clone to already exist, which it will for any repo
+     * that has ever been through /generate-tests-from-branch or the backfill.
+     *
+     * Example: GET /api/v1/merge-history?projectName=FinFlow&branch=Release
      */
     @GetMapping("/merge-history")
-    public List<MergeHistoryEntry> mergeHistory(@RequestParam String repoUrl, @RequestParam String branch) {
-        return mergeHistoryService.load(repoUrl, branch);
+    public List<MergeHistoryEntry> mergeHistory(@RequestParam String projectName, @RequestParam String branch) {
+        return mergeHistoryService.load(resolveRepoUrlForHistory(projectName), branch);
     }
 
     /**
@@ -257,11 +326,13 @@ public class QaController {
      * for visibility - to confirm a branch really is fully covered, or to see
      * what a backfill will do before running it.
      *
-     * Example: GET /api/v1/merge-history/incomplete?repoUrl=https://github.com/org/repo.git&branch=main
+     * <p>Identified by projectName - see /merge-history above for why.
+     *
+     * Example: GET /api/v1/merge-history/incomplete?projectName=repo&branch=main
      */
     @GetMapping("/merge-history/incomplete")
-    public List<MergeHistoryEntry> incompleteMerges(@RequestParam String repoUrl, @RequestParam String branch) {
-        return mergeHistoryService.findIncomplete(repoUrl, branch);
+    public List<MergeHistoryEntry> incompleteMerges(@RequestParam String projectName, @RequestParam String branch) {
+        return mergeHistoryService.findIncomplete(resolveRepoUrlForHistory(projectName), branch);
     }
 
     /**
@@ -293,6 +364,38 @@ public class QaController {
 
         return ResponseEntity.ok()
                 .contentType(new MediaType("text", "csv", StandardCharsets.UTF_8))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        ContentDisposition.attachment().filename(download.fileName()).build().toString())
+                .body(download.content());
+    }
+
+    /**
+     * Downloads the execution report ({@code aiqa-report.html}) for one
+     * commit's automation run - every verdict together with the exact HTTP
+     * request and response that produced it (see ExecutionReportWriter).
+     *
+     * <p>POST /api/v1/execute-automation writes this to the SERVER's disk and
+     * only ever returns its local path in the response summary - useless to a
+     * caller on another machine. This returns the file itself.
+     *
+     * <p>Identify the project by either {@code projectName} or {@code repoUrl},
+     * same as test-case download. Unlike that endpoint, {@code commitHash} is
+     * REQUIRED: a report is specific to one run, there is no project-wide
+     * rollup. Must be the full commit hash - an abbreviated one finds nothing
+     * and answers 404.
+     *
+     * Example:
+     * GET /api/v1/execution-report/download?projectName=QueueManagement&commitHash=4df458deab5a8d8d4748696d753b4aa54fdcf304
+     */
+    @GetMapping("/execution-report/download")
+    public ResponseEntity<byte[]> downloadExecutionReport(@RequestParam(required = false) String projectName,
+                                                          @RequestParam(required = false) String repoUrl,
+                                                          @RequestParam String commitHash) {
+        ExecutionReportDownloadService.Download download =
+                executionReportDownloadService.load(projectName, repoUrl, commitHash);
+
+        return ResponseEntity.ok()
+                .contentType(new MediaType("text", "html", StandardCharsets.UTF_8))
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         ContentDisposition.attachment().filename(download.fileName()).build().toString())
                 .body(download.content());

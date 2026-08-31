@@ -20,11 +20,24 @@ public record GenerateAutomationResponse(
         /** Manual test cases found in that commit's folder. */
         int manualCasesFound,
 
-        /** How many of those were API-testable and fed to the generator. */
+        /**
+         * How many of those were API-testable. NOT all of these were
+         * necessarily sent to the model this call - see alreadyAutomated below
+         * for how many were already covered and skipped.
+         */
         int apiCasesSelected,
 
         /** Cases skipped for having no HTTP surface (UI steps, config checks). */
         int skippedNonApi,
+
+        /**
+         * Of the API-testable cases, how many already had a {@code @Test}
+         * method in an earlier run's merged script for this commit and were
+         * left untouched - no LLM call spent on them, no method regenerated.
+         * See AutomationScriptMerger.alreadyAutomatedCaseIds. 0 on a commit's
+         * first generation, since nothing exists yet to already cover anything.
+         */
+        int alreadyAutomated,
 
         /** REST endpoints detected in the commit, used to ground the generated scripts. */
         List<String> endpointsDetected,

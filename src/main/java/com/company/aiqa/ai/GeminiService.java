@@ -72,6 +72,18 @@ public class GeminiService implements LlmClient {
     }
 
     /**
+     * Same correction as OpenAIService: this bean's existence says which
+     * provider was selected, not that a key was supplied for it. The interface
+     * default of true let a blank key through
+     * QaPipelineService.requireLlmCredentials and turned one up-front refusal
+     * into a failure per category per batch.
+     */
+    @Override
+    public boolean hasServerSideCredentials() {
+        return properties.getApiKey() != null && !properties.getApiKey().isBlank();
+    }
+
+    /**
      * Per-request credentials: a caller-supplied llmKeys.gemini takes precedence
      * over the configured one for this call only. Passing null (or an LlmKeys
      * with no "gemini" entry) uses the configured key exactly as before.

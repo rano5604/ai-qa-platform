@@ -152,7 +152,11 @@ public class AutomationGenerationService {
         // credential. This pass consumes output a previous run produced, so
         // reaching out to the remote would add a network dependency (and a
         // token requirement) for information already local.
-        String projectName = runLocator.resolveProjectName(request.getProjectName(), request.getRepoUrl());
+        // projectName is @NotBlank on the request now - repoUrl used to be
+        // accepted as a fallback way to derive it, but this pass never talks to
+        // a remote, so a repo URL never told it anything repoPath/projectName
+        // didn't already.
+        String projectName = request.getProjectName().trim();
         String localPath = resolveLocalRepo(request, projectName);
 
         String baseOutputDir = request.getOutputDir() != null
@@ -271,7 +275,58 @@ public class AutomationGenerationService {
                                     : "Detected endpoints: " + endpoints);
             log.info(summary);
             return new GenerateAutomationResponse(projectName, request.getCommitHash(), allCases.size(),
-                    0, skipped, endpoints, List.of(), runOutputDir, summary);
+                    0, skipped, 0, endpoints, List.of(), runOutputDir, summary);
+        }
+
+        // 4b. Skip cases this commit already has automation for. The prompt
+        // requires "// TC-xxx" above every generated @Test method precisely so
+        // this is possible - see AutomationScriptMerger.alreadyAutomatedCaseIds.
+        // Reading this needs nothing but a file on disk, so it happens before
+        // any of the (expensive) endpoint/context work above would otherwise
+        // have been wasted - except that work is also what apiCases needed, so
+        // this stays here rather than moving earlier.
+        String mergedFileName = scriptMerger.mergedFileName(request.getCommitHash());
+        Path existingScriptPath = Path.of(runOutputDir, mergedFileName);
+        TestCaseResult existingScript = null;
+        java.util.Set<String> alreadyAutomatedIds = java.util.Set.of();
+        if (Files.isRegularFile(existingScriptPath)) {
+            try {
+                String existingSource = Files.readString(existingScriptPath, java.nio.charset.StandardCharsets.UTF_8);
+                alreadyAutomatedIds = scriptMerger.alreadyAutomatedCaseIds(existingSource);
+                existingScript = new TestCaseResult(mergedFileName, mergedFileName, existingSource,
+                        existingScriptPath.toString());
+            } catch (java.io.IOException e) {
+                log.warn("Could not read existing {} - generating without it, which may re-cover cases it "
+                        + "already had: {}", existingScriptPath, e.getMessage());
+            }
+        }
+
+        java.util.Set<String> coveredIds = alreadyAutomatedIds;
+        List<ManualTestCase> newApiCases = coveredIds.isEmpty()
+                ? apiCases
+                : apiCases.stream().filter(tc -> !coveredIds.contains(tc.testCaseId())).toList();
+        int alreadyAutomatedCount = apiCases.size() - newApiCases.size();
+
+        if (newApiCases.isEmpty()) {
+            // Every API-testable case already has a method in the existing
+            // file. Nothing to send the model and nothing to rewrite - a
+            // no-op merge here would just re-parse and re-write byte-identical
+            // content.
+            String summary = ("Commit %s: %d manual case(s), %d API-testable, all %d already automated in %s. "
+                    + "Nothing new to generate.")
+                    .formatted(request.getCommitHash(), allCases.size(), apiCases.size(),
+                            alreadyAutomatedCount, mergedFileName);
+            log.info(summary);
+            return new GenerateAutomationResponse(projectName, request.getCommitHash(), allCases.size(),
+                    apiCases.size(), skipped, alreadyAutomatedCount, endpoints,
+                    existingScript != null ? List.of(existingScript) : List.of(), runOutputDir, summary);
+        }
+
+        if (alreadyAutomatedCount > 0) {
+            log.info("Commit {}: {} of {} API-testable case(s) already automated in {} - generating the "
+                            + "remaining {} only.",
+                    request.getCommitHash(), alreadyAutomatedCount, apiCases.size(), mergedFileName,
+                    newApiCases.size());
         }
 
         // 5. Generate.
@@ -307,7 +362,7 @@ public class AutomationGenerationService {
         List<String> failures = new ArrayList<>();
         java.util.Set<String> takenFileNames = new java.util.HashSet<>();
         int perCall = Math.max(1, pipelineProperties.getMaxCasesPerAutomationCall());
-        List<List<ManualTestCase>> caseBatches = partition(apiCases, perCall);
+        List<List<ManualTestCase>> caseBatches = partition(newApiCases, perCall);
 
         // Shared, and mutable, on purpose: when a provider rejects a prompt as
         // too large, the batch that discovered it shrinks this for every batch
@@ -326,7 +381,22 @@ public class AutomationGenerationService {
         // that commit, not three arbitrarily-numbered ones.
         if (!generated.isEmpty()) {
             try {
-                TestCaseResult mergedScript = scriptMerger.merge(generated, request.getCommitHash());
+                // Existing methods go FIRST: merge() keeps the first script's
+                // @BeforeClass as the survivor and absorbs later ones into its
+                // body, so an existing fixture (a merchant/account already
+                // created there) stays authoritative and any new batch's setup
+                // is folded into it rather than the other way around. A name
+                // collision - unlikely, since newApiCases already excludes
+                // anything alreadyAutomatedIds covers - renames the NEW method,
+                // never drops or silently replaces the old one.
+                List<TestCaseResult> toMerge = existingScript == null
+                        ? generated
+                        : new ArrayList<>(generated.size() + 1);
+                if (existingScript != null) {
+                    toMerge.add(existingScript);
+                    toMerge.addAll(generated);
+                }
+                TestCaseResult mergedScript = scriptMerger.merge(toMerge, request.getCommitHash());
 
                 // Java compiles a file all-or-nothing, so one unusable line -
                 // an invented matcher, a bad literal, a missing import - loses
@@ -379,9 +449,10 @@ public class AutomationGenerationService {
 
         String failure = failures.isEmpty() ? null : String.join("; ", failures);
 
-        String summary = "Commit %s: %d manual case(s), %d API-testable (%d skipped as UI/configuration), %d script file(s) generated against %s."
+        String summary = ("Commit %s: %d manual case(s), %d API-testable (%d skipped as UI/configuration), "
+                + "%d new case(s) generated against %s (%d already automated and left untouched).")
                 .formatted(request.getCommitHash(), allCases.size(), apiCases.size(), skipped,
-                        generated.size(), baseUri);
+                        newApiCases.size(), baseUri, alreadyAutomatedCount);
         // Say which contract shaped the payloads, or that none did. A run
         // generated blind against source DTOs and one generated from the
         // target's own document are different artefacts and should not read
@@ -400,7 +471,7 @@ public class AutomationGenerationService {
         log.info(summary);
 
         return new GenerateAutomationResponse(projectName, request.getCommitHash(), allCases.size(),
-                apiCases.size(), skipped, endpoints, generated, runOutputDir, summary);
+                apiCases.size(), skipped, alreadyAutomatedCount, endpoints, generated, runOutputDir, summary);
     }
 
     /**

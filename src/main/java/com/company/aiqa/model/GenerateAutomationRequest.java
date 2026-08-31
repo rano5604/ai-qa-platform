@@ -22,16 +22,16 @@ import java.util.List;
  * call POST /api/v1/execute-automation with the same commit hash. (An earlier
  * "executeTests" flag here has been removed; requests still sending it are
  * accepted and it is ignored.)
+ *
+ * <p>Nothing here identifies a remote repository - this pass reads the manual
+ * cases from the commit's own CSV on disk and, for the API surface, an
+ * already-existing local clone found by {@link #projectName} alone. A
+ * "repoUrl" field used to exist purely to derive projectName when it was
+ * omitted; it is gone now that projectName is required, so there is nothing
+ * left it did that this doesn't already do directly. Any caller still sending
+ * one is unaffected - it is simply not read.
  */
 public class GenerateAutomationRequest {
-
-    /**
-     * Optional. Only used to derive the project folder name and to find the
-     * existing local clone - nothing is fetched or cloned, since this pass
-     * works entirely from output that already exists on disk. Supply either
-     * this or {@link #projectName}.
-     */
-    private String repoUrl;
 
     /** Optional, informational only - this endpoint targets a commit, not a branch. */
     private String branch;
@@ -68,9 +68,12 @@ public class GenerateAutomationRequest {
     private String baseUri;
 
     /**
-     * Overrides the project folder name if it doesn't match what's derived
-     * from repoUrl (e.g. the original run used a different remote).
+     * The project folder name under generated-tests/ - the same name
+     * generation used, e.g. "mms". Also used to find the existing local clone
+     * (by matching its derived project name) when the API surface needs
+     * scanning; nothing is fetched or cloned here.
      */
+    @NotBlank
     private String projectName;
 
     /** Per-request LLM credentials - same semantics as everywhere else, see LlmKeys. */
@@ -86,9 +89,6 @@ public class GenerateAutomationRequest {
      * one URL replaces ALL discovery, not just the component it belongs to.
      */
     private List<String> openApiUrls;
-
-    public String getRepoUrl() { return repoUrl; }
-    public void setRepoUrl(String repoUrl) { this.repoUrl = repoUrl; }
 
     public String getRepoPath() { return repoPath; }
     public void setRepoPath(String repoPath) { this.repoPath = repoPath; }

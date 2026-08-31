@@ -47,8 +47,15 @@ public class AutomationExecutionService {
 
     private static final String DEFAULT_BASE_URI = "http://localhost:8080";
 
-    /** Where TestNG's reports and the captured traffic are written, inside the commit's folder. */
-    private static final String REPORT_DIR_NAME = "test-report";
+    /**
+     * Subfolder under a commit's run folder holding both TestNG's own report
+     * and {@link ExecutionReportWriter#REPORT_FILE}. Public so
+     * ExecutionReportDownloadService resolves the exact same path this class
+     * writes to, rather than a second hardcoded copy drifting from it - the
+     * same reasoning GeneratedRunLocator's javadoc gives for sharing folder
+     * arithmetic between generation and execution.
+     */
+    public static final String REPORT_DIR_NAME = "test-report";
 
     /**
      * Generation merges a commit's automation into one file with this prefix.
@@ -157,7 +164,17 @@ public class AutomationExecutionService {
         log.info(summary);
 
         return new ExecuteAutomationResponse(projectName, request.getCommitHash(), fileNames,
-                runOutputDir, execution, summary);
+                runOutputDir, execution, downloadUrlFor(projectName, request.getCommitHash(), evidenceReport), summary);
+    }
+
+    /** Mirrors QaPipelineService.downloadUrlFor - null when there is no report to link to. */
+    private String downloadUrlFor(String projectName, String commitHash, Path evidenceReport) {
+        if (evidenceReport == null || projectName == null || projectName.isBlank()) {
+            return null;
+        }
+        return "/api/v1/execution-report/download?projectName="
+                + java.net.URLEncoder.encode(projectName, java.nio.charset.StandardCharsets.UTF_8)
+                + "&commitHash=" + java.net.URLEncoder.encode(commitHash, java.nio.charset.StandardCharsets.UTF_8);
     }
 
     /**

@@ -4,7 +4,9 @@ import com.company.aiqa.model.TestCaseResult;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -159,6 +161,123 @@ class AutomationScriptMergerTest {
                 """);
 
         assertTrue(out.contains("body(payload)"), out);
+    }
+
+    // ---------------------------------------------- incremental generation ----
+    // What makes "generate only the new cases, append to the existing script"
+    // possible at all: the trace-back comment the prompt already requires
+    // above every @Test ("put its Test Case ID in a comment above the method
+    // so a human can trace script back to case"), read back out of a real file.
+
+    @Test
+    void mergedFileNameIsDeterministicFromTheCommitHashAlone() {
+        assertEquals("AutomationTest_abc123.java", merger.mergedFileName("abc123"));
+        assertEquals(merger.mergedFileName("abc123"), merger.mergedFileName("abc123"));
+    }
+
+    @Test
+    void extractsEveryTraceBackIdAboveATestMethod() {
+        String existing = script("""
+                    // TC-001
+                    @Test
+                    public void createsFee() {
+                        given().contentType(ContentType.JSON).when().post("/api/v1/fees").then().statusCode(201);
+                    }
+
+                    // TC-003
+                    @Test
+                    public void rejectsBadFee() {
+                        given().contentType(ContentType.JSON).when().post("/api/v1/fees").then().statusCode(400);
+                    }
+                """).testCode();
+
+        assertEquals(Set.of("TC-001", "TC-003"), merger.alreadyAutomatedCaseIds(existing));
+    }
+
+    @Test
+    void aScriptWithNoTraceBackCommentsYieldsNoIds() {
+        String existing = script("""
+                    @Test
+                    public void createsFee() {
+                        given().contentType(ContentType.JSON).when().post("/api/v1/fees").then().statusCode(201);
+                    }
+                """).testCode();
+
+        assertTrue(merger.alreadyAutomatedCaseIds(existing).isEmpty());
+    }
+
+    @Test
+    void nullOrBlankSourceYieldsNoIdsRatherThanThrowing() {
+        assertTrue(merger.alreadyAutomatedCaseIds(null).isEmpty());
+        assertTrue(merger.alreadyAutomatedCaseIds("").isEmpty());
+        assertTrue(merger.alreadyAutomatedCaseIds("   ").isEmpty());
+    }
+
+    @Test
+    void toleratesWindowsLineEndingsBetweenTheCommentAndTheAnnotation() {
+        String existing = script("// TC-007\r\n    @Test\r\n    public void x() { }\r\n").testCode();
+
+        assertEquals(Set.of("TC-007"), merger.alreadyAutomatedCaseIds(existing));
+    }
+
+    /**
+     * The actual mechanism a resumed generation uses: prepend the existing
+     * file (read off disk) to the fresh batch's scripts before merging, so the
+     * old method survives and the new one is added alongside it - not a
+     * literal text append, but the observable result is the same, and it goes
+     * through the exact same collision-safe path a same-run batch would.
+     */
+    @Test
+    void anExistingScriptPrependedToANewBatchKeepsBothMethods() {
+        TestCaseResult existing = script("""
+                    // TC-001
+                    @Test
+                    public void createsFee() {
+                        given().contentType(ContentType.JSON).when().post("/api/v1/fees").then().statusCode(201);
+                    }
+                """);
+        TestCaseResult freshBatch = script("""
+                    // TC-002
+                    @Test
+                    public void deletesFee() {
+                        given().when().delete("/api/v1/fees/1").then().statusCode(204);
+                    }
+                """);
+
+        String out = merger.merge(List.of(existing, freshBatch), "abc123").testCode();
+
+        assertTrue(out.contains("createsFee"), out);
+        assertTrue(out.contains("deletesFee"), out);
+        assertEquals(Set.of("TC-001", "TC-002"), merger.alreadyAutomatedCaseIds(out));
+    }
+
+    /**
+     * Filtering upstream (AutomationGenerationService excludes already-covered
+     * cases before calling the model) is what's SUPPOSED to prevent this, but
+     * the merger's own collision handling is the backstop if it doesn't: a
+     * method name collision renames the newer one rather than losing either.
+     */
+    @Test
+    void aMethodNameCollisionBetweenExistingAndFreshRenamesRatherThanDropping() {
+        TestCaseResult existing = script("""
+                    // TC-001
+                    @Test
+                    public void createsFee() {
+                        given().contentType(ContentType.JSON).when().post("/api/v1/fees").then().statusCode(201);
+                    }
+                """);
+        TestCaseResult freshBatch = script("""
+                    // TC-001
+                    @Test
+                    public void createsFee() {
+                        given().contentType(ContentType.JSON).when().post("/api/v1/fees").then().statusCode(201);
+                    }
+                """);
+
+        String out = merger.merge(List.of(existing, freshBatch), "abc123").testCode();
+
+        assertTrue(out.contains("public void createsFee()"), out);
+        assertTrue(out.contains("public void createsFee2()"), out);
     }
 
     private static void assertEqualsOnce(String haystack, String needle) {

@@ -21,6 +21,16 @@ public record ExecuteAutomationResponse(
         /** Verdicts, timings, captured traffic, and the path to TestNG's own report. */
         TestExecutionSummary testExecutionSummary,
 
+        /**
+         * GET url for the request/response evidence report (aiqa-report.html) -
+         * null when the run produced no report (empty script set never reaches
+         * here; see AutomationExecutionService). testExecutionSummary carries
+         * only the report's path on the SERVER's disk; this is what a caller on
+         * another machine actually uses. Prefer copying this over assembling
+         * /api/v1/execution-report/download by hand.
+         */
+        String executionReportDownloadUrl,
+
         String summary
 ) {
 }

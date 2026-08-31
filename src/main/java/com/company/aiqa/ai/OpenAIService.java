@@ -22,11 +22,23 @@ import java.util.Map;
  * The base URL is configurable (aiqa.openai.base-url) so this also works
  * against Azure OpenAI-compatible gateways or a self-hosted proxy.
  *
- * Active when aiqa.llm.provider=openai (the default) - see GeminiService
- * for the alternative provider.
+ * Active ONLY when aiqa.llm.provider=openai - see GeminiService and
+ * ai.router.AiRouterService for the alternatives.
+ *
+ * <p>This used to carry {@code matchIfMissing = true}, which made it the
+ * fallback whenever the property could not be resolved - including when
+ * application.yml was absent from the classpath entirely. On 2026-08-20 a
+ * server started from an IDE with no {@code target/classes/application.yml}
+ * did exactly that: the router never existed, every generation went to
+ * OpenAI, and the run failed 16 times over with "No OpenAI API key
+ * configured" while working Gemini/Groq/Mistral keys sat in the
+ * environment. Nothing else in the logs looked wrong, because
+ * PipelineProperties supplies the same defaults the yml does. Without the
+ * flag there is simply no LlmClient bean and the application refuses to
+ * start, which is the whole point.
  */
 @Service
-@ConditionalOnProperty(prefix = "aiqa.llm", name = "provider", havingValue = "openai", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "aiqa.llm", name = "provider", havingValue = "openai")
 public class OpenAIService implements LlmClient {
 
     private static final Logger log = LoggerFactory.getLogger(OpenAIService.class);
@@ -38,6 +50,22 @@ public class OpenAIService implements LlmClient {
     public OpenAIService(RestClient restClient, OpenAIProperties properties) {
         this.restClient = restClient;
         this.properties = properties;
+    }
+
+    /**
+     * The interface default answers true on the reasoning that a
+     * single-provider bean built from server config must have credentials.
+     * That is not true: this bean is created from aiqa.llm.provider alone and
+     * the key is a separate property that is routinely empty. Answering true
+     * with a blank key defeated QaPipelineService.requireLlmCredentials, which
+     * exists precisely to refuse a keyless run before building a single
+     * prompt - so instead of one clear refusal the run produced one identical
+     * "No OpenAI API key configured" per category per batch, deep in a
+     * generation that could never have worked.
+     */
+    @Override
+    public boolean hasServerSideCredentials() {
+        return properties.getApiKey() != null && !properties.getApiKey().isBlank();
     }
 
     /**

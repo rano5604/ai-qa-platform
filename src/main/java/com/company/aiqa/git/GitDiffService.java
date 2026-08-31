@@ -89,23 +89,74 @@ public class GitDiffService {
      * directly against an arbitrary local clone).
      */
     public String resolveProjectName(String repoPath) {
+        String originUrl = readOriginUrl(repoPath);
+        if (originUrl != null && !originUrl.isBlank()) {
+            String fromUrl = lastPathSegmentSansGit(originUrl);
+            if (fromUrl != null && !fromUrl.isBlank()) {
+                return sanitizeProjectName(fromUrl);
+            }
+        }
+        return sanitizeProjectName(lastPathSegmentSansGit(repoPath));
+    }
+
+    /** The raw "origin" remote URL configured on a local clone, or null if there is none (or it can't be read). */
+    private String readOriginUrl(String repoPath) {
         File gitDir = new File(repoPath, ".git");
         try (Repository repository = new FileRepositoryBuilder()
                 .setGitDir(gitDir)
                 .readEnvironment()
                 .findGitDir()
                 .build()) {
-            String originUrl = repository.getConfig().getString("remote", "origin", "url");
-            if (originUrl != null && !originUrl.isBlank()) {
-                String fromUrl = lastPathSegmentSansGit(originUrl);
-                if (fromUrl != null && !fromUrl.isBlank()) {
-                    return sanitizeProjectName(fromUrl);
+            return repository.getConfig().getString("remote", "origin", "url");
+        } catch (IOException e) {
+            log.warn("Could not read 'origin' remote for {}: {}", repoPath, e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * The reverse of {@link #resolveProjectName}: given a project name, finds
+     * the local clone under workspaceDir whose derived project name matches
+     * and returns that clone's raw "origin" remote URL - the exact value
+     * MergeHistoryService's (repoUrl, branch) key was built from.
+     *
+     * <p>Exists so an endpoint can be identified by project name alone, the
+     * same convenience AutomationGenerationService already has for finding a
+     * local checkout to scan - merge history just needs the URL back out
+     * rather than the checkout path, since that URL is literally what its
+     * storage key is made of.
+     *
+     * <p>Returns null when no local clone matches, rather than throwing -
+     * "no clone found" and "found one but it has no origin configured" are
+     * both real, distinguishable-if-needed outcomes, and a caller here always
+     * has a project-specific message to give that a generic exception here
+     * would only blur.
+     */
+    public String findOriginUrlForProject(String workspaceDir, String projectName) {
+        if (projectName == null || projectName.isBlank()) {
+            return null;
+        }
+        Path workspace = Path.of(workspaceDir);
+        if (!Files.isDirectory(workspace)) {
+            return null;
+        }
+        try (java.util.stream.Stream<Path> dirs = Files.list(workspace)) {
+            for (Path candidate : dirs.filter(Files::isDirectory).toList()) {
+                if (!Files.isDirectory(candidate.resolve(".git"))) {
+                    continue;
+                }
+                if (!projectName.equalsIgnoreCase(resolveProjectName(candidate.toString()))) {
+                    continue;
+                }
+                String originUrl = readOriginUrl(candidate.toString());
+                if (originUrl != null && !originUrl.isBlank()) {
+                    return originUrl;
                 }
             }
         } catch (IOException e) {
-            log.warn("Could not read 'origin' remote for {} - falling back to folder name: {}", repoPath, e.getMessage());
+            log.warn("Could not scan {} for a local clone of '{}': {}", workspace, projectName, e.getMessage());
         }
-        return sanitizeProjectName(lastPathSegmentSansGit(repoPath));
+        return null;
     }
 
     /** Strips a trailing "/" or "\" and ".git", then takes the final path segment. */
