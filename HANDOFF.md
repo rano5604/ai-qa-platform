@@ -1,13 +1,13 @@
 # AI-QA Platform — handoff
 
-Written 2026-08-18, updated through 2026-08-25. Everything here is **uncommitted work
+Written 2026-08-18, updated through 2026-09-01. Everything here is **uncommitted work
 on branch `feat/automation-generation-and-execution`** (last real commit `3661153`).
 
 Delete this file once the work is merged — it exists to carry context into a new
 chat, not to live in the repo.
 
 ```bash
-mvn -Dtest='!AiQaPlatformApplicationTests' test    # 155 unit tests, all passing
+mvn -Dtest='!AiQaPlatformApplicationTests' test    # 187 unit tests, all passing
 ```
 
 The Spring Boot app runs on `:8080`. **Anything you change needs a restart
@@ -313,6 +313,67 @@ what the commit added.
 `max-prompt-chars`, `max-depth`, `max-fields-per-schema`. `openApiUrls` on the
 request skips discovery for a service that does not follow the conventions.
 
+### 3.6 Required fields the contract itself doesn't declare
+
+The prompt asks the model to use the contract's `required` fields, and most of
+the time it does — mms's `POST /api/v1/merchants` needs `userId`, the contract
+says so, and the model still dropped it from nine generated tests, all nine
+failing identically on the same validation error. Same lesson as everywhere
+else in this file: enforce it in code.
+
+`AutomationScriptMerger.enforceContractRequiredFields` runs at merge time, not
+render time — it still has the real `ApiContract` object (not just its
+rendered prompt text) in hand. For every `.post(...)`/`.put(...)`/`.patch(...)`
+call whose literal path matches a contract operation (`{param}` segments
+wildcard on either side), it checks the JSON literal for each field the
+contract lists as `required` and splices in whatever's missing. Prefers a
+per-call dynamic value (`System.currentTimeMillis()`-derived) when a
+`.formatted(...)`/`String.format(...)` call is already there to extend a field
+this platform had to invent is exactly the kind a service enforces uniqueness
+on, and a fixed literal would 409 on a second run, same trap as §6.1. Falls
+back to the contract's own documented `example` only when there's no argument
+list to extend. Scoped deliberately narrow: only top-level fields, never a
+field the model already named (even with a different value), never a body
+built by concatenation or a helper method.
+
+**The contract alone wasn't enough.** Fixing `userId` still left `accountNo`
+400ing with `"Account No is required"` — mms's live OpenAPI document lists
+`CreateMerchantRequest.required` as `["businessType", "userId"]` only.
+`accountNo` is enforced at runtime but springdoc never traced an annotation to
+it, so the contract is silently incomplete for that one field. Grounding on
+the contract *alone* structurally cannot produce a field the contract doesn't
+mention — that would be inventing it, which the prompt explicitly forbids and
+this repair correctly refuses to do.
+
+Second, independent source: `RequestDtoSourceScanner` reads the request DTO's
+own Bean Validation annotations straight from the target's source —
+`@NotNull`/`@NotBlank`/`@NotEmpty`, matched by simple name so both
+`jakarta.validation` and the older `javax.validation` work without resolving
+which is on the classpath. Finds the file by exact simple class name (handles
+both classes and records), gives up quietly (empty result, never a thrown
+exception) on anything it can't find or parse. `ApiContract.EndpointContract`
+carries a new `requestSchemaName` field (the request body's top-level `$ref`
+name, e.g. `"CreateMerchantRequest"`) so the scanner knows which class to look
+for. **Only ever upgrades required-ness of a field the contract already
+lists** — a field with a presence annotation that never made it into the
+contract's schema *at all* is never injected; the contract's field list, not
+the DTO, is still the authority on what a request can even contain.
+
+Both repairs are entirely generic — nothing in either class names mms, a path,
+or a field. `merge()` gained two more optional parameters (`ApiContract`,
+target repo `Path`) via new overloads; the original 2-arg signature still
+works unchanged and is a no-op for both repairs, same as before either existed.
+
+**What this does NOT fix, and it matters.** Even with source-grounding wired
+in, mms's `accountNo` still didn't get injected on a live run — see §10's new
+finding. `RequestDtoSourceScanner` was reading `main`'s copy of
+`CreateMerchantRequest.java`, and `main` genuinely has no `userId`/`accountNo`
+fields at all. The deployed target is running `feature/mms-0.1.0`. Both
+repairs are verified correct in isolation (18 tests between them, including one
+that reproduces the exact mms shape with a temp-file DTO) — the gap is that the
+local checkout and the live target describe two different builds, which no
+amount of grounding logic can paper over.
+
 ## 4. Execution and reporting
 
 `ExecutionReportWriter` writes `aiqa-report.html` next to TestNG's own output:
@@ -580,6 +641,53 @@ curl -H "Authorization: Bearer $CEREBRAS_API_KEY" https://api.cerebras.ai/v1/mod
 visible in screenshots during these sessions. Rotate all four; the GitHub token
 matters most — it carries repo write access.
 
+### 5.2 OpenRouter: one gateway instead of many, free-only, with its own quirks
+
+`LlmProviderCatalog` already had an `openrouter` entry, but the generic
+`CatalogOpenAiProvider` path builds a fixed `{model, temperature, max_tokens,
+messages}` body — no room for OpenRouter's own `models` array (client-side
+model-level fallback + priority) or `provider.order`/`allow_fallbacks`
+(provider-level failover). `AbstractOpenAiCompatProvider` gained a protected
+`extraBodyFields()` hook (empty by default, unused by every other catalog
+provider), and a new `OpenRouterProvider` overrides it to add both. Wired into
+both of `AiRouterService`'s provider-construction paths (server-configured
+chain and per-request `llmKeys`) with a name check ahead of the generic
+switch — `openrouter` needs the richer provider, everything else still gets
+the plain one.
+
+**Free-only, enforced in code.** This platform is meant to call OpenRouter's
+zero-cost catalog only. A model id is trusted as free only by naming
+convention — a `:free` suffix, or OpenRouter's own self-maintained
+`openrouter/free` alias, which always resolves to whatever is currently free
+and is the most churn-resistant choice (verified live against
+`GET /api/v1/models` filtered for `pricing.prompt == pricing.completion ==
+"0"` — the ids guessed from training data on the first pass didn't even exist
+in the current catalog, same staleness trap as Cerebras/Groq elsewhere in this
+file). A paid-looking primary model **fails startup outright**; a paid
+fallback entry is dropped with a warning, not fatal.
+
+**The `models` array has an undocumented cap of 3.** A 5-entry fallback list
+answered `HTTP 400 "'models' array must have 3 items or fewer"` on *every*
+call — found live, not documented anywhere reachable in advance.
+`OpenRouterProvider` now truncates defensively (`MAX_FALLBACK_MODELS = 3`,
+logs a warning) on top of trimming `application.yml`'s list itself, so a
+future config edit degrades instead of failing every request again.
+
+**Two ways to supply the key, with materially different chain behaviour:**
+- `aiqa.router.keys.openrouter` / `OPENROUTER_API_KEY` env var — openrouter
+  becomes one link in the full `aiqa.router.chain`; falls through to
+  Gemini/Cerebras/Groq/etc. on failure. Needs a restart.
+- `POST /api/v1/llm-keys` with `{"openrouter": "..."}` — per `LlmKeys`'
+  activation rule, this makes openrouter the **only** active provider for
+  every subsequent call, bypassing the rest of the chain entirely (not just
+  deprioritizing it), and **replaces** whatever was configured before. No
+  restart needed. This is what's actually configured right now.
+
+`OpenRouterProviderTest` (6 tests) pins the free-only guard, the 3-item cap,
+and that `provider.order`/`allow_fallbacks` reach the request body correctly.
+Unverified: an actual live call through a real OpenRouter account — free-tier
+JSON-output reliability in particular (see §8's new item on this).
+
 ---
 
 ## 6. Other platform changes
@@ -818,9 +926,55 @@ the logs; adding one genuinely new case to the same CSV then produced
 on disk held both methods - the original's body untouched, the new one
 appended under its own `// TC-002`.
 
+### 6.5 Automating (and running) every case a project has, not just one commit's
+
+`/generate-automation` needs a `commitHash` because it's scoped to one commit's
+own folder. Sometimes the ask is simpler than that: automate everything the
+project has ever accumulated, from `projectName` alone.
+
+**`POST /generate-automation-for-project`** reads the project-wide rollup CSV
+(`generated-tests/<project>/all_manual_test_cases.csv` - the same file
+`/test-cases/download` already serves when `commitHash` is omitted) instead of
+one commit's folder. The API surface is scanned from the checkout's **HEAD**,
+not any specific historical commit - there's no single commit that "every case
+combined" corresponds to. Writes to the project's own root
+(`AutomationTest_<project>.java`), not a commit subfolder. Everything else is
+identical to the per-commit endpoint and shares its exact machinery: context
+gathering, batching, the two contract/source repairs from §3.6, compile-salvage,
+incremental skip-what's-already-covered.
+
+Two small, mechanical refactors made the sharing possible without duplicating
+~250 lines: `generateBatch` and `resolveLocalRepo` now take plain parameters
+(`LlmKeys`, `repoPath`) instead of the whole per-commit request object, so both
+entry points call the same helpers unchanged.
+
+**`POST /execute-automation-for-project`** is the execution half - without it
+the project-wide script had nowhere to run, since `/execute-automation` only
+ever looks inside a commit-hash-named subfolder (`GeneratedRunLocator`) and
+would never find a file sitting in the project root. Reuses `execute()`'s
+script-loading, base-URI repair, and compile+run path unchanged.
+`ExecutionReportDownloadService` gained the same fallback `TestCaseDownloadService`
+already had: a blank `commitHash` now serves the project-root report instead of
+requiring one (`GET /execution-report/download?projectName=mms`, no
+commitHash). The report's "Commit" field reads `"all (project rollup)"` rather
+than a real hash, so it doesn't misleadingly look like one.
+
+Caught one real bug while writing this, worth remembering as its own trap:
+`.formatted(...)` binds tighter than string `+`, so
+`"a %s b" + "c".formatted(x)` calls `.formatted` on `"c"` alone - `%s` in the
+first literal is silently never substituted, no exception, no warning. Always
+wrap the full concatenation in parens before calling `.formatted`. Fixed here;
+not caught by a test, since `AutomationGenerationService`/
+`AutomationExecutionService` have no dedicated unit tests at all (same gap the
+original `generate()` already had) - only caught by rereading the diff.
+
+Neither new endpoint has a dedicated unit test for the same reason. Verified by
+compiling, running the full suite (no regressions), and manual code review
+against the already-tested helpers both reuse.
+
 ## 7. Test coverage
 
-155 unit tests, 24 classes — the first real tests in this repo beyond the
+187 unit tests, 27 classes — the first real tests in this repo beyond the
 context-load smoke test.
 
 | Class | n | Covers |
@@ -849,8 +1003,16 @@ context-load smoke test.
 | `OpenApiContractExtractorTest` | 8 | $ref/allOf/cycles, flattening to `data.tiers[].rate` |
 | `OpenApiSpecLoaderTest` | 7 | never throws; a swagger-ui page is not a spec |
 | `ApiContractRendererTest` | 7 | relevance, budget, shape de-duplication |
+| `OpenRouterProviderTest` | 6 | §5.2 — free-only guard, the 3-item `models` cap, provider-order/allow-fallbacks reach the body |
+| `ContractRequiredFieldsRepairTest` | 11 | §3.6 — contract-required injection, path-param matching, enum/no-formatted-call fallback, nested-field exclusion, source-grounding composed with the contract, 2-arg overload unchanged |
+| `RequestDtoSourceScannerTest` | 7 | §3.6 — jakarta/javax both match, records, nested types, build/VCS dirs skipped, missing class/blank input never throws |
+| `ExecutionReportDownloadServiceTest` (extended) | 6 | §6.5 — blank commitHash now falls back to the project-root report instead of erroring |
 
-**Not covered by tests, and worth knowing:** every prompt change. Those are only
+**Not covered by tests, and worth knowing:** every prompt change, and
+`AutomationGenerationService`/`AutomationExecutionService` in general (both
+`generate()`/`execute()` and their new `...ForProject` siblings) - no dedicated
+unit test exists for any of the four; verified live and by full-suite
+regression only. Those are only
 verifiable by a live run, and several have never been through one — see §8.
 
 ---
@@ -914,7 +1076,20 @@ verifiable by a live run, and several have never been through one — see §8.
    Node — fill, read, toggle, reset, edited-detection and the empty-URL guard
    all pass, and the emitted JS parses clean — but nobody has clicked it in
    Chrome. The layout in particular is unverified.
-10. **Nothing is committed.** `git status` is the authority; the counts below
+10. **mms's local checkout doesn't match what's deployed — see §10.** Should
+   probably be priority 1, not 10: it silently caps how correct ANY mms
+   automation can be, no matter how good the generation prompt or the §3.6
+   repairs get, because the source they're grounded in (`main`) is missing
+   fields the deployed target (`feature/mms-0.1.0` or later) actually requires.
+   Needs someone who knows which branch is meant to be authoritative for this
+   target before touching the shared `repo-workspace` clone.
+11. **OpenRouter (§5.2) has never been exercised against a real account.** The
+   free-only guard, the 3-item cap, and the request shape are all unit-tested;
+   whether a free-tier model reliably returns well-formed JSON for a real
+   automation/manual-generation prompt is not. The one live attempt this
+   session made was blocked by the undocumented cap (now fixed) before a
+   response quality could even be judged — try again once a key is configured.
+12. **Nothing is committed.** `git status` is the authority; the counts below
    drift. New in this stretch of work:
 
    - `src/main/java/com/company/aiqa/openapi/` — 8 source files (§3.5), plus a
@@ -950,6 +1125,20 @@ verifiable by a live run, and several have never been through one — see §8.
      every endpoint, handed to the user directly rather than tracked from a
      design doc. Neither is source; commit only if the user wants them kept
      in the repo.
+   - **This session (2026-09-01), same reasoning — see §3.6, §5.2, §6.5:** new
+     `com.company.aiqa.ai.router.OpenRouterProvider`,
+     `com.company.aiqa.testcase.RequestDtoSourceScanner`; new
+     `GenerateAutomationForProjectRequest`/`Response` and
+     `ExecuteAutomationForProjectRequest`/`Response`; modified
+     `AbstractOpenAiCompatProvider` (`extraBodyFields` hook), `AiRouterService`,
+     `RouterProperties`, `ApiContract`/`OpenApiContractExtractor`
+     (`requestSchemaName`), `AutomationScriptMerger` (two new overloads +
+     the §3.6 repair), `AutomationGenerationService`/`AutomationExecutionService`
+     (`...ForProject` methods, `generateBatch`/`resolveLocalRepo` refactored to
+     plain parameters), `ExecutionReportDownloadService`, `QaController`
+     (two new endpoints), `application.yml` (`aiqa.router.chain`/`keys`/
+     `models`/`openrouter-*`). Four new test classes, one extended — see the
+     coverage table in §7.
 
    On top of the earlier uncommitted work, plus staged removals of `target/`
    and the gitlinks. `repo-workspace/` and `generated-tests/` also carry
@@ -973,6 +1162,12 @@ curl -s http://169.58.37.242:8007/mms/api-docs | head -c 200
 
 # run it — ALWAYS pass baseUri; the default is localhost:8080, which is this platform
 curl -X POST http://localhost:8080/api/v1/execute-automation -H "Content-Type: application/json" -d '{"projectName":"mms","commitHash":"<sha>","baseUri":"http://169.58.37.242:8007/mms"}'
+
+# §6.5 — automate EVERY case the project has ever accumulated, not one commit's;
+# only projectName is required
+curl -X POST http://localhost:8080/api/v1/generate-automation-for-project -H "Content-Type: application/json" -d '{"projectName":"mms","baseUri":"http://169.58.37.242:8007/mms"}'
+curl -X POST http://localhost:8080/api/v1/execute-automation-for-project -H "Content-Type: application/json" -d '{"projectName":"mms","baseUri":"http://169.58.37.242:8007/mms"}'
+curl -o mms_report.html "http://localhost:8080/api/v1/execution-report/download?projectName=mms"   # no commitHash
 ```
 
 - A repository's **first commit** has no parent: use `"baseRef":"EMPTY_TREE"`.
@@ -1022,6 +1217,22 @@ platform.
   Consequence for us: any case needing an approved or active merchant is
   **not automatable** against this build, and a generated setup cannot be fixed
   by adding a call because there is no call to add.
+
+- **The local checkout this platform reads source from does not match what's
+  deployed.** `repo-workspace/.../mms` is on `main` (`4c8ad09`); the live
+  target at `169.58.37.242:8007` is running `feature/mms-0.1.0` or later.
+  Confirmed, not inferred: that branch's `CreateMerchantRequest.accountNo`
+  carries `@NotBlank(message = "Account No is required")` - a **verbatim**
+  match to the runtime 400's validation message - and `main`'s copy of the
+  same file has no `userId`/`accountNo` fields at all. Every commit generated
+  against `main` will keep missing fields the deployed service actually
+  requires until the checkout tracks the right branch; §3.6's two required-field
+  repairs are both verified correct and both genuinely powerless against this,
+  since neither can inject a field that doesn't exist anywhere in the source
+  they're reading. This needs a decision from whoever owns this platform's mms
+  target config about which branch is authoritative - not changed here, since
+  `repo-workspace`'s clone is shared across other in-progress work and
+  switching it could affect that too.
 
 **order-service** — no validation at all despite
 `spring-boot-starter-validation` on the classpath. `19.99` is silently stored as
@@ -1074,3 +1285,19 @@ for a non-existent order.
   re-add instead of the clean modification it should be. Read the working-tree
   file before touching this one - it is the CORRECT post-§6.2 state, not
   something to discard.
+- **`.formatted(...)` binds tighter than string `+`.** `"a %s b" + "c
+  literal".formatted(x)` calls `.formatted` on the second literal alone - the
+  `%s` in the first one is never substituted, with no exception and no warning,
+  since extra/unused format args are silently accepted. Compiles clean, runs
+  clean, just prints the placeholder verbatim. Always wrap the whole
+  concatenation in parens before calling `.formatted` (see §6.5).
+- **A local git checkout can silently be the wrong branch for what's actually
+  deployed.** No error anywhere - the model just never sees fields that exist
+  on the live target, generates payloads missing them, and every fix that
+  grounds itself in "the source" (implementation context, §3.6's DTO
+  scanner) inherits the same blind spot, because the checkout genuinely
+  doesn't have that field written down anywhere. Confirmed by matching a
+  runtime error message **verbatim** to a `@NotBlank` annotation on a
+  *different* branch than the one checked out - see §10's mms finding. Worth
+  checking early on any target that's been repeatedly wrong about "required"
+  fields despite good contract/source grounding.

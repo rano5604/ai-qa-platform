@@ -2,6 +2,8 @@ package com.company.aiqa.model;
 
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.Map;
+
 /**
  * Payload for POST /api/v1/execute-automation.
  *
@@ -57,6 +59,27 @@ public class ExecuteAutomationRequest {
      */
     private String scriptFileName;
 
+    /**
+     * Optional. Headers added to every request that doesn't already set them,
+     * so a suite can reach an auth-gated target - e.g.
+     * {@code {"Authorization": "Bearer &lt;token&gt;"}} for a bearer token, or an
+     * API-key/cookie header. Supplied at execution, exactly like {@link #baseUri},
+     * because the generator is deliberately barred from inventing auth it can't
+     * see in the diff; a target that answers 401 to an unauthenticated request
+     * fails the whole suite otherwise. A test that sets its own value for one of
+     * these headers keeps it (a deliberate bad-token negative case still works).
+     */
+    private Map<String, String> authHeaders;
+
+    /**
+     * Optional. Obtain the token by logging in, instead of pasting a static one
+     * into {@link #authHeaders}. Supply the credentials; the login URL and the
+     * token's field are discovered from the target source when omitted. The
+     * resolved header is injected exactly like {@link #authHeaders}, and the two
+     * may be combined (a login-derived Authorization plus a static tenant header).
+     */
+    private AuthLoginSpec login;
+
     public String getRepoUrl() { return repoUrl; }
     public void setRepoUrl(String repoUrl) { this.repoUrl = repoUrl; }
 
@@ -74,4 +97,10 @@ public class ExecuteAutomationRequest {
 
     public String getScriptFileName() { return scriptFileName; }
     public void setScriptFileName(String scriptFileName) { this.scriptFileName = scriptFileName; }
+
+    public Map<String, String> getAuthHeaders() { return authHeaders; }
+    public void setAuthHeaders(Map<String, String> authHeaders) { this.authHeaders = authHeaders; }
+
+    public AuthLoginSpec getLogin() { return login; }
+    public void setLogin(AuthLoginSpec login) { this.login = login; }
 }

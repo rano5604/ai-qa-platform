@@ -24,7 +24,7 @@ class ApiContractRendererTest {
                                              List<FieldDoc> response) {
         return new EndpointContract("svc", method, path, "", List.of(), List.of(),
                 request.isEmpty() ? "" : "application/json", request,
-                List.of(new ResponseContract("200", "OK", response)));
+                List.of(new ResponseContract("200", "OK", response)), "");
     }
 
     private static ApiContract contract(EndpointContract... endpoints) {

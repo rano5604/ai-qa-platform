@@ -49,7 +49,16 @@ public record ApiContract(
             /** "application/json", or "" when the operation takes no body. */
             String requestMediaType,
             List<FieldDoc> requestFields,
-            List<ResponseContract> responses
+            List<ResponseContract> responses,
+            /**
+             * Simple name of the request body's top-level schema - "CreateMerchantRequest" -
+             * or "" when the body has no {@code $ref} (an inline schema, or no body at all).
+             * Not rendered into the prompt; it exists so a required-field check that the
+             * contract itself under-documents can go find this exact class in the target's
+             * OWN source and read its Bean Validation annotations instead - see
+             * AutomationScriptMerger's contract-plus-source repair.
+             */
+            String requestSchemaName
     ) {
         public String signature() {
             return httpMethod + " " + path;

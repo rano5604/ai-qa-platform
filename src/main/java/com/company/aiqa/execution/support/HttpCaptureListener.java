@@ -133,6 +133,17 @@ public class HttpCaptureListener implements IExecutionListener, IInvokedMethodLi
     }
 
     private static synchronized void installFilter() {
+        // Auth first, so a header this run supplies is on the request the
+        // CapturingFilter then records (redacted) - the evidence matches the
+        // wire. Both are re-asserted on every method, since a script may call
+        // RestAssured.reset() and drop the whole chain.
+        boolean authPresent = RestAssured.filters().stream().anyMatch(f -> f instanceof AuthInjectingFilter);
+        if (!authPresent) {
+            Map<String, String> authHeaders = AuthInjectingFilter.configuredHeaders();
+            if (!authHeaders.isEmpty()) {
+                RestAssured.filters(new AuthInjectingFilter(authHeaders));
+            }
+        }
         boolean present = RestAssured.filters().stream().anyMatch(f -> f instanceof CapturingFilter);
         if (!present) {
             RestAssured.filters(new CapturingFilter());

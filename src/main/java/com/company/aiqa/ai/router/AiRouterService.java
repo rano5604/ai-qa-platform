@@ -224,6 +224,16 @@ public class AiRouterService implements LlmClient {
         String suppliedValue = keys.get(name);
         String model = configuredModelFor(name, entry.defaultModel());
 
+        // OpenRouter's own fallback/priority fields (models array, provider
+        // order) are server-side config, not something a per-request key
+        // carries - so a caller-supplied key still gets the deployment's
+        // configured fallback behavior, just with their own credential.
+        if ("openrouter".equals(name)) {
+            return new OpenRouterProvider(restClient, suppliedValue, model,
+                    properties.getOpenrouterFallbackModels(), properties.getOpenrouterProviderOrder(),
+                    properties.isOpenrouterAllowFallbacks());
+        }
+
         return switch (entry.wireFormat()) {
             case OPENAI_COMPAT -> new CatalogOpenAiProvider(
                     restClient, name, configuredBaseUrlFor(name, entry.baseUrl()), suppliedValue, model);
@@ -273,6 +283,12 @@ public class AiRouterService implements LlmClient {
         }
         String key = properties.getKeys().get(name);
         String model = configuredModelFor(name, entry.defaultModel());
+
+        if ("openrouter".equals(name)) {
+            return new OpenRouterProvider(restClient, key, model,
+                    properties.getOpenrouterFallbackModels(), properties.getOpenrouterProviderOrder(),
+                    properties.isOpenrouterAllowFallbacks());
+        }
 
         return switch (entry.wireFormat()) {
             case OPENAI_COMPAT -> new CatalogOpenAiProvider(restClient, name, entry.baseUrl(), key, model);

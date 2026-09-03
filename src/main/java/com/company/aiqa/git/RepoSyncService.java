@@ -3,6 +3,9 @@ package com.company.aiqa.git;
 import com.company.aiqa.config.CredentialScheme;
 import com.company.aiqa.config.GitProperties;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.slf4j.Logger;
@@ -71,6 +74,16 @@ public class RepoSyncService {
                             .setRemote("origin")
                             .setCredentialsProvider(credentials)
                             .call();
+                    // Fetch updates origin/* but leaves the local branch and
+                    // working tree at the commit the clone was made on. A repo
+                    // that added a file after the clone (a README, say) then has
+                    // it in origin/main but NOT in the local HEAD tree, so a read
+                    // at HEAD - and the checkout on disk - silently misses it.
+                    // These clones are read-only mirrors this platform never
+                    // commits into, so hard-syncing the checked-out branch to its
+                    // upstream is safe and is what "keep an up-to-date working
+                    // copy" is supposed to mean.
+                    updateWorkingCopyToRemote(git);
                 }
             } else {
                 Files.createDirectories(localPath.getParent() == null ? localPath : localPath.getParent());
@@ -89,6 +102,45 @@ public class RepoSyncService {
         }
 
         return localPath.toAbsolutePath().toString();
+    }
+
+    /**
+     * Fast-forwards the checked-out branch to its upstream after a fetch, so the
+     * local tree and working copy match the remote - the difference between a
+     * clone that merely HAS the latest objects and one that actually reflects
+     * them. Hard reset rather than merge because these clones are read-only
+     * mirrors the platform never commits into, so there is never local work to
+     * preserve and a reset can't fail on divergence.
+     *
+     * <p>Best-effort: on a detached HEAD, or a branch with no {@code origin/}
+     * counterpart, there is nothing to fast-forward to and the checkout is left
+     * as-is. Reads still resolve explicit refs (origin/branch, a SHA) directly,
+     * so this only affects reads that go through the local branch/working tree.
+     */
+    static void updateWorkingCopyToRemote(Git git) {
+        try {
+            Repository repo = git.getRepository();
+            String branch = repo.getBranch();
+            if (branch == null || ObjectId.isId(branch)) {
+                // Detached HEAD (branch reads back as a raw SHA) - no upstream to track.
+                return;
+            }
+            String upstream = "origin/" + branch;
+            ObjectId target = repo.resolve(upstream);
+            if (target == null) {
+                return;
+            }
+            if (target.equals(repo.resolve("HEAD"))) {
+                return;
+            }
+            git.reset().setMode(ResetCommand.ResetType.HARD).setRef(upstream).call();
+            log.info("Updated local checkout of branch '{}' to {} ({}).", branch, upstream, target.name());
+        } catch (Exception e) {
+            // Never fail a sync over this: the objects are fetched, and reads
+            // that use explicit refs work regardless of the checkout's position.
+            log.warn("Could not fast-forward the working copy to its upstream ({}); "
+                    + "reads that rely on local HEAD may be stale.", e.getMessage());
+        }
     }
 
     private CredentialsProvider credentialsProvider(String cloneUrl, String overrideToken, CredentialScheme overrideScheme) {

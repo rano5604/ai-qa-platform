@@ -6,6 +6,7 @@ import com.company.aiqa.ai.PromptBuilder;
 import com.company.aiqa.config.PipelineProperties;
 import com.company.aiqa.error.NotFoundException;
 import com.company.aiqa.git.GitDiffService;
+import com.company.aiqa.git.ProjectDocReader;
 import com.company.aiqa.llm.LlmKeyStore;
 import com.company.aiqa.config.GitProperties;
 import com.company.aiqa.model.*;
@@ -83,6 +84,14 @@ public class AutomationGenerationService {
 
     /** Below this, the remaining source is too fragmentary to help - drop it instead of shrinking again. */
     private static final int MIN_IMPLEMENTATION_CHARS = 4_000;
+
+    /**
+     * Cap on the README fed as architectural/business context. Kept modest: the
+     * automation prompt's fixed cost (endpoints, contract, payload schemas,
+     * implementation source) is already what Groq rejects, so the README earns
+     * its place by intent, not length.
+     */
+    private static final int MAX_README_CHARS = 16_000;
 
     /** Cut point for a shrunken prompt - never mid-line, so the model never sees half a statement. */
     private static final char NEWLINE = '\n';
@@ -208,6 +217,7 @@ public class AutomationGenerationService {
         List<ClassInfo> endpointClasses;
         List<TypeSchema> payloadSchemas;
         String implementationSource;
+        String projectReadme;
         try (GitDiffService.SourceAtCommit source =
                      gitDiffService.openSourceAtCommit(localPath, request.getCommitHash())) {
 
@@ -239,6 +249,10 @@ public class AutomationGenerationService {
             // and the handler bodies are the only place a precondition like
             // "the merchant must already exist" is actually stated.
             implementationSource = collectImplementationSource(source, endpointClasses);
+
+            // Architectural/business context - read from the same commit so the
+            // README matches the code the script will target.
+            projectReadme = ProjectDocReader.readReadme(source, MAX_README_CHARS);
         }
 
         List<String> endpoints = endpointClasses.stream()
@@ -372,8 +386,8 @@ public class AutomationGenerationService {
 
         for (int i = 0; i < caseBatches.size(); i++) {
             generateBatch(caseBatches.get(i), endpointClasses, payloadSchemas, apiContract, implementation,
-                    systemPrompt, request, runOutputDir, generated, failures, takenFileNames,
-                    "batch %d/%d".formatted(i + 1, caseBatches.size()));
+                    projectReadme, systemPrompt, request.getLlmKeys(), runOutputDir, generated, failures,
+                    takenFileNames, "batch %d/%d".formatted(i + 1, caseBatches.size()));
         }
 
         // Batching is an implementation detail of staying inside the model's
@@ -396,7 +410,8 @@ public class AutomationGenerationService {
                     toMerge.add(existingScript);
                     toMerge.addAll(generated);
                 }
-                TestCaseResult mergedScript = scriptMerger.merge(toMerge, request.getCommitHash());
+                TestCaseResult mergedScript = scriptMerger.merge(toMerge, request.getCommitHash(), apiContract,
+                        localPath == null ? null : Path.of(localPath));
 
                 // Java compiles a file all-or-nothing, so one unusable line -
                 // an invented matcher, a bad literal, a missing import - loses
@@ -475,6 +490,258 @@ public class AutomationGenerationService {
     }
 
     /**
+     * The project-wide counterpart to {@link #generate}: automates every
+     * manual test case the project has ever accumulated, read from
+     * {@code generated-tests/&lt;project&gt;/all_manual_test_cases.csv} rather
+     * than one commit's own folder - so a caller only ever needs the project
+     * name, never a specific commit hash.
+     *
+     * <p>Shares every piece of machinery {@link #generate} uses for context
+     * gathering, batching, merging and salvage - the only real differences are
+     * WHERE the cases come from (the project's rollup CSV, not a commit
+     * folder) and WHAT commit the API surface is read from (HEAD - the
+     * checkout's current state - since no single commit represents "the whole
+     * project's cases combined").
+     */
+    public GenerateAutomationForProjectResponse generateForProject(GenerateAutomationForProjectRequest request) {
+        if (request.getLlmKeys() == null || request.getLlmKeys().isEmpty()) {
+            if (!llmKeyStore.isConfigured() && !llmClient.hasServerSideCredentials()) {
+                throw new IllegalStateException(
+                        "No LLM credentials are configured, so there is no model to generate with. "
+                                + "Configure them once with POST /api/v1/llm-keys.");
+            }
+        }
+
+        String projectName = request.getProjectName().trim();
+        String localPath = resolveLocalRepo(request.getRepoPath(), projectName);
+
+        String baseOutputDir = request.getOutputDir() != null
+                ? request.getOutputDir()
+                : pipelineProperties.getOutputDir();
+        String projectOutputDir = Path.of(baseOutputDir, projectName).toString();
+
+        // 2. Load every manual case the project has ever accumulated, across
+        // every commit - the project-wide rollup, not one commit's folder.
+        if (!Files.isDirectory(Path.of(projectOutputDir))) {
+            throw new NotFoundException(
+                    "No generated-tests folder for project '%s' at %s. Run test-case generation for it first."
+                            .formatted(projectName, projectOutputDir));
+        }
+        List<ManualTestCase> allCases =
+                manualTestCaseGenerator.loadMasterCsv(projectOutputDir, TestCaseDownloadService.ALL_CASES_CSV);
+        if (allCases.isEmpty()) {
+            throw new NotFoundException(
+                    "No manual test cases found in %s/%s - nothing to automate."
+                            .formatted(projectOutputDir, TestCaseDownloadService.ALL_CASES_CSV));
+        }
+
+        // 3. Endpoint context from the local checkout's CURRENT state. Unlike
+        // the per-commit pass, there is no single commit to pin this to - the
+        // cases being automated here were drawn from many commits, so HEAD
+        // (the checkout's present state) is the only coherent choice.
+        if (localPath == null) {
+            throw new NotFoundException(
+                    ("No local checkout found for project '%s'. Automation needs one to read the API surface from. "
+                            + "Either run test-case generation for this repo first (which clones it under %s), "
+                            + "or pass an explicit \"repoPath\".")
+                            .formatted(projectName, gitProperties.getWorkspaceDir()));
+        }
+
+        List<ClassInfo> endpointClasses;
+        List<TypeSchema> payloadSchemas;
+        String implementationSource;
+        String projectReadme;
+        try (GitDiffService.SourceAtCommit source = gitDiffService.openSourceAtCommit(localPath, "HEAD")) {
+            endpointClasses = sourceParsingService.scanAllEndpoints(source);
+            if (endpointClasses.size() > MAX_ENDPOINT_CLASSES) {
+                log.info("Repo exposes {} endpoint-bearing class(es) - passing the first {} to keep the prompt bounded.",
+                        endpointClasses.size(), MAX_ENDPOINT_CLASSES);
+                endpointClasses = endpointClasses.subList(0, MAX_ENDPOINT_CLASSES);
+            }
+
+            java.util.Set<String> payloadTypes = endpointClasses.stream()
+                    .flatMap(c -> c.methods().stream())
+                    .map(MethodInfo::apiEndpoint)
+                    .filter(e -> e != null)
+                    .map(ApiEndpointInfo::requestBodyType)
+                    .filter(t -> t != null && !t.isBlank())
+                    .collect(java.util.stream.Collectors.toCollection(java.util.LinkedHashSet::new));
+
+            payloadSchemas = payloadTypes.isEmpty()
+                    ? List.of()
+                    : sourceParsingService.scanTypeSchemas(source, payloadTypes,
+                            PAYLOAD_SCHEMA_DEPTH, MAX_PAYLOAD_SCHEMAS);
+
+            implementationSource = collectImplementationSource(source, endpointClasses);
+            projectReadme = ProjectDocReader.readReadme(source, MAX_README_CHARS);
+        }
+
+        List<String> endpoints = endpointClasses.stream()
+                .flatMap(c -> c.methods().stream())
+                .map(MethodInfo::apiEndpoint)
+                .filter(e -> e != null)
+                .map(e -> e.httpMethod() + " " + e.path())
+                .distinct()
+                .toList();
+
+        log.info("Project {}: {} manual case(s) in the rollup catalog; repo currently exposes {} endpoint(s).",
+                projectName, allCases.size(), endpoints.size());
+
+        // 4. Keep only the cases worth automating.
+        List<ManualTestCase> apiCases = allCases.stream()
+                .filter(tc -> isApiTestable(tc, endpoints))
+                .toList();
+        int skipped = allCases.size() - apiCases.size();
+
+        if (apiCases.isEmpty()) {
+            String summary = ("Project %s: %d manual case(s) found, none of them API-testable "
+                    + "(%d skipped as UI/configuration). %s")
+                    .formatted(projectName, allCases.size(), skipped,
+                            endpoints.isEmpty()
+                                    ? "No REST endpoints were detected in the current checkout either."
+                                    : "Detected endpoints: " + endpoints);
+            log.info(summary);
+            return new GenerateAutomationForProjectResponse(projectName, allCases.size(),
+                    0, skipped, 0, endpoints, List.of(), projectOutputDir, summary);
+        }
+
+        // 4b. Skip cases the project already has automation for.
+        String mergedFileName = scriptMerger.mergedFileName(projectName);
+        Path existingScriptPath = Path.of(projectOutputDir, mergedFileName);
+        TestCaseResult existingScript = null;
+        java.util.Set<String> alreadyAutomatedIds = java.util.Set.of();
+        if (Files.isRegularFile(existingScriptPath)) {
+            try {
+                String existingSource = Files.readString(existingScriptPath, java.nio.charset.StandardCharsets.UTF_8);
+                alreadyAutomatedIds = scriptMerger.alreadyAutomatedCaseIds(existingSource);
+                existingScript = new TestCaseResult(mergedFileName, mergedFileName, existingSource,
+                        existingScriptPath.toString());
+            } catch (java.io.IOException e) {
+                log.warn("Could not read existing {} - generating without it, which may re-cover cases it "
+                        + "already had: {}", existingScriptPath, e.getMessage());
+            }
+        }
+
+        java.util.Set<String> coveredIds = alreadyAutomatedIds;
+        List<ManualTestCase> newApiCases = coveredIds.isEmpty()
+                ? apiCases
+                : apiCases.stream().filter(tc -> !coveredIds.contains(tc.testCaseId())).toList();
+        int alreadyAutomatedCount = apiCases.size() - newApiCases.size();
+
+        if (newApiCases.isEmpty()) {
+            String summary = ("Project %s: %d manual case(s), %d API-testable, all %d already automated in %s. "
+                    + "Nothing new to generate.")
+                    .formatted(projectName, allCases.size(), apiCases.size(), alreadyAutomatedCount, mergedFileName);
+            log.info(summary);
+            return new GenerateAutomationForProjectResponse(projectName, allCases.size(),
+                    apiCases.size(), skipped, alreadyAutomatedCount, endpoints,
+                    existingScript != null ? List.of(existingScript) : List.of(), projectOutputDir, summary);
+        }
+
+        if (alreadyAutomatedCount > 0) {
+            log.info("Project {}: {} of {} API-testable case(s) already automated in {} - generating the "
+                            + "remaining {} only.",
+                    projectName, alreadyAutomatedCount, apiCases.size(), mergedFileName, newApiCases.size());
+        }
+
+        // 5. Generate.
+        String baseUri = request.getBaseUri() != null && !request.getBaseUri().isBlank()
+                ? request.getBaseUri()
+                : DEFAULT_BASE_URI;
+        String systemPrompt = promptBuilder.apiAutomationSystemPrompt(baseUri);
+
+        ApiContract apiContract = openApiContractService.collect(
+                Path.of(localPath), baseUri, request.getOpenApiUrls());
+
+        List<TestCaseResult> generated = new ArrayList<>();
+        List<String> failures = new ArrayList<>();
+        java.util.Set<String> takenFileNames = new java.util.HashSet<>();
+        int perCall = Math.max(1, pipelineProperties.getMaxCasesPerAutomationCall());
+        List<List<ManualTestCase>> caseBatches = partition(newApiCases, perCall);
+
+        java.util.concurrent.atomic.AtomicReference<String> implementation =
+                new java.util.concurrent.atomic.AtomicReference<>(implementationSource);
+
+        for (int i = 0; i < caseBatches.size(); i++) {
+            generateBatch(caseBatches.get(i), endpointClasses, payloadSchemas, apiContract, implementation,
+                    projectReadme, systemPrompt, request.getLlmKeys(), projectOutputDir, generated, failures,
+                    takenFileNames, "batch %d/%d".formatted(i + 1, caseBatches.size()));
+        }
+
+        if (!generated.isEmpty()) {
+            try {
+                List<TestCaseResult> toMerge = existingScript == null
+                        ? generated
+                        : new ArrayList<>(generated.size() + 1);
+                if (existingScript != null) {
+                    toMerge.add(existingScript);
+                    toMerge.addAll(generated);
+                }
+                TestCaseResult mergedScript = scriptMerger.merge(toMerge, projectName, apiContract, Path.of(localPath));
+
+                CompileSalvager.Salvaged pruned = compileSalvager.dropMethodsUsingUnassignedFields(mergedScript);
+                mergedScript = pruned.script();
+                if (!pruned.removedMethods().isEmpty()) {
+                    failures.add(("removed %d method(s) that read an id field no setup assigns - nothing that "
+                            + "runs first fills it in, so they would have sent null or nothing at all: %s")
+                            .formatted(pruned.removedMethods().size(), pruned.removedMethods()));
+                }
+
+                CompileSalvager.Salvaged salvaged = compileSalvager.salvage(mergedScript);
+                mergedScript = salvaged.script();
+                if (!salvaged.removedMethods().isEmpty()) {
+                    failures.add("removed %d uncompilable test method(s): %s"
+                            .formatted(salvaged.removedMethods().size(), salvaged.removedMethods()));
+                }
+                List<String> orphanFields = compileSalvager.fieldsReadButNeverAssigned(mergedScript);
+                if (!orphanFields.isEmpty()) {
+                    failures.add(("shared id field(s) %s are never assigned - every test using them will "
+                            + "error before sending a request").formatted(orphanFields));
+                }
+                if (!salvaged.unresolvedErrors().isEmpty()) {
+                    failures.add("script does not compile: "
+                            + String.join("; ", salvaged.unresolvedErrors()));
+                }
+
+                deletePerBatchFiles(generated);
+                String path = writeMerged(projectOutputDir, mergedScript);
+                generated = List.of(new TestCaseResult(mergedScript.targetClassName(),
+                        mergedScript.testFileName(), mergedScript.testCode(), path));
+            } catch (Exception e) {
+                log.error("Could not merge the generated scripts ({}), leaving the per-batch files in place.",
+                        e.getMessage(), e);
+                failures.add("merge: " + shortMessage(e));
+            }
+        }
+
+        String failure = failures.isEmpty() ? null : String.join("; ", failures);
+
+        String summary = ("Project %s: %d manual case(s), %d API-testable (%d skipped as UI/configuration), "
+                + "%d new case(s) generated against %s (%d already automated and left untouched).")
+                .formatted(projectName, allCases.size(), apiCases.size(), skipped,
+                        newApiCases.size(), baseUri, alreadyAutomatedCount);
+        summary += apiContract.isEmpty()
+                ? " No OpenAPI document was reachable - payloads came from source DTOs only, and no response shape was known."
+                : " API contract: %d operation(s) from %s.".formatted(apiContract.endpoints().size(),
+                        apiContract.sources().stream().map(OpenApiSource::describe).toList());
+        if (failure != null) {
+            summary += " WARNING: %d case(s) could not be generated: %s".formatted(failures.size(), failure);
+        }
+        if (!generated.isEmpty()) {
+            // POST /execute-automation looks in a commit-hash-named subfolder
+            // (see GeneratedRunLocator), never the project root this writes
+            // to - so it cannot find this file. Nothing has been executed;
+            // run the merged script with TestNG directly for now.
+            summary += " Nothing has been executed - this endpoint only generates. Run "
+                    + mergedFileName + " directly with TestNG (-DbaseUri=" + baseUri + ").";
+        }
+        log.info(summary);
+
+        return new GenerateAutomationForProjectResponse(projectName, allCases.size(),
+                apiCases.size(), skipped, alreadyAutomatedCount, endpoints, generated, projectOutputDir, summary);
+    }
+
+    /**
      * Whether a manual case is a candidate for HTTP automation.
      *
      * <p>Two hard exclusions only: {@code Configuration} cases (a dependency
@@ -539,8 +806,9 @@ public class AutomationGenerationService {
                                 List<TypeSchema> payloadSchemas,
                                 ApiContract apiContract,
                                 java.util.concurrent.atomic.AtomicReference<String> implementation,
+                                String projectReadme,
                                 String systemPrompt,
-                                GenerateAutomationRequest request, String runOutputDir,
+                                LlmKeys llmKeys, String runOutputDir,
                                 List<TestCaseResult> generatedOut, List<String> failuresOut,
                                 java.util.Set<String> takenFileNames, String label) {
         if (batch.isEmpty()) {
@@ -550,8 +818,9 @@ public class AutomationGenerationService {
             String response = llmClient.complete(
                     systemPrompt,
                     promptBuilder.buildApiAutomationUserPrompt(batch, endpointClasses, payloadSchemas,
-                            implementation.get(), apiContractRenderer.render(apiContract, batchText(batch))),
-                    llmKeyStore.resolveFor(request.getLlmKeys()));
+                            implementation.get(), apiContractRenderer.render(apiContract, batchText(batch)),
+                            projectReadme),
+                    llmKeyStore.resolveFor(llmKeys));
             generatedOut.addAll(testCaseGenerator.generateAndWrite(response, runOutputDir, takenFileNames));
             log.info("Automation {} ({} case(s)): generated OK.", label, batch.size());
         } catch (Exception e) {
@@ -564,8 +833,8 @@ public class AutomationGenerationService {
             // it is what gives way first.
             if (com.company.aiqa.ai.router.ProviderCooldownRegistry.isPromptTooLarge(e)
                     && shrinkImplementation(implementation, label)) {
-                generateBatch(batch, endpointClasses, payloadSchemas, apiContract, implementation, systemPrompt,
-                        request, runOutputDir, generatedOut, failuresOut, takenFileNames, label);
+                generateBatch(batch, endpointClasses, payloadSchemas, apiContract, implementation, projectReadme,
+                        systemPrompt, llmKeys, runOutputDir, generatedOut, failuresOut, takenFileNames, label);
                 return;
             }
             if (batch.size() > 1) {
@@ -573,9 +842,10 @@ public class AutomationGenerationService {
                         label, batch.size(), e.getMessage());
                 int mid = batch.size() / 2;
                 generateBatch(batch.subList(0, mid), endpointClasses, payloadSchemas, apiContract, implementation,
-                        systemPrompt, request, runOutputDir, generatedOut, failuresOut, takenFileNames, label + ".a");
+                        projectReadme, systemPrompt, llmKeys, runOutputDir, generatedOut, failuresOut,
+                        takenFileNames, label + ".a");
                 generateBatch(batch.subList(mid, batch.size()), endpointClasses, payloadSchemas, apiContract,
-                        implementation, systemPrompt, request, runOutputDir, generatedOut, failuresOut,
+                        implementation, projectReadme, systemPrompt, llmKeys, runOutputDir, generatedOut, failuresOut,
                         takenFileNames, label + ".b");
                 return;
             }
@@ -743,8 +1013,12 @@ public class AutomationGenerationService {
     }
 
     private String resolveLocalRepo(GenerateAutomationRequest request, String projectName) {
-        if (request.getRepoPath() != null && !request.getRepoPath().isBlank()) {
-            Path explicit = Path.of(request.getRepoPath());
+        return resolveLocalRepo(request.getRepoPath(), projectName);
+    }
+
+    private String resolveLocalRepo(String repoPath, String projectName) {
+        if (repoPath != null && !repoPath.isBlank()) {
+            Path explicit = Path.of(repoPath);
             if (!Files.isDirectory(explicit.resolve(".git"))) {
                 throw new IllegalArgumentException("repoPath is not a git checkout: " + explicit);
             }

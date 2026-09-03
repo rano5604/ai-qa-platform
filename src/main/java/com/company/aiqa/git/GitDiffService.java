@@ -217,6 +217,38 @@ public class GitDiffService {
     }
 
     /**
+     * Whether the project README changed between the two refs.
+     *
+     * <p>The README is fed to the generators as architectural/business context
+     * (see {@link ProjectDocReader}), but a commit that ONLY updates it changes
+     * neither source nor config, so the pipeline's normal change detection sees
+     * nothing and skips it - the refreshed intent never reaches a run. This is
+     * the third signal alongside changed source and changed config: same diff
+     * walk, README filter, so it can never drift from what the reader treats as a
+     * README. Returns the changed README file (post-change content included) so a
+     * caller both knows it changed and has the new text in one pass.
+     */
+    public java.util.Optional<ChangedFile> computeChangedReadme(String repoPath, String baseRef, String headRef) {
+        List<ChangedFile> results = collectChangedFiles(repoPath, baseRef, headRef, ProjectDocReader::isReadme);
+        // The root README wins over a nested one, matching ProjectDocReader.
+        java.util.Optional<ChangedFile> readme = results.stream()
+                .min(java.util.Comparator.comparingInt((ChangedFile f) -> depthOf(f.path()))
+                        .thenComparingInt(f -> f.path().length()));
+        readme.ifPresent(f -> log.info("Project README changed between {} and {}: {}", baseRef, headRef, f.path()));
+        return readme;
+    }
+
+    private static int depthOf(String path) {
+        int depth = 0;
+        for (int i = 0; i < path.length(); i++) {
+            if (path.charAt(i) == '/') {
+                depth++;
+            }
+        }
+        return depth;
+    }
+
+    /**
      * Shared diff walk: returns every changed file between baseRef and headRef
      * whose path satisfies {@code pathFilter}, with its per-file unified diff
      * and full post-change content. Both computeChangedSourceFiles and

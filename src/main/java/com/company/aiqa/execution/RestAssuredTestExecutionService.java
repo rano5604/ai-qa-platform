@@ -82,6 +82,18 @@ public class RestAssuredTestExecutionService {
      *                  afterwards - the HTML report is a deliverable, not a temp file.
      */
     public TestExecutionSummary execute(List<TestCaseResult> scripts, String baseUri, Path reportDir) {
+        return execute(scripts, baseUri, reportDir, Map.of());
+    }
+
+    /**
+     * @param authHeaders headers to add to every request that doesn't already
+     *                    set them - a run-supplied token so a suite can reach an
+     *                    auth-gated target, injected globally by
+     *                    {@link com.company.aiqa.execution.support.AuthInjectingFilter}.
+     *                    Empty means no injection, exactly as before this existed.
+     */
+    public TestExecutionSummary execute(List<TestCaseResult> scripts, String baseUri, Path reportDir,
+                                        Map<String, String> authHeaders) {
         DynamicTestCompiler.CompilationResult compilation = compiler.compile(scripts);
         if (compilation.classesDir() == null) {
             return new TestExecutionSummary(baseUri, scripts.size(), 0, compilation.errors(),
@@ -106,7 +118,7 @@ public class RestAssuredTestExecutionService {
         deleteIfPresent(reportDir.resolve(RESULTS_XML));
         deleteIfPresent(captureFile);
 
-        runSubprocess(buildCommand(compilation, baseUri, reportDir, captureFile), runErrors);
+        runSubprocess(buildCommand(compilation, baseUri, reportDir, captureFile, authHeaders), runErrors);
 
         List<TestExecutionResult> results = parseResults(reportDir, readCapturedExchanges(captureFile));
 
@@ -129,7 +141,7 @@ public class RestAssuredTestExecutionService {
     }
 
     private List<String> buildCommand(DynamicTestCompiler.CompilationResult compilation, String baseUri,
-                                      Path reportDir, Path captureFile) {
+                                      Path reportDir, Path captureFile, Map<String, String> authHeaders) {
         List<String> cmd = new ArrayList<>();
         cmd.add(Path.of(System.getProperty("java.home"), "bin", "java").toString());
         cmd.add("-cp");
@@ -138,6 +150,30 @@ public class RestAssuredTestExecutionService {
         // The scripts read baseUri via System.getProperty, so the same compiled
         // classes can be pointed at a different environment without regenerating.
         cmd.add("-DbaseUri=" + baseUri);
+
+        // Run-supplied auth, injected into every request by AuthInjectingFilter -
+        // the same "configure at execution, not in the generated code" shape as
+        // baseUri, so an auth-gated target can be reached without regenerating.
+        //
+        // Base64, NOT raw JSON: the JSON value carries double-quotes and spaces
+        // ({"Authorization":"Bearer ..."}), and Windows' argument quoting mangles
+        // those - splitting the one argument into stray tokens that land before
+        // org.testng.TestNG and make java fail to launch, so the run produced no
+        // results at all. Base64's alphabet has neither quote nor space, so no
+        // OS argument encoding can touch it. AuthInjectingFilter decodes it.
+        if (authHeaders != null && !authHeaders.isEmpty()) {
+            try {
+                String json = objectMapper.writeValueAsString(authHeaders);
+                String encoded = java.util.Base64.getEncoder()
+                        .encodeToString(json.getBytes(StandardCharsets.UTF_8));
+                cmd.add("-D" + com.company.aiqa.execution.support.AuthInjectingFilter.AUTH_HEADERS_PROPERTY
+                        + "=" + encoded);
+            } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+                // A token that won't serialize is a caller error, not a reason to
+                // abandon the whole run - proceed unauthenticated and say so.
+                log.warn("Could not serialize auth headers; running without injected auth: {}", e.getMessage());
+            }
+        }
         cmd.add("-D" + HttpCaptureListener.CAPTURE_FILE_PROPERTY + "=" + captureFile);
         cmd.add("-D" + HttpCaptureListener.MAX_BODY_CHARS_PROPERTY + "="
                 + pipelineProperties.getMaxCapturedBodyChars());

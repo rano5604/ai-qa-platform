@@ -280,6 +280,211 @@ class AutomationScriptMergerTest {
         assertTrue(out.contains("public void createsFee2()"), out);
     }
 
+    /**
+     * The TailorBookApp failure: two batches each emitted an identical private
+     * helper type ({@code Prereqs}), and Java has no overloading for types, so
+     * the merged file had "class Prereqs is already defined" and every one of
+     * its tests was lost (a run reported as 0 tests). The duplicate must be
+     * dropped, once, keeping the single shared declaration.
+     */
+    @Test
+    void anIdenticalNestedHelperTypeAcrossBatchesIsDeclaredOnlyOnce() {
+        String helperAndTest = """
+                    private static class Prereqs {
+                        final Long shopId;
+                        Prereqs(Long shopId) {
+                            this.shopId = shopId;
+                        }
+                    }
+
+                    // TC-%s
+                    @Test
+                    public void createsOrder%s() {
+                        Prereqs p = new Prereqs(1L);
+                        given().when().post("/api/orders/" + p.shopId).then().statusCode(201);
+                    }
+                """;
+        TestCaseResult batchOne = script(helperAndTest.formatted("001", "One"));
+        TestCaseResult batchTwo = script(helperAndTest.formatted("002", "Two"));
+
+        String out = merger.merge(List.of(batchOne, batchTwo), "abc123").testCode();
+
+        assertEqualsOnce(out, "class Prereqs");
+        // Both tests - which each reference the shared type - must survive.
+        assertTrue(out.contains("createsOrderOne"), out);
+        assertTrue(out.contains("createsOrderTwo"), out);
+    }
+
+    /**
+     * A differing type of the same name can't both survive under one name, so
+     * the first is kept and the file still compiles - the whole point, versus a
+     * duplicate declaration that fails every test in the file.
+     */
+    @Test
+    void aDifferingNestedTypeOfTheSameNameKeepsTheFirstAndStaysCompilable() {
+        TestCaseResult batchOne = script("""
+                    private static class Prereqs {
+                        final Long shopId;
+                        Prereqs(Long shopId) { this.shopId = shopId; }
+                    }
+                """);
+        TestCaseResult batchTwo = script("""
+                    private static class Prereqs {
+                        final Long shopId;
+                        final Long itemId;
+                        Prereqs(Long shopId, Long itemId) { this.shopId = shopId; this.itemId = itemId; }
+                    }
+                """);
+
+        String out = merger.merge(List.of(batchOne, batchTwo), "abc123").testCode();
+
+        assertEqualsOnce(out, "class Prereqs");
+        // First kept - the two-arg constructor from the second batch is gone.
+        assertFalse(out.contains("Long itemId"), out);
+    }
+
+    /**
+     * The regenerated TailorBookApp file: a Prereqs holder whose constructor
+     * assigns this.shopId/this.itemId but never declares the fields - "cannot
+     * find symbol: variable shopId", which all-or-nothing takes the whole file
+     * with it. The merger declares the fields, typed from the constructor params.
+     */
+    @Test
+    void declaresHolderFieldsTheConstructorAssignsButNeverDeclared() {
+        String out = merged("""
+                    private static class Prereqs {
+                        Prereqs(Long shopId, Long itemId) {
+                            this.shopId = shopId;
+                            this.itemId = itemId;
+                        }
+                    }
+
+                    // TC-001
+                    @Test
+                    public void usesPrereqs() {
+                        Prereqs p = new Prereqs(1L, 2L);
+                        given().when().get("/api/shops/" + p.shopId).then().statusCode(200);
+                    }
+                """);
+
+        assertTrue(out.contains("Long shopId"), out);
+        assertTrue(out.contains("Long itemId"), out);
+        // Declared final, as a write-once holder is.
+        assertTrue(out.replaceAll("\\s+", " ").contains("final Long shopId"), out);
+    }
+
+    /**
+     * A file already on disk - whose cases were all previously automated, so
+     * regeneration returned it untouched without a merge - never goes through the
+     * merge-time repairs. withCompileSafetyRepairs is the execution-time analogue
+     * of withBaseUriHonoured: it fixes the missing holder fields so the file
+     * compiles and runs today, no regeneration round needed.
+     */
+    @Test
+    void executionTimeRepairAddsMissingHolderFieldsToAnOnDiskScript() {
+        String onDisk = """
+                package com.company.aiqa.generated;
+
+                import io.restassured.RestAssured;
+                import static io.restassured.RestAssured.given;
+
+                public class AutomationTest_x {
+                    private static class Prereqs {
+                        Prereqs(Long shopId, Long itemId) {
+                            this.shopId = shopId;
+                            this.itemId = itemId;
+                        }
+                    }
+                }
+                """;
+        TestCaseResult repaired = merger.withCompileSafetyRepairs(
+                new TestCaseResult("AutomationTest_x", "AutomationTest_x.java", onDisk, null));
+
+        String out = repaired.testCode();
+        assertTrue(out.replaceAll("\\s+", " ").contains("final Long shopId"), out);
+        assertTrue(out.replaceAll("\\s+", " ").contains("final Long itemId"), out);
+    }
+
+    /**
+     * The scoping bug that "not initialized in the default constructor" exposed:
+     * a holder that declares SOME fields but not one the constructor assigns
+     * ({@code this.token} with no {@code token} field) must get that field on the
+     * HOLDER - never on the top-level test class, which has only a default
+     * constructor and would then fail to compile with an uninitialised final.
+     */
+    @Test
+    void addsAHolderFieldToTheHolderNotTheEnclosingClass() {
+        String onDisk = """
+                package com.company.aiqa.generated;
+
+                import static io.restassured.RestAssured.given;
+
+                public class AutomationTest_z {
+
+                    // TC-001
+                    @org.testng.annotations.Test
+                    public void t() {
+                        given().when().get("/api/x").then().statusCode(200);
+                    }
+
+                    private static class AuthInfo {
+                        final Long shopId;
+                        AuthInfo(String token, Long shopId) {
+                            this.token = token;
+                            this.shopId = shopId;
+                        }
+                    }
+                }
+                """;
+        TestCaseResult out = merger.withCompileSafetyRepairs(
+                new TestCaseResult("AutomationTest_z", "AutomationTest_z.java", onDisk, null));
+
+        String code = out.testCode();
+        String flat = code.replaceAll("\\s+", " ");
+        // token is declared on AuthInfo...
+        assertTrue(flat.contains("final String token"), code);
+        // ...and the top-level class gained NO final field (it has only a default ctor).
+        String topLevelBody = code.substring(code.indexOf("class AutomationTest_z"),
+                code.indexOf("class AuthInfo"));
+        assertFalse(topLevelBody.replaceAll("\\s+", " ").contains("final String token"), code);
+        assertFalse(topLevelBody.replaceAll("\\s+", " ").contains("final Long shopId"), code);
+    }
+
+    /** A well-formed on-disk file must be returned untouched by the execution-time repair. */
+    @Test
+    void executionTimeRepairLeavesAGoodFileUnchanged() {
+        String onDisk = """
+                package com.company.aiqa.generated;
+
+                import static io.restassured.RestAssured.given;
+
+                public class AutomationTest_y {
+                    @org.testng.annotations.Test
+                    public void t() {
+                        given().when().get("/api/x").then().statusCode(200);
+                    }
+                }
+                """;
+        TestCaseResult in = new TestCaseResult("AutomationTest_y", "AutomationTest_y.java", onDisk, null);
+        TestCaseResult out = merger.withCompileSafetyRepairs(in);
+
+        assertEquals(in.testCode(), out.testCode());
+    }
+
+    /** A holder that already declares its fields must not gain duplicate declarations. */
+    @Test
+    void leavesAWellFormedHolderAlone() {
+        String out = merged("""
+                    private static class Prereqs {
+                        final Long shopId;
+                        Prereqs(Long shopId) { this.shopId = shopId; }
+                    }
+                """);
+
+        // Exactly one FIELD declaration - the repair must not add a second.
+        assertEqualsOnce(out.replaceAll("\\s+", " "), "final Long shopId");
+    }
+
     private static void assertEqualsOnce(String haystack, String needle) {
         int count = 0;
         for (int i = haystack.indexOf(needle); i >= 0; i = haystack.indexOf(needle, i + 1)) {

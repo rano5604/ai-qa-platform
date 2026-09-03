@@ -65,6 +65,21 @@ public class RouterProperties {
     /** Model id per provider, same keying - {@code aiqa.router.models.cerebras: llama-3.3-70b}. Falls back to the catalog default. */
     private Map<String, String> models = new LinkedHashMap<>();
 
+    /**
+     * OpenRouter's OWN model-level fallback list, tried in order after the
+     * configured primary model ({@code aiqa.router.models.openrouter}) if it
+     * errors or is unavailable - separate from this platform's own
+     * aiqa.router.chain rotation, and resolved inside a single HTTP call. Put
+     * ":free"-suffixed model ids here for free-tier routing. See OpenRouterProvider.
+     */
+    private List<String> openrouterFallbackModels = new ArrayList<>();
+
+    /** OpenRouter provider-level failover: which backends may serve the model, in priority order. Empty lets OpenRouter choose. */
+    private List<String> openrouterProviderOrder = new ArrayList<>();
+
+    /** Whether OpenRouter may fall back to a different backend if the preferred one errors or lacks capacity. */
+    private boolean openrouterAllowFallbacks = true;
+
     public List<String> getChain() { return chain; }
     public void setChain(List<String> chain) { this.chain = chain; }
 
@@ -112,4 +127,17 @@ public class RouterProperties {
     public Map<String, String> getModels() { return models; }
     public void setModels(Map<String, String> models) { this.models = models == null ? new LinkedHashMap<>() : models; }
     public void setOllamaModel(String ollamaModel) { this.ollamaModel = ollamaModel; }
+
+    public List<String> getOpenrouterFallbackModels() { return openrouterFallbackModels; }
+    public void setOpenrouterFallbackModels(List<String> openrouterFallbackModels) {
+        this.openrouterFallbackModels = openrouterFallbackModels == null ? new ArrayList<>() : openrouterFallbackModels;
+    }
+
+    public List<String> getOpenrouterProviderOrder() { return openrouterProviderOrder; }
+    public void setOpenrouterProviderOrder(List<String> openrouterProviderOrder) {
+        this.openrouterProviderOrder = openrouterProviderOrder == null ? new ArrayList<>() : openrouterProviderOrder;
+    }
+
+    public boolean isOpenrouterAllowFallbacks() { return openrouterAllowFallbacks; }
+    public void setOpenrouterAllowFallbacks(boolean openrouterAllowFallbacks) { this.openrouterAllowFallbacks = openrouterAllowFallbacks; }
 }

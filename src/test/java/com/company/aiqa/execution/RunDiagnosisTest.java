@@ -174,6 +174,61 @@ class RunDiagnosisTest {
     }
 
     /**
+     * The TailorBookApp run: the target requires auth the generator couldn't see
+     * in the diff, so 401 of 644 failing tests - and every precondition create -
+     * came back 401. The finding must name the fix (authHeaders), or the reader
+     * triages hundreds of "defects" that are one missing token.
+     */
+    @Test
+    void namesAnAuthWallAndHowToSupplyCredentials() {
+        List<TestExecutionResult> results = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            results.add(failed("createArea" + i, call("POST", "http://localhost:8083/api/areas", 401)));
+        }
+        List<String> findings = RunDiagnosis.of(summary(results));
+
+        assertTrue(findings.stream().anyMatch(f -> f.contains("401/403") && f.contains("authHeaders")),
+                findings.toString());
+    }
+
+    /** A partly-public API - some 2xx, most 401 - still gets the auth-wall finding. */
+    @Test
+    void reportsAnAuthWallEvenWhenSomeEndpointsArePublic() {
+        List<TestExecutionResult> results = new ArrayList<>();
+        results.add(new TestExecutionResult("Gen", "publicPing", TestExecutionResult.Status.PASSED, 5, null, null,
+                List.of(call("GET", "http://host/api/health", 200))));
+        for (int i = 0; i < 5; i++) {
+            results.add(failed("createOrder" + i, call("POST", "http://host/api/orders", 401)));
+        }
+        TestExecutionSummary s = new TestExecutionSummary("http://host", 1, 1, List.of(),
+                6, 1, 5, 0, 0, "report", results);
+
+        assertTrue(RunDiagnosis.of(s).stream().anyMatch(f -> f.contains("401/403")), RunDiagnosis.of(s).toString());
+    }
+
+    /**
+     * A green verdict on a test that never touched the network is not coverage.
+     * 56 of TailorBookApp's 138 "passes" made no HTTP call at all.
+     */
+    @Test
+    void flagsPassingTestsThatMadeNoHttpCall() {
+        List<TestExecutionResult> results = List.of(
+                new TestExecutionResult("Gen", "buildsPayloadOnly", TestExecutionResult.Status.PASSED, 3, null, null,
+                        List.of()),
+                new TestExecutionResult("Gen", "createsFee", TestExecutionResult.Status.PASSED, 10, null, null,
+                        List.of(call("POST", "http://host/api/v1/fees", 201))));
+        TestExecutionSummary s = new TestExecutionSummary("http://host", 1, 1, List.of(),
+                2, 2, 0, 0, 0, "report", results);
+
+        List<String> findings = RunDiagnosis.of(s);
+
+        assertTrue(findings.stream().anyMatch(f -> f.contains("without making a single HTTP call")
+                && f.contains("buildsPayloadOnly")), findings.toString());
+        // The test that DID call must not be named.
+        assertTrue(findings.stream().noneMatch(f -> f.contains("createsFee")), findings.toString());
+    }
+
+    /**
      * A bare JSON null is the whole point of a "required field missing" case.
      * Flagging it would turn the suite's correct negative tests into warnings.
      */
@@ -192,5 +247,60 @@ class RunDiagnosisTest {
 
         assertTrue(RunDiagnosis.of(s).stream().noneMatch(f -> f.contains("the text \"null\"")),
                 RunDiagnosis.of(s).toString());
+    }
+
+    /** An exchange that carried a (redacted) auth token - the header key survives redaction. */
+    private static HttpExchange authed(String method, String uri, int status) {
+        return new HttpExchange("Gen", "t", method, uri, Map.of("Authorization", "<redacted>"), null, false,
+                status, "HTTP/1.1 " + status + " ", Map.of(), "", false, 5);
+    }
+
+    /**
+     * The TailorBookApp role case: admin's token reused on an owner-only endpoint
+     * is refused 403. A token WAS sent, so this is a role/ownership precondition,
+     * not the missing-auth wall - and the finding must say to act as the required
+     * role rather than to supply a token (which was already supplied).
+     */
+    @Test
+    void flagsA403WithATokenAsARoleOrOwnershipPrecondition() {
+        List<TestExecutionResult> results = List.of(
+                failed("createsOrderAsAdmin", authed("POST", "http://localhost:8083/api/orders", 403)));
+
+        List<String> findings = RunDiagnosis.of(summary(results));
+
+        assertTrue(findings.stream().anyMatch(f -> f.contains("403 Forbidden WHILE carrying a token")
+                && f.contains("role") && f.contains("POST /api/orders")), findings.toString());
+        // Must NOT be reported as a missing-credentials auth wall.
+        assertTrue(findings.stream().noneMatch(f -> f.contains("carried no token")), findings.toString());
+    }
+
+    /**
+     * A negative authz test that DELIBERATELY asserts a wrong-role token yields
+     * 403 and PASSES is correct behaviour - the assertion is the point - and must
+     * never be flagged.
+     */
+    @Test
+    void doesNotFlagAPassingTestThatExpected403() {
+        List<TestExecutionResult> results = List.of(
+                new TestExecutionResult("Gen", "wrongShopTokenIsForbidden", TestExecutionResult.Status.PASSED, 8,
+                        null, null, List.of(authed("PUT", "http://localhost:8083/api/orders/5", 403))));
+        TestExecutionSummary s = new TestExecutionSummary("http://localhost:8083", 1, 1, List.of(),
+                1, 1, 0, 0, 0, "report", results);
+
+        assertTrue(RunDiagnosis.of(s).stream().noneMatch(f -> f.contains("WHILE carrying a token")),
+                RunDiagnosis.of(s).toString());
+    }
+
+    /** A 401 with no token is the auth wall, not the role finding - the two must not cross. */
+    @Test
+    void a401WithoutATokenIsTheAuthWallNotTheRoleFinding() {
+        List<TestExecutionResult> results = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            results.add(failed("createArea" + i, call("POST", "http://localhost:8083/api/areas", 401)));
+        }
+        List<String> findings = RunDiagnosis.of(summary(results));
+
+        assertTrue(findings.stream().anyMatch(f -> f.contains("carried no token")), findings.toString());
+        assertTrue(findings.stream().noneMatch(f -> f.contains("WHILE carrying a token")), findings.toString());
     }
 }

@@ -49,8 +49,14 @@ aiqa:
   router:
     # Order matters: groq sits AFTER cerebras because its on-demand tier
     # rejects the automation prompt on size (HTTP 413) even with the context
-    # trimmed, so trying it first only wastes a round trip.
-    chain: [gemini, cerebras, groq, mistral, github, ollama]
+    # trimmed, so trying it first only wastes a round trip. openrouter sits
+    # first: it is itself a single gateway to dozens of providers/models with
+    # its OWN model-level fallback and provider-level failover baked into one
+    # HTTP call (see openrouter-fallback-models below) - so one entry here
+    # already covers most of what would otherwise need a separate chain
+    # member per provider. The rest of the chain remains as a second layer of
+    # resilience if openrouter itself is unreachable.
+    chain: [openrouter, gemini, cerebras, groq, mistral, github, ollama]
     timeout-seconds: 60
     max-tokens: 8192
     gemini-api-key: ${GEMINI_API_KEY:}
@@ -77,12 +83,46 @@ aiqa:
     # called. Model is optional and defaults to the catalog's.
     keys:
       cerebras: ${CEREBRAS_API_KEY:}
+      # https://openrouter.ai/settings/keys
+      openrouter: ${OPENROUTER_API_KEY:}
     models:
       # Cerebras ids carry no hyphen after "llama" - llama3.3-70b, llama3.1-8b -
       # and a wrong one answers 404 model_not_found, not 401. Confirm against
       # your own account before changing it:
       #   curl -H "Authorization: Bearer $CEREBRAS_API_KEY" https://api.cerebras.ai/v1/models
       cerebras: llama3.3-70b
+      # Primary model for the openrouter entry above. "openrouter/free" is
+      # OpenRouter's OWN self-maintained alias that always resolves to
+      # whatever is currently free - the most churn-resistant choice, since
+      # free-tier model ids on OpenRouter change often (verify anything else
+      # against https://openrouter.ai/models?max_price=0 before using it).
+      # OpenRouterProvider refuses to start with anything that isn't a
+      # ":free"-suffixed id or this alias - see its javadoc.
+      openrouter: openrouter/free
+
+    # OpenRouter's OWN routing on top of the plain chat-completions body -
+    # resolved inside a single HTTP call, separate from this platform's chain
+    # rotation above. Only takes effect when "openrouter" has a key configured.
+    openrouter-fallback-models:
+      # Tried in order, after the primary model above, if it errors or its
+      # provider is out of capacity. Every entry here is enforced free-only
+      # (OpenRouterProvider drops anything else with a warning) - confirmed
+      # live against https://openrouter.ai/api/v1/models on 2026-09-01; recheck
+      # periodically, these ids WILL go stale as OpenRouter's free catalog turns over.
+      #
+      # CAPPED AT 3: OpenRouter answers HTTP 400 "'models' array must have 3
+      # items or fewer" for a longer list - verified live the hard way, every
+      # call failing identically until this was trimmed. OpenRouterProvider
+      # also truncates defensively, but keep this list at 3 or fewer regardless.
+      - z-ai/glm-5.2:free
+      - nvidia/nemotron-3-super-120b-a12b:free
+      - minimax/minimax-m2.7:free
+    # Which underlying backends may serve the model, in priority order.
+    # Empty lets OpenRouter choose; e.g. [Together, DeepInfra] to prefer those.
+    openrouter-provider-order: []
+    # Whether OpenRouter may fall back to a different backend if the
+    # preferred one errors or lacks capacity.
+    openrouter-allow-fallbacks: true
 
   # The "Send again" button in an execution report re-issues a captured
   # request. A report opened from disk has no origin, so the browser blocks a

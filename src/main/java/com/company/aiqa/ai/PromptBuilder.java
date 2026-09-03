@@ -519,7 +519,24 @@ public class PromptBuilder {
     public String buildBusinessTestCaseUserPrompt(List<ChangedFile> changedFiles, List<ClassInfo> classes,
                                                    ImpactResult impact, List<ManualTestCase> existingTestCases,
                                                    String relatedImplementation) {
+        return buildBusinessTestCaseUserPrompt(changedFiles, classes, impact, existingTestCases,
+                relatedImplementation, "");
+    }
+
+    /**
+     * @param projectReadme the target's own README, or "" when it has none. The
+     *        diff and the collaborator source say what the code does; the README
+     *        says what it is FOR - which flows and states matter in the domain -
+     *        and that intent is what a good test prioritises and a good
+     *        precondition respects. Context for understanding the change, NOT a
+     *        source of truth for limits or response shapes: those still come from
+     *        the code (the system prompt says so).
+     */
+    public String buildBusinessTestCaseUserPrompt(List<ChangedFile> changedFiles, List<ClassInfo> classes,
+                                                   ImpactResult impact, List<ManualTestCase> existingTestCases,
+                                                   String relatedImplementation, String projectReadme) {
         StringBuilder sb = new StringBuilder();
+        appendProjectReadme(sb, projectReadme);
         appendContext(sb, changedFiles, classes, impact);
 
         if (existingTestCases.isEmpty()) {
@@ -944,6 +961,37 @@ public class PromptBuilder {
                   honestly - it fails AT the prerequisite, so the rule it is named
                   after is never exercised and the report shows a 404 that reads like
                   an application defect.
+                - THE REQUIRED ROLE IS A PRECONDITION, exactly like a resource that
+                  must exist. When the README or the endpoint list says an operation
+                  needs a particular role or resource-ownership, acting with the wrong
+                  identity is refused with 403 by design - not a defect, and not
+                  something a body assertion can fix. So for a POSITIVE test, act AS
+                  the role the operation requires:
+                    * Different operations need different actors. A common shape: an
+                      admin seeded at startup can create top-level data (areas, shops),
+                      but operating on a shop's own resources (orders, workers,
+                      customers, dashboards, photos) requires the SHOP-OWNER of THAT
+                      shop - a token whose bound shop owns the resource. Reusing the
+                      admin token everywhere 403s on every owner-scoped endpoint.
+                    * Obtain the right actor's token the way the README documents it.
+                      If the target seeds only an admin, PROVISION the needed actor
+                      first with real calls in the same test - the README's auth flow
+                      spells out how (e.g. admin creates the area+shop, then the
+                      owner is onboarded via the OTP/set-PIN sequence, then log in) -
+                      then read that actor's token from the login response. Read it
+                      from wherever login returns it: many services return the JWT in
+                      the "Authorization" RESPONSE HEADER, not the body.
+                    * Send that endpoint's request under the correct actor's token:
+                      .header("Authorization", "Bearer " + ownerToken). A per-request
+                      header overrides the run-wide token the platform injects, so the
+                      admin-scoped setup calls and the owner-scoped calls in one test
+                      each carry the identity they need.
+                    * A NEGATIVE authorization case is the mirror image and is
+                      legitimate: deliberately call an owner-scoped endpoint with a
+                      wrong-role or wrong-shop token and assert 403. Do that only when
+                      the case explicitly tests access control.
+                  If the required actor genuinely cannot be provisioned from the listed
+                  endpoints, OMIT the case rather than letting it 403 as a fake defect.
                 - THIS APPLIES TO READS AND SEARCHES TOO, not just to updates and
                   deletes. "Search for a customer by id" needs that customer POSTed
                   first in the same test, then searched by the id that came back.
@@ -1149,10 +1197,30 @@ public class PromptBuilder {
                                                List<TypeSchema> payloadSchemas,
                                                String implementationSource,
                                                String apiContract) {
+        return buildApiAutomationUserPrompt(cases, classes, payloadSchemas, implementationSource, apiContract, "");
+    }
+
+    /**
+     * @param projectReadme the target's own README, or "" when it has none - the
+     *        project's architecture and business intent, so a script can respect
+     *        a domain flow (create then approve then use) the endpoint list alone
+     *        doesn't reveal. Context only: the endpoints, contract and source
+     *        remain the authority on methods, paths and response shapes.
+     */
+    public String buildApiAutomationUserPrompt(List<ManualTestCase> cases, List<ClassInfo> classes,
+                                               List<TypeSchema> payloadSchemas,
+                                               String implementationSource,
+                                               String apiContract,
+                                               String projectReadme) {
         StringBuilder sb = new StringBuilder();
 
+        appendProjectReadme(sb, projectReadme);
+        // Measure the endpoints section on its own: the README may already have
+        // filled the buffer, so "is the whole prompt empty" no longer tells us
+        // whether any endpoint was detected.
+        int beforeEndpoints = sb.length();
         appendApiEndpoints(sb, classes);
-        if (sb.isEmpty()) {
+        if (sb.length() == beforeEndpoints) {
             sb.append("## API endpoints\n\nNone were detected in this commit.\n\n");
         }
         appendApiContract(sb, apiContract);
@@ -1420,6 +1488,31 @@ public class PromptBuilder {
      * plausible-sounding cases whose preconditions can never hold and whose
      * expected results contradict what the system actually does.
      */
+    /**
+     * The target's README, rendered at the top of the prompt as architectural
+     * and business context. Framed explicitly as CONTEXT, not ground truth: it
+     * explains what the system is for and which flows matter, which sharpens
+     * what a case prioritises and what a precondition must respect - but the
+     * code, contract and endpoint list remain the authority on limits, rules and
+     * response shapes, so the model can't turn a sentence in a README into an
+     * asserted constant the service never enforces. That boundary is the whole
+     * point of this section existing separately from the source sections.
+     */
+    private void appendProjectReadme(StringBuilder sb, String projectReadme) {
+        if (projectReadme == null || projectReadme.isBlank()) {
+            return;
+        }
+        sb.append("## Project overview (README)\n\n")
+                .append("The project's own README - its architecture and business intent. Use it to "
+                        + "understand what the system is for, which flows and states matter, and what the "
+                        + "change means in that context, so your cases target real behaviour and your "
+                        + "preconditions respect the real domain. It is CONTEXT, not an authority: never "
+                        + "assert a limit, rule or response shape that only the README mentions - those come "
+                        + "from the code, contract and endpoints below. If the README and the code disagree, "
+                        + "the code wins.\n\n")
+                .append(projectReadme.strip()).append("\n\n");
+    }
+
     private void appendRelatedImplementation(StringBuilder sb, String relatedImplementation) {
         if (relatedImplementation == null || relatedImplementation.isBlank()) {
             return;

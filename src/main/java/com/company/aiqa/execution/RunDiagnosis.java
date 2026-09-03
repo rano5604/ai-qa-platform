@@ -64,9 +64,12 @@ public final class RunDiagnosis {
         addSetupFailure(findings, summary);
         addWrongTarget(findings, summary);
         addUnservedApi(findings, summary);
+        addAuthWall(findings, summary);
+        addRoleOrOwnershipDenied(findings, failing);
         addFailedDuringSetup(findings, failing);
         addNullIdInPath(findings, summary);
         addNullIdInBody(findings, summary);
+        addPassedWithoutHttpCall(findings, summary);
         return findings;
     }
 
@@ -175,6 +178,132 @@ public final class RunDiagnosis {
                     + "under test.")
                     .formatted(all.size(), paths.size(), summary.baseUri()));
         }
+    }
+
+    /**
+     * Most of the run's traffic coming back 401/403 is an environment fact, not
+     * a run of failing tests: the target requires credentials these requests
+     * don't carry. The generator is deliberately barred from inventing auth it
+     * can't see in the diff, so against an auth-gated service every test - and
+     * every precondition create the other tests depend on - answers 401, and the
+     * report reads as hundreds of defects that are all one missing token.
+     *
+     * <p>Unlike the 404 wall this does NOT require every request to be affected:
+     * some endpoints may be public and answer 2xx while the rest 401, and the
+     * finding is still the same actionable fact. It fires on a dominant share, and
+     * names the fix - supply {@code authHeaders} on the execute request - because
+     * the reader otherwise has no way to know the platform can inject them.
+     */
+    private static void addAuthWall(List<String> findings, TestExecutionSummary summary) {
+        List<HttpExchange> all = summary.results().stream().flatMap(r -> r.exchanges().stream()).toList();
+        if (all.size() < MIN_TESTS_FOR_PATTERN) {
+            return;
+        }
+        // A missing-credentials wall is a 401, or a 403 on a request that carried
+        // NO token at all. A 403 while carrying a token is a different problem -
+        // authenticated but wrong role/ownership - reported separately by
+        // addRoleOrOwnershipDenied, so the two aren't conflated into one message
+        // that sends the reader to supply a token they already supplied.
+        long denied = all.stream()
+                .filter(x -> x.responseStatusCode() == 401
+                        || (x.responseStatusCode() == 403 && !carriedAuth(x)))
+                .count();
+        if (denied < MIN_TESTS_FOR_PATTERN || denied < all.size() * PATTERN_SHARE) {
+            return;
+        }
+        findings.add(("%d of %d request(s) in this run were refused with 401/403 and carried no token - the "
+                + "target requires authentication these tests do not carry, and the generator does not invent "
+                + "credentials it cannot see in the diff. Supply them at execution via authHeaders (or a login "
+                + "block) on the request (e.g. {\"Authorization\": \"Bearer <token>\"}), which is put on every "
+                + "request that doesn't set its own; every precondition create is refused the same way, so the "
+                + "tests depending on those ids fail in turn. Until a token is supplied, these verdicts reflect "
+                + "the auth wall, not the endpoints.")
+                .formatted(denied, all.size()));
+    }
+
+    /**
+     * A request answered 403 Forbidden while CARRYING a token is not a missing-auth
+     * problem - the caller is authenticated but lacks the ROLE or resource
+     * OWNERSHIP the endpoint requires. This is an authorization precondition the
+     * test didn't establish, not a defect in the target.
+     *
+     * <p>The canonical shape (TailorBookApp, but the pattern is general): only an
+     * admin user is seeded, admin can create areas and shops, but writing an
+     * order requires a SHOP_OWNER token whose shop owns the resource. A run that
+     * authenticates as admin and reuses that one token everywhere is correctly
+     * refused on every owner-only endpoint - the fix is for the test to act as
+     * the required role (provision/log in as that actor first), not to reuse the
+     * admin token.
+     *
+     * <p>Scoped to FAILING tests only, and to 403s that carried a token: a
+     * negative test that deliberately asserts a wrong-role/wrong-shop token
+     * yields 403 PASSES, and must never be flagged as a problem - that assertion
+     * is the point of the test.
+     */
+    private static void addRoleOrOwnershipDenied(List<String> findings, List<TestExecutionResult> failing) {
+        java.util.LinkedHashSet<String> endpoints = new java.util.LinkedHashSet<>();
+        int count = 0;
+        for (TestExecutionResult result : failing) {
+            for (HttpExchange x : result.exchanges()) {
+                if (x.responseStatusCode() == 403 && carriedAuth(x)) {
+                    endpoints.add(x.requestMethod() + " " + path(x.requestUri()));
+                    count++;
+                }
+            }
+        }
+        if (count == 0) {
+            return;
+        }
+        String sample = endpoints.stream().limit(6).reduce((a, b) -> a + ", " + b).orElse("");
+        String more = endpoints.size() > 6 ? " (+" + (endpoints.size() - 6) + " more)" : "";
+        findings.add(("%d request(s) in failing test(s) were refused 403 Forbidden WHILE carrying a token - the "
+                + "caller is authenticated but lacks the role or resource-ownership the endpoint requires, an "
+                + "authorization precondition the test did not establish (not a target defect). Affected: %s%s. "
+                + "Reusing one identity - typically the seeded admin - for endpoints that require a different "
+                + "role (e.g. a SHOP_OWNER whose shop owns the resource) is refused by design. To exercise these, "
+                + "the test must act AS the required role: create/provision that actor first and log in as it, "
+                + "then send the request with that actor's token, rather than the admin token.")
+                .formatted(count, sample, more));
+    }
+
+    /**
+     * Whether the request carried an Authorization header - the header KEY
+     * survives report redaction even though its value is masked, so token
+     * PRESENCE is always detectable. Distinguishes "no credentials" (401/403 with
+     * no token) from "wrong role" (403 with a token).
+     */
+    private static boolean carriedAuth(HttpExchange x) {
+        if (x.requestHeaders() == null) {
+            return false;
+        }
+        return x.requestHeaders().entrySet().stream()
+                .anyMatch(e -> "authorization".equalsIgnoreCase(e.getKey())
+                        && e.getValue() != null && !e.getValue().isBlank());
+    }
+
+    /**
+     * A test reported PASSED that made no HTTP call at all asserted nothing
+     * against the target - it is not evidence any endpoint works. This happens
+     * when a test's only assertions are local, or its body was reduced until no
+     * request survived: a green verdict with an empty exchange list reads as
+     * coverage the run does not actually have. Reported so a reader doesn't count
+     * it as a passing endpoint. A skipped or failed test making no call is
+     * covered by the setup findings above; this is specifically the misleading
+     * GREEN one.
+     */
+    private static void addPassedWithoutHttpCall(List<String> findings, TestExecutionSummary summary) {
+        List<String> offenders = summary.results().stream()
+                .filter(r -> r.status() == TestExecutionResult.Status.PASSED)
+                .filter(r -> r.exchanges().isEmpty())
+                .map(TestExecutionResult::testMethodName)
+                .toList();
+        if (offenders.isEmpty()) {
+            return;
+        }
+        findings.add(("%d test(s) passed without making a single HTTP call, so they prove nothing about the "
+                + "target - a green verdict here is not a working endpoint, only a test that never exercised "
+                + "one: %s")
+                .formatted(offenders.size(), String.join("; ", offenders)));
     }
 
     /**

@@ -43,17 +43,27 @@ public abstract class AbstractOpenAiCompatProvider implements AiProvider {
         return model;
     }
 
+    /**
+     * Fields beyond {model, temperature, max_tokens, messages} - empty for
+     * every plain OPENAI_COMPAT catalog entry. Overridden by providers whose
+     * API layers extra routing behavior on top of the standard chat-completions
+     * shape (see OpenRouterProvider's "models" / "provider" fields).
+     */
+    protected Map<String, Object> extraBodyFields() {
+        return Map.of();
+    }
+
     @Override
     public String complete(String systemPrompt, String userPrompt, double temperature, int maxTokens) throws Exception {
-        Map<String, Object> body = Map.of(
-                "model", model,
-                "temperature", temperature,
-                "max_tokens", maxTokens,
-                "messages", List.of(
-                        Map.of("role", "system", "content", systemPrompt),
-                        Map.of("role", "user", "content", userPrompt)
-                )
-        );
+        Map<String, Object> body = new java.util.LinkedHashMap<>();
+        body.put("model", model);
+        body.put("temperature", temperature);
+        body.put("max_tokens", maxTokens);
+        body.put("messages", List.of(
+                Map.of("role", "system", "content", systemPrompt),
+                Map.of("role", "user", "content", userPrompt)
+        ));
+        body.putAll(extraBodyFields());
 
         try {
             String rawResponse = restClient.post()

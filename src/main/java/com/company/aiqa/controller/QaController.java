@@ -6,8 +6,12 @@ import com.company.aiqa.git.GitDiffService;
 import com.company.aiqa.git.MergeHistoryService;
 import com.company.aiqa.model.CheckNewCommitsRequest;
 import com.company.aiqa.model.CheckNewCommitsResponse;
+import com.company.aiqa.model.ExecuteAutomationForProjectRequest;
+import com.company.aiqa.model.ExecuteAutomationForProjectResponse;
 import com.company.aiqa.model.ExecuteAutomationRequest;
 import com.company.aiqa.model.ExecuteAutomationResponse;
+import com.company.aiqa.model.GenerateAutomationForProjectRequest;
+import com.company.aiqa.model.GenerateAutomationForProjectResponse;
 import com.company.aiqa.model.GenerateAutomationRequest;
 import com.company.aiqa.model.GenerateAutomationResponse;
 import com.company.aiqa.model.GenerateTestsBackfillResponse;
@@ -256,6 +260,36 @@ public class QaController {
     }
 
     /**
+     * Turns EVERY manual test case the project has ever accumulated - across
+     * every commit, read from generated-tests/&lt;project&gt;/all_manual_test_cases.csv -
+     * into runnable REST Assured automation. The project-wide counterpart to
+     * /generate-automation: that endpoint needs a commitHash because it is
+     * scoped to one commit's own folder; this one only needs projectName,
+     * because it reads the project's rollup catalog instead.
+     *
+     * The API surface is read from the local checkout's CURRENT state (HEAD),
+     * not any one historical commit - there is no single commit that "every
+     * case the project has ever had" corresponds to. Otherwise this behaves
+     * exactly like /generate-automation: only API-testable cases are
+     * automated, cases the project already has a @Test method for are left
+     * untouched (no LLM call spent, no method regenerated), and this endpoint
+     * GENERATES ONLY - no HTTP traffic is sent anywhere.
+     *
+     * Example:
+     * POST /api/v1/generate-automation-for-project
+     * {
+     *   "projectName": "mms",
+     *   "baseUri": "http://169.58.37.242:8007/mms",
+     *   "llmKeys": { "openrouter": "sk-or-..." }
+     * }
+     */
+    @PostMapping("/generate-automation-for-project")
+    public GenerateAutomationForProjectResponse generateAutomationForProject(
+            @Valid @RequestBody GenerateAutomationForProjectRequest request) {
+        return automationGenerationService.generateForProject(request);
+    }
+
+    /**
      * RUNS the automation already generated for a commit, with TestNG.
      *
      * Generation and execution are separate endpoints on purpose. Generating
@@ -294,6 +328,36 @@ public class QaController {
     @PostMapping("/execute-automation")
     public ExecuteAutomationResponse executeAutomation(@Valid @RequestBody ExecuteAutomationRequest request) {
         return automationExecutionService.execute(request);
+    }
+
+    /**
+     * RUNS the project-wide automation script that
+     * POST /api/v1/generate-automation-for-project produced - the merged file
+     * in the project's own root folder, not a commit subfolder. The project-wide
+     * counterpart to /execute-automation: that endpoint needs a commitHash
+     * because it is scoped to one commit's folder; this one only needs
+     * projectName.
+     *
+     * Same semantics otherwise: nothing is generated, no credential is needed,
+     * and this fires real HTTP traffic - including whatever POST/PUT/DELETE the
+     * test cases describe - at whatever baseUri points to. NEVER point it at
+     * production.
+     *
+     * The evidence report is downloadable the same way as the per-commit one -
+     * see executionReportDownloadUrl on the response, or
+     * GET /api/v1/execution-report/download?projectName=... (with no commitHash).
+     *
+     * Example:
+     * POST /api/v1/execute-automation-for-project
+     * {
+     *   "projectName": "mms",
+     *   "baseUri": "http://169.58.37.242:8007/mms"
+     * }
+     */
+    @PostMapping("/execute-automation-for-project")
+    public ExecuteAutomationForProjectResponse executeAutomationForProject(
+            @Valid @RequestBody ExecuteAutomationForProjectRequest request) {
+        return automationExecutionService.executeForProject(request);
     }
 
     /**
@@ -378,19 +442,20 @@ public class QaController {
      * only ever returns its local path in the response summary - useless to a
      * caller on another machine. This returns the file itself.
      *
-     * <p>Identify the project by either {@code projectName} or {@code repoUrl},
-     * same as test-case download. Unlike that endpoint, {@code commitHash} is
-     * REQUIRED: a report is specific to one run, there is no project-wide
-     * rollup. Must be the full commit hash - an abbreviated one finds nothing
-     * and answers 404.
+     * <p>Identify the project by either {@code projectName} or {@code repoUrl}.
+     * With {@code commitHash} you get that single run's report; without it, the
+     * project-wide run's report written by POST /api/v1/execute-automation-for-project.
+     * Must be the full commit hash when supplied - an abbreviated one finds
+     * nothing and answers 404.
      *
-     * Example:
+     * Examples:
      * GET /api/v1/execution-report/download?projectName=QueueManagement&commitHash=4df458deab5a8d8d4748696d753b4aa54fdcf304
+     * GET /api/v1/execution-report/download?projectName=mms
      */
     @GetMapping("/execution-report/download")
     public ResponseEntity<byte[]> downloadExecutionReport(@RequestParam(required = false) String projectName,
                                                           @RequestParam(required = false) String repoUrl,
-                                                          @RequestParam String commitHash) {
+                                                          @RequestParam(required = false) String commitHash) {
         ExecutionReportDownloadService.Download download =
                 executionReportDownloadService.load(projectName, repoUrl, commitHash);
 

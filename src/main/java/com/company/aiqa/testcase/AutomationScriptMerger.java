@@ -1,5 +1,8 @@
 package com.company.aiqa.testcase;
 
+import com.company.aiqa.openapi.ApiContract;
+import com.company.aiqa.openapi.ApiContract.EndpointContract;
+import com.company.aiqa.openapi.ApiContract.FieldDoc;
 import com.company.aiqa.parser.JavaSources;
 import com.company.aiqa.model.TestCaseResult;
 import com.github.javaparser.JavaParser;
@@ -8,15 +11,21 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.TextBlockLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
@@ -24,10 +33,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -114,6 +128,30 @@ public class AutomationScriptMerger {
      *         the single input unchanged when there's nothing to merge
      */
     public TestCaseResult merge(List<TestCaseResult> scripts, String commitHash) {
+        return merge(scripts, commitHash, ApiContract.empty());
+    }
+
+    /**
+     * @param apiContract the target's own OpenAPI document, if one was fetched
+     *                     for this run - see {@link #enforceContractRequiredFields}.
+     *                     Pass {@link ApiContract#empty()} when none is available;
+     *                     the repair is then a no-op, same as before this parameter
+     *                     existed.
+     */
+    public TestCaseResult merge(List<TestCaseResult> scripts, String commitHash, ApiContract apiContract) {
+        return merge(scripts, commitHash, apiContract, null);
+    }
+
+    /**
+     * @param targetRepoRoot the target project's own local checkout, if one exists
+     *                       for this run - lets the required-field repair also read
+     *                       a request DTO's Bean Validation annotations directly, for
+     *                       a field the contract itself doesn't list as required (see
+     *                       RequestDtoSourceScanner). {@code null} skips that half of
+     *                       the repair; the contract-only half still runs.
+     */
+    public TestCaseResult merge(List<TestCaseResult> scripts, String commitHash, ApiContract apiContract,
+                                 Path targetRepoRoot) {
         if (scripts.isEmpty()) {
             throw new IllegalArgumentException("Nothing to merge - no scripts were generated.");
         }
@@ -131,6 +169,10 @@ public class AutomationScriptMerger {
         List<BodyDeclaration<?>> members = new ArrayList<>();
         Set<String> takenSignatures = new HashSet<>();
         Set<String> fieldNames = new HashSet<>();
+        // Nested helper types (a Prereqs record of ids, a small enum) keyed by
+        // simple name -> normalized source, so a later batch's identical copy is
+        // dropped instead of producing a second "already defined" declaration.
+        Map<String, String> nestedTypes = new HashMap<>();
         boolean setupKept = false;
         MethodDeclaration keptSetup = null;
         // Statement text already in the kept setup, so the identical baseURI
@@ -191,6 +233,13 @@ public class AutomationScriptMerger {
                         if (!claimFieldNames(field, fieldNames)) {
                             continue;
                         }
+                    } else if (member instanceof TypeDeclaration<?> nested) {
+                        // A nested helper type, like methods and fields, has no
+                        // overloading: two of one name is an "already defined"
+                        // compile error. Keep the first, drop a later duplicate.
+                        if (!claimNestedType(nested, nestedTypes)) {
+                            continue;
+                        }
                     }
                     scriptMembers.add(member);
                 }
@@ -206,6 +255,8 @@ public class AutomationScriptMerger {
         }
 
         ensureBaseUriIsHonoured(members, keptSetup);
+        enforceContractRequiredFields(members, apiContract, targetRepoRoot);
+        addMissingHolderFields(members);
 
         StringBuilder sb = new StringBuilder();
         sb.append("package ").append(GENERATED_PACKAGE).append(";\n\n");
@@ -349,6 +400,267 @@ public class AutomationScriptMerger {
                 });
     }
 
+    private static final Set<String> BODY_METHODS = Set.of("post", "put", "patch");
+
+    /**
+     * When the target published its own OpenAPI document, a required request-body
+     * field the model dropped is fixable without a prompt retry - the contract
+     * already names it, so this is prompt-independent the same way
+     * {@link #ensureBaseUriIsHonoured} is: an instruction the model follows most
+     * of the time still costs a whole run the time it doesn't (see mms's
+     * CreateMerchantRequest, whose {@code userId} the contract lists as required
+     * and nine generated tests still omitted).
+     *
+     * <p>The contract alone isn't always enough. mms's {@code accountNo} is
+     * required at RUNTIME (a 400 names it) but absent from the contract's
+     * {@code required} array - springdoc only lists what it can trace an
+     * annotation to, and this one apparently didn't trace. So a second, equally
+     * generic source is consulted when a local checkout of the target exists:
+     * {@link RequestDtoSourceScanner} reads the request DTO's own Bean
+     * Validation annotations straight from its source. Neither source is
+     * hardcoded to any project - matching is done purely against whatever
+     * {@link ApiContract} and {@code targetRepoRoot} this run was handed.
+     *
+     * <p>Deliberately narrow about what it will touch, because a wrong edit here
+     * is worse than a missed one:
+     * <ul>
+     *   <li>only TOP-LEVEL required fields - a required field nested inside a
+     *       sub-object would need to inject into a nested JSON structure, which
+     *       this does not attempt;
+     *   <li>only a request body that is a text block/string literal directly, one
+     *       wrapped in its own {@code .formatted(...)}, or fed through
+     *       {@code String.format(...)} - a body built by concatenation or a helper
+     *       method is left alone;
+     *   <li>only when the field's name doesn't already appear in the literal - the
+     *       model may have used a different value than expected, but if it named
+     *       the field at all this leaves it untouched;
+     *   <li>source-grounded fields are only injected when the contract ALSO
+     *       documents that field (with its type/example) under the same name -
+     *       the source scan only ever adds to the required-OR-NOT set the contract
+     *       already enumerated for that operation, never invents a field the
+     *       contract never mentioned at all.
+     * </ul>
+     */
+    private void enforceContractRequiredFields(List<BodyDeclaration<?>> members, ApiContract apiContract,
+                                                Path targetRepoRoot) {
+        if (apiContract == null || apiContract.isEmpty()) {
+            return;
+        }
+        // One filesystem scan per DTO class name, however many endpoints/methods
+        // reference it - a merged script routinely creates the same merchant
+        // shape five different ways.
+        java.util.Map<String, Set<String>> sourceRequiredCache = new java.util.HashMap<>();
+
+        int injected = 0;
+        for (BodyDeclaration<?> member : members) {
+            if (!(member instanceof MethodDeclaration method) || method.getBody().isEmpty()) {
+                continue;
+            }
+            BlockStmt body = method.getBody().get();
+            for (MethodCallExpr call : body.findAll(MethodCallExpr.class)) {
+                if (!BODY_METHODS.contains(call.getNameAsString()) || call.getArguments().isEmpty()
+                        || !call.getArgument(0).isStringLiteralExpr()) {
+                    continue;
+                }
+                String literalPath = call.getArgument(0).asStringLiteralExpr().asString();
+                EndpointContract endpoint = findEndpoint(apiContract, call.getNameAsString(), literalPath)
+                        .orElse(null);
+                if (endpoint == null) {
+                    continue;
+                }
+                Set<String> sourceRequired = sourceRequiredCache.computeIfAbsent(
+                        endpoint.requestSchemaName() == null ? "" : endpoint.requestSchemaName(),
+                        name -> RequestDtoSourceScanner.requiredFieldNames(targetRepoRoot, name));
+                List<FieldDoc> requiredTopLevel = endpoint.requestFields().stream()
+                        .filter(f -> !f.path().contains(".") && !f.path().endsWith("[]"))
+                        .filter(f -> f.required() || sourceRequired.contains(f.path()))
+                        .toList();
+                if (requiredTopLevel.isEmpty()) {
+                    continue;
+                }
+                Expression bodyArg = findBodyArgument(call);
+                if (bodyArg == null) {
+                    continue;
+                }
+                injected += applyMissingFields(body, bodyArg, requiredTopLevel);
+            }
+        }
+        if (injected > 0) {
+            log.info("API contract: injected {} missing required request-body field(s) that the contract "
+                    + "documents as required but the generated script omitted.", injected);
+        }
+    }
+
+    /** Exact match (unlike ApiContractRenderer.mentions, which is deliberately fuzzy) - {id} segments wildcard either side. */
+    private Optional<EndpointContract> findEndpoint(ApiContract apiContract, String httpMethod, String literalPath) {
+        String[] literalSegments = literalPath.split("/", -1);
+        for (EndpointContract endpoint : apiContract.endpoints()) {
+            if (!endpoint.httpMethod().equalsIgnoreCase(httpMethod)) {
+                continue;
+            }
+            String[] contractSegments = endpoint.path().split("/", -1);
+            if (contractSegments.length != literalSegments.length) {
+                continue;
+            }
+            boolean match = true;
+            for (int i = 0; i < contractSegments.length && match; i++) {
+                boolean wildcard = contractSegments[i].startsWith("{") || literalSegments[i].startsWith("{");
+                match = wildcard || contractSegments[i].equals(literalSegments[i]);
+            }
+            if (match) {
+                return Optional.of(endpoint);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /** Walks back through the fluent given()...body(X).when().post(path) chain to find X. */
+    private Expression findBodyArgument(MethodCallExpr call) {
+        Optional<Expression> current = call.getScope();
+        while (current.isPresent() && current.get().isMethodCallExpr()) {
+            MethodCallExpr scoped = current.get().asMethodCallExpr();
+            if ("body".equals(scoped.getNameAsString()) && !scoped.getArguments().isEmpty()) {
+                return scoped.getArgument(0);
+            }
+            current = scoped.getScope();
+        }
+        return null;
+    }
+
+    /**
+     * Resolves the body argument to the literal it ultimately wraps - following a
+     * variable reference to its declaration, and peeling off a {@code .formatted(...)}
+     * or {@code String.format(...)} call to reach the text block/literal underneath -
+     * then splices in whatever required fields are missing.
+     *
+     * @return how many fields were injected (0 when the shape wasn't one this can rewrite safely)
+     */
+    private int applyMissingFields(BlockStmt methodBody, Expression bodyArg, List<FieldDoc> requiredFields) {
+        Expression initializer;
+        if (bodyArg.isNameExpr()) {
+            String varName = bodyArg.asNameExpr().getNameAsString();
+            VariableDeclarator declarator = methodBody.findAll(VariableDeclarator.class).stream()
+                    .filter(v -> v.getNameAsString().equals(varName) && v.getInitializer().isPresent())
+                    .findFirst().orElse(null);
+            if (declarator == null) {
+                return 0;
+            }
+            initializer = declarator.getInitializer().get();
+        } else {
+            initializer = bodyArg;
+        }
+
+        MethodCallExpr formatCall = null;
+        Expression literalExpr = initializer;
+        if (initializer.isMethodCallExpr()) {
+            MethodCallExpr mce = initializer.asMethodCallExpr();
+            if ("formatted".equals(mce.getNameAsString()) && mce.getScope().isPresent()) {
+                formatCall = mce;
+                literalExpr = mce.getScope().get();
+            } else if ("format".equals(mce.getNameAsString()) && !mce.getArguments().isEmpty()) {
+                formatCall = mce;
+                literalExpr = mce.getArgument(0);
+            }
+        }
+
+        boolean isTextBlock = literalExpr.isTextBlockLiteralExpr();
+        if (!isTextBlock && !literalExpr.isStringLiteralExpr()) {
+            return 0;
+        }
+        String rawText = isTextBlock
+                ? literalExpr.asTextBlockLiteralExpr().getValue()
+                : literalExpr.asStringLiteralExpr().getValue();
+
+        int count = 0;
+        for (FieldDoc field : requiredFields) {
+            if (rawText.contains("\"" + field.path() + "\"")) {
+                continue;
+            }
+            boolean canAppendArg = formatCall != null;
+            Injection injection = synthesizeField(field, canAppendArg);
+            rawText = insertJsonField(rawText, injection.jsonFragment());
+            if (injection.formatArg() != null) {
+                formatCall.getArguments().add(injection.formatArg());
+            }
+            count++;
+        }
+        if (count == 0) {
+            return 0;
+        }
+
+        if (isTextBlock) {
+            literalExpr.asTextBlockLiteralExpr().setValue(rawText);
+        } else {
+            literalExpr.asStringLiteralExpr().setValue(rawText);
+        }
+        return count;
+    }
+
+    /** What to splice in for one missing field: the JSON text, and the .formatted() argument it needs, if any. */
+    private record Injection(String jsonFragment, Expression formatArg) {
+    }
+
+    /**
+     * Prefers a value that varies per call whenever there's a {@code .formatted(...)}
+     * to extend - the same reason a hand-fixed merchant payload in this codebase's
+     * own generated-tests uses {@code System.currentTimeMillis()}: a field this
+     * platform had to invent is exactly the kind a service enforces uniqueness on
+     * (a registration number, an account number), and a fixed literal would 409 on
+     * a second run. Falls back to the contract's own documented example - real
+     * data, not invented - only when there is no argument list to extend.
+     */
+    private Injection synthesizeField(FieldDoc field, boolean canAppendFormatArg) {
+        String name = field.path();
+        String type = field.type() == null ? "" : field.type().toLowerCase(Locale.ROOT);
+
+        if (!field.enumValues().isEmpty()) {
+            return new Injection(jsonPair(name, quote(field.enumValues().get(0))), null);
+        }
+        if (type.startsWith("boolean")) {
+            return new Injection(jsonPair(name, "true"), null);
+        }
+        if (type.startsWith("integer") || type.startsWith("number")) {
+            if (canAppendFormatArg) {
+                return new Injection(jsonPair(name, "%d"), parseExpr("System.currentTimeMillis() % 100_000"));
+            }
+            String example = field.example();
+            String literal = example != null && example.matches("-?\\d+(\\.\\d+)?") ? example : "1";
+            return new Injection(jsonPair(name, literal), null);
+        }
+        // string, and anything not otherwise recognised
+        if (canAppendFormatArg) {
+            return new Injection(jsonPair(name, "\"%s\""), parseExpr("\"gen-\" + System.currentTimeMillis()"));
+        }
+        String example = field.example();
+        String value = (example == null || example.isBlank()) ? ("generated-" + name) : example;
+        return new Injection(jsonPair(name, quote(value)), null);
+    }
+
+    private String jsonPair(String name, String valueLiteral) {
+        return "\"" + name + "\": " + valueLiteral;
+    }
+
+    private String quote(String value) {
+        return "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
+    }
+
+    private Expression parseExpr(String code) {
+        return parser().parseExpression(code).getResult()
+                .orElseThrow(() -> new IllegalStateException("Failed to parse synthesized expression: " + code));
+    }
+
+    /** Splices a new "name": value pair in as the last property, right before the closing brace. */
+    private String insertJsonField(String jsonText, String fragment) {
+        int closeBrace = jsonText.lastIndexOf('}');
+        if (closeBrace < 0) {
+            return jsonText;
+        }
+        String before = jsonText.substring(0, closeBrace).stripTrailing();
+        String after = jsonText.substring(closeBrace);
+        boolean empty = before.endsWith("{");
+        return before + (empty ? "" : ",") + "\n  " + fragment + "\n" + after;
+    }
+
     /**
      * Applies the base-URI guarantee to a script that is about to RUN, not one
      * being merged.
@@ -399,6 +711,43 @@ public class AutomationScriptMerger {
         cu.addImport("io.restassured.RestAssured");
         cu.addImport("org.testng.annotations.BeforeClass");
         log.info("Repaired {} so it targets the base URI this run was given.", script.testFileName());
+        return new TestCaseResult(script.targetClassName(), script.testFileName(), cu.toString(), script.writtenPath());
+    }
+
+    /**
+     * Applies the structural compile-safety repairs to a script about to RUN,
+     * not one being merged - the analogue of {@link #withBaseUriHonoured} for the
+     * defects that otherwise fail the whole file's compile.
+     *
+     * <p>The merge-time repairs only fire when fresh batches are merged. But a
+     * file already sitting on disk - one whose cases were all already automated,
+     * so regeneration returned it untouched with no merge - never goes through
+     * them, and a single defect like a nested holder whose fields the constructor
+     * assigns but never declares ({@code this.shopId = shopId} with no
+     * {@code Long shopId;}) fails the compile and loses every test in the file.
+     * Repairing at execution time means such a file runs today without a
+     * regeneration round. A file that needs nothing is returned unchanged.
+     *
+     * @return the script with any repair applied, or the input unchanged when
+     *         nothing needed doing or it could not be parsed
+     */
+    public TestCaseResult withCompileSafetyRepairs(TestCaseResult script) {
+        ParseResult<CompilationUnit> parsed = parser().parse(script.testCode());
+        if (!parsed.isSuccessful() || parsed.getResult().isEmpty()) {
+            log.warn("Could not parse {} for compile-safety repair - running it as written.", script.testFileName());
+            return script;
+        }
+        CompilationUnit cu = parsed.getResult().get();
+        String before = cu.toString();
+
+        for (TypeDeclaration<?> type : cu.findAll(TypeDeclaration.class)) {
+            addMissingFieldsForType(type);
+        }
+
+        if (cu.toString().equals(before)) {
+            return script;
+        }
+        log.info("Applied compile-safety repair(s) to {} before running it.", script.testFileName());
         return new TestCaseResult(script.targetClassName(), script.testFileName(), cu.toString(), script.writtenPath());
     }
 
@@ -559,6 +908,144 @@ public class AutomationScriptMerger {
         }
         fieldNames.addAll(names);
         return true;
+    }
+
+    /**
+     * Registers a nested type's simple name, returning false when a type of that
+     * name was already contributed by an earlier batch.
+     *
+     * <p>Each batch's script is a self-contained class, so several batches
+     * routinely declare the same private helper type - a {@code Prereqs} holder
+     * of shop/item ids, a small enum. Java, unlike methods, has no overloading to
+     * fall back on: two nested types of one name is an unconditional "class X is
+     * already defined" error that, all-or-nothing as ever, takes every test in
+     * the file with it (a whole run reported as 0 tests). This is exactly the
+     * fields case one level up - keep the first declaration, drop a later one.
+     *
+     * <p>Whether the dropped copy was identical is logged, not acted on. The
+     * observed case is byte-identical duplicates (the scaffolding the model
+     * repeats every batch), which drop silently and correctly. A DIFFERING type
+     * of the same name is rarer and genuinely ambiguous - both would still be
+     * referred to by the one name in code, so keeping the first is the only
+     * choice that compiles; a test needing a member only the dropped shape had
+     * then fails to resolve and CompileSalvager prunes just that test, rather
+     * than the duplicate taking down the entire file. The warning makes that
+     * visible instead of silent.
+     */
+    private boolean claimNestedType(TypeDeclaration<?> type, Map<String, String> nestedTypes) {
+        String name = type.getNameAsString();
+        String normalized = normalizeType(type);
+        if (nestedTypes.containsKey(name)) {
+            if (normalized.equals(nestedTypes.get(name))) {
+                log.info("Dropping duplicate nested type '{}' while merging - identical to the one already kept.",
+                        name);
+            } else {
+                log.warn("Dropping nested type '{}' while merging - a DIFFERING type of that name is already "
+                        + "kept. Any test referencing a member only the dropped shape had will be pruned by "
+                        + "CompileSalvager rather than failing the whole file.", name);
+            }
+            return false;
+        }
+        nestedTypes.put(name, normalized);
+        return true;
+    }
+
+    /** Whitespace-insensitive source of a type, so an identical duplicate compares equal despite reformatting. */
+    private String normalizeType(TypeDeclaration<?> type) {
+        return type.toString().replaceAll("\\s+", " ").trim();
+    }
+
+    /**
+     * Declares the backing fields for a nested holder type whose constructor
+     * assigns {@code this.x = x} but never declared {@code x}.
+     *
+     * <p>The model emits small data holders for a test's preconditions - a
+     * {@code Prereqs} of a shopId and an itemId, say - and sometimes writes the
+     * constructor that assigns the fields while forgetting to declare them:
+     *
+     * <pre>
+     *   private static class Prereqs {
+     *       Prereqs(Long shopId, Long itemId) {
+     *           this.shopId = shopId;   // "cannot find symbol: variable shopId"
+     *           this.itemId = itemId;
+     *       }
+     *   }
+     * </pre>
+     *
+     * <p>That is one bad token that, Java compiling all-or-nothing, takes the
+     * holder, the helper that returns it, and every test that reads it down with
+     * it - CompileSalvager would then prune the lot rather than the one missing
+     * line. So the field is added instead, typed from the constructor parameter
+     * of the same name (the only reliable ground truth for its type). Added
+     * {@code final}, since a holder assigned once in its constructor is exactly
+     * that. Deliberately narrow: only a {@code this.name = ...} whose {@code name}
+     * is undeclared AND matches a constructor parameter is repaired - anything
+     * else is left for the compiler to judge rather than guessed at.
+     */
+    private void addMissingHolderFields(List<BodyDeclaration<?>> members) {
+        for (BodyDeclaration<?> member : members) {
+            if (member instanceof TypeDeclaration<?> type) {
+                addMissingFieldsForType(type);
+            }
+        }
+    }
+
+    private void addMissingFieldsForType(TypeDeclaration<?> type) {
+        // Strictly this type's OWN declarations - getFields()/getConstructors()
+        // are direct members, never a nested type's. Recursion here was a real
+        // bug: run on the top-level test class, findAll() reached into every
+        // nested holder's constructor and this.x= assignment and declared THOSE
+        // fields (token, orderItemId, ...) on the top-level class, which has only
+        // a default constructor - "variable token not initialized in the default
+        // constructor". A holder's missing field belongs to that holder alone.
+        Set<String> declared = new HashSet<>();
+        type.getFields().forEach(f -> f.getVariables().forEach(v -> declared.add(v.getNameAsString())));
+
+        // Parameter types available to infer a field's type from, keyed by name.
+        Map<String, String> paramTypes = new HashMap<>();
+        for (ConstructorDeclaration ctor : type.getConstructors()) {
+            for (Parameter p : ctor.getParameters()) {
+                paramTypes.putIfAbsent(p.getNameAsString(), p.getType().asString());
+            }
+        }
+
+        // The undeclared targets of this.name = ... assignments inside this type's
+        // OWN constructors, in first-seen order. Scoped to the constructor body
+        // because that is exactly the defect - "the constructor assigns a field it
+        // never declared" - and it keeps a nested type's assignments out of the
+        // enclosing type's analysis.
+        Set<String> missing = new LinkedHashSet<>();
+        for (ConstructorDeclaration ctor : type.getConstructors()) {
+            for (AssignExpr assign : ctor.findAll(AssignExpr.class)) {
+                if (assign.getTarget() instanceof FieldAccessExpr access
+                        && access.getScope() instanceof ThisExpr) {
+                    String name = access.getNameAsString();
+                    if (!declared.contains(name) && paramTypes.containsKey(name)) {
+                        missing.add(name);
+                    }
+                }
+            }
+        }
+        if (missing.isEmpty() || !(type instanceof ClassOrInterfaceDeclaration decl)) {
+            return;
+        }
+
+        // Prepend the fields, in the order the assignments first referenced them,
+        // so the class reads like one the model wrote correctly.
+        int insertAt = 0;
+        for (String name : missing) {
+            var parsedType = parser().parseType(paramTypes.get(name)).getResult().orElse(null);
+            if (parsedType == null) {
+                continue;
+            }
+            FieldDeclaration field = new FieldDeclaration();
+            field.addVariable(new VariableDeclarator(parsedType, name));
+            field.addModifier(com.github.javaparser.ast.Modifier.Keyword.FINAL);
+            decl.getMembers().add(insertAt++, field);
+        }
+        log.info("Declared {} missing holder field(s) {} on nested type '{}' - the constructor assigned them "
+                + "but never declared them, which would have failed the compile and taken the whole file with it.",
+                missing.size(), missing, decl.getNameAsString());
     }
 
     /** Remembers what the kept setup already does, so duplicates aren't re-added. */

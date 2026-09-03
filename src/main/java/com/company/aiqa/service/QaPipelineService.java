@@ -7,6 +7,7 @@ import com.company.aiqa.config.PipelineProperties;
 import com.company.aiqa.dependency.DependencyService;
 import com.company.aiqa.git.GitDiffService;
 import com.company.aiqa.git.MergeHistoryService;
+import com.company.aiqa.git.ProjectDocReader;
 import com.company.aiqa.git.RepoSyncService;
 import com.company.aiqa.impact.ImpactAnalysisService;
 import com.company.aiqa.llm.LlmKeyStore;
@@ -56,6 +57,9 @@ public class QaPipelineService {
      * if there is one name to look for.
      */
     private static final String NO_TEST_CASES_FILE = "no-test-cases.txt";
+
+    /** The README snapshot synced into each run's folder as the context it was generated against. */
+    private static final String README_SNAPSHOT_FILE = "README.snapshot.md";
 
     private final GitDiffService gitDiffService;
     private final RepoSyncService repoSyncService;
@@ -197,7 +201,36 @@ public class QaPipelineService {
         String runOutputDir = resolveRunOutputDir(Files.isDirectory(Path.of(located)), located, outputDir,
                 request.getHeadRef(), request.getCommitSequence());
 
+        // The project README as architectural/business context (see
+        // ProjectDocReader), plus whether THIS commit changed it. Read once and
+        // reused for every category/batch, same as the collaborator source.
+        // whether-changed is a third change signal beside source and config: a
+        // commit that only edits the README changes neither, so without this its
+        // refreshed intent would never reach a run at all.
+        boolean readmeChanged = gitDiffService.computeChangedReadme(
+                request.getRepoPath(), request.getBaseRef(), request.getHeadRef()).isPresent();
+        final String projectReadme = collectProjectReadme(request);
+        // Sync the README locally beside the generated tests, so each processed
+        // commit's folder records the exact architectural context it was
+        // generated against - traceable, and downloadable with the run.
+        persistReadmeSnapshot(runOutputDir, projectReadme);
+
         if (changedFiles.isEmpty() && configFiles.isEmpty()) {
+            if (readmeChanged) {
+                // A README-only change is NOT "nothing changed": the business
+                // context shifted. There is no source or config diff to generate
+                // cases from, so none are produced - but the commit is recorded
+                // as processed (SUCCESS), with a note saying the context was
+                // refreshed, rather than skipped as empty and re-attempted
+                // forever. The refreshed README informs the next code change.
+                String readmeOnly = ("Only the project README changed between %s and %s - architectural/business "
+                        + "context refreshed and synced locally. No source or configuration change, so no new test "
+                        + "cases were generated; the updated README informs the next code change's cases.")
+                        .formatted(request.getBaseRef(), request.getHeadRef());
+                writeRunNote(runOutputDir, readmeOnly);
+                return new GenerateTestsResponse(0, 0, 0, 0, commitLog, List.of(), null, null, List.of(),
+                        List.of(), List.of(), List.of(), 100, MergeStatus.SUCCESS, readmeOnly);
+            }
             // Nothing to generate is a legitimately COMPLETE outcome, not a
             // gap - otherwise an empty merge would be re-attempted forever.
             String noChanges = "No changed source or configuration files found between %s and %s.".formatted(
@@ -365,7 +398,7 @@ public class QaPipelineService {
                             categorySystemPrompt,
                             files -> promptBuilder.buildBusinessTestCaseUserPrompt(
                                     files, classesFor(files, classes), impact, existing,
-                                    relatedImplementation.get()),
+                                    relatedImplementation.get(), projectReadme),
                             response -> {
                                 List<ManualTestCase> cases = manualTestCaseGenerator.parse(
                                         response, capitalizedCategory, idCursor[0], groupForParser);
@@ -1083,6 +1116,14 @@ public class QaPipelineService {
     private static final int MAX_RELATED_SOURCE_CHARS = 50_000;
 
     /**
+     * Cap on the README fed as architectural/business context. Smaller than the
+     * source cap: a README is prose, so it earns its place by intent, not
+     * volume, and it competes with the diff and collaborator source for the same
+     * prompt budget - a book-length one truncates rather than crowding them out.
+     */
+    private static final int MAX_README_CHARS = 16_000;
+
+    /**
      * Source of the classes the change reaches into but the diff does not show.
      *
      * <p>Impact analysis already knows WHICH classes a change touches, but it
@@ -1146,6 +1187,22 @@ public class QaPipelineService {
                 repoUrl, request.getAccessToken(), resolveScheme(request.getProvider()));
         log.info("Resolved repoUrl {} to local checkout {}", repoUrl, localPath);
         return localPath;
+    }
+
+    /**
+     * Reads the target's README at the commit under test, as architectural and
+     * business context for generation. Best-effort: any failure yields "" and
+     * generation proceeds exactly as before this existed - context is an
+     * enhancement, never a reason to fail. See {@link ProjectDocReader}.
+     */
+    private String collectProjectReadme(GenerateTestsRequest request) {
+        try (GitDiffService.SourceAtCommit source =
+                     gitDiffService.openSourceAtCommit(request.getRepoPath(), request.getHeadRef())) {
+            return ProjectDocReader.readReadme(source, MAX_README_CHARS);
+        } catch (Exception e) {
+            log.warn("Could not read the project README ({}), generating without it.", e.getMessage());
+            return "";
+        }
     }
 
     private String collectRelatedImplementation(GenerateTestsRequest request,
@@ -1344,6 +1401,26 @@ public class QaPipelineService {
      * turn that into a failed merge which a later backfill then retries
      * forever. A warning in the log is the whole remedy.
      */
+    /**
+     * Writes the README used as context beside the generated tests, so the
+     * commit's folder carries the exact architectural/business doc it was
+     * generated against - the "sync the README locally" half of using it. Only
+     * when there is one; best-effort, and never fails a run over a snapshot.
+     */
+    static void persistReadmeSnapshot(String runOutputDir, String projectReadme) {
+        if (projectReadme == null || projectReadme.isBlank()) {
+            return;
+        }
+        Path snapshot = Path.of(runOutputDir, README_SNAPSHOT_FILE);
+        try {
+            Files.createDirectories(Path.of(runOutputDir));
+            Files.writeString(snapshot, projectReadme, StandardCharsets.UTF_8);
+            log.info("Synced project README locally to {}", snapshot);
+        } catch (IOException e) {
+            log.warn("Could not write README snapshot {}: {}", snapshot, e.getMessage());
+        }
+    }
+
     static void writeRunNote(String runOutputDir, String message) {
         Path note = Path.of(runOutputDir, NO_TEST_CASES_FILE);
         try {

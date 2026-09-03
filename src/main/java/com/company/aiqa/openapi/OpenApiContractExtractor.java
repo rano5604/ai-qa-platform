@@ -93,9 +93,17 @@ public class OpenApiContractExtractor {
 
         JsonNode requestContent = operation.path("requestBody").path("content");
         String mediaType = preferredMediaType(requestContent);
-        List<FieldDoc> requestFields = mediaType.isEmpty()
+        JsonNode requestSchema = mediaType.isEmpty() ? null : requestContent.path(mediaType).path("schema");
+        List<FieldDoc> requestFields = requestSchema == null
                 ? List.of()
-                : flatten(spec, requestContent.path(mediaType).path("schema"), "");
+                : flatten(spec, requestSchema, "");
+        // Only a DIRECT $ref counts - an inline schema has no class in the
+        // target's source to go read, and allOf/oneOf compositions are already
+        // merged away by the time flatten() returns, so there is no single
+        // class name left to name here.
+        String requestSchemaName = requestSchema == null
+                ? ""
+                : simpleRefName(requestSchema.path("$ref").asText(""));
 
         List<ResponseContract> responses = new ArrayList<>();
         JsonNode responseNode = operation.path("responses");
@@ -114,7 +122,7 @@ public class OpenApiContractExtractor {
         }
 
         return new EndpointContract(component, method, path, text(operation, "summary"),
-                pathParams, queryParams, mediaType, requestFields, responses);
+                pathParams, queryParams, mediaType, requestFields, responses, requestSchemaName);
     }
 
     private void collectParams(JsonNode spec, JsonNode params, List<ParamDoc> path, List<ParamDoc> query) {
