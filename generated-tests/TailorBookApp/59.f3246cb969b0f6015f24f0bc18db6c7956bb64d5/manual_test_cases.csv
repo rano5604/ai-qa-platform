@@ -1,0 +1,30 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Cancel an order when all its items are in MEASUREMENT_DONE state,Order Management - Order Cancellation,Positive,High,An order with ID 101 exists in the system and all of its order items are currently in the MEASUREMENT_DONE status.,"1. Send a POST request to /api/orders/101/cancel without a request body.
+
+Test Data: Order ID: 101","The server returns HTTP 200 OK with the exact text response 'Order and all items cancelled successfully.', and the status of the order as well as all its items is set to CANCELLED.",TC-001
+Update individual order item status and auto-update order status when all items are delivered,Order Management - Item Status Progression,Positive,High,"An order exists containing order item ID 501. The order item is in a valid state to transition to DELIVERED, and all other items in the order are already in DELIVERED status.","1. Send a PUT request to /api/orders/items/501/status with the JSON payload in testData.
+
+Test Data: {
+  ""newStatus"": ""DELIVERED""
+}",The server returns HTTP 200 OK with status 'success' and message 'Order item status updated successfully.'. The item status updates to DELIVERED and the parent order status automatically transitions to DELIVERED.,TC-002
+Attempt to cancel an order where an order item is not in MEASUREMENT_DONE state,Order Cancellation,Negative,High,An order with ID 1001 exists where at least one order item has progressed beyond measurement (e.g. status is CUTTING_DONE or IN_PROGRESS).,"1. Send a POST request to /api/orders/1001/cancel.
+
+Test Data: Order ID: 1001","HTTP 400 Bad Request with body text message: ""Order can only be cancelled if all items are in MEASUREMENT_DONE state.""",TC-003
+Attempt to update an order item status to an invalid transition,Order Item Status Update,Negative,High,An order item with ID 501 exists and its current status is MEASUREMENT_DONE.,"1. Send a PUT request to /api/orders/items/501/status with the JSON payload in testData.
+
+Test Data: {
+  ""newStatus"": ""DELIVERED""
+}","HTTP 400 Bad Request with JSON body containing status ""error"" and a message indicating that the status transition is invalid.",12878fa-TC-011
+Parent order status becomes IN_PROGRESS when only a subset of items are READY_FOR_DELIVERY,Order Status Transition,Boundary,High,"An order with ID 101 exists containing exactly 2 items. Item 201 is in CUTTING_DONE state, and Item 202 is in PRESS_DONE state.","1. Send a PUT request to /api/orders/items/202/status with the payload in testData.
+
+Test Data: {
+  ""newStatus"": ""READY_FOR_DELIVERY""
+}","HTTP status code 200 OK is returned with status 'success'. In the database / GET order payload, Item 202 status is READY_FOR_DELIVERY while the parent order status is updated to IN_PROGRESS because not all items are READY_FOR_DELIVERY or DELIVERED.",TC-004
+Parent order status becomes DELIVERED when all order items reach DELIVERED state,Order Status Transition,Boundary,High,An order with ID 102 exists containing exactly 2 items. Item 203 is already in DELIVERED state and Item 204 is in READY_FOR_DELIVERY state.,"1. Send a PUT request to /api/orders/items/204/status with the payload in testData.
+
+Test Data: {
+  ""newStatus"": ""DELIVERED""
+}",HTTP status code 200 OK is returned with status 'success'. The parent order status transitions to DELIVERED as all items now meet the DELIVERED criteria.,TC-005
+Cancel order with single item boundary where item is in MEASUREMENT_DONE state,Order Cancellation,Boundary,High,"An order with ID 103 exists containing exactly 1 item (minimum item count boundary), which is currently in MEASUREMENT_DONE state.","1. Send a POST request to /api/orders/103/cancel.
+
+Test Data: Path variable orderId = 103",HTTP status code 200 OK is returned with body string 'Order and all items cancelled successfully.'. The order status and the single item status are both updated to CANCELLED.,TC-006

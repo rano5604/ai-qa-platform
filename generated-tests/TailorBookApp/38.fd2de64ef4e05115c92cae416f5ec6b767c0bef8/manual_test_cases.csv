@@ -171,3 +171,14 @@ Test Data: {
   ""confirmPin"": ""12"",
   ""otp"": ""123456""
 }","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: PIN must be at least 4 digits'. The worker's PIN is not set.",0895cc7-TC-026
+Set worker PIN using empty strings for pin and confirmPin boundary values,Worker Activation,Boundary,Medium,"A worker account with phone number '1234567890' exists and a valid, unexpired OTP '123456' has been generated for it.","1. Send a POST request to /api/shops/1/workers/activate with the payload in testData.
+
+Test Data: {
+  ""phoneNumber"": ""1234567890"",
+  ""otp"": ""123456"",
+  ""pin"": """",
+  ""confirmPin"": """"
+}","The equality check between pin and confirmPin succeeds since both are zero-length strings, OTP verification passes, and the API returns HTTP 200 OK with status 'success' and message 'PIN set successfully'.",TC-896
+Retrieve worker list using minimum allowed page index boundary (page 0),Worker Pagination,Boundary,Low,A shop with ID 1 exists and has at least one worker assigned to it.,"1. Send a GET request to /api/shops/1/workers?page=0&limit=10.
+
+Test Data: shopId=1, page=0, limit=10","The API responds with HTTP 200 OK and an ApiResponse object containing the first page (page 0) of workers, with totalElements and totalPages populated in meta.",TC-897

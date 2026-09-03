@@ -1,0 +1,117 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a new order with valid details,Order Management,Positive,High,No pre-existing orders in the system,"1. Send a POST request to /orders with the payload in testData. 2. Note the returned order ID.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Laptop"", ""quantity"": 1, ""price"": 999.99}","The response status is 200 OK. The response body contains the created order with a non-null ID, matching customerName 'John Doe', productName 'Laptop', quantity 1, and price 999.99.",TC-001
+Retrieve details of a created order,Order Management,Positive,High,An order with ID 1 exists in the system (created via POST /orders),1. Send a GET request to /orders/1.,"The response status is 200 OK. The response body contains the order details with ID 1, matching the customerName, productName, quantity, and price used during creation.",TC-002
+Update an existing order with valid details,Order Management,Positive,High,An order with ID 1 exists in the system (created via POST /orders),"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""Jane Smith"", ""productName"": ""Smartphone"", ""quantity"": 2, ""price"": 699.99}","The response status is 200 OK. The response body contains the updated order with ID 1, customerName 'Jane Smith', productName 'Smartphone', quantity 2, and price 699.99.",TC-003
+Retrieve all orders in the system,Order Management,Positive,Medium,At least two orders exist in the system (created via POST /orders),1. Send a GET request to /orders.,"The response status is 200 OK. The response body is a list containing all created orders, each with their respective IDs, customerNames, productNames, quantities, and prices.",TC-004
+Create order with missing customerName,Order Creation,Negative,High,None,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""productName"": ""Laptop"", ""quantity"": 1, ""price"": 999.99}","The API responds with HTTP 400 Bad Request, indicating that 'customerName' is required.",TC-005
+Create order with missing productName,Order Creation,Negative,High,None,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""quantity"": 1, ""price"": 999.99}","The API responds with HTTP 400 Bad Request, indicating that 'productName' is required.",TC-006
+Create order with quantity as zero,Order Creation,Negative,High,None,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Laptop"", ""quantity"": 0, ""price"": 999.99}","The API responds with HTTP 400 Bad Request, indicating that 'quantity' must be a positive integer.",TC-007
+Create order with quantity as negative number,Order Creation,Negative,High,None,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Laptop"", ""quantity"": -1, ""price"": 999.99}","The API responds with HTTP 400 Bad Request, indicating that 'quantity' must be a positive integer.",TC-008
+Create order with quantity as decimal,Order Creation,Negative,High,None,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Laptop"", ""quantity"": 1.5, ""price"": 999.99}","The API responds with HTTP 400 Bad Request, indicating that 'quantity' must be an integer.",TC-009
+Create order with price as negative number,Order Creation,Negative,High,None,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Laptop"", ""quantity"": 1, ""price"": -999.99}","The API responds with HTTP 400 Bad Request, indicating that 'price' must be a positive number.",TC-010
+Update order with non-existent ID,Order Update,Negative,High,None,"1. Send a PUT request to /orders/999 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Laptop"", ""quantity"": 1, ""price"": 999.99}","The API responds with HTTP 404 Not Found, indicating that the order with the specified ID does not exist.",TC-011
+Update order with missing customerName,Order Update,Negative,High,An order exists with ID 1,"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""productName"": ""Laptop"", ""quantity"": 1, ""price"": 999.99}","The API responds with HTTP 400 Bad Request, indicating that 'customerName' is required.",TC-012
+Update order with quantity as zero,Order Update,Negative,High,An order exists with ID 1,"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Laptop"", ""quantity"": 0, ""price"": 999.99}","The API responds with HTTP 400 Bad Request, indicating that 'quantity' must be a positive integer.",TC-013
+Get order details with non-existent ID,Order Retrieval,Negative,Medium,None,1. Send a GET request to /orders/999.,"The API responds with HTTP 404 Not Found, indicating that the order with the specified ID does not exist.",TC-014
+Create order with minimum allowed quantity (1),Order Creation,Boundary,High,No existing orders,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 1, ""price"": 9.99}","HTTP 200 OK. Response body contains the created order with id=1, quantity=1, and all other fields matching the request.",TC-015
+Create order with quantity zero (boundary below minimum),Order Creation,Boundary,High,No existing orders,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 0, ""price"": 9.99}","HTTP 200 OK. Response body contains the created order with quantity=0. (Note: This proves the boundary is accepted, not rejected, as the code does not enforce a minimum quantity.)",TC-016
+Create order with maximum integer quantity (2147483647),Order Creation,Boundary,High,No existing orders,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 2147483647, ""price"": 9.99}",HTTP 200 OK. Response body contains the created order with quantity=2147483647 and all other fields matching the request.,TC-017
+Create order with quantity one above maximum integer (2147483648),Order Creation,Boundary,Medium,No existing orders,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 2147483648, ""price"": 9.99}",HTTP 400 Bad Request or equivalent error due to integer overflow/parsing failure. (Note: This proves the boundary is rejected.),TC-018
+Create order with minimum allowed price (0.0),Order Creation,Boundary,High,No existing orders,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 1, ""price"": 0.0}",HTTP 200 OK. Response body contains the created order with price=0.0 and all other fields matching the request.,TC-019
+Create order with negative price (-0.01),Order Creation,Boundary,Medium,No existing orders,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 1, ""price"": -0.01}","HTTP 200 OK. Response body contains the created order with price=-0.01. (Note: This proves the boundary is accepted, not rejected, as the code does not enforce a minimum price.)",TC-020
+Create order with maximum double price (1.7976931348623157E308),Order Creation,Boundary,Medium,No existing orders,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 1, ""price"": 1.7976931348623157E308}",HTTP 200 OK. Response body contains the created order with price=1.7976931348623157E308 and all other fields matching the request.,TC-021
+Update order quantity to minimum allowed (1),Order Update,Boundary,High,An existing order with id=1 and quantity=5,"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 1, ""price"": 9.99}","HTTP 200 OK. Response body contains the updated order with id=1, quantity=1, and all other fields matching the request.",TC-022
+Update order quantity to zero (boundary below minimum),Order Update,Boundary,High,An existing order with id=1 and quantity=5,"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 0, ""price"": 9.99}","HTTP 200 OK. Response body contains the updated order with quantity=0. (Note: This proves the boundary is accepted, not rejected, as the code does not enforce a minimum quantity.)",TC-023
+Update order quantity to maximum integer (2147483647),Order Update,Boundary,High,An existing order with id=1 and quantity=5,"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 2147483647, ""price"": 9.99}",HTTP 200 OK. Response body contains the updated order with quantity=2147483647 and all other fields matching the request.,TC-024
+Update order price to minimum allowed (0.0),Order Update,Boundary,High,An existing order with id=1 and price=9.99,"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 1, ""price"": 0.0}",HTTP 200 OK. Response body contains the updated order with price=0.0 and all other fields matching the request.,TC-025
+Update order price to negative value (-0.01),Order Update,Boundary,Medium,An existing order with id=1 and price=9.99,"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 1, ""price"": -0.01}","HTTP 200 OK. Response body contains the updated order with price=-0.01. (Note: This proves the boundary is accepted, not rejected, as the code does not enforce a minimum price.)",TC-026
+Retrieve order with minimum id (1),Order Retrieval,Boundary,High,An existing order with id=1,1. Send a GET request to /orders/1.,HTTP 200 OK. Response body contains the order with id=1 and all fields matching the original creation values.,TC-027
+Retrieve order with non-existent id (0),Order Retrieval,Boundary,Medium,No orders exist with id=0,1. Send a GET request to /orders/0.,"HTTP 200 OK. Response body is empty (null). (Note: This proves the boundary id=0 is not found, as ids start at 1.)",TC-028
+Retrieve order with maximum long id (9223372036854775807),Order Retrieval,Boundary,Low,An existing order with id=9223372036854775807,1. Send a GET request to /orders/9223372036854775807.,HTTP 200 OK. Response body contains the order with id=9223372036854775807 and all fields matching the original creation values.,TC-029
+Verify that a user cannot access another user's order by guessing or manipulating the order ID,Order Service - Insecure Direct Object Reference (IDOR),Security,High,"Two orders exist in the system with IDs 1 and 2, created by different customers (e.g., 'Alice' and 'Bob')","1. Send a GET request to /orders/2 using the ID of the second order. 2. Observe the response.
+
+Test Data: No request body required. Use path variable id=2.","The response returns HTTP 200 with the order details for ID 2, including customerName 'Bob'. This is a SECURITY FAILURE if the system does not enforce ownership checks, but the current code does not implement any such checks, so this case proves the vulnerability exists. The expectedResult is the actual behavior, not the desired one, to document the defect.",TC-030
+"Verify that the system does not allow setting the order ID via the request body, preventing ID manipulation",Order Service - Mass Assignment,Security,High,No pre-existing orders required,"1. Send a POST request to /orders with the payload in testData, including an explicit 'id' field. 2. Observe the response.
+
+Test Data: {""id"": 999, ""customerName"": ""Charlie"", ""productName"": ""Widget"", ""quantity"": 1, ""price"": 10.0}","The response returns HTTP 200 with an order object where the 'id' is NOT 999, but instead the next sequential ID (e.g., 1). The 'id' field in the request body is ignored, proving the system does not allow mass assignment of IDs.",TC-031
+Verify that error responses do not leak internal details or stack traces when an invalid order ID is requested,Order Service - Sensitive Data Exposure in Error Responses,Security,Medium,No pre-existing orders required,"1. Send a GET request to /orders/9999 (a non-existent ID). 2. Observe the response.
+
+Test Data: No request body required. Use path variable id=9999.","The response returns HTTP 404 (or 204) with an empty body or a generic error message (e.g., 'Order not found'). No stack trace, internal class names, or raw null values are exposed in the response.",TC-032
+Verify that special characters in productName or customerName do not cause injection or malformed responses,Order Service - Input Injection via Product or Customer Name,Security,High,No pre-existing orders required,"1. Send a POST request to /orders with the payload in testData, containing special characters in productName and customerName. 2. Observe the response. 3. Send a GET request to /orders/1 to retrieve the order. 4. Observe the response.
+
+Test Data: {""customerName"": ""<script>alert('xss')</script>"", ""productName"": ""Widget'; DROP TABLE orders;--"", ""quantity"": 1, ""price"": 10.0}","The response for both requests returns HTTP 200 with the order details exactly as submitted, including the special characters. No errors, malformed responses, or injection side effects (e.g., SQL errors, script execution) occur. This proves the system does not sanitize or escape these fields, which is a potential injection vector.",TC-033
+Create a new order with valid details,Order Management,Configuration,High,No pre-existing orders in the system,"1. Send a POST request to /orders with the payload in testData. 2. Note the returned order ID.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Laptop"", ""quantity"": 1, ""price"": 999.99}","The response status is 200 OK. The response body contains the created order with an auto-assigned ID, matching the customerName, productName, quantity, and price provided in the request.",TC-034
+Retrieve details of a previously created order,Order Management,Configuration,High,An order with ID 1 exists in the system (created via POST /orders),1. Send a GET request to /orders/1.,"The response status is 200 OK. The response body contains the order details matching the customerName, productName, quantity, and price of the order created in preconditions.",TC-035
+Update an existing order with valid details,Order Management,Configuration,High,An order with ID 1 exists in the system (created via POST /orders),"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""Jane Smith"", ""productName"": ""Smartphone"", ""quantity"": 2, ""price"": 699.99}","The response status is 200 OK. The response body contains the updated order details with the new customerName, productName, quantity, and price, while the ID remains unchanged.",TC-036
+Retrieve all orders in the system,Order Management,Configuration,Medium,At least two orders exist in the system (created via POST /orders),1. Send a GET request to /orders.,"The response status is 200 OK. The response body is a list containing all orders in the system, each with their respective ID, customerName, productName, quantity, and price.",TC-037
+Verify compiler configuration is applied correctly,Compiler Configuration,Configuration,High,Project is set up with the new compiler configuration,"1. Build the project. 2. Verify the annotation processing profile is applied. 3. Check the generated sources.
+
+Test Data: Maven default annotation processors profile, target/generated-sources/annotations, target/generated-test-sources/test-annotations",The project builds successfully and the annotation processing profile is applied correctly.,TC-038
+Verify encoding configuration is applied correctly,Encoding Configuration,Configuration,Medium,Project is set up with the new encoding configuration,"1. Open a file in the project. 2. Verify the encoding is set to UTF-8. 3. Check for any encoding-related issues.
+
+Test Data: UTF-8, order-service/src/main/java",The encoding is set to UTF-8 and there are no encoding-related issues.,TC-039
+Verify jar repositories configuration is applied correctly,Jar Repositories Configuration,Configuration,High,Project is set up with the new jar repositories configuration,"1. Build the project. 2. Verify the jar repositories are used. 3. Check for any dependency-related issues.
+
+Test Data: Central Repository, Maven Central repository, JBoss Community repository",The jar repositories are used correctly and there are no dependency-related issues.,TC-040
+Verify miscellaneous configuration is applied correctly,Miscellaneous Configuration,Configuration,Medium,Project is set up with the new miscellaneous configuration,"1. Build the project. 2. Verify the external storage configuration is enabled. 3. Check the Maven projects manager configuration.
+
+Test Data: ExternalStorageConfigurationManager, MavenProjectsManager",The miscellaneous configuration is applied correctly and the project builds successfully.,TC-041
+Verify module configuration is applied correctly,Module Configuration,Configuration,Medium,Project is set up with the new module configuration,"1. Build the project. 2. Verify the module is recognized. 3. Check the module's configuration.
+
+Test Data: order-service.iml",The module is recognized and its configuration is applied correctly.,TC-042
+Verify VCS configuration is applied correctly,VCS Configuration,Configuration,Medium,Project is set up with the new VCS configuration,"1. Check the VCS directory mappings. 2. Verify the Git repository is recognized. 3. Check for any VCS-related issues.
+
+Test Data: Git, $PROJECT_DIR$",The VCS configuration is applied correctly and the Git repository is recognized.,TC-043
+Verify application properties are applied correctly,Application Properties,Configuration,High,Project is set up with the new application properties,"1. Run the application. 2. Verify the spring application name is set correctly. 3. Check for any property-related issues.
+
+Test Data: spring.application.name, order-service",The application properties are applied correctly and the spring application name is set to order-service.,TC-044

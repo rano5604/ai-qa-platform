@@ -1,16 +1,16 @@
 Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References,Source Ref
-Add two integer numbers and display the result,Integer Arithmetic Operations,Positive,High,The Calculator is initialized,"1. Enter the first integer number. 2. Enter the second integer number. 3. Select the addition operation.
+Add two integer numbers and display the result,Integer Arithmetic Operations,Positive,High,Calculator application is open and ready for input,"1. Enter the first integer number as 10. 2. Enter the second integer number as 15. 3. Observe the displayed result of the addition operation.
 
-Test Data: 10, 15",The result of the addition is displayed as 25,50947af-TC-001,f602859d2281e871e60c4eb18a0942e83bcf3717
-Subtract two integer numbers and display the result,Integer Arithmetic Operations,Positive,High,The Calculator is initialized,"1. Enter the first integer number. 2. Enter the second integer number. 3. Select the subtraction operation.
+Test Data: First number: 10, Second number: 15",The result of the addition is displayed as 25,50947af-TC-001,f602859d2281e871e60c4eb18a0942e83bcf3717
+Subtract two integer numbers and display the result,Integer Arithmetic Operations,Positive,High,Calculator application is open and ready for input,"1. Enter the first integer number as 30. 2. Enter the second integer number as 15. 3. Observe the displayed result of the subtraction operation.
 
-Test Data: 20, 5",The result of the subtraction is displayed as 15,50947af-TC-002,f602859d2281e871e60c4eb18a0942e83bcf3717
-Multiply two integer numbers and display the result,Integer Arithmetic Operations,Positive,High,The Calculator is initialized,"1. Enter the first integer number. 2. Enter the second integer number. 3. Select the multiplication operation.
+Test Data: First number: 30, Second number: 15",The result of the subtraction is displayed as 15,50947af-TC-002,f602859d2281e871e60c4eb18a0942e83bcf3717
+Multiply two integer numbers and display the result,Integer Arithmetic Operations,Positive,High,Calculator application is open and ready for input,"1. Enter the first integer number as 10. 2. Enter the second integer number as 10. 3. Observe the displayed result of the multiplication operation.
 
-Test Data: 10, 10",The result of the multiplication is displayed as 100,50947af-TC-003,f602859d2281e871e60c4eb18a0942e83bcf3717
-Divide two integer numbers and display the result,Integer Arithmetic Operations,Positive,High,The Calculator is initialized,"1. Enter the first integer number. 2. Enter the second integer number. 3. Select the division operation.
+Test Data: First number: 10, Second number: 10",The result of the multiplication is displayed as 100,50947af-TC-003,f602859d2281e871e60c4eb18a0942e83bcf3717
+Divide two integer numbers and display the result,Integer Arithmetic Operations,Positive,High,Calculator application is open and ready for input,"1. Enter the first integer number as 20. 2. Enter the second integer number as 5. 3. Observe the displayed result of the division operation.
 
-Test Data: 20, 5",The result of the division is displayed as 4,50947af-TC-004,f602859d2281e871e60c4eb18a0942e83bcf3717
+Test Data: First number: 20, Second number: 5",The result of the division is displayed as 4,50947af-TC-004,f602859d2281e871e60c4eb18a0942e83bcf3717
 Handle division by zero with decimal number input,Basic Arithmetic Operations,Positive,High,The calculator is in a ready state,"1. Enter the first decimal number, e.g. 10.5. 2. Enter zero as the second decimal number. 3. Perform the division operation.
 
 Test Data: 10.5, 0",An error message is displayed indicating that division by zero is not allowed,50947af-TC-005,1e702eba97d8de77efc6eb8c07b2ab613f14b299
@@ -23,9 +23,9 @@ Test Data: First operand: 10, Second operand: 0",The application displays an err
 Verify division of two integers where the result is not an integer (5 / 2),Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready for input.,"1. Enter the first number as 5. 2. Select the division operation. 3. Enter the second number as 2. 4. Observe the result displayed.
 
 Test Data: First number: 5, Second number: 2, Operation: Division",The application displays the result as 2 for division (integer division truncates the decimal part).,50947af-TC-008,f602859d2281e871e60c4eb18a0942e83bcf3717
-Verify behavior with zero as input for all operations (integer inputs only),Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready for input.,"1. Enter the first number as 0. 2. Select the addition operation. 3. Enter the second number as 100. 4. Observe the result. 5. Repeat steps 1-4 for subtraction, multiplication, and division (using 100 as the second number for division).
+Verify behavior with zero as input for all operations (integer inputs only),Basic Arithmetic Operations,Boundary,Medium,Calculator is open and ready for input.,"1. Enter the first number as 0. 2. Select the addition operation. 3. Enter the second number as 100. 4. Observe the result. 5. Repeat steps 1-4 for subtraction, multiplication, and division (using 100 as the second number for division).
 
-Test Data: First number: 0, Second number: 100, Operations: Addition, Subtraction, Multiplication, Division","The application displays the correct results: 100 for addition, -100 for subtraction, 0 for multiplication, and an error message for division by zero when the second operand is zero (if division is attempted with zero as the second number).",50947af-TC-009,f602859d2281e871e60c4eb18a0942e83bcf3717
+Test Data: First number: 0, Second number: 100 (for all operations)","The application displays the correct results: 100 for addition, -100 for subtraction, 0 for multiplication, and an error message for division by zero when the second operand is zero (if division is attempted with zero as the second number).",50947af-TC-009,f602859d2281e871e60c4eb18a0942e83bcf3717
 Verify addition of zero and a negative integer,Basic Arithmetic Operations,Boundary,Low,Calculator application is running and ready to accept input.,"1. Enter the first number as 0. 2. Select the addition operation. 3. Enter the second number as -100. 4. Execute the calculation.
 
 Test Data: First number: 0, Second number: -100",The application displays the result as -100 for addition.,50947af-TC-010,50947af5f4fda8a56cedbe0e1544f2f71ee85a4b
@@ -50,18 +50,18 @@ Test Data: First number: 10, Second number: 5",The calculator displays the subtr
 Perform multiplication with two positive integers,Basic Calculator Operations,Configuration,High,Calculator application is running and ready to accept input,"1. Enter the first number as 10. 2. Enter the second number as 5. 3. Observe the output for the multiplication result.
 
 Test Data: First number: 10, Second number: 5",The calculator displays the multiplication result as 50.,50947af-TC-017,50947af5f4fda8a56cedbe0e1544f2f71ee85a4b
-Verify multiplication of two integers at maximum boundary value (2147483647 * 2),Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready for input.,"1. Enter the first number as 2147483647. 2. Select the multiplication operation. 3. Enter the second number as 2. 4. Observe the result displayed.
+Verify multiplication of two integers at maximum boundary value (2147483647 * 2),Basic Arithmetic Operations,Boundary,High,Calculator is open and ready for input.,"1. Enter the first number as 2147483647. 2. Select the multiplication operation. 3. Enter the second number as 2. 4. Observe the result displayed.
 
-Test Data: First number: 2147483647, Second number: 2, Operation: Multiplication","The application displays an overflow indication (e.g., a negative result or an error message) for multiplication due to integer overflow.",50947af-TC-018,f602859d2281e871e60c4eb18a0942e83bcf3717
+Test Data: First number: 2147483647, Second number: 2","The application displays an overflow indication (e.g., a negative result or an error message) for multiplication due to integer overflow.",50947af-TC-018,f602859d2281e871e60c4eb18a0942e83bcf3717
 Verify multiplication of zero and a positive integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready for input,"1. Enter the first integer as 0. 2. Select the multiplication operation. 3. Enter the second integer as 100. 4. Observe the result displayed.
 
 Test Data: First integer: 0, Second integer: 100",The application displays the result as 0 for multiplication.,50947af-TC-019,f602859d2281e871e60c4eb18a0942e83bcf3717
 Verify multiplication of zero and a negative integer,Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready for input,"1. Enter the first integer as 0. 2. Select the multiplication operation. 3. Enter the second integer as -100. 4. Observe the result displayed.
 
 Test Data: First integer: 0, Second integer: -100",The application displays the result as 0 for multiplication.,50947af-TC-020,f602859d2281e871e60c4eb18a0942e83bcf3717
-Verify division of two integers at maximum boundary value (2147483647 / 1),Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready for input.,"1. Enter the first number as 2147483647. 2. Select the division operation. 3. Enter the second number as 1. 4. Observe the result displayed.
+Verify division of two integers at maximum boundary value (2147483647 / 1),Basic Arithmetic Operations,Boundary,High,Calculator is open and ready for input.,"1. Enter the first number as 2147483647. 2. Select the division operation. 3. Enter the second number as 1. 4. Observe the result displayed.
 
-Test Data: First number: 2147483647, Second number: 1, Operation: Division",The application displays the result as 2147483647 for division.,50947af-TC-021,f602859d2281e871e60c4eb18a0942e83bcf3717
+Test Data: First number: 2147483647, Second number: 1",The application displays the result as 2147483647 for division.,50947af-TC-021,f602859d2281e871e60c4eb18a0942e83bcf3717
 Verify the Gradle build resolves and executes successfully with the new configuration,Gradle Build Configuration,Configuration,High,Gradle is installed on the system. The project is checked out with the new build.gradle and settings.gradle files.,"1. Navigate to the project root directory. 2. Run the command: `./gradlew build`. 3. Observe the build output for errors or warnings.
 
 Test Data: New build.gradle with plugins: java, dependencies: JUnit 5.9.1, and test configuration: useJUnitPlatform()","The build completes successfully without errors, and all dependencies are resolved from Maven Central.",50947af-TC-022,50947af5f4fda8a56cedbe0e1544f2f71ee85a4b
@@ -119,24 +119,26 @@ Test Data: First input: NaN, Second input: 5","The calculator displays a clear e
 Verify addition of two very small floating-point numbers (1.4E-45 + 1.4E-45),Basic Arithmetic Operations,Boundary,Medium,Calculator application is open and ready for input.,"1. Enter the first number as 1.4E-45. 2. Select the addition operation. 3. Enter the second number as 1.4E-45. 4. Execute the calculation.
 
 Test Data: First number: 1.4E-45, Second number: 1.4E-45",The application displays the result as 2.8E-45 for addition.,1e702eb-TC-009,2bdf9e7ecf3e74bae9d09707d3710965212734c6
-Submit a decimal number in the second field and verify rejection,Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Enter a valid whole number (e.g., 10) in the first input field. 2. Enter a decimal number (e.g., 3.14) in the second input field. 3. Attempt to submit the calculation.
+Submit a value exceeding the standard 32-bit integer maximum limit,Basic Calculator Operations,Negative,High,Calculator interface is ready for input,"1. Enter 3000000000 in the first operand field.
+2. Enter 5 in the second operand field.
+3. Execute the display calculation.
 
-Test Data: First field: 10, Second field: 3.14",The system rejects the input and displays an error message indicating that only whole numbers (integers) are allowed for calculation.,f602859-TC-001,f602859d2281e871e60c4eb18a0942e83bcf3717
-"Submit a whole-looking decimal (e.g., 4.0) in either field and verify rejection",Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Enter a whole-looking decimal (e.g., 4.0) in the first input field. 2. Enter any valid or invalid value in the second input field. 3. Attempt to submit the calculation.
+Test Data: a = 3000000000, b = 5",The application rejects the input and displays an error indicating that the number exceeds the acceptable integer range.,f602859-TC-001,f602859d2281e871e60c4eb18a0942e83bcf3717
+"Submit a numeric string (e.g., ""5"") in either field and verify rejection",Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Enter a numeric string (e.g., ""5"") in the first input field. 2. Enter any whole number (e.g., 10) in the second input field. 3. Click the calculate button or trigger the display action.
 
-Test Data: First field: 4.0, Second field: 5",The system rejects the input and displays an error message indicating that only whole numbers (integers) are allowed for calculation.,f602859-TC-002,f602859d2281e871e60c4eb18a0942e83bcf3717
-Submit a number exceeding 32-bit integer limits in either field and verify rejection,Basic Calculator Operations,Negative,High,Calculator application is open and ready for input,"1. Enter a number exceeding 32-bit integer limits (e.g., 2147483648) in the first input field. 2. Enter any valid or invalid value in the second input field. 3. Attempt to submit the calculation.
+Test Data: First field: ""5"", Second field: 10",The system rejects the input and displays an error message indicating that only whole numbers (integers) are allowed for calculation.,f602859-TC-002,f602859d2281e871e60c4eb18a0942e83bcf3717
+"Verify rejection of non-integer numeric input (e.g., 5.0)",Basic Arithmetic Operations,Boundary,High,Calculator is open and ready for input.,"1. Enter the first number as 5.0. 2. Select any operation (e.g., addition). 3. Observe the system response.
 
-Test Data: First field: 2147483648, Second field: 10",The system rejects the input and displays an error message indicating that the number is too large or invalid for calculation.,f602859-TC-003,f602859d2281e871e60c4eb18a0942e83bcf3717
-Verify addition of two integers at maximum boundary value (2147483647 + 1),Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready for input.,"1. Enter the first number as 2147483647. 2. Select the addition operation. 3. Enter the second number as 1. 4. Observe the result displayed.
+Test Data: First number: 5.0","The application displays an error message indicating that only whole numbers (integers) are accepted, and no calculation is performed.",f602859-TC-003,f602859d2281e871e60c4eb18a0942e83bcf3717
+Verify addition of two integers at maximum boundary value (2147483647 + 1),Basic Arithmetic Operations,Boundary,High,Calculator is open and ready for input.,"1. Enter the first number as 2147483647. 2. Select the addition operation. 3. Enter the second number as 1. 4. Observe the result displayed.
 
-Test Data: First number: 2147483647, Second number: 1, Operation: Addition","The application displays an overflow indication (e.g., a negative result or an error message) for addition due to integer overflow.",f602859-TC-004,f602859d2281e871e60c4eb18a0942e83bcf3717
-Verify addition of two integers at minimum boundary value (-2147483648 + (-1)),Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready for input.,"1. Enter the first number as -2147483648. 2. Select the addition operation. 3. Enter the second number as -1. 4. Observe the result displayed.
+Test Data: First number: 2147483647, Second number: 1","The application displays an overflow indication (e.g., a negative result or an error message) for addition due to integer overflow.",f602859-TC-004,f602859d2281e871e60c4eb18a0942e83bcf3717
+Verify addition of two integers at minimum boundary value (-2147483648 + (-1)),Basic Arithmetic Operations,Boundary,High,Calculator is open and ready for input.,"1. Enter the first number as -2147483648. 2. Select the addition operation. 3. Enter the second number as -1. 4. Observe the result displayed.
 
-Test Data: First number: -2147483648, Second number: -1, Operation: Addition","The application displays an underflow indication (e.g., a positive result or an error message) for addition due to integer underflow.",f602859-TC-005,f602859d2281e871e60c4eb18a0942e83bcf3717
-Verify rejection of floating-point numbers as input (narrowed input type from float to int),Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input.,"1. Enter a floating-point number (e.g., 3.5) as the first operand. 2. Enter another floating-point number (e.g., 2.0) as the second operand. 3. Observe the application's response.
+Test Data: First number: -2147483648, Second number: -1","The application displays an underflow indication (e.g., a positive result or an error message) for addition due to integer underflow.",f602859-TC-005,f602859d2281e871e60c4eb18a0942e83bcf3717
+"Verify rejection of floating-point numbers as input (e.g., 3.14)",Basic Arithmetic Operations,Boundary,High,Calculator is open and ready for input.,"1. Enter the first number as 3.14. 2. Select any operation (e.g., addition). 3. Observe the system response.
 
-Test Data: First operand: 3.5, Second operand: 2.0","The application displays an error message indicating that only whole numbers (integers) are accepted, and no calculation is performed.",f602859-TC-006,f602859d2281e871e60c4eb18a0942e83bcf3717
+Test Data: First number: 3.14","The application displays an error message indicating that only whole numbers (integers) are accepted, and no calculation is performed.",f602859-TC-006,f602859d2281e871e60c4eb18a0942e83bcf3717
 Handle division by zero with integer number input,Integer Arithmetic Operations,Positive,High,"Two integer numbers are available for division, with the second number being zero","1. Enter the first integer number. 2. Enter zero as the second integer number. 3. Select the division operation.
 
 Test Data: 10, 0",An error message is displayed indicating that division by zero is not allowed,1714e14-TC-001,6adbc85c20ab66d198732bd4e9a3e54245b35de0
@@ -197,9 +199,9 @@ Test Data: First operand: -2147483648, Second operand: 1",An error message indic
 Integer overflow in multiplication,Calculator Operations,Security,Medium,Calculator is initialized,"1. Enter a large integer value for the first operand. 2. Enter a large integer value for the second operand. 3. Perform multiplication.
 
 Test Data: First operand: 46341, Second operand: 46341",An error message indicating integer overflow is displayed,6adbc85-TC-004,6adbc85c20ab66d198732bd4e9a3e54245b35de0
-Verify subtraction of two integers at minimum boundary value (-2147483648 - 1),Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready for input.,"1. Enter the first number as -2147483648. 2. Select the subtraction operation. 3. Enter the second number as 1. 4. Observe the result displayed.
+Verify subtraction of two integers at minimum boundary value (-2147483648 - 1),Basic Arithmetic Operations,Boundary,High,Calculator is open and ready for input.,"1. Enter the first number as -2147483648. 2. Select the subtraction operation. 3. Enter the second number as 1. 4. Observe the result displayed.
 
-Test Data: First number: -2147483648, Second number: 1, Operation: Subtraction","The application displays an underflow indication (e.g., a positive result or an error message) for subtraction due to integer underflow.",f602859-TC-007,f602859d2281e871e60c4eb18a0942e83bcf3717
+Test Data: First number: -2147483648, Second number: 1","The application displays an underflow indication (e.g., a positive result or an error message) for subtraction due to integer underflow.",f602859-TC-007,f602859d2281e871e60c4eb18a0942e83bcf3717
 Verify integer overflow for division at minimum boundary value,Basic Arithmetic Operations,Boundary,High,Calculator application is open and ready to accept input.,"1. Enter the minimum integer value (-2147483648) as the first operand. 2. Enter -1 as the second operand. 3. Observe the application's response for division.
 
 Test Data: First operand: -2147483648, Second operand: -1","The application displays an overflow indication (e.g., a negative result or an error message) for division due to integer overflow.",f602859-TC-008,f602859d2281e871e60c4eb18a0942e83bcf3717

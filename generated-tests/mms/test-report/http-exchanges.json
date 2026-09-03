@@ -1,0 +1,766 @@
+[ {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "addNewPrimarySettlementBankAccountToMerchant",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Settlement Merchant LLC\",\n              \"tradeName\": \"Settlement Store\",\n              \"registrationNo\": \"CR-SET-1788255250715\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"settle1788255250715@example.com\",\n              \"country\": \"SA\",\n  \"userId\": 50715\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:12 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T09:34:12.16510613\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 955
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "addPricingTierToExistingFeeConfiguration",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/fees",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"merchantCategoryCode\": \"5411\",\n  \"capabilityCode\": \"ONLINE_PAYMENT\",\n  \"feeType\": \"TIERED\",\n  \"effectiveFrom\": \"2026-01-01\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 201,
+  "responseStatusLine" : "HTTP/1.1 201 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:12 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"success\":true,\"message\":\"Fee configuration created\",\"data\":{\"id\":\"4ff15b10-5a90-41ac-aa83-9325a348434f\",\"merchantId\":null,\"merchantCategoryCode\":\"5411\",\"capabilityCode\":\"ONLINE_PAYMENT\",\"feeType\":\"TIERED\",\"flatAmount\":null,\"percentageRate\":null,\"minFee\":null,\"maxFee\":null,\"currency\":\"SAR\",\"effectiveFrom\":\"2026-01-01\",\"effectiveTo\":null,\"active\":true,\"tiers\":[],\"createdAt\":\"2026-09-01T09:34:12.853053837\",\"updatedAt\":\"2026-09-01T09:34:12.853053837\"},\"timestamp\":\"2026-09-01T09:34:12.885058781\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 562
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "addPricingTierToExistingFeeConfiguration",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/fees/4ff15b10-5a90-41ac-aa83-9325a348434f/tiers",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"tierFrom\": 0.00,\n  \"tierTo\": 1000.00,\n  \"rate\": 2.50,\n  \"flatAmount\": 0.00\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 201,
+  "responseStatusLine" : "HTTP/1.1 201 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:14 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"success\":true,\"message\":\"Tier added\",\"data\":{\"id\":\"0c77efd4-f1b4-4f15-b5d8-16d18709e65f\",\"tierFrom\":0.00,\"tierTo\":1000.00,\"rate\":2.50,\"flatAmount\":0.00},\"timestamp\":\"2026-09-01T09:34:14.521177543\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 754
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "approveNewlyOnboardedPendingMerchant",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Approval Test Merchant LLC\",\n              \"tradeName\": \"Approval Test Store\",\n              \"registrationNo\": \"CR-1788255254608\",\n              \"taxId\": \"TAX-1788255254608\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"app1788255254608@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"website\": \"https://www.example.com\",\n              \"address\": \"123 King Fahd Road\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 54608\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:15 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T09:34:15.282463761\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 580
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "assignPaymentCapabilityToExistingMerchant",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Merchant Cap Test LLC\",\n              \"tradeName\": \"Merchant Cap Store\",\n              \"registrationNo\": \"CR-1788255255209\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 55209\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:15 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T09:34:15.802708822\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 441
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "createCategoryLevelFlatFeeConfigurationWithDefaultCurrency",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/fees",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"merchantCategoryCode\": \"5411\",\n  \"capabilityCode\": \"ONLINE_PAYMENT\",\n  \"feeType\": \"FLAT\",\n  \"flatAmount\": 5.00,\n  \"effectiveFrom\": \"2026-01-01\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 201,
+  "responseStatusLine" : "HTTP/1.1 201 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:16 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"success\":true,\"message\":\"Fee configuration created\",\"data\":{\"id\":\"e9ba069d-38f6-4e3e-86fa-d07fb92fb228\",\"merchantId\":null,\"merchantCategoryCode\":\"5411\",\"capabilityCode\":\"ONLINE_PAYMENT\",\"feeType\":\"FLAT\",\"flatAmount\":5.00,\"percentageRate\":null,\"minFee\":null,\"maxFee\":null,\"currency\":\"SAR\",\"effectiveFrom\":\"2026-01-01\",\"effectiveTo\":null,\"active\":true,\"tiers\":[],\"createdAt\":\"2026-09-01T09:34:16.32413749\",\"updatedAt\":\"2026-09-01T09:34:16.32413749\"},\"timestamp\":\"2026-09-01T09:34:16.328681018\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 597
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "createNewPaymentCapabilityTypeSuccessfully",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/capabilities",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"capabilityCode\": \"ONLINE_PAYMENT_1788255256360\",\n  \"name\": \"Online Payment\",\n  \"description\": \"Accept payments via online channels\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 201,
+  "responseStatusLine" : "HTTP/1.1 201 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:17 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"success\":true,\"message\":\"Capability created\",\"data\":{\"id\":\"0c6996f7-4ae6-413f-aa86-27476da31906\",\"capabilityCode\":\"ONLINE_PAYMENT_1788255256360\",\"name\":\"Online Payment\",\"description\":\"Accept payments via online channels\",\"active\":true,\"createdAt\":\"2026-09-01T09:34:17.077226133\"},\"timestamp\":\"2026-09-01T09:34:17.094694475\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 650
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "createNewStoreUnderExistingMerchant",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Store Owner LLC\",\n              \"tradeName\": \"Store Merchant\",\n              \"registrationNo\": \"CR-STR-1788255257103\",\n              \"businessType\": \"LLC\",\n              \"contactEmail\": \"store1788255257103@example.com\",\n              \"country\": \"SA\",\n  \"userId\": 57103\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:17 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T09:34:17.714028482\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 499
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "designateExistingSettlementAccountAsPrimaryAccount",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Primary Account Merchant 1788255257612\",\n              \"tradeName\": \"Primary Store 1788255257612\",\n              \"registrationNo\": \"CR-1788255257612\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 57612\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:18 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T09:34:18.209162259\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 452
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "generateStaticEmvQrCodeForActiveMerchant",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"QR Merchant LLC\",\n              \"tradeName\": \"QR Store\",\n              \"registrationNo\": \"CR-QR-1788255258080\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"qr1788255258080@example.com\",\n              \"country\": \"SA\",\n  \"userId\": 58080\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:18 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T09:34:18.713094692\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 548
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "registerNewPosTerminalForExistingStoreAndMerchant",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Terminal Merchant LLC\",\n              \"tradeName\": \"Terminal Store\",\n              \"registrationNo\": \"CR-TERM-1788255258629\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"term1788255258629@example.com\",\n              \"country\": \"SA\",\n  \"userId\": 58629\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:19 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T09:34:19.217944716\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 445
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectAddingAFeeTierWhenTierBoundsAreMissing",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/fees",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"capabilityCode\": \"ONLINE_PAYMENT\",\n  \"feeType\": \"TIERED\",\n  \"effectiveFrom\": \"2023-01-01\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 201,
+  "responseStatusLine" : "HTTP/1.1 201 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:19 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"success\":true,\"message\":\"Fee configuration created\",\"data\":{\"id\":\"9e9543aa-6dcc-482b-8b89-bbb03f028d1c\",\"merchantId\":null,\"merchantCategoryCode\":null,\"capabilityCode\":\"ONLINE_PAYMENT\",\"feeType\":\"TIERED\",\"flatAmount\":null,\"percentageRate\":null,\"minFee\":null,\"maxFee\":null,\"currency\":\"SAR\",\"effectiveFrom\":\"2023-01-01\",\"effectiveTo\":null,\"active\":true,\"tiers\":[],\"createdAt\":\"2026-09-01T09:34:19.7052089\",\"updatedAt\":\"2026-09-01T09:34:19.7052089\"},\"timestamp\":\"2026-09-01T09:34:19.711183847\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 565
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectAddingAFeeTierWhenTierBoundsAreMissing",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/fees/9e9543aa-6dcc-482b-8b89-bbb03f028d1c/tiers",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"rate\": 2.50,\n  \"tierFrom\": 0.0,\n  \"tierTo\": 1000.0\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 201,
+  "responseStatusLine" : "HTTP/1.1 201 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:21 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"success\":true,\"message\":\"Tier added\",\"data\":{\"id\":\"c35ca6df-0dff-4d77-9b0e-3c5467104ae4\",\"tierFrom\":0.0,\"tierTo\":1000.0,\"rate\":2.50,\"flatAmount\":null},\"timestamp\":\"2026-09-01T09:34:21.278292842\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 1437
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectAssigningCapabilityToMerchantWhenRequestBodyIsMissingCapabilityId",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Capability Test Merchant LLC\",\n              \"tradeName\": \"Capability Store\",\n              \"registrationNo\": \"CR-1788255261139\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 61139\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:21 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T09:34:21.778872498\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 1900
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectCreationOfPaymentCapabilityWithCodeExceedingMaxLength",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/capabilities",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"capabilityCode\": \"THIS_CAPABILITY_CODE_IS_WAY_TOO_LONG_AND_EXCEEDS_FIFTY_CHARACTERS_LIMIT\",\n  \"name\": \"Invalid Capability\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:23 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/capabilities\",\"validationErrors\":{\"capabilityCode\":\"size must be between 0 and 50\"},\"timestamp\":\"2026-09-01T09:34:23.660546312\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 464
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectDocumentDeletionWhenDocumentIdBelongsToDifferentMerchant",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Merchant A LLC\",\n              \"tradeName\": \"Merchant A\",\n              \"registrationNo\": \"CR-1788255263523\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 63523\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:24 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T09:34:24.149648042\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 566
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectDocumentUploadForNonExistentMerchant",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants/a1b2c3d4-0000-0000-0000-000000000000/documents?documentType=BUSINESS_LICENSE",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "multipart/form-data"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:25 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"status\":404,\"error\":\"Not Found\",\"message\":\"Merchant not found with id: a1b2c3d4-0000-0000-0000-000000000000\",\"path\":\"/mms/api/v1/merchants/a1b2c3d4-0000-0000-0000-000000000000/documents\",\"timestamp\":\"2026-09-01T09:34:25.151887887\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 909
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectFeeConfigurationCreationWhenCapabilityCodeIsMissing",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/fees",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"merchantId\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\",\n              \"feeType\": \"PERCENTAGE\",\n              \"percentageRate\": 2.50,\n              \"effectiveFrom\": \"2023-01-01\",\n  \"capabilityCode\": \"ONLINE_PAYMENT\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:25 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"status\":404,\"error\":\"Not Found\",\"message\":\"Merchant not found with id: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\",\"path\":\"/mms/api/v1/fees\",\"timestamp\":\"2026-09-01T09:34:25.678709591\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 598
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectFeeConfigurationCreationWhenEffectiveFromDateIsMissing",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/fees",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"capabilityCode\": \"ONLINE_PAYMENT\",\n              \"feeType\": \"PERCENTAGE\",\n              \"percentageRate\": 2.50,\n  \"effectiveFrom\": \"generated-effectiveFrom\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 500,
+  "responseStatusLine" : "HTTP/1.1 500 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:26 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"An unexpected error occurred\",\"path\":\"/mms/api/v1/fees\",\"timestamp\":\"2026-09-01T09:34:26.249095697\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 472
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectFeeConfigurationCreationWhenFeeTypeIsMissing",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/fees",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"capabilityCode\": \"ONLINE_PAYMENT\",\n              \"percentageRate\": 2.50,\n              \"effectiveFrom\": \"2023-01-01\",\n  \"feeType\": \"FLAT\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 201,
+  "responseStatusLine" : "HTTP/1.1 201 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:26 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"success\":true,\"message\":\"Fee configuration created\",\"data\":{\"id\":\"8a6645d7-ed4f-40c9-a044-e69606f81167\",\"merchantId\":null,\"merchantCategoryCode\":null,\"capabilityCode\":\"ONLINE_PAYMENT\",\"feeType\":\"FLAT\",\"flatAmount\":null,\"percentageRate\":2.50,\"minFee\":null,\"maxFee\":null,\"currency\":\"SAR\",\"effectiveFrom\":\"2023-01-01\",\"effectiveTo\":null,\"active\":true,\"tiers\":[],\"createdAt\":\"2026-09-01T09:34:26.684405452\",\"updatedAt\":\"2026-09-01T09:34:26.684405452\"},\"timestamp\":\"2026-09-01T09:34:26.691057464\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 448
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectMerchantOnboardingWhenMerchantCategoryCodeExceedsAllowedLength",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Invalid MCC Merchant LLC\",\n              \"tradeName\": \"Invalid MCC Store\",\n              \"registrationNo\": \"CR-1788255266574\",\n              \"merchantCategoryCode\": \"54111\",\n              \"businessType\": \"LLC\",\n  \"userId\": 66574\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:27 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"merchantCategoryCode\":\"size must be between 0 and 4\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T09:34:27.132481356\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 426
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectMerchantOnboardingWhenRegistrationNumberAlreadyExists",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Duplicate Reg Merchant LLC\",\n              \"tradeName\": \"Duplicate Reg Store\",\n              \"registrationNo\": \"CR-1788255267010\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"duplicate@merchant.com\",\n  \"userId\": 67010\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:27 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T09:34:27.659627014\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 576
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectMerchantOnboardingWhenRequiredFieldsAreMissing",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"contactEmail\": \"invalid@merchant.com\",\n              \"country\": \"SA\",\n  \"userId\": 1234,\n  \"legalName\": \"ABC Trading Company LLC\",\n  \"tradeName\": \"ABC Store\",\n  \"registrationNo\": \"CR-1234567890\",\n  \"businessType\": \"PRA\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:28 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T09:34:28.222394184\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 567
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectQrCodeGenerationWhenRequestBodyIsMissingMandatoryFields",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/qr-codes",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"storeId\": \"00000000-0000-0000-0000-000000000001\",\n  \"merchantId\": \"generated-merchantId\",\n  \"qrType\": \"STATIC\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 500,
+  "responseStatusLine" : "HTTP/1.1 500 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:28 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"An unexpected error occurred\",\"path\":\"/mms/api/v1/qr-codes\",\"timestamp\":\"2026-09-01T09:34:28.761205508\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 475
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectTerminalRegistrationWhenMandatoryStoreIdOrMerchantIdIsMissing",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/terminals",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"merchantId\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\",\n              \"serialNumber\": \"SN-UNIQUE-1788255268661\",\n              \"model\": \"A920 Pro\",\n  \"storeId\": \"gen-1788255268661\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 500,
+  "responseStatusLine" : "HTTP/1.1 500 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:29 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"An unexpected error occurred\",\"path\":\"/mms/api/v1/terminals\",\"timestamp\":\"2026-09-01T09:34:29.31229567\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 592
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "rejectTerminalRegistrationWhenSerialNumberIsAlreadyRegistered",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Merchant 1788255269263\",\n              \"tradeName\": \"Trade 1788255269263\",\n              \"registrationNo\": \"REG-1788255269263\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 69263\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:29 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T09:34:29.842167674\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 430
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_mms",
+  "testMethodName" : "successfullyOnboardNewMerchantWithStandardBusinessDetails",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Apex Retail LLC\",\n              \"tradeName\": \"Apex Store\",\n              \"registrationNo\": \"CR-1788255269716\",\n              \"taxId\": \"TAX-1122334455\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"info@apexstore.com\",\n              \"contactPhone\": \"+966500000001\",\n              \"website\": \"https://www.apexstore.com\",\n              \"address\": \"789 King Fahd Road\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"12211\",\n              \"country\": \"SA\",\n  \"userId\": 69716\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 09:34:30 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T09:34:30.339293592\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 545
+} ]

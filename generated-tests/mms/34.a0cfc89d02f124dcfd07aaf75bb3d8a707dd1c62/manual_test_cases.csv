@@ -1,0 +1,53 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Onboard a new merchant via portal endpoint - the full flow now executes instead of returning null,Merchant Portal Onboarding,Positive,High,"A valid merchant portal onboarding request exists with merchant name, mobile number, email, business type, and store location; the KYC service endpoint is reachable and the merchant service is available","1. Submit the portal onboarding request with merchant details. 2. The system registers the user via the KYC service. 3. The system submits KYC for the registered user. 4. The system creates a merchant account using the registered user ID. 5. The response is returned.
+
+Test Data: Merchant name: 'Test Merchant', mobile number: '01712345678', email: 'merchant@example.com', business type: 'RETAIL', store location: 'Dhaka, Bangladesh'","HTTP status 201 CREATED is returned with a response body containing the merchant name and the created merchant object including account number and merchant ID; the user is registered, KYC is submitted, and the merchant account is created",1edd9f6-TC-001
+Submit KYC information for a registered user and receive a confirmation,KYC Submission,Positive,High,"A user has been registered and has a valid user ID; KYC data including name, national ID, and KYC step are available","1. Prepare KYC submission data with the user ID, name, national ID, and KYC step. 2. Submit the KYC information to the KYC service. 3. Receive the response.
+
+Test Data: User ID: 1001, name: 'John Doe', national ID: '1234567890123', KYC step: 'COMPLETE'",KYC data is saved successfully and the response indicates success with a KYC record ID and KYC status,TC-001
+Mobile number shorter than 4 characters is fully masked,MmsUtils maskMobileNumber - boundary behavior,Boundary,High,"A merchant portal onboarding attempt is made, and the MmsUtils.maskMobileNumber utility is invoked for log output when a mobile number is logged.","1. Trigger a portal onboarding request with a mobile number of fewer than 4 characters (e.g. '12'). 2. Observe the log line that records the mobile number.
+
+Test Data: Mobile number: '12' (length 2, well below the 4-character threshold)","The log line shows the mobile number rendered as '****' (four asterisks), revealing no digits of the original value.",TC-002
+Exactly 4-character mobile number is masked except the last digit,MmsUtils maskMobileNumber - boundary behavior,Boundary,High,The MmsUtils.maskMobileNumber utility is exercised through any logging path that prints the merchant's mobile number.,"1. Submit a request that causes the mobile number to be logged. 2. Use a mobile number of exactly 4 characters. 3. Inspect the log entry that contains the masked number.
+
+Test Data: Mobile number: '1234' (length 4, exactly at the lower threshold that the code treats as 'too short to partially show')","The log entry shows '****' (four asterisks), NOT '******1234' - because the code's early-return condition is 'length < 4', a 4-character number still falls into the fully-masked branch.",TC-003
+5-character mobile number exposes exactly its last 4 digits,MmsUtils maskMobileNumber - boundary behavior,Boundary,High,A portal onboarding flow is run that logs the merchant's mobile number via MmsUtils.maskMobileNumber.,"1. Submit a request with a 5-character mobile number. 2. Locate the log line containing the masked mobile number. 3. Compare the visible suffix to the original value.
+
+Test Data: Mobile number: '12345' (length 5, the first length where the normal masking branch runs)","The log shows '******2345' - six asterisks followed by the last 4 digits of the original number, regardless of how short the original is.",TC-004
+Standard-length mobile number reveals only the last 4 digits,MmsUtils maskMobileNumber - boundary behavior,Boundary,Medium,A portal onboarding submission is made and the log line for the merchant's mobile number is captured.,"1. Submit a portal onboarding request with a normal-length mobile number. 2. Inspect the log entry that prints the mobile number via the masking utility.
+
+Test Data: Mobile number: '01712345678' (length 11, a typical Bangladeshi mobile number length)",The log shows '******5678' - exactly 6 asterisks then the last 4 digits; the first 7 digits are never visible.,TC-005
+Null mobile number passed to the masker does not throw,MmsUtils maskMobileNumber - boundary behavior,Boundary,High,"A portal onboarding request is made where the mobile number field is absent or null, and the code path that logs the mobile number via MmsUtils.maskMobileNumber is reached.","1. Submit a portal onboarding request with the mobile number field left empty / null. 2. Check that the log line containing the masked mobile number is produced without an error. 3. Read the masked value in the log.
+
+Test Data: Mobile number: null (field omitted from the request)","No exception is raised; the log line shows the literal string '****' for the mobile-number portion (the utility returns its null input unchanged, and the caller renders this as a 4-asterisk placeholder in the log).",TC-006
+Prefix plus suffix length equal to the string length returns the string unchanged,MmsUtils mask - boundary behavior on prefix/suffix sum,Boundary,High,"Any code path that invokes the general mask(accountNo, prefixLength, suffixLength) helper with values that stress the boundary is exercised.","1. Invoke the masking helper with an input string and a prefix length + suffix length that exactly equals the string length. 2. Read the returned value. 3. Compare it to the input.
+
+Test Data: Input string: 'ABCDE' (5 characters); prefixLength = 3; suffixLength = 2 (3 + 2 = 5, equal to the string length)","The helper returns the input string 'ABCDE' with no asterisks inserted, because the early-return condition triggers when prefix + suffix is greater than or equal to the string length.",TC-007
+Prefix plus suffix one less than the string length produces a single asterisk,MmsUtils mask - boundary behavior on prefix/suffix sum,Boundary,High,The general mask helper is invoked with parameters chosen to fall just inside its normal masking branch.,"1. Invoke the masking helper with an input string where prefix length + suffix length is one less than the total length. 2. Read the returned value. 3. Count the asterisks.
+
+Test Data: Input string: 'ABCDE' (5 characters); prefixLength = 2; suffixLength = 2 (2 + 2 = 4, one less than 5)",The helper returns 'AB*DE' - exactly 1 asterisk between the first 2 and the last 2 characters.,TC-008
+Negative prefix length is rejected with an error,MmsUtils mask - boundary behavior on negative lengths,Boundary,Medium,"Any code path that calls the general mask helper is available, and the boundary condition is hit by passing a negative prefix length.","1. Invoke the masking helper with a negative prefix length. 2. Observe the outcome of the call.
+
+Test Data: Input string: 'ABCDE' (5 characters); prefixLength = -1; suffixLength = 2",The helper throws an IllegalArgumentException (visible to the caller as a clear error) - it does not return a silently corrupted masked value.,TC-009
+Negative suffix length is rejected with an error,MmsUtils mask - boundary behavior on negative lengths,Boundary,Medium,The general mask helper is invoked with a negative suffix length value.,"1. Invoke the masking helper with a negative suffix length. 2. Observe the outcome.
+
+Test Data: Input string: 'ABCDE' (5 characters); prefixLength = 1; suffixLength = -1","The helper throws an IllegalArgumentException, refusing the request rather than returning a string with a negative-position substring.",TC-010
+Null or blank input is returned unchanged by the general mask helper,MmsUtils mask - boundary behavior on empty / null input,Boundary,Medium,The general mask helper is invoked with a null or whitespace-only input.,"1. Invoke the masking helper with a null input. 2. Observe the returned value. 3. Repeat with a blank/whitespace-only input.
+
+Test Data: Input string: null (first call) and '   ' (second call, all whitespace); prefixLength = 1; suffixLength = 1","The helper returns the null reference unchanged for the first call, and the whitespace string unchanged for the second call - no exception, no asterisks inserted.",TC-011
+A customer submits complete KYC information and receives a successful response,KYC submission success,Security,High,"A valid SaveKycRequest is prepared with all required fields (userId, name, kycStatus, kycStep)","1. Send a POST request to the KYC submission endpoint with the complete SaveKycRequest
+2. Wait for the response
+
+Test Data: SaveKycRequest with userId=12345, name=""John Doe"", kycStatus=""PENDING"", kycStep=""REGISTRATION""",Receive SaveKycResponse with success=true and kycId populated,TC-012
+Submitting KYC data with missing required fields results in a validation error,KYC submission validation,Security,High,"A SaveKycRequest is prepared with missing required fields (e.g., no name, no kycStatus, no kycStep)","1. Send a POST request to the KYC submission endpoint with the incomplete request
+2. Observe the response
+
+Test Data: SaveKycRequest with userId=12345, but missing name, kycStatus, and kycStep",A BusinessException is thrown with a message indicating the missing required field,TC-013
+A merchant completes onboarding which includes KYC registration and merchant account creation,Merchant onboarding with KYC integration,Security,High,A MerchantPortalOnboardingRequest is prepared with valid mobile number and other required fields,"1. Send a POST request to the merchant onboarding endpoint with the MerchantPortalOnboardingRequest
+2. Wait for the response
+
+Test Data: MerchantPortalOnboardingRequest with mobileNumber=""1234567890"", email=""customer@example.com"", merchantName=""Test Merchant""","Receive MerchantOnboardingResponse with kycStatus reflecting the KYC outcome (e.g., APPROVED or INCOMPLETE)",TC-014
+"When KYC registration fails during merchant onboarding, the process handles the failure appropriately",Merchant onboarding failure due to KYC issues,Security,Medium,"A MerchantPortalOnboardingRequest is prepared where the underlying KYC registration would fail (e.g., invalid mobile number)","1. Send a POST request to the merchant onboarding endpoint with the MerchantPortalOnboardingRequest
+2. Observe the response
+
+Test Data: MerchantPortalOnboardingRequest with mobileNumber=""9999999999"" (invalid format)","Receive MerchantOnboardingResponse with kycStatus indicating failure (e.g., REJECTED or INCOMPLETE)",TC-015

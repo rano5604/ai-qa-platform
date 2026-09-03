@@ -141,3 +141,47 @@ Test Data: New dependencies: io.minio:minio:8.5.7, com.squareup.okhttp3:okhttp:4
 Verify the addition of MinIO and OkHttp dependencies does not introduce transitive dependency conflicts,Transitive Dependency Conflicts,Configuration,High,Updated pom.xml with new dependencies. Clean local Maven repository.,"1. Run 'mvn dependency:tree' to generate the dependency tree. 2. Check for version conflicts or duplicate dependencies. 3. Deploy the application and observe runtime behavior. 4. Check application logs for runtime errors related to dependencies.
 
 Test Data: New dependencies: io.minio:minio:8.5.7 (transitive deps: okhttp, okio), com.squareup.okhttp3:okhttp:4.9.3 (transitive deps: okio).","Dependency tree shows no version conflicts or duplicate dependencies. Application starts and operates without runtime errors related to MinIO, OkHttp, or their transitive dependencies (e.g., NoSuchMethodError, ClassNotFoundException).",TC-039
+Create an order with photo fields set to whitespace-only strings,Order Photo Processing,Boundary,High,A shop with ID 1 and an item with ID 10 exist in the system.,"1. Send a POST request to /api/orders with testData containing whitespace-only strings for customerPhoto and measurementClothPhoto.
+2. Inspect the returned OrderSummaryResponse in the response body.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01700000000"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhoto"": ""   "",
+  ""measurementClothPhoto"": ""\t\n "",
+  ""totalAmount"": 500.0,
+  ""paidAmount"": 200.0,
+  ""dueAmount"": 300.0,
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""clothPhoto"": ""   "",
+          ""patternClothPhoto"": ""   "",
+          ""measurements"": []
+        }
+      ]
+    }
+  ]
+}","HTTP response status code 200 OK with status 'success'. The system identifies all photo fields as blank, bypasses Base64 image decoding/uploading, and creates the order without errors.",TC-227
+Create an order with minimal non-blank Base64 image string,Order Photo Processing,Boundary,High,A shop with ID 1 and an item with ID 10 exist in the system.,"1. Send a POST request to /api/orders with testData containing a valid minimal Base64 encoded string for customerPhoto.
+2. Verify the HTTP response status code and response payload.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""01800000000"",
+  ""customerGender"": ""FEMALE"",
+  ""orderGender"": ""FEMALE"",
+  ""customerPhoto"": ""iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="",
+  ""measurementClothPhoto"": """",
+  ""totalAmount"": 1000.0,
+  ""paidAmount"": 1000.0,
+  ""dueAmount"": 0.0,
+  ""items"": []
+}","HTTP response status code 200 OK with status 'success'. The system processes the non-blank Base64 image string, uploads it to MinIO storage under 'orders/{orderId}-customer.jpg', and stores the generated URL.",TC-228

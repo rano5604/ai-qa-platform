@@ -305,3 +305,73 @@ Test Data: New dependency: org.springframework:spring-tx. Test case: order creat
 "Verify order creation rolls back all images if any image upload fails, unaffected by spring-tx dependency (UPDATE existing test case)",Order Creation with Image Upload Failure,Configuration,High,"Application deployed with the updated pom.xml, MinIO endpoint running, invalid image file (e.g., corrupted or unsupported format) prepared","1. Deploy the application with the updated configuration. 2. Send a POST request to the order creation endpoint with an invalid image file. 3. Verify the response and system state.
 
 Test Data: New dependency: org.springframework:spring-tx. Test case: order creation with image upload failure (existing ID=d9f8e47-TC-014).","HTTP 500 Internal Server Error response with a JSON body containing an error message indicating the failure. No order is created, and no images are stored in MinIO or the database.",d9f8e47-TC-014
+Attempt to update an order that does not exist,Order Management - Order Update,Negative,High,No order exists in the system with ID 99999.,"1. Send a PUT request to /api/orders/99999 with the payload provided in testData.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhotoUrl"": ""http://example.com/photo.jpg"",
+  ""totalAmount"": 150.0,
+  ""paidAmount"": 50.0,
+  ""dueAmount"": 100.0,
+  ""trialDate"": ""2023-12-01"",
+  ""deliveryDate"": ""2023-12-10"",
+  ""shopId"": 1,
+  ""items"": []
+}",The request is rejected with an HTTP response indicating an error that no order was found with ID 99999.,TC-017
+Attempt to update an order whose status is not MEASUREMENT_DONE,Order Management - Order Update,Negative,High,"An order with ID 101 exists in the system and its current status is set to a state other than MEASUREMENT_DONE (for example, IN_PROGRESS or DELIVERED).","1. Send a PUT request to /api/orders/101 with the payload provided in testData.
+
+Test Data: {
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""0987654321"",
+  ""customerGender"": ""FEMALE"",
+  ""orderGender"": ""FEMALE"",
+  ""customerPhotoUrl"": ""http://example.com/jane.jpg"",
+  ""totalAmount"": 200.0,
+  ""paidAmount"": 100.0,
+  ""dueAmount"": 100.0,
+  ""trialDate"": ""2023-12-05"",
+  ""deliveryDate"": ""2023-12-15"",
+  ""shopId"": 1,
+  ""items"": []
+}",The request is rejected with an error message stating that order update is not allowed because of the current order status.,TC-018
+Attempt to update an order where measurement groups count does not match item quantity,Order Management - Order Update,Negative,Medium,An order with ID 102 exists in the system and its current status is MEASUREMENT_DONE. Item with ID 5 exists.,"1. Send a PUT request to /api/orders/102 with the payload provided in testData.
+
+Test Data: {
+  ""customerName"": ""Alex Smith"",
+  ""customerPhone"": ""1122334455"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhotoUrl"": ""http://example.com/alex.jpg"",
+  ""totalAmount"": 300.0,
+  ""paidAmount"": 300.0,
+  ""dueAmount"": 0.0,
+  ""trialDate"": ""2023-12-02"",
+  ""deliveryDate"": ""2023-12-12"",
+  ""shopId"": 1,
+  ""items"": [
+    {
+      ""itemId"": 5,
+      ""quantity"": 2,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""http://example.com/m1.jpg"",
+          ""measurements"": [
+            {""name"": ""Chest"", ""unit"": ""inch"", ""value"": 40.0}
+          ]
+        }
+      ]
+    }
+  ]
+}",The request is rejected with an error stating that item count and number of measurement groups must match for item ID 5.,TC-019
+Retrieve last measurements for a customer phone and item when multiple matching orders exist,Last Measurement Retrieval,Boundary,High,An item with ID 1 exists. An order for customer phone '1234567890' containing item ID 1 was created on 2023-01-01. A newer order for customer phone '1234567890' containing item ID 1 was created on 2023-06-01 with measurement value 34.5.,"1. Send a GET request to /api/orders/last-measurement with query parameters phone='1234567890' and itemId=1.
+
+Test Data: phone=1234567890, itemId=1",HTTP status code 200 OK with response body containing the item name and measurements list corresponding strictly to the most recent order (dated 2023-06-01) with measurement value 34.5.,TC-020
+Retrieve last measurements for a phone and item combination with zero matching orders,Last Measurement Retrieval,Boundary,Medium,No orders exist in the system for customer phone '0000000000' and item ID 999.,"1. Send a GET request to /api/orders/last-measurement with query parameters phone='0000000000' and itemId=999.
+
+Test Data: phone=0000000000, itemId=999",HTTP status code 200 OK with response body containing null or empty itemName and an empty measurements array [] (no 500 error or NullPointerException thrown).,TC-021
+Retrieve orders by shop ID and order gender with zero matching orders,Order Filtering by Shop and Gender,Boundary,Low,"Shop with ID 1 exists, but no orders exist for shop 1 with orderGender 'FEMALE'.","1. Send a GET request to /api/orders/shop/1/orderGender/FEMALE.
+
+Test Data: shopId=1, orderGender=FEMALE",HTTP status code 200 OK with an empty JSON array response body [].,TC-022

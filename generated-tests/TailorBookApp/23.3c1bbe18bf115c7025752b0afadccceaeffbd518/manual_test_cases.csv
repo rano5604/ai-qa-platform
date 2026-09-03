@@ -369,3 +369,33 @@ Test Data: Sample input for QR code generation (e.g., a URL or text string)","QR
 Verify the addition of ZXing dependencies does not introduce transitive dependency conflicts,Transitive Dependency Conflicts,Configuration,Medium,"Project source code is available, Maven is installed, and the updated pom.xml is in place","1. Run 'mvn dependency:tree' to generate the dependency tree. 2. Check for any version conflicts or duplicate dependencies in the output. 3. Run 'mvn clean install' to build the project. 4. Verify no runtime errors related to dependency conflicts appear during application startup or operation.
 
 Test Data: New dependencies: com.google.zxing:core:3.4.1, com.google.zxing:javase:3.4.1",Dependency tree shows no version conflicts or duplicate dependencies. Build completes with SUCCESS status. Application starts and operates without runtime errors related to dependency conflicts.,TC-024
+Verify generated order ID formatting for the first order created for a shop on a given date (minimum sequence boundary),Order Identification & Generation,Boundary,High,A shop with ID 1 exists and currently has zero (0) orders created on the current date.,"1. Send a POST request to /api/orders with the payload in testData.
+2. Inspect the returned JSON payload field data.orderId.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01700000000"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""totalAmount"": 1000.00,
+  ""paidAmount"": 200.00,
+  ""dueAmount"": 800.00,
+  ""urgent"": false,
+  ""items"": []
+}",HTTP 200 OK status code. The response body contains 'data.orderId' formatted with 4-digit sequence padding '1-YYYYMMDD-0001' (where YYYYMMDD is today's date).,TC-399125
+"Verify generated order ID formatting when daily order count reaches 9,999 (boundary where sequence expands beyond 4 digits)",Order Identification & Generation,Boundary,Medium,"A shop with ID 1 exists and has exactly 9,999 orders already created on the current date.","1. Send a POST request to /api/orders with the payload in testData.
+2. Inspect the returned JSON payload field data.orderId.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""01700000001"",
+  ""customerGender"": ""FEMALE"",
+  ""orderGender"": ""FEMALE"",
+  ""totalAmount"": 500.00,
+  ""paidAmount"": 500.00,
+  ""dueAmount"": 0.00,
+  ""urgent"": false,
+  ""items"": []
+}",HTTP 200 OK status code. The response body contains 'data.orderId' formatted with sequence '10000' as '1-YYYYMMDD-10000' (where YYYYMMDD is today's date).,TC-399126

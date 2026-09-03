@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [Command line suite]">
+  <test thread-count="5" name="Command line test(failed)">
+    <classes>
+      <class name="com.company.aiqa.generated.AutomationTest_a1e801d1f5eb4810f887b8e2ad9314f364d38bc3">
+        <methods>
+          <include name="createOrderWithMinimumAllowedQuantity"/>
+          <include name="cleanup3"/>
+          <include name="createOrderWithMissingProductName"/>
+          <include name="createOrderWithPriceAsNegative"/>
+          <include name="updateOrderQuantityToMaximumInteger"/>
+          <include name="createOrderWithMaximumDoublePrice"/>
+          <include name="createNewOrderWithValidDetails"/>
+          <include name="cleanup2"/>
+          <include name="verifyAccessToAnotherUsersOrder"/>
+          <include name="createOrderWithQuantityZero"/>
+          <include name="cleanup4"/>
+          <include name="retrieveDetailsOfCreatedOrder"/>
+          <include name="updateOrderPriceToMinimumAllowed"/>
+          <include name="getOrderDetailsWithNonExistentId"/>
+          <include name="retrieveOrderWithMaximumLongId"/>
+          <include name="createOrderWithMaxIntegerQuantity"/>
+          <include name="createOrderWithQuantityAsZero"/>
+          <include name="updateExistingOrderWithValidDetails"/>
+          <include name="verifyErrorResponseDoesNotLeakInternalDetails"/>
+          <include name="updateOrderQuantityToZero"/>
+          <include name="setup"/>
+          <include name="updateOrderWithQuantityAsZero"/>
+          <include name="updateOrderWithNonExistentId"/>
+          <include name="updateOrderWithMissingCustomerName"/>
+          <include name="updateOrderQuantityToMinimumAllowed"/>
+          <include name="createOrderWithMinimumPrice"/>
+          <include name="createOrderWithNegativePrice"/>
+          <include name="cleanup"/>
+          <include name="createOrderWithMissingCustomerName"/>
+          <include name="retrieveOrderWithMinimumId"/>
+          <include name="createOrderWithQuantityAsNegative"/>
+          <include name="updateOrderPriceToNegativeValue"/>
+        </methods>
+      </class> <!-- com.company.aiqa.generated.AutomationTest_a1e801d1f5eb4810f887b8e2ad9314f364d38bc3 -->
+    </classes>
+  </test> <!-- Command line test(failed) -->
+</suite> <!-- Failed suite [Command line suite] -->

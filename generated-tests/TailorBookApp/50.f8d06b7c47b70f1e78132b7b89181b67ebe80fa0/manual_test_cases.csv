@@ -1,0 +1,27 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify unique parameter ID (nsId) generation during new item creation,Measurement Parameter Management,Positive,High,The application is running and accessible.,"1. Send a request to create a new Item with nameEn 'Shirt', nameBn 'শার্ট', status 'ACTIVE', and one measuring parameter with nameEn 'Chest', nameBn 'চেস্ট', unit 'inch', type 'NUMBER'. Note that nsId is not provided for the parameter.
+2. Submit the item creation request.
+
+Test Data: Item: nameEn='Shirt', nameBn='শার্ট', status='ACTIVE'
+Parameter: nameEn='Chest', nameBn='চেস্ট', unit='inch', type='NUMBER', nsId=null","The item is created successfully. The returned measuring parameter response contains a non-null, randomly generated 4-character alphanumeric nsId.",TC-001
+Verify existing measuring parameters maintain their original nsId when updating an item,Measurement Parameter Management,Positive,High,"An existing item named 'Collar Shirt' exists with a measuring parameter named 'Collar Size' that has an assigned nsId (e.g., 'A1B2').","1. Open the item update interface or prepare an item update request for 'Collar Shirt'.
+2. Modify the unit or suggestive values of the existing parameter 'Collar Size' without altering its nameEn.
+3. Save the updated item details.
+4. Verify the measuring parameter details in the response.
+
+Test Data: Item ID: <existing_item_id>
+Request: nameEn='Collar Shirt', nameBn='কলার শার্ট', status='ACTIVE', parameters=[{nameEn='Collar Size', nameBn='কলার সাইজ', unit='cm', type='NUMBER'}]",The item updates successfully with confirmation message 'Item updated successfully'. The measuring parameter 'Collar Size' retains its existing unique ID 'A1B2' rather than generating a new one.,ad47f14-TC-001
+Attempt to create an item with an invalid measuring parameter type,Item Management - Measuring Parameters,Negative,High,The application is running and accessible.,"1. Submit a request to create a new item 'Shirt' with a measuring parameter titled 'Chest' and type set to 'INVALID_TYPE'.
+
+Test Data: nameEn: 'Shirt', parameter nameEn: 'Chest', type: 'INVALID_TYPE'",The system rejects the creation request with an error due to the invalid parameter type. The item is not created.,TC-002
+Attempt to update an item using a non-existent item ID,Item Management - Item Update,Negative,Medium,No item with ID 999999 exists in the system.,"1. Submit an item update request targeting item ID 999999 with updated item name details.
+
+Test Data: itemId: 999999, nameEn: 'Updated Suit'",The system rejects the request with an error message indicating 'Item not found'.,TC-003
+Create item parameter with blank nsId to verify 4-character auto-generation boundary,Item Measuring Parameter Management,Boundary,High,The item management service is accessible.,"1. Submit a request to create a new item named 'Custom Shirt' with one measuring parameter having nameEn 'Chest', nameBn 'চেস্ট', unit 'inches', and an empty string nsId.
+2. Fetch the created item details.
+
+Test Data: item nameEn: 'Custom Shirt', parameter nameEn: 'Chest', nsId: ''",The item is created successfully and the parameter 'Chest' is assigned a generated alphanumeric nsId consisting of exactly 4 characters.,TC-004
+Update item with matching parameter nameEn to verify nsId preservation boundary,Item Measuring Parameter Management,Boundary,High,An item with ID 10 exists having parameter nameEn 'Waist' and nsId 'AB12'.,"1. Submit an update request for item ID 10 with parameter nameEn 'Waist', unit 'cm', and existing nsId 'AB12'.
+2. View the updated item response.
+
+Test Data: itemId: 10, parameter nameEn: 'Waist', nsId: 'AB12', unit: 'cm'",The parameter 'Waist' is updated with unit 'cm' and retains its existing 4-character nsId 'AB12' without regenerating a new ID.,TC-005

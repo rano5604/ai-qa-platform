@@ -1,0 +1,28 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Retrieve paginated orders scheduled for delivery today,Dashboard Orders Drill-down,Positive,High,A shop exists with shopId 1 and has at least one order with delivery date set to today's date,"1. Send a GET request to /api/dashboard/orders/today with query parameters shopId=1, page=0, and limit=10.
+
+Test Data: shopId=1, page=0, limit=10","HTTP 200 OK response with status 'success', message 'Today's delivery orders fetched successfully', meta pagination details, and data content containing the list of orders scheduled for today.",TC-001
+Retrieve paginated overdue delivery orders for a shop,Dashboard Orders Drill-down,Positive,High,A shop exists with shopId 1 and has orders with delivery dates prior to today that are not in READY_FOR_DELIVERY status,"1. Send a GET request to /api/dashboard/orders/overdue with query parameters shopId=1, page=0, and limit=10.
+
+Test Data: shopId=1, page=0, limit=10","HTTP 200 OK response with status 'success', message 'Overdue delivery orders fetched successfully', meta pagination metadata, and data array containing overdue orders excluding those ready for delivery.",TC-002
+Retrieve paginated orders created within the current month,Dashboard Orders Drill-down,Positive,High,A shop exists with shopId 1 and has orders recorded within the start and end dates of the current calendar month,"1. Send a GET request to /api/dashboard/orders/monthly with query parameters shopId=1, page=0, and limit=10.
+
+Test Data: shopId=1, page=0, limit=10","HTTP 200 OK response with status 'success', message 'Monthly orders fetched successfully', meta containing total elements and pages, and data array listing the orders for the current month.",TC-003
+Retrieve paginated orders created on a specific date,Dashboard Orders Drill-down,Positive,Medium,A shop exists with shopId 1 and has orders placed on the specified order date,"1. Send a GET request to /api/dashboard/orders/new with query parameters shopId=1, orderDate=2026-03-30, page=0, and limit=10.
+
+Test Data: shopId=1, orderDate=2026-03-30, page=0, limit=10","HTTP 200 OK response with status 'success', message 'Orders fetched successfully for the date: 2026-03-30', and data array containing orders placed on that specified date.",TC-004
+Attempt to fetch today's delivery orders without providing the required shop ID parameter,Dashboard Management - Today's Orders,Negative,High,The backend service is running and accessible.,"1. Send a GET request to /api/dashboard/orders/today without providing any query parameters.
+
+Test Data: URL: /api/dashboard/orders/today","The system rejects the request with HTTP 400 Bad Request, indicating that the required query parameter 'shopId' is missing.",TC-005
+Attempt to fetch overdue delivery orders with a non-numeric shop ID parameter,Dashboard Management - Overdue Orders,Negative,High,The backend service is running and accessible.,"1. Send a GET request to /api/dashboard/orders/overdue with a non-numeric shopId parameter value.
+
+Test Data: URL: /api/dashboard/orders/overdue?shopId=invalid_shop","The system rejects the request with HTTP 400 Bad Request, indicating that 'shopId' must be a valid numeric identifier.",TC-006
+Attempt to fetch new dashboard orders using an invalid date format for orderDate,Dashboard Management - New Orders,Negative,High,A shop with ID 1 exists in the system.,"1. Send a GET request to /api/dashboard/orders/new with shopId parameter set to 1 and orderDate formatted as DD-MM-YYYY instead of ISO format.
+
+Test Data: URL: /api/dashboard/orders/new?shopId=1&orderDate=25-12-2023","The system rejects the request with HTTP 400 Bad Request, indicating that 'orderDate' must be in a valid ISO date format (YYYY-MM-DD).",d217aa0-TC-017
+"Verify monthly orders endpoint includes orders placed on the exact start (1st day) and end (last day) of the current month, but excludes orders from adjacent months",Dashboard Monthly Orders Filtering,Boundary,High,"Shop with ID 1 exists. Three orders exist for shop ID 1: Order A placed on the last day of the previous month, Order B placed on the 1st day of the current month, and Order C placed on the last day of the current month.","1. Send a GET request to /api/dashboard/orders/monthly with query parameter shopId=1&page=0&limit=10.
+
+Test Data: shopId=1, page=0, limit=10",HTTP status code 200 OK with status 'success'. The returned data contains exactly 2 orders (Order B and Order C) with totalElements set to 2 in metaData. Order A from the previous month is not included in the response.,TC-007
+Verify overdue orders endpoint includes orders with delivery date of yesterday but excludes orders with delivery date of today,Dashboard Overdue Orders Date Boundary,Boundary,High,Shop with ID 1 exists. Order 101 has delivery date set to yesterday (1 day before today) and status MEASUREMENT_DONE. Order 102 has delivery date set to today and status MEASUREMENT_DONE.,"1. Send a GET request to /api/dashboard/orders/overdue with query parameter shopId=1&page=0&limit=10.
+
+Test Data: shopId=1, page=0, limit=10","HTTP status code 200 OK with status 'success'. The returned page contains Order 101 (delivery date yesterday), but does not contain Order 102 (delivery date today), confirming the strictly-before-today boundary.",TC-008

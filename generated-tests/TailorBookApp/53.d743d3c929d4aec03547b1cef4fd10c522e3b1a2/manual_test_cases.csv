@@ -32,3 +32,15 @@ Test Data: folder: [malformed], fileName: ""test.jpg""","The API responds with a
 Retrieve a file with a file name set to null (simulated via malformed request),File Retrieval via MinIO Proxy,Boundary,Medium,A file named 'test.jpg' exists in the 'tailor-photos' bucket under a folder named 'valid-folder',"1. Attempt to send a GET request to /{folder}/{fileName} with the fileName path variable omitted or malformed to simulate null.
 
 Test Data: folder: ""valid-folder"", fileName: [malformed]","The API responds with a 404 Not Found status code or 400 Bad Request status code, and no file is returned.",TC-011
+Retrieve stored file directly via folder and file name proxy path,File Proxy Access,Positive,High,A file named 'sample.jpg' is stored in the 'orders' directory within the 'tailor-photos' bucket,"1. Send a GET request to /orders/sample.jpg
+
+Test Data: folder: orders, fileName: sample.jpg",HTTP 200 OK response with Content-Type 'application/octet-stream' containing the binary file stream,TC-012
+Request file that does not exist in MinIO storage,File Storage Proxy,Negative,High,The application service and MinIO instance are running,"1. Send a GET request to /photos/nonexistent-file.jpg.
+
+Test Data: folder: photos, fileName: nonexistent-file.jpg",The system returns an HTTP 404 Not Found response status code.,TC-013
+Verify that path traversal sequences in folder and fileName parameters are rejected without exposing internal file system contents or sensitive server details,MinIO File Proxy,Security,High,The application is running and connected to the object storage service,"1. Send a GET request to /..%2F..%2Fetc/passwd with folder set to '..%2F..' and fileName set to 'passwd'.
+
+Test Data: folder = '..%2F..', fileName = 'passwd'","The API responds with HTTP status 404 (Not Found). The response body does not contain internal system files, stack traces, or storage credentials.",TC-014
+Verify that requesting a non-existent or invalid object path does not leak MinIO storage credentials or internal exception details,MinIO File Proxy,Security,Medium,The application is running and connected to the object storage service,"1. Send a GET request to /invalid-folder/non-existent-file.jpg.
+
+Test Data: folder = 'invalid-folder', fileName = 'non-existent-file.jpg'","The API responds with HTTP status 404 (Not Found). The response body is empty or contains standard error formatting, with no exposure of internal MinIO client configuration or secret keys.",TC-015

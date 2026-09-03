@@ -26,3 +26,6 @@ Test Data: {}",HTTP 403 Forbidden status code with an error message indicating t
 Update an order as a non-owner of the shop,Order Access Control,Negative,High,An existing order and a non-owner user of the shop,"1. Send a PUT request to /api/orders/{orderId} as a non-owner user of the shop.
 
 Test Data: {}",HTTP 403 Forbidden status code with an error message indicating that the user is not authorized to update orders for this shop.,TC-009
+Delete image with minimum single-character object name boundary,Image Deletion,Boundary,Medium,An image object with key name 'a' has been uploaded and exists in storage,"1. Send a DELETE request to /api/images/a.
+
+Test Data: objectName = 'a'",HTTP status 200 OK with response body containing 'message': 'Image deleted successfully' and 'objectName': 'a'.,TC-010

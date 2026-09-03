@@ -1,0 +1,32 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Retention of active temporary uploaded files during scheduled cleanup,Temporary Storage Management,Positive,High,An image file has been uploaded to the temporary storage bucket within the configured retention timeframe,"1. Allow the scheduled background cleanup interval to elapse.
+2. Access the uploaded image file from temporary storage or attach it to a new order.
+
+Test Data: Image file uploaded within the configured retention minutes threshold",The temporary image file remains intact in the temporary storage bucket and is successfully retrieved or attached to the order.,TC-001
+Automated purging of expired temporary files during scheduled cleanup,Temporary Storage Management,Positive,High,A file exists in the temporary storage bucket with a last modified timestamp older than the configured retention period,"1. Allow the scheduled cleanup job to execute at its configured background interval.
+2. Verify the contents of the temporary storage bucket.
+
+Test Data: Temporary file older than the configured retention minutes",The expired temporary file is automatically removed from the temporary storage bucket while active files are preserved.,TC-002
+Automatic cleanup of temporary files based on retention duration boundary,Temporary File Storage Cleanup,Boundary,High,A temporary photo file has been uploaded to the system's temporary storage bucket and the periodic cleanup service is enabled.,"1. Upload a file to the temporary storage bucket. 2. Wait for the scheduled cleanup interval to execute while the file's age is within the configured retention duration. 3. Check the status/existence of the temporary file. 4. Allow time to pass until the file's age strictly exceeds the configured retention duration. 5. Wait for the next scheduled cleanup interval to execute. 6. Re-check the status/existence of the temporary file.
+
+Test Data: File age within retention threshold (age <= configured retention minutes) vs file age past retention threshold (age > configured retention minutes)","The file is retained in the temporary storage bucket when its age is within the retention duration, and is automatically removed from the bucket once its age exceeds the retention threshold.",TC-003
+Automatic cleanup removes temporary files older than configured retention period,Temporary File Storage Management,Configuration,High,A temporary image file was uploaded to the temporary storage bucket and its timestamp is older than the configured retention time,"1. Upload a photo to temporary storage.
+2. Allow the background cleanup job to run after the temporary file exceeds the retention period.
+3. Request access to the temporary photo file via its object path.
+
+Test Data: File name: 'temp-profile-001.jpg', storage duration: exceeding retention limit",The expired file is automatically removed from temporary storage during background cleanup and is no longer accessible,TC-004
+Background cleanup retains temporary files within the active retention window,Temporary File Storage Management,Configuration,High,A temporary image file was recently uploaded to the temporary storage bucket and is well within the configured retention period,"1. Upload a photo to temporary storage.
+2. Allow the background cleanup job interval to execute while the file is still within its retention period.
+3. Access the temporary file using its stored path.
+
+Test Data: File name: 'temp-sketch-active.jpg', storage duration: within active retention window",The recent temporary file is preserved during the cleanup run and remains accessible in storage,TC-005
+Verify temporary files in tailor-photos-temp bucket older than retention period are cleaned up on schedule,MinIO Temp File Cleanup Configuration,Configuration,High,The application is deployed with minio.temp-cleanup-interval-ms=300000 and minio.temp-retention-minutes=30. A temporary photo file has been uploaded to the tailor-photos-temp bucket and left in storage for over 30 minutes.,"1. Verify the temporary file exists in the 'tailor-photos-temp' bucket.
+2. Wait for the cleanup task to execute (up to 5 minutes based on interval).
+3. Check the contents of the 'tailor-photos-temp' bucket and review system execution logs.
+
+Test Data: minio.temp-cleanup-interval-ms=300000, minio.temp-retention-minutes=30",The temporary file older than 30 minutes is deleted from the 'tailor-photos-temp' bucket by the scheduled cleanup process. Cleanup logs confirm execution with no errors.,TC-006
+Verify temporary files younger than retention period are preserved during cleanup run,MinIO Temp File Retention Threshold,Configuration,Medium,The application is deployed with minio.temp-retention-minutes=30. A temporary photo file was uploaded to the tailor-photos-temp bucket 10 minutes ago.,"1. Upload a temporary file to 'tailor-photos-temp' bucket.
+2. Wait for the scheduled cleanup job to run.
+3. Verify the file status in the MinIO 'tailor-photos-temp' bucket after cleanup completes.
+
+Test Data: File age: 10 minutes, minio.temp-retention-minutes=30",The temporary file remains intact in the 'tailor-photos-temp' bucket because its age (10 minutes) does not exceed the 30-minute retention threshold.,TC-007

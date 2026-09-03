@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [Command line suite]">
+  <test thread-count="5" name="Command line test(failed)">
+    <classes>
+      <class name="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a">
+        <methods>
+          <include name="updateOrderWithPriceAsWholeLookingDecimal"/>
+          <include name="createOrderWithNegativeIntegerPrice"/>
+          <include name="updateOrderWithPriceAsNumericString"/>
+          <include name="updateOrderWithPriceAsDecimalNumber"/>
+          <include name="updateOrderWithFractionalPrice"/>
+          <include name="createOrderWithWholeLookingDecimalPrice"/>
+          <include name="createOrderWithPriceAsNumericString"/>
+          <include name="createOrderWithPriceAsNegativeNumber"/>
+          <include name="updateOrderWithNegativePrice"/>
+          <include name="createOrderWithDecimalPrice"/>
+          <include name="createOrderWithFractionalPrice"/>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a -->
+    </classes>
+  </test> <!-- Command line test(failed) -->
+</suite> <!-- Failed suite [Command line suite] -->

@@ -1,0 +1,385 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test execution report - order-service</title><style>*{box-sizing:border-box}
+body{font:14px/1.5 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+     margin:0;padding:28px;color:#1a1a1a;background:#f6f7f9}
+h1{margin:0 0 16px;font-size:22px}
+h2{margin:0 0 4px;font-size:15px}
+h3{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#666}
+table.meta{border-collapse:collapse;margin-bottom:18px;background:#fff;border:1px solid #e2e5e9;border-radius:6px}
+table.meta td{padding:6px 12px;border-bottom:1px solid #eef0f3}
+table.meta td:first-child{color:#666;white-space:nowrap}
+table.meta tr:last-child td{border-bottom:0}
+.tiles{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.tile{background:#fff;border:1px solid #e2e5e9;border-radius:6px;padding:10px 18px;min-width:88px}
+.tile .n{font-size:22px;font-weight:600}
+.tile .l{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#666}
+.tile.pass .n{color:#127a3d}.tile.fail .n{color:#b3261e}
+.tile.err .n{color:#8a4b00}.tile.skip .n{color:#5a6472}
+.sub{color:#666;margin:6px 0 18px}
+.banner{background:#fff4e5;border:1px solid #f0c894;border-radius:6px;padding:10px 14px;margin-bottom:16px}
+.banner.warn{background:#fdf0ef;border-color:#f0b3ae}
+.banner ul{margin:6px 0 0 18px;padding:0}
+section.test{background:#fff;border:1px solid #e2e5e9;border-left-width:4px;
+             border-radius:6px;padding:14px 16px;margin-bottom:12px}
+section.test.pass{border-left-color:#2f9e5f}
+section.test.fail{border-left-color:#d93025}
+section.test.err{border-left-color:#e08600}
+section.test.skip{border-left-color:#9aa3ad}
+.where{color:#777;font-size:12px;margin-bottom:10px}
+.badge{display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;
+       font-weight:600;color:#fff;vertical-align:middle}
+.badge.pass{background:#2f9e5f}.badge.fail{background:#d93025}
+.badge.err{background:#e08600}.badge.skip{background:#9aa3ad}
+.failure{background:#fdf0ef;border:1px solid #f3c2be;border-radius:5px;padding:8px 10px;margin:8px 0}
+details.xch{border:1px solid #e6e9ed;border-radius:5px;margin-top:8px;background:#fbfcfd}
+details.xch summary{cursor:pointer;padding:7px 10px;font-size:13px;user-select:none}
+details.xch[open] summary{border-bottom:1px solid #e6e9ed}
+.n{color:#8b95a1;margin-right:4px}
+.verb{font-weight:700;font-family:ui-monospace,Consolas,monospace}
+.uri{font-family:ui-monospace,Consolas,monospace;word-break:break-all}
+.ms{color:#8b95a1;font-size:11px;margin-left:4px}
+.line{font-weight:400;text-transform:none;letter-spacing:0;color:#888}
+.cols{display:flex;gap:14px;padding:10px;flex-wrap:wrap}
+.col{flex:1 1 340px;min-width:0}
+table.hdr{border-collapse:collapse;width:100%;margin-bottom:6px;font-size:11px}
+table.hdr td{padding:2px 6px;border-bottom:1px solid #eef0f3;
+             font-family:ui-monospace,Consolas,monospace;word-break:break-all}
+table.hdr td:first-child{color:#777;white-space:nowrap;width:1%}
+pre{background:#f4f6f8;border:1px solid #e6e9ed;border-radius:4px;padding:8px 10px;
+    margin:0 0 6px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;
+    font-family:ui-monospace,Consolas,monospace;font-size:12px;max-height:420px}
+.none{color:#8b95a1;font-size:12px;font-style:italic;margin:0 0 6px}
+</style></head><body><h1>Test execution report</h1><table class="meta"><tr><td>Project</td><td>order-service</td></tr><tr><td>Commit</td><td>26ade1c7ec9d874767476da6d3e83813352f611a</td></tr><tr><td>Base URI</td><td>http://10.88.233.81:8080</td></tr><tr><td>Generated</td><td>2026-08-17 15:18:59</td></tr></table><div class="tiles"><div class="tile total"><div class="n">20</div><div class="l">Total</div></div><div class="tile pass"><div class="n">9</div><div class="l">Passed</div></div><div class="tile fail"><div class="n">11</div><div class="l">Failed</div></div><div class="tile err"><div class="n">0</div><div class="l">Errors</div></div><div class="tile skip"><div class="n">0</div><div class="l">Skipped</div></div></div><p class="sub">Scripts attempted 1, compiled 1.</p><section class="test pass"><h2><span class="badge pass">PASSED</span> createNewOrderWithWholeNumberPrice</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 1375 ms</div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">478 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;Alice Johnson&quot;,
+  &quot;productName&quot; : &quot;Monitor&quot;,
+  &quot;quantity&quot; : 3,
+  &quot;price&quot; : 250
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>89</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:54 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 42,
+  &quot;customerName&quot; : &quot;Alice Johnson&quot;,
+  &quot;productName&quot; : &quot;Monitor&quot;,
+  &quot;quantity&quot; : 3,
+  &quot;price&quot; : 250
+}</pre></div></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> createOrderWithDecimalPrice</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 161 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.</pre></div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">115 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Laptop&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 19.99
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>82</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:55 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 43,
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Laptop&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 19
+}</pre></div></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> createOrderWithFractionalPrice</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 82 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.</pre></div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">65 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe_1786958335465&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 1.99
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>95</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:55 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 44,
+  &quot;customerName&quot; : &quot;John Doe_1786958335465&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 1
+}</pre></div></div></details></section><section class="test pass"><h2><span class="badge pass">PASSED</span> createOrderWithMaximumAllowedIntegerPrice</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 159 ms</div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">95 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 2147483647
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>90</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:55 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 45,
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 2147483647
+}</pre></div></div></details></section><section class="test pass"><h2><span class="badge pass">PASSED</span> createOrderWithMinimumAllowedIntegerPrice</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 105 ms</div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">74 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 0
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>81</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:55 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 46,
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 0
+}</pre></div></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> createOrderWithNegativeIntegerPrice</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 74 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.</pre></div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">67 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : -1
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>82</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:55 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 47,
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : -1
+}</pre></div></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> createOrderWithPriceAsNegativeNumber</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 104 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.</pre></div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">96 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Laptop&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : -50
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>83</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:55 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 48,
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Laptop&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : -50
+}</pre></div></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> createOrderWithPriceAsNumericString</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 207 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.</pre></div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">201 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;Alice Brown&quot;,
+  &quot;productName&quot; : &quot;Keyboard&quot;,
+  &quot;quantity&quot; : 3,
+  &quot;price&quot; : &quot;50&quot;
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>87</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:56 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 49,
+  &quot;customerName&quot; : &quot;Alice Brown&quot;,
+  &quot;productName&quot; : &quot;Keyboard&quot;,
+  &quot;quantity&quot; : 3,
+  &quot;price&quot; : 50
+}</pre></div></div></details></section><section class="test pass"><h2><span class="badge pass">PASSED</span> createOrderWithPriceOneAboveMaximumInteger</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 99 ms</div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge fail">400</span> <span class="ms">94 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 2147483648
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:56 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;timestamp&quot; : &quot;2026-08-17T09:18:56.260Z&quot;,
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Bad Request&quot;,
+  &quot;path&quot; : &quot;/orders&quot;
+}</pre></div></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> createOrderWithWholeLookingDecimalPrice</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 138 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.</pre></div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">122 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;Jane Smith&quot;,
+  &quot;productName&quot; : &quot;Monitor&quot;,
+  &quot;quantity&quot; : 2,
+  &quot;price&quot; : 20.0
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>85</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:56 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 50,
+  &quot;customerName&quot; : &quot;Jane Smith&quot;,
+  &quot;productName&quot; : &quot;Monitor&quot;,
+  &quot;quantity&quot; : 2,
+  &quot;price&quot; : 20
+}</pre></div></div></details></section><section class="test pass"><h2><span class="badge pass">PASSED</span> retrieveDetailsOfOrderWithWholeNumberPrice</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 362 ms</div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">105 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;Alice Johnson&quot;,
+  &quot;productName&quot; : &quot;Monitor&quot;,
+  &quot;quantity&quot; : 3,
+  &quot;price&quot; : 250
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>89</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:56 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 51,
+  &quot;customerName&quot; : &quot;Alice Johnson&quot;,
+  &quot;productName&quot; : &quot;Monitor&quot;,
+  &quot;quantity&quot; : 3,
+  &quot;price&quot; : 250
+}</pre></div></div></details><details class="xch"><summary><span class="n">#2</span> <span class="verb">GET</span> <span class="uri">http://10.88.233.81:8080/orders/51</span> <span class="badge pass">200</span> <span class="ms">128 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr></table><p class="none">No request body.</p></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>89</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:56 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 51,
+  &quot;customerName&quot; : &quot;Alice Johnson&quot;,
+  &quot;productName&quot; : &quot;Monitor&quot;,
+  &quot;quantity&quot; : 3,
+  &quot;price&quot; : 250
+}</pre></div></div></details></section><section class="test pass"><h2><span class="badge pass">PASSED</span> updateExistingOrderWithWholeNumberPrice</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 237 ms</div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">55 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Laptop&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 999
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>83</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:56 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 52,
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Laptop&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 999
+}</pre></div></div></details><details class="xch"><summary><span class="n">#2</span> <span class="verb">PUT</span> <span class="uri">http://10.88.233.81:8080/orders/52</span> <span class="badge pass">200</span> <span class="ms">104 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Laptop&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 850
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>83</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:56 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 52,
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Laptop&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 850
+}</pre></div></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> updateOrderWithFractionalPrice</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 234 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.</pre></div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">104 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe_1786958337034&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 100
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>97</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:57 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 53,
+  &quot;customerName&quot; : &quot;John Doe_1786958337034&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 100
+}</pre></div></div></details><details class="xch"><summary><span class="n">#2</span> <span class="verb">PUT</span> <span class="uri">http://10.88.233.81:8080/orders/53</span> <span class="badge pass">200</span> <span class="ms">96 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe_1786958337165&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 1.99
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>95</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:57 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 53,
+  &quot;customerName&quot; : &quot;John Doe_1786958337165&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 1
+}</pre></div></div></details></section><section class="test pass"><h2><span class="badge pass">PASSED</span> updateOrderWithMaxIntegerPrice</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 280 ms</div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">111 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe_1786958337268&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 100
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>97</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:57 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 54,
+  &quot;customerName&quot; : &quot;John Doe_1786958337268&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 100
+}</pre></div></div></details><details class="xch"><summary><span class="n">#2</span> <span class="verb">PUT</span> <span class="uri">http://10.88.233.81:8080/orders/54</span> <span class="badge pass">200</span> <span class="ms">113 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe_1786958337399&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 2147483647
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>104</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:57 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 54,
+  &quot;customerName&quot; : &quot;John Doe_1786958337399&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 2147483647
+}</pre></div></div></details></section><section class="test pass"><h2><span class="badge pass">PASSED</span> updateOrderWithMinimumAllowedIntegerPrice</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 204 ms</div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">83 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe_1786958337550&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 100
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>97</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:57 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 55,
+  &quot;customerName&quot; : &quot;John Doe_1786958337550&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 100
+}</pre></div></div></details><details class="xch"><summary><span class="n">#2</span> <span class="verb">PUT</span> <span class="uri">http://10.88.233.81:8080/orders/55</span> <span class="badge pass">200</span> <span class="ms">48 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe_1786958337654&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 0
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>95</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:57 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 55,
+  &quot;customerName&quot; : &quot;John Doe_1786958337654&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 0
+}</pre></div></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> updateOrderWithNegativePrice</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 230 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.</pre></div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">90 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe_1786958337752&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 100
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>97</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:57 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 56,
+  &quot;customerName&quot; : &quot;John Doe_1786958337752&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 100
+}</pre></div></div></details><details class="xch"><summary><span class="n">#2</span> <span class="verb">PUT</span> <span class="uri">http://10.88.233.81:8080/orders/56</span> <span class="badge pass">200</span> <span class="ms">103 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe_1786958337866&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : -1
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>96</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:57 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 56,
+  &quot;customerName&quot; : &quot;John Doe_1786958337866&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : -1
+}</pre></div></div></details></section><section class="test pass"><h2><span class="badge pass">PASSED</span> updateOrderWithPriceAboveMaxInteger</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 184 ms</div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">45 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe_1786958337982&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 100
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>97</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:57 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 57,
+  &quot;customerName&quot; : &quot;John Doe_1786958337982&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 100
+}</pre></div></div></details><details class="xch" open><summary><span class="n">#2</span> <span class="verb">PUT</span> <span class="uri">http://10.88.233.81:8080/orders/57</span> <span class="badge fail">400</span> <span class="ms">118 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe_1786958338050&quot;,
+  &quot;productName&quot; : &quot;Widget&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 2147483648
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:58 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;timestamp&quot; : &quot;2026-08-17T09:18:58.121Z&quot;,
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Bad Request&quot;,
+  &quot;path&quot; : &quot;/orders/57&quot;
+}</pre></div></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> updateOrderWithPriceAsDecimalNumber</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 200 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.</pre></div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">82 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Laptop&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 100
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>83</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:58 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 58,
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Laptop&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 100
+}</pre></div></div></details><details class="xch"><summary><span class="n">#2</span> <span class="verb">PUT</span> <span class="uri">http://10.88.233.81:8080/orders/58</span> <span class="badge pass">200</span> <span class="ms">75 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Laptop&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 99.99
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>82</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:58 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 58,
+  &quot;customerName&quot; : &quot;John Doe&quot;,
+  &quot;productName&quot; : &quot;Laptop&quot;,
+  &quot;quantity&quot; : 1,
+  &quot;price&quot; : 99
+}</pre></div></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> updateOrderWithPriceAsNumericString</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 150 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.</pre></div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">43 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;Alice Brown&quot;,
+  &quot;productName&quot; : &quot;Keyboard&quot;,
+  &quot;quantity&quot; : 3,
+  &quot;price&quot; : 75
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>87</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:58 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 59,
+  &quot;customerName&quot; : &quot;Alice Brown&quot;,
+  &quot;productName&quot; : &quot;Keyboard&quot;,
+  &quot;quantity&quot; : 3,
+  &quot;price&quot; : 75
+}</pre></div></div></details><details class="xch"><summary><span class="n">#2</span> <span class="verb">PUT</span> <span class="uri">http://10.88.233.81:8080/orders/59</span> <span class="badge pass">200</span> <span class="ms">73 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;Alice Brown&quot;,
+  &quot;productName&quot; : &quot;Keyboard&quot;,
+  &quot;quantity&quot; : 3,
+  &quot;price&quot; : &quot;75&quot;
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>87</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:58 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 59,
+  &quot;customerName&quot; : &quot;Alice Brown&quot;,
+  &quot;productName&quot; : &quot;Keyboard&quot;,
+  &quot;quantity&quot; : 3,
+  &quot;price&quot; : 75
+}</pre></div></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> updateOrderWithPriceAsWholeLookingDecimal</h2><div class="where">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a &middot; 284 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.</pre></div><details class="xch"><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://10.88.233.81:8080/orders</span> <span class="badge pass">200</span> <span class="ms">175 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;Jane Smith&quot;,
+  &quot;productName&quot; : &quot;Monitor&quot;,
+  &quot;quantity&quot; : 2,
+  &quot;price&quot; : 200
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>86</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:58 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 60,
+  &quot;customerName&quot; : &quot;Jane Smith&quot;,
+  &quot;productName&quot; : &quot;Monitor&quot;,
+  &quot;quantity&quot; : 2,
+  &quot;price&quot; : 200
+}</pre></div></div></details><details class="xch"><summary><span class="n">#2</span> <span class="verb">PUT</span> <span class="uri">http://10.88.233.81:8080/orders/60</span> <span class="badge pass">200</span> <span class="ms">91 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;customerName&quot; : &quot;Jane Smith&quot;,
+  &quot;productName&quot; : &quot;Monitor&quot;,
+  &quot;quantity&quot; : 2,
+  &quot;price&quot; : 100.0
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 200 </span></h3><table class="hdr"><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Content-Length</td><td>86</td></tr><tr><td>Date</td><td>Mon, 17 Aug 2026 09:18:58 GMT</td></tr><tr><td>Keep-Alive</td><td>timeout=60</td></tr><tr><td>Connection</td><td>keep-alive</td></tr></table><pre>{
+  &quot;id&quot; : 60,
+  &quot;customerName&quot; : &quot;Jane Smith&quot;,
+  &quot;productName&quot; : &quot;Monitor&quot;,
+  &quot;quantity&quot; : 2,
+  &quot;price&quot; : 100
+}</pre></div></div></details></section></body></html>

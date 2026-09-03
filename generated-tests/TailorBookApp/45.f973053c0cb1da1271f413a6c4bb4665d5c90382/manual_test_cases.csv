@@ -79,3 +79,63 @@ Test Data: {
     }
   ]
 }","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order created successfully"", ""data"": {""orderId"": ""<non-null string>"", ""customerName"": ""John Doe""}}. 2. HTTP 200 OK response with a JSON body containing a non-null and valid URL in the field 'measurementClothPhoto'.",TC-003
+Attempt to create an order referencing a non-existent item ID,Order Creation,Negative,High,A shop with ID 1 exists in the system,"1. Send a POST request to /api/orders with the JSON payload provided in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01700000000"",
+  ""customerGender"": ""MALE"",
+  ""paidAmount"": 0,
+  ""items"": [
+    {
+      ""itemId"": 99999,
+      ""measurementGroups"": []
+    }
+  ]
+}",The system rejects the order creation request and returns a response payload with status 'error' and message 'An unexpected error occurred:Item not found with ID: 99999'.,TC-313180
+Attempt to create an order referencing a non-existent shop ID,Order Creation,Negative,High,No shop exists with ID 88888,"1. Send a POST request to /api/orders with the JSON payload provided in testData.
+
+Test Data: {
+  ""shopId"": 88888,
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""01800000000"",
+  ""customerGender"": ""FEMALE"",
+  ""paidAmount"": 0,
+  ""items"": []
+}",The system rejects the order creation request and returns a response payload with status 'error' and message 'An unexpected error occurred:Shop not found with ID: 88888'.,TC-313181
+Create an order with items parameter set to null,Order Creation,Boundary,High,A shop with ID 1 exists in the system,"1. Send a POST request to /api/orders with the JSON payload in testData containing a null items field.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01700000000"",
+  ""paidAmount"": 0,
+  ""items"": null
+}","HTTP 200 OK status code is returned with status 'success', and the order is created with no order items and total amount of 0.00.",TC-313182
+Create an order item with measurementGroups set to null,Order Creation,Boundary,High,A shop with ID 1 and an item with ID 10 exist in the system,"1. Send a POST request to /api/orders with the JSON payload in testData where measurementGroups is null for item 10.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""01700000001"",
+  ""paidAmount"": 0,
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""measurementGroups"": null
+    }
+  ]
+}","HTTP 200 OK status code is returned with status 'success', creating the order successfully with no measurement groups attached to item 10.",TC-313183
+Verify that unexpected errors in order processing expose internal exception details in the API response message,Order Management - Sensitive Data Exposure in Error Handling,Security,High,The application service is running and accessible.,"1. Send a POST request to /api/orders with the JSON payload provided in testData containing an invalid date format for trialDate.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01700000000"",
+  ""customerGender"": ""MALE"",
+  ""paidAmount"": 100,
+  ""trialDate"": ""invalid-date-format"",
+  ""deliveryDate"": ""2026-12-31"",
+  ""items"": []
+}","The API responds with HTTP status 200 (OK) or 500 containing a JSON body where status is 'error' and the 'message' field explicitly includes the internal exception message string prefixed with 'An unexpected error occurred:' (e.g., 'An unexpected error occurred:Text 'invalid-date-format' could not be parsed').",TC-313184

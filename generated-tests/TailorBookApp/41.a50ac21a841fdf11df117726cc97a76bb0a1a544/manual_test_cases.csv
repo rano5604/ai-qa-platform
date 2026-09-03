@@ -234,3 +234,68 @@ Test Data: {
     }
   ]
 }","The API responds with HTTP status 400 (Bad Request) and a response body containing 'status: error', 'message: Invalid parameter type'. The measuring parameter is not created.",TC-008
+Attempt to send worker OTP when shop owner has no pending worker addition request,Worker Management - Send OTP,Negative,High,The authenticated shop owner has no active pending shop change or add worker request in the system.,"1. Send a POST request to /api/shops/1/workers/send-otp with the request payload provided in testData.
+
+Test Data: {
+  ""email"": ""newworker@example.com"",
+  ""role"": ""WORKER""
+}","The system rejects the request with an error message indicating ""You don't have any pending add/change worker request"". No OTP is generated or sent.",TC-4503
+Attempt to create an item with an unsupported measuring parameter type,Item Management - Measuring Parameter,Negative,High,The user is authenticated and attempting to configure an item with measuring parameters.,"1. Send a POST request to /api/items with the request payload provided in testData containing an unrecognized parameter type.
+
+Test Data: {
+  ""nameEn"": ""Shirt"",
+  ""nameBn"": ""শার্ট"",
+  ""status"": ""ACTIVE"",
+  ""parameters"": [
+    {
+      ""nameEn"": ""Chest"",
+      ""nameBn"": ""বুক"",
+      ""unit"": ""inch"",
+      ""type"": ""INVALID_TYPE"",
+      ""suggestiveValues"": [""38"", ""40""]
+    }
+  ]
+}","The system rejects the item creation request due to an invalid parameter type (""INVALID_TYPE""). The item and its parameters are not saved.",TC-4504
+Create item with measuring parameter containing empty suggestive values list (empty collection boundary),Item Measuring Parameter Management,Boundary,Medium,The item management API is available and functional.,"1. Send a POST request to /api/items with the payload in testData.
+2. Verify the HTTP response status code and payload.
+
+Test Data: {
+  ""nameEn"": ""Panjabi"",
+  ""nameBn"": ""পাঞ্জাবী"",
+  ""status"": ""ACTIVE"",
+  ""parameters"": [
+    {
+      ""nameEn"": ""Chest"",
+      ""nameBn"": ""বুক"",
+      ""unit"": ""inch"",
+      ""type"": ""NUMERIC"",
+      ""suggestiveValues"": []
+    }
+  ]
+}",HTTP status code 200 OK with status 'success'. The returned item data includes the parameter 'Chest' with 'type' set to 'NUMERIC' and an empty list [] for 'suggestiveValues'.,TC-4505
+Create item with measuring parameter containing a single suggestive value (minimum non-empty list boundary),Item Measuring Parameter Management,Boundary,High,The item management API is available and functional.,"1. Send a POST request to /api/items with the payload in testData.
+2. Verify the HTTP response status code and payload.
+
+Test Data: {
+  ""nameEn"": ""Korti"",
+  ""nameBn"": ""কুর্তি"",
+  ""status"": ""ACTIVE"",
+  ""parameters"": [
+    {
+      ""nameEn"": ""Length"",
+      ""nameBn"": ""লম্বা"",
+      ""unit"": ""inch"",
+      ""type"": ""NUMERIC"",
+      ""suggestiveValues"": [""38""]
+    }
+  ]
+}","HTTP status code 200 OK with status 'success'. The returned item data contains parameter 'Length' with 'type' set to 'NUMERIC' and 'suggestiveValues' containing exactly [""38""].",TC-4506
+Create item with Bengali name at maximum allowed length of 255 characters,Item Creation Boundary Validation,Boundary,High,The item management API is available and functional.,"1. Send a POST request to /api/items with the payload in testData.
+2. Verify the HTTP response status code and payload.
+
+Test Data: {
+  ""nameEn"": ""Custom Suit"",
+  ""nameBn"": ""ক repeated 255 times"",
+  ""status"": ""ACTIVE"",
+  ""parameters"": []
+}",HTTP status code 200 OK with status 'success'. The item is created successfully and returned with 'nameBn' matching the 255-character string without truncation or database error.,TC-4507

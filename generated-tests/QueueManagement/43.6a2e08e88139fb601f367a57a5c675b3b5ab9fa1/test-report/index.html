@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+  <meta charset='utf-8'>
+  <title>TestNG reports</title>
+
+    <link type="text/css" href="testng-reports1.css" rel="stylesheet" id="ultra" />
+    <link type="text/css" href="testng-reports.css" rel="stylesheet" id="retro" disabled="false"/>
+    <script type="text/javascript" src="jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="testng-reports.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['table']});
+      google.setOnLoadCallback(drawTable);
+      var suiteTableInitFunctions = new Array();
+      var suiteTableData = new Array();
+    </script>
+    <!--
+      <script type="text/javascript" src="jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+     -->
+  </head>
+
+  <body>    <div class="top-banner-root">
+      <span class="top-banner-title-font">Test results</span>
+      <button id="button" class="button">Switch Retro Theme</button> <!-- button -->
+      <br/>
+      <span class="top-banner-font-1">1 suite, 13 failed tests</span>
+    </div> <!-- top-banner-root -->
+    <div class="navigator-root">
+      <div class="navigator-suite-header">
+        <span>All suites</span>
+        <a href="#" title="Collapse/expand all the suites" class="collapse-all-link">
+          <img src="collapseall.gif" class="collapse-all-icon">
+          </img> <!-- collapse-all-icon -->
+        </a> <!-- collapse-all-link -->
+      </div> <!-- navigator-suite-header -->
+      <div class="suite">
+        <div class="rounded-window">
+          <div class="suite-header light-rounded-window-top">
+            <a href="#" panel-name="suite-Command_line_suite" class="navigator-link">
+              <span class="suite-name border-failed">Command line suite</span>
+            </a> <!-- navigator-link -->
+          </div> <!-- suite-header light-rounded-window-top -->
+          <div class="navigator-suite-content">
+            <div class="suite-section-title">
+              <span>Info</span>
+            </div> <!-- suite-section-title -->
+            <div class="suite-section-content">
+              <ul>
+                <li>
+                  <a href="#" panel-name="test-xml-Command_line_suite" class="navigator-link ">
+                    <span>[unset file name]</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="testlist-Command_line_suite" class="navigator-link ">
+                    <span class="test-stats">1 test</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="group-Command_line_suite" class="navigator-link ">
+                    <span>0 groups</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="times-Command_line_suite" class="navigator-link ">
+                    <span>Times</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="reporter-Command_line_suite" class="navigator-link ">
+                    <span>Reporter output</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="ignored-methods-Command_line_suite" class="navigator-link ">
+                    <span>Ignored methods</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="chronological-Command_line_suite" class="navigator-link ">
+                    <span>Chronological view</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+              </ul>
+            </div> <!-- suite-section-content -->
+            <div class="result-section">
+              <div class="suite-section-title">
+                <span>Results</span>
+              </div> <!-- suite-section-title -->
+              <div class="suite-section-content">
+                <ul>
+                  <li>
+                    <span class="method-stats">19 methods, 13 failed,   6 passed</span>
+                  </li>
+                  <li>
+                    <span class="method-list-title failed">Failed methods</span>
+                    <span class="show-or-hide-methods failed">
+                      <a href="#" panel-name="suite-Command_line_suite" class="hide-methods failed suite-Command_line_suite"> (hide)</a> <!-- hide-methods failed suite-Command_line_suite -->
+                      <a href="#" panel-name="suite-Command_line_suite" class="show-methods failed suite-Command_line_suite"> (show)</a> <!-- show-methods failed suite-Command_line_suite -->
+                    </span>
+                    <div class="method-list-content failed suite-Command_line_suite">
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithEmailContainingInvalidSpecialCharacters">requestOtpWithEmailContainingInvalidSpecialCharacters</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithEmailNotExistingInSystem">requestOtpWithEmailNotExistingInSystem</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithEmptyEmailAddress">requestOtpWithEmptyEmailAddress</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithEmptyEmailParameter">requestOtpWithEmptyEmailParameter</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithExtremelyLongEmailAddress">requestOtpWithExtremelyLongEmailAddress</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithMalformedEmailAddress">requestOtpWithMalformedEmailAddress</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithMalformedEmailFormat">requestOtpWithMalformedEmailFormat</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithMissingEmailParameter">requestOtpWithMissingEmailParameter</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithNullEmailAddress">requestOtpWithNullEmailAddress</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithNullEmailParameter">requestOtpWithNullEmailParameter</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithPhoneNumberParameter">requestOtpWithPhoneNumberParameter</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithVeryLongEmailAddress">requestOtpWithVeryLongEmailAddress</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithoutProvidingEmail">requestOtpWithoutProvidingEmail</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                    </div> <!-- method-list-content failed suite-Command_line_suite -->
+                  </li>
+                  <li>
+                    <span class="method-list-title passed">Passed methods</span>
+                    <span class="show-or-hide-methods passed">
+                      <a href="#" panel-name="suite-Command_line_suite" class="hide-methods passed suite-Command_line_suite"> (hide)</a> <!-- hide-methods passed suite-Command_line_suite -->
+                      <a href="#" panel-name="suite-Command_line_suite" class="show-methods passed suite-Command_line_suite"> (show)</a> <!-- show-methods passed suite-Command_line_suite -->
+                    </span>
+                    <div class="method-list-content passed suite-Command_line_suite">
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpDuplicateEmailInQuickSuccession">requestOtpDuplicateEmailInQuickSuccession</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithMaxLengthEmail">requestOtpWithMaxLengthEmail</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithNonExistentEmail">requestOtpWithNonExistentEmail</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="requestOtpWithValidEmail">requestOtpWithValidEmail</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="userRequestsOtpWithUnregisteredEmailAddress">userRequestsOtpWithUnregisteredEmailAddress</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1" class="method navigator-link" hash-for-method="userSuccessfullyRequestsOtpAndReceivesHeader">userSuccessfullyRequestsOtpAndReceivesHeader</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                    </div> <!-- method-list-content passed suite-Command_line_suite -->
+                  </li>
+                </ul>
+              </div> <!-- suite-section-content -->
+            </div> <!-- result-section -->
+          </div> <!-- navigator-suite-content -->
+        </div> <!-- rounded-window -->
+      </div> <!-- suite -->
+    </div> <!-- navigator-root -->
+    <div class="wrapper">
+      <div class="main-panel-root">
+        <div panel-name="suite-Command_line_suite" class="panel Command_line_suite">
+          <div class="suite-Command_line_suite-class-failed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="failed.png"/>
+              <span class="class-name">com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithEmailContainingInvalidSpecialCharacters">
+                  </a> <!-- requestOtpWithEmailContainingInvalidSpecialCharacters -->
+                  <span class="method-name">requestOtpWithEmailContainingInvalidSpecialCharacters</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;404&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.requestOtpWithEmailContainingInvalidSpecialCharacters(AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.java:78)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithEmailNotExistingInSystem">
+                  </a> <!-- requestOtpWithEmailNotExistingInSystem -->
+                  <span class="method-name">requestOtpWithEmailNotExistingInSystem</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;404&gt; or is &lt;400&gt;) but was &lt;200&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.requestOtpWithEmailNotExistingInSystem(AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.java:59)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithEmptyEmailAddress">
+                  </a> <!-- requestOtpWithEmptyEmailAddress -->
+                  <span class="method-name">requestOtpWithEmptyEmailAddress</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code &lt;400&gt; but was &lt;404&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.specification.ResponseSpecification$statusCode$0.callCurrent(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:143)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:89)
+	at com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.requestOtpWithEmptyEmailAddress(AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.java:90)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithEmptyEmailParameter">
+                  </a> <!-- requestOtpWithEmptyEmailParameter -->
+                  <span class="method-name">requestOtpWithEmptyEmailParameter</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;404&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.requestOtpWithEmptyEmailParameter(AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.java:47)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithExtremelyLongEmailAddress">
+                  </a> <!-- requestOtpWithExtremelyLongEmailAddress -->
+                  <span class="method-name">requestOtpWithExtremelyLongEmailAddress</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;409&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.requestOtpWithExtremelyLongEmailAddress(AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.java:72)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithMalformedEmailAddress">
+                  </a> <!-- requestOtpWithMalformedEmailAddress -->
+                  <span class="method-name">requestOtpWithMalformedEmailAddress</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code &lt;400&gt; but was &lt;404&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.specification.ResponseSpecification$statusCode$0.callCurrent(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:143)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:89)
+	at com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.requestOtpWithMalformedEmailAddress(AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.java:102)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithMalformedEmailFormat">
+                  </a> <!-- requestOtpWithMalformedEmailFormat -->
+                  <span class="method-name">requestOtpWithMalformedEmailFormat</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;404&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.requestOtpWithMalformedEmailFormat(AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.java:53)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithMissingEmailParameter">
+                  </a> <!-- requestOtpWithMissingEmailParameter -->
+                  <span class="method-name">requestOtpWithMissingEmailParameter</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;500&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.requestOtpWithMissingEmailParameter(AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.java:41)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithNullEmailAddress">
+                  </a> <!-- requestOtpWithNullEmailAddress -->
+                  <span class="method-name">requestOtpWithNullEmailAddress</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code &lt;400&gt; but was &lt;500&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.specification.ResponseSpecification$statusCode$0.callCurrent(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:143)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:89)
+	at com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.requestOtpWithNullEmailAddress(AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.java:96)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithNullEmailParameter">
+                  </a> <!-- requestOtpWithNullEmailParameter -->
+                  <span class="method-name">requestOtpWithNullEmailParameter</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;500&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.requestOtpWithNullEmailParameter(AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.java:65)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithPhoneNumberParameter">
+                  </a> <!-- requestOtpWithPhoneNumberParameter -->
+                  <span class="method-name">requestOtpWithPhoneNumberParameter</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code &lt;400&gt; but was &lt;500&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.specification.ResponseSpecification$statusCode$0.callCurrent(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:143)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:89)
+	at com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.requestOtpWithPhoneNumberParameter(AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.java:84)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithVeryLongEmailAddress">
+                  </a> <!-- requestOtpWithVeryLongEmailAddress -->
+                  <span class="method-name">requestOtpWithVeryLongEmailAddress</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code &lt;400&gt; but was &lt;200&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.specification.ResponseSpecification$statusCode$0.callCurrent(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:143)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:89)
+	at com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.requestOtpWithVeryLongEmailAddress(AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.java:109)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithoutProvidingEmail">
+                  </a> <!-- requestOtpWithoutProvidingEmail -->
+                  <span class="method-name">requestOtpWithoutProvidingEmail</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code &lt;400&gt; but was &lt;500&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.specification.ResponseSpecification$statusCode$0.callCurrent(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:143)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:89)
+	at com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.requestOtpWithoutProvidingEmail(AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1.java:139)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-failed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpDuplicateEmailInQuickSuccession">
+                  </a> <!-- requestOtpDuplicateEmailInQuickSuccession -->
+                  <span class="method-name">requestOtpDuplicateEmailInQuickSuccession</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithMaxLengthEmail">
+                  </a> <!-- requestOtpWithMaxLengthEmail -->
+                  <span class="method-name">requestOtpWithMaxLengthEmail</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithNonExistentEmail">
+                  </a> <!-- requestOtpWithNonExistentEmail -->
+                  <span class="method-name">requestOtpWithNonExistentEmail</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="requestOtpWithValidEmail">
+                  </a> <!-- requestOtpWithValidEmail -->
+                  <span class="method-name">requestOtpWithValidEmail</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="userRequestsOtpWithUnregisteredEmailAddress">
+                  </a> <!-- userRequestsOtpWithUnregisteredEmailAddress -->
+                  <span class="method-name">userRequestsOtpWithUnregisteredEmailAddress</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="userSuccessfullyRequestsOtpAndReceivesHeader">
+                  </a> <!-- userSuccessfullyRequestsOtpAndReceivesHeader -->
+                  <span class="method-name">userSuccessfullyRequestsOtpAndReceivesHeader</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+        </div> <!-- panel Command_line_suite -->
+        <div panel-name="test-xml-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE suite SYSTEM &quot;https://testng.org/testng-1.0.dtd&quot;&gt;
+&lt;suite name=&quot;Command line suite&quot;&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;Command line test&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- Command line test --&gt;
+&lt;/suite&gt; &lt;!-- Command line suite --&gt;
+            </pre>
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="testlist-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Tests for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <ul>
+              <li>
+                <span class="test-name">Command line test (1 class)</span>
+              </li>
+            </ul>
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="group-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Groups for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="times-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Times for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="times-div">
+              <script type="text/javascript">
+suiteTableInitFunctions.push('tableData_Command_line_suite');
+function tableData_Command_line_suite() {
+var data = new google.visualization.DataTable();
+data.addColumn('number', 'Number');
+data.addColumn('string', 'Method');
+data.addColumn('string', 'Class');
+data.addColumn('number', 'Time (ms)');
+data.addRows(19);
+data.setCell(0, 0, 0)
+data.setCell(0, 1, 'requestOtpDuplicateEmailInQuickSuccession')
+data.setCell(0, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(0, 3, 9717);
+data.setCell(1, 0, 1)
+data.setCell(1, 1, 'requestOtpWithEmailNotExistingInSystem')
+data.setCell(1, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(1, 3, 4113);
+data.setCell(2, 0, 2)
+data.setCell(2, 1, 'requestOtpWithNonExistentEmail')
+data.setCell(2, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(2, 3, 3946);
+data.setCell(3, 0, 3)
+data.setCell(3, 1, 'userSuccessfullyRequestsOtpAndReceivesHeader')
+data.setCell(3, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(3, 3, 3753);
+data.setCell(4, 0, 4)
+data.setCell(4, 1, 'userRequestsOtpWithUnregisteredEmailAddress')
+data.setCell(4, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(4, 3, 3500);
+data.setCell(5, 0, 5)
+data.setCell(5, 1, 'requestOtpWithMaxLengthEmail')
+data.setCell(5, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(5, 3, 3454);
+data.setCell(6, 0, 6)
+data.setCell(6, 1, 'requestOtpWithVeryLongEmailAddress')
+data.setCell(6, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(6, 3, 3335);
+data.setCell(7, 0, 7)
+data.setCell(7, 1, 'requestOtpWithValidEmail')
+data.setCell(7, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(7, 3, 3302);
+data.setCell(8, 0, 8)
+data.setCell(8, 1, 'requestOtpWithMalformedEmailFormat')
+data.setCell(8, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(8, 3, 3069);
+data.setCell(9, 0, 9)
+data.setCell(9, 1, 'requestOtpWithMalformedEmailAddress')
+data.setCell(9, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(9, 3, 2920);
+data.setCell(10, 0, 10)
+data.setCell(10, 1, 'requestOtpWithEmailContainingInvalidSpecialCharacters')
+data.setCell(10, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(10, 3, 150);
+data.setCell(11, 0, 11)
+data.setCell(11, 1, 'requestOtpWithEmptyEmailAddress')
+data.setCell(11, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(11, 3, 53);
+data.setCell(12, 0, 12)
+data.setCell(12, 1, 'requestOtpWithExtremelyLongEmailAddress')
+data.setCell(12, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(12, 3, 51);
+data.setCell(13, 0, 13)
+data.setCell(13, 1, 'requestOtpWithoutProvidingEmail')
+data.setCell(13, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(13, 3, 38);
+data.setCell(14, 0, 14)
+data.setCell(14, 1, 'requestOtpWithNullEmailAddress')
+data.setCell(14, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(14, 3, 34);
+data.setCell(15, 0, 15)
+data.setCell(15, 1, 'requestOtpWithEmptyEmailParameter')
+data.setCell(15, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(15, 3, 33);
+data.setCell(16, 0, 16)
+data.setCell(16, 1, 'requestOtpWithMissingEmailParameter')
+data.setCell(16, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(16, 3, 32);
+data.setCell(17, 0, 17)
+data.setCell(17, 1, 'requestOtpWithNullEmailParameter')
+data.setCell(17, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(17, 3, 29);
+data.setCell(18, 0, 18)
+data.setCell(18, 1, 'requestOtpWithPhoneNumberParameter')
+data.setCell(18, 2, 'com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1')
+data.setCell(18, 3, 13);
+window.suiteTableData['Command_line_suite']= { tableData: data, tableDiv: 'times-div-Command_line_suite'}
+return data;
+}
+              </script>
+              <span class="suite-total-time">Total running time: 41 seconds</span>
+              <div id="times-div-Command_line_suite">
+              </div> <!-- times-div-Command_line_suite -->
+            </div> <!-- times-div -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="reporter-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Reporter output for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="ignored-methods-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">0 ignored methods</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="chronological-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Methods in chronological order</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.company.aiqa.generated.AutomationTest_6a2e08e88139fb601f367a57a5c675b3b5ab9fa1</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">setUpClass</span>
+                <span class="method-start">0 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">requestOtpDuplicateEmailInQuickSuccession</span>
+                <span class="method-start">17 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">requestOtpWithEmailContainingInvalidSpecialCharacters</span>
+                <span class="method-start">9741 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">requestOtpWithEmailNotExistingInSystem</span>
+                <span class="method-start">9900 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">requestOtpWithEmptyEmailAddress</span>
+                <span class="method-start">14027 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">requestOtpWithEmptyEmailParameter</span>
+                <span class="method-start">14080 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">requestOtpWithExtremelyLongEmailAddress</span>
+                <span class="method-start">14129 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">requestOtpWithMalformedEmailAddress</span>
+                <span class="method-start">14180 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">requestOtpWithMalformedEmailFormat</span>
+                <span class="method-start">17100 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">requestOtpWithMaxLengthEmail</span>
+                <span class="method-start">20170 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">requestOtpWithMissingEmailParameter</span>
+                <span class="method-start">23624 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">requestOtpWithNonExistentEmail</span>
+                <span class="method-start">23656 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">requestOtpWithNullEmailAddress</span>
+                <span class="method-start">27604 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">requestOtpWithNullEmailParameter</span>
+                <span class="method-start">27638 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">requestOtpWithPhoneNumberParameter</span>
+                <span class="method-start">27669 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">requestOtpWithValidEmail</span>
+                <span class="method-start">27682 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">requestOtpWithVeryLongEmailAddress</span>
+                <span class="method-start">30984 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">requestOtpWithoutProvidingEmail</span>
+                <span class="method-start">34319 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">userRequestsOtpWithUnregisteredEmailAddress</span>
+                <span class="method-start">34357 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">userSuccessfullyRequestsOtpAndReceivesHeader</span>
+                <span class="method-start">37857 ms</span>
+              </div> <!-- test-method -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+      </div> <!-- main-panel-root -->
+    </div> <!-- wrapper -->
+  </body>
+<script type="text/javascript" src="testng-reports2.js"></script>
+</html>

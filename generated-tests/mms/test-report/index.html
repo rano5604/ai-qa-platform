@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+  <meta charset='utf-8'>
+  <title>TestNG reports</title>
+
+    <link type="text/css" href="testng-reports1.css" rel="stylesheet" id="ultra" />
+    <link type="text/css" href="testng-reports.css" rel="stylesheet" id="retro" disabled="false"/>
+    <script type="text/javascript" src="jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="testng-reports.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['table']});
+      google.setOnLoadCallback(drawTable);
+      var suiteTableInitFunctions = new Array();
+      var suiteTableData = new Array();
+    </script>
+    <!--
+      <script type="text/javascript" src="jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+     -->
+  </head>
+
+  <body>    <div class="top-banner-root">
+      <span class="top-banner-title-font">Test results</span>
+      <button id="button" class="button">Switch Retro Theme</button> <!-- button -->
+      <br/>
+      <span class="top-banner-font-1">1 suite, 18 failed tests</span>
+    </div> <!-- top-banner-root -->
+    <div class="navigator-root">
+      <div class="navigator-suite-header">
+        <span>All suites</span>
+        <a href="#" title="Collapse/expand all the suites" class="collapse-all-link">
+          <img src="collapseall.gif" class="collapse-all-icon">
+          </img> <!-- collapse-all-icon -->
+        </a> <!-- collapse-all-link -->
+      </div> <!-- navigator-suite-header -->
+      <div class="suite">
+        <div class="rounded-window">
+          <div class="suite-header light-rounded-window-top">
+            <a href="#" panel-name="suite-Command_line_suite" class="navigator-link">
+              <span class="suite-name border-failed">Command line suite</span>
+            </a> <!-- navigator-link -->
+          </div> <!-- suite-header light-rounded-window-top -->
+          <div class="navigator-suite-content">
+            <div class="suite-section-title">
+              <span>Info</span>
+            </div> <!-- suite-section-title -->
+            <div class="suite-section-content">
+              <ul>
+                <li>
+                  <a href="#" panel-name="test-xml-Command_line_suite" class="navigator-link ">
+                    <span>[unset file name]</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="testlist-Command_line_suite" class="navigator-link ">
+                    <span class="test-stats">1 test</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="group-Command_line_suite" class="navigator-link ">
+                    <span>0 groups</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="times-Command_line_suite" class="navigator-link ">
+                    <span>Times</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="reporter-Command_line_suite" class="navigator-link ">
+                    <span>Reporter output</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="ignored-methods-Command_line_suite" class="navigator-link ">
+                    <span>Ignored methods</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="chronological-Command_line_suite" class="navigator-link ">
+                    <span>Chronological view</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+              </ul>
+            </div> <!-- suite-section-content -->
+            <div class="result-section">
+              <div class="suite-section-title">
+                <span>Results</span>
+              </div> <!-- suite-section-title -->
+              <div class="suite-section-content">
+                <ul>
+                  <li>
+                    <span class="method-stats">25 methods, 18 failed,   7 passed</span>
+                  </li>
+                  <li>
+                    <span class="method-list-title failed">Failed methods</span>
+                    <span class="show-or-hide-methods failed">
+                      <a href="#" panel-name="suite-Command_line_suite" class="hide-methods failed suite-Command_line_suite"> (hide)</a> <!-- hide-methods failed suite-Command_line_suite -->
+                      <a href="#" panel-name="suite-Command_line_suite" class="show-methods failed suite-Command_line_suite"> (show)</a> <!-- show-methods failed suite-Command_line_suite -->
+                    </span>
+                    <div class="method-list-content failed suite-Command_line_suite">
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="addNewPrimarySettlementBankAccountToMerchant">addNewPrimarySettlementBankAccountToMerchant</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="approveNewlyOnboardedPendingMerchant">approveNewlyOnboardedPendingMerchant</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="assignPaymentCapabilityToExistingMerchant">assignPaymentCapabilityToExistingMerchant</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="createNewStoreUnderExistingMerchant">createNewStoreUnderExistingMerchant</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="designateExistingSettlementAccountAsPrimaryAccount">designateExistingSettlementAccountAsPrimaryAccount</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="generateStaticEmvQrCodeForActiveMerchant">generateStaticEmvQrCodeForActiveMerchant</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="registerNewPosTerminalForExistingStoreAndMerchant">registerNewPosTerminalForExistingStoreAndMerchant</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="rejectAddingAFeeTierWhenTierBoundsAreMissing">rejectAddingAFeeTierWhenTierBoundsAreMissing</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="rejectAssigningCapabilityToMerchantWhenRequestBodyIsMissingCapabilityId">rejectAssigningCapabilityToMerchantWhenRequestBodyIsMissingCapabilityId</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="rejectDocumentDeletionWhenDocumentIdBelongsToDifferentMerchant">rejectDocumentDeletionWhenDocumentIdBelongsToDifferentMerchant</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="rejectFeeConfigurationCreationWhenCapabilityCodeIsMissing">rejectFeeConfigurationCreationWhenCapabilityCodeIsMissing</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="rejectFeeConfigurationCreationWhenEffectiveFromDateIsMissing">rejectFeeConfigurationCreationWhenEffectiveFromDateIsMissing</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="rejectFeeConfigurationCreationWhenFeeTypeIsMissing">rejectFeeConfigurationCreationWhenFeeTypeIsMissing</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="rejectMerchantOnboardingWhenRegistrationNumberAlreadyExists">rejectMerchantOnboardingWhenRegistrationNumberAlreadyExists</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="rejectQrCodeGenerationWhenRequestBodyIsMissingMandatoryFields">rejectQrCodeGenerationWhenRequestBodyIsMissingMandatoryFields</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="rejectTerminalRegistrationWhenMandatoryStoreIdOrMerchantIdIsMissing">rejectTerminalRegistrationWhenMandatoryStoreIdOrMerchantIdIsMissing</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="rejectTerminalRegistrationWhenSerialNumberIsAlreadyRegistered">rejectTerminalRegistrationWhenSerialNumberIsAlreadyRegistered</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="successfullyOnboardNewMerchantWithStandardBusinessDetails">successfullyOnboardNewMerchantWithStandardBusinessDetails</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                    </div> <!-- method-list-content failed suite-Command_line_suite -->
+                  </li>
+                  <li>
+                    <span class="method-list-title passed">Passed methods</span>
+                    <span class="show-or-hide-methods passed">
+                      <a href="#" panel-name="suite-Command_line_suite" class="hide-methods passed suite-Command_line_suite"> (hide)</a> <!-- hide-methods passed suite-Command_line_suite -->
+                      <a href="#" panel-name="suite-Command_line_suite" class="show-methods passed suite-Command_line_suite"> (show)</a> <!-- show-methods passed suite-Command_line_suite -->
+                    </span>
+                    <div class="method-list-content passed suite-Command_line_suite">
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="addPricingTierToExistingFeeConfiguration">addPricingTierToExistingFeeConfiguration</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="createCategoryLevelFlatFeeConfigurationWithDefaultCurrency">createCategoryLevelFlatFeeConfigurationWithDefaultCurrency</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="createNewPaymentCapabilityTypeSuccessfully">createNewPaymentCapabilityTypeSuccessfully</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="rejectCreationOfPaymentCapabilityWithCodeExceedingMaxLength">rejectCreationOfPaymentCapabilityWithCodeExceedingMaxLength</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="rejectDocumentUploadForNonExistentMerchant">rejectDocumentUploadForNonExistentMerchant</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="rejectMerchantOnboardingWhenMerchantCategoryCodeExceedsAllowedLength">rejectMerchantOnboardingWhenMerchantCategoryCodeExceedsAllowedLength</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_mms" class="method navigator-link" hash-for-method="rejectMerchantOnboardingWhenRequiredFieldsAreMissing">rejectMerchantOnboardingWhenRequiredFieldsAreMissing</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                    </div> <!-- method-list-content passed suite-Command_line_suite -->
+                  </li>
+                </ul>
+              </div> <!-- suite-section-content -->
+            </div> <!-- result-section -->
+          </div> <!-- navigator-suite-content -->
+        </div> <!-- rounded-window -->
+      </div> <!-- suite -->
+    </div> <!-- navigator-root -->
+    <div class="wrapper">
+      <div class="main-panel-root">
+        <div panel-name="suite-Command_line_suite" class="panel Command_line_suite">
+          <div class="suite-Command_line_suite-class-failed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="failed.png"/>
+              <span class="class-name">com.company.aiqa.generated.AutomationTest_mms</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="addNewPrimarySettlementBankAccountToMerchant">
+                  </a> <!-- addNewPrimarySettlementBankAccountToMerchant -->
+                  <span class="method-name">addNewPrimarySettlementBankAccountToMerchant</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_mms.addNewPrimarySettlementBankAccountToMerchant(AutomationTest_mms.java:263)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="approveNewlyOnboardedPendingMerchant">
+                  </a> <!-- approveNewlyOnboardedPendingMerchant -->
+                  <span class="method-name">approveNewlyOnboardedPendingMerchant</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_mms.approveNewlyOnboardedPendingMerchant(AutomationTest_mms.java:180)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="assignPaymentCapabilityToExistingMerchant">
+                  </a> <!-- assignPaymentCapabilityToExistingMerchant -->
+                  <span class="method-name">assignPaymentCapabilityToExistingMerchant</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code &lt;201&gt; but was &lt;400&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.specification.ResponseSpecification$statusCode$0.callCurrent(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:143)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:89)
+	at com.company.aiqa.generated.AutomationTest_mms.assignPaymentCapabilityToExistingMerchant(AutomationTest_mms.java:108)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="createNewStoreUnderExistingMerchant">
+                  </a> <!-- createNewStoreUnderExistingMerchant -->
+                  <span class="method-name">createNewStoreUnderExistingMerchant</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_mms.createNewStoreUnderExistingMerchant(AutomationTest_mms.java:228)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="designateExistingSettlementAccountAsPrimaryAccount">
+                  </a> <!-- designateExistingSettlementAccountAsPrimaryAccount -->
+                  <span class="method-name">designateExistingSettlementAccountAsPrimaryAccount</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_mms.designateExistingSettlementAccountAsPrimaryAccount(AutomationTest_mms.java:334)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="generateStaticEmvQrCodeForActiveMerchant">
+                  </a> <!-- generateStaticEmvQrCodeForActiveMerchant -->
+                  <span class="method-name">generateStaticEmvQrCodeForActiveMerchant</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_mms.generateStaticEmvQrCodeForActiveMerchant(AutomationTest_mms.java:201)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="registerNewPosTerminalForExistingStoreAndMerchant">
+                  </a> <!-- registerNewPosTerminalForExistingStoreAndMerchant -->
+                  <span class="method-name">registerNewPosTerminalForExistingStoreAndMerchant</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_mms.registerNewPosTerminalForExistingStoreAndMerchant(AutomationTest_mms.java:296)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="rejectAddingAFeeTierWhenTierBoundsAreMissing">
+                  </a> <!-- rejectAddingAFeeTierWhenTierBoundsAreMissing -->
+                  <span class="method-name">rejectAddingAFeeTierWhenTierBoundsAreMissing</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code &lt;400&gt; but was &lt;201&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.specification.ResponseSpecification$statusCode$0.callCurrent(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:143)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:89)
+	at com.company.aiqa.generated.AutomationTest_mms.rejectAddingAFeeTierWhenTierBoundsAreMissing(AutomationTest_mms.java:419)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="rejectAssigningCapabilityToMerchantWhenRequestBodyIsMissingCapabilityId">
+                  </a> <!-- rejectAssigningCapabilityToMerchantWhenRequestBodyIsMissingCapabilityId -->
+                  <span class="method-name">rejectAssigningCapabilityToMerchantWhenRequestBodyIsMissingCapabilityId</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_mms.rejectAssigningCapabilityToMerchantWhenRequestBodyIsMissingCapabilityId(AutomationTest_mms.java:447)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="rejectDocumentDeletionWhenDocumentIdBelongsToDifferentMerchant">
+                  </a> <!-- rejectDocumentDeletionWhenDocumentIdBelongsToDifferentMerchant -->
+                  <span class="method-name">rejectDocumentDeletionWhenDocumentIdBelongsToDifferentMerchant</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_mms.rejectDocumentDeletionWhenDocumentIdBelongsToDifferentMerchant(AutomationTest_mms.java:530)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="rejectFeeConfigurationCreationWhenCapabilityCodeIsMissing">
+                  </a> <!-- rejectFeeConfigurationCreationWhenCapabilityCodeIsMissing -->
+                  <span class="method-name">rejectFeeConfigurationCreationWhenCapabilityCodeIsMissing</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code &lt;400&gt; but was &lt;404&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.specification.ResponseSpecification$statusCode$0.callCurrent(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:143)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:89)
+	at com.company.aiqa.generated.AutomationTest_mms.rejectFeeConfigurationCreationWhenCapabilityCodeIsMissing(AutomationTest_mms.java:367)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="rejectFeeConfigurationCreationWhenEffectiveFromDateIsMissing">
+                  </a> <!-- rejectFeeConfigurationCreationWhenEffectiveFromDateIsMissing -->
+                  <span class="method-name">rejectFeeConfigurationCreationWhenEffectiveFromDateIsMissing</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code &lt;400&gt; but was &lt;500&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.specification.ResponseSpecification$statusCode$0.callCurrent(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:143)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:89)
+	at com.company.aiqa.generated.AutomationTest_mms.rejectFeeConfigurationCreationWhenEffectiveFromDateIsMissing(AutomationTest_mms.java:395)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="rejectFeeConfigurationCreationWhenFeeTypeIsMissing">
+                  </a> <!-- rejectFeeConfigurationCreationWhenFeeTypeIsMissing -->
+                  <span class="method-name">rejectFeeConfigurationCreationWhenFeeTypeIsMissing</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code &lt;400&gt; but was &lt;201&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.specification.ResponseSpecification$statusCode$0.callCurrent(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:143)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:89)
+	at com.company.aiqa.generated.AutomationTest_mms.rejectFeeConfigurationCreationWhenFeeTypeIsMissing(AutomationTest_mms.java:381)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="rejectMerchantOnboardingWhenRegistrationNumberAlreadyExists">
+                  </a> <!-- rejectMerchantOnboardingWhenRegistrationNumberAlreadyExists -->
+                  <span class="method-name">rejectMerchantOnboardingWhenRegistrationNumberAlreadyExists</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_mms.rejectMerchantOnboardingWhenRegistrationNumberAlreadyExists(AutomationTest_mms.java:472)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="rejectQrCodeGenerationWhenRequestBodyIsMissingMandatoryFields">
+                  </a> <!-- rejectQrCodeGenerationWhenRequestBodyIsMissingMandatoryFields -->
+                  <span class="method-name">rejectQrCodeGenerationWhenRequestBodyIsMissingMandatoryFields</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;500&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_mms.rejectQrCodeGenerationWhenRequestBodyIsMissingMandatoryFields(AutomationTest_mms.java:564)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="rejectTerminalRegistrationWhenMandatoryStoreIdOrMerchantIdIsMissing">
+                  </a> <!-- rejectTerminalRegistrationWhenMandatoryStoreIdOrMerchantIdIsMissing -->
+                  <span class="method-name">rejectTerminalRegistrationWhenMandatoryStoreIdOrMerchantIdIsMissing</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;500&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_mms.rejectTerminalRegistrationWhenMandatoryStoreIdOrMerchantIdIsMissing(AutomationTest_mms.java:617)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="rejectTerminalRegistrationWhenSerialNumberIsAlreadyRegistered">
+                  </a> <!-- rejectTerminalRegistrationWhenSerialNumberIsAlreadyRegistered -->
+                  <span class="method-name">rejectTerminalRegistrationWhenSerialNumberIsAlreadyRegistered</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_mms.rejectTerminalRegistrationWhenSerialNumberIsAlreadyRegistered(AutomationTest_mms.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="successfullyOnboardNewMerchantWithStandardBusinessDetails">
+                  </a> <!-- successfullyOnboardNewMerchantWithStandardBusinessDetails -->
+                  <span class="method-name">successfullyOnboardNewMerchantWithStandardBusinessDetails</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code &lt;201&gt; but was &lt;400&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.specification.ResponseSpecification$statusCode$0.callCurrent(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:143)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:89)
+	at com.company.aiqa.generated.AutomationTest_mms.successfullyOnboardNewMerchantWithStandardBusinessDetails(AutomationTest_mms.java:154)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-failed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.company.aiqa.generated.AutomationTest_mms</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="addPricingTierToExistingFeeConfiguration">
+                  </a> <!-- addPricingTierToExistingFeeConfiguration -->
+                  <span class="method-name">addPricingTierToExistingFeeConfiguration</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="createCategoryLevelFlatFeeConfigurationWithDefaultCurrency">
+                  </a> <!-- createCategoryLevelFlatFeeConfigurationWithDefaultCurrency -->
+                  <span class="method-name">createCategoryLevelFlatFeeConfigurationWithDefaultCurrency</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="createNewPaymentCapabilityTypeSuccessfully">
+                  </a> <!-- createNewPaymentCapabilityTypeSuccessfully -->
+                  <span class="method-name">createNewPaymentCapabilityTypeSuccessfully</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="rejectCreationOfPaymentCapabilityWithCodeExceedingMaxLength">
+                  </a> <!-- rejectCreationOfPaymentCapabilityWithCodeExceedingMaxLength -->
+                  <span class="method-name">rejectCreationOfPaymentCapabilityWithCodeExceedingMaxLength</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="rejectDocumentUploadForNonExistentMerchant">
+                  </a> <!-- rejectDocumentUploadForNonExistentMerchant -->
+                  <span class="method-name">rejectDocumentUploadForNonExistentMerchant</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="rejectMerchantOnboardingWhenMerchantCategoryCodeExceedsAllowedLength">
+                  </a> <!-- rejectMerchantOnboardingWhenMerchantCategoryCodeExceedsAllowedLength -->
+                  <span class="method-name">rejectMerchantOnboardingWhenMerchantCategoryCodeExceedsAllowedLength</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="rejectMerchantOnboardingWhenRequiredFieldsAreMissing">
+                  </a> <!-- rejectMerchantOnboardingWhenRequiredFieldsAreMissing -->
+                  <span class="method-name">rejectMerchantOnboardingWhenRequiredFieldsAreMissing</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+        </div> <!-- panel Command_line_suite -->
+        <div panel-name="test-xml-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE suite SYSTEM &quot;https://testng.org/testng-1.0.dtd&quot;&gt;
+&lt;suite name=&quot;Command line suite&quot;&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;Command line test&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;com.company.aiqa.generated.AutomationTest_mms&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- Command line test --&gt;
+&lt;/suite&gt; &lt;!-- Command line suite --&gt;
+            </pre>
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="testlist-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Tests for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <ul>
+              <li>
+                <span class="test-name">Command line test (1 class)</span>
+              </li>
+            </ul>
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="group-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Groups for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="times-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Times for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="times-div">
+              <script type="text/javascript">
+suiteTableInitFunctions.push('tableData_Command_line_suite');
+function tableData_Command_line_suite() {
+var data = new google.visualization.DataTable();
+data.addColumn('number', 'Number');
+data.addColumn('string', 'Method');
+data.addColumn('string', 'Class');
+data.addColumn('number', 'Time (ms)');
+data.addRows(25);
+data.setCell(0, 0, 0)
+data.setCell(0, 1, 'addPricingTierToExistingFeeConfiguration')
+data.setCell(0, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(0, 3, 2422);
+data.setCell(1, 0, 1)
+data.setCell(1, 1, 'rejectAddingAFeeTierWhenTierBoundsAreMissing')
+data.setCell(1, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(1, 3, 2042);
+data.setCell(2, 0, 2)
+data.setCell(2, 1, 'rejectAssigningCapabilityToMerchantWhenRequestBodyIsMissingCapabilityId')
+data.setCell(2, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(2, 3, 1909);
+data.setCell(3, 0, 3)
+data.setCell(3, 1, 'addNewPrimarySettlementBankAccountToMerchant')
+data.setCell(3, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(3, 3, 1470);
+data.setCell(4, 0, 4)
+data.setCell(4, 1, 'rejectDocumentUploadForNonExistentMerchant')
+data.setCell(4, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(4, 3, 919);
+data.setCell(5, 0, 5)
+data.setCell(5, 1, 'createNewPaymentCapabilityTypeSuccessfully')
+data.setCell(5, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(5, 3, 743);
+data.setCell(6, 0, 6)
+data.setCell(6, 1, 'createCategoryLevelFlatFeeConfigurationWithDefaultCurrency')
+data.setCell(6, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(6, 3, 700);
+data.setCell(7, 0, 7)
+data.setCell(7, 1, 'rejectFeeConfigurationCreationWhenCapabilityCodeIsMissing')
+data.setCell(7, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(7, 3, 620);
+data.setCell(8, 0, 8)
+data.setCell(8, 1, 'approveNewlyOnboardedPendingMerchant')
+data.setCell(8, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(8, 3, 601);
+data.setCell(9, 0, 9)
+data.setCell(9, 1, 'rejectTerminalRegistrationWhenMandatoryStoreIdOrMerchantIdIsMissing')
+data.setCell(9, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(9, 3, 600);
+data.setCell(10, 0, 10)
+data.setCell(10, 1, 'rejectMerchantOnboardingWhenRegistrationNumberAlreadyExists')
+data.setCell(10, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(10, 3, 586);
+data.setCell(11, 0, 11)
+data.setCell(11, 1, 'rejectMerchantOnboardingWhenRequiredFieldsAreMissing')
+data.setCell(11, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(11, 3, 576);
+data.setCell(12, 0, 12)
+data.setCell(12, 1, 'rejectDocumentDeletionWhenDocumentIdBelongsToDifferentMerchant')
+data.setCell(12, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(12, 3, 576);
+data.setCell(13, 0, 13)
+data.setCell(13, 1, 'successfullyOnboardNewMerchantWithStandardBusinessDetails')
+data.setCell(13, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(13, 3, 550);
+data.setCell(14, 0, 14)
+data.setCell(14, 1, 'generateStaticEmvQrCodeForActiveMerchant')
+data.setCell(14, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(14, 3, 549);
+data.setCell(15, 0, 15)
+data.setCell(15, 1, 'createNewStoreUnderExistingMerchant')
+data.setCell(15, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(15, 3, 509);
+data.setCell(16, 0, 16)
+data.setCell(16, 1, 'rejectQrCodeGenerationWhenRequestBodyIsMissingMandatoryFields')
+data.setCell(16, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(16, 3, 487);
+data.setCell(17, 0, 17)
+data.setCell(17, 1, 'rejectFeeConfigurationCreationWhenEffectiveFromDateIsMissing')
+data.setCell(17, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(17, 3, 476);
+data.setCell(18, 0, 18)
+data.setCell(18, 1, 'rejectCreationOfPaymentCapabilityWithCodeExceedingMaxLength')
+data.setCell(18, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(18, 3, 475);
+data.setCell(19, 0, 19)
+data.setCell(19, 1, 'designateExistingSettlementAccountAsPrimaryAccount')
+data.setCell(19, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(19, 3, 468);
+data.setCell(20, 0, 20)
+data.setCell(20, 1, 'registerNewPosTerminalForExistingStoreAndMerchant')
+data.setCell(20, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(20, 3, 467);
+data.setCell(21, 0, 21)
+data.setCell(21, 1, 'rejectFeeConfigurationCreationWhenFeeTypeIsMissing')
+data.setCell(21, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(21, 3, 456);
+data.setCell(22, 0, 22)
+data.setCell(22, 1, 'rejectTerminalRegistrationWhenSerialNumberIsAlreadyRegistered')
+data.setCell(22, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(22, 3, 453);
+data.setCell(23, 0, 23)
+data.setCell(23, 1, 'assignPaymentCapabilityToExistingMerchant')
+data.setCell(23, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(23, 3, 451);
+data.setCell(24, 0, 24)
+data.setCell(24, 1, 'rejectMerchantOnboardingWhenMerchantCategoryCodeExceedsAllowedLength')
+data.setCell(24, 2, 'com.company.aiqa.generated.AutomationTest_mms')
+data.setCell(24, 3, 434);
+window.suiteTableData['Command_line_suite']= { tableData: data, tableDiv: 'times-div-Command_line_suite'}
+return data;
+}
+              </script>
+              <span class="suite-total-time">Total running time: 19 seconds</span>
+              <div id="times-div-Command_line_suite">
+              </div> <!-- times-div-Command_line_suite -->
+            </div> <!-- times-div -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="reporter-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Reporter output for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="ignored-methods-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">0 ignored methods</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="chronological-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Methods in chronological order</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.company.aiqa.generated.AutomationTest_mms</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">setup</span>
+                <span class="method-start">0 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">addNewPrimarySettlementBankAccountToMerchant</span>
+                <span class="method-start">21 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">addPricingTierToExistingFeeConfiguration</span>
+                <span class="method-start">1492 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">approveNewlyOnboardedPendingMerchant</span>
+                <span class="method-start">3914 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">assignPaymentCapabilityToExistingMerchant</span>
+                <span class="method-start">4515 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">createCategoryLevelFlatFeeConfigurationWithDefaultCurrency</span>
+                <span class="method-start">4966 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">createNewPaymentCapabilityTypeSuccessfully</span>
+                <span class="method-start">5666 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">createNewStoreUnderExistingMerchant</span>
+                <span class="method-start">6409 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">designateExistingSettlementAccountAsPrimaryAccount</span>
+                <span class="method-start">6918 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">generateStaticEmvQrCodeForActiveMerchant</span>
+                <span class="method-start">7386 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">registerNewPosTerminalForExistingStoreAndMerchant</span>
+                <span class="method-start">7935 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">rejectAddingAFeeTierWhenTierBoundsAreMissing</span>
+                <span class="method-start">8403 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">rejectAssigningCapabilityToMerchantWhenRequestBodyIsMissingCapabilityId</span>
+                <span class="method-start">10445 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">rejectCreationOfPaymentCapabilityWithCodeExceedingMaxLength</span>
+                <span class="method-start">12354 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">rejectDocumentDeletionWhenDocumentIdBelongsToDifferentMerchant</span>
+                <span class="method-start">12829 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">rejectDocumentUploadForNonExistentMerchant</span>
+                <span class="method-start">13407 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">rejectFeeConfigurationCreationWhenCapabilityCodeIsMissing</span>
+                <span class="method-start">14326 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">rejectFeeConfigurationCreationWhenEffectiveFromDateIsMissing</span>
+                <span class="method-start">14947 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">rejectFeeConfigurationCreationWhenFeeTypeIsMissing</span>
+                <span class="method-start">15423 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">rejectMerchantOnboardingWhenMerchantCategoryCodeExceedsAllowedLength</span>
+                <span class="method-start">15880 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">rejectMerchantOnboardingWhenRegistrationNumberAlreadyExists</span>
+                <span class="method-start">16314 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">rejectMerchantOnboardingWhenRequiredFieldsAreMissing</span>
+                <span class="method-start">16900 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">rejectQrCodeGenerationWhenRequestBodyIsMissingMandatoryFields</span>
+                <span class="method-start">17476 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">rejectTerminalRegistrationWhenMandatoryStoreIdOrMerchantIdIsMissing</span>
+                <span class="method-start">17967 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">rejectTerminalRegistrationWhenSerialNumberIsAlreadyRegistered</span>
+                <span class="method-start">18568 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">successfullyOnboardNewMerchantWithStandardBusinessDetails</span>
+                <span class="method-start">19021 ms</span>
+              </div> <!-- test-method -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+      </div> <!-- main-panel-root -->
+    </div> <!-- wrapper -->
+  </body>
+<script type="text/javascript" src="testng-reports2.js"></script>
+</html>

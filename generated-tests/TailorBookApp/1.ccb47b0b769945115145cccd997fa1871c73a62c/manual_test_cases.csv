@@ -1,0 +1,92 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Attempt to upload a photo with both userId and workerId provided simultaneously,Photo Management,Negative,High,A valid authenticated user session is established,"1. Send a POST request to /api/v1/photos/upload with a multipart file payload containing both userId and workerId parameters set to valid numeric IDs
+
+Test Data: multipartFile: [binary image data], userId: 123, workerId: 456","The system returns an HTTP 400 Bad Request status code with an error message indicating that a photo can only be associated with either a user or a worker, not both. The photo is not stored.",TC-001
+Attempt to update an existing photo to have both userId and workerId simultaneously,Photo Management,Negative,High,An existing photo record exists in the system associated with either a user or a worker,"1. Send a PUT request to /api/v1/photos/{photoId} with a multipart file payload containing both userId and workerId parameters set to valid numeric IDs
+
+Test Data: multipartFile: [binary image data], userId: 123, workerId: 789","The system returns an HTTP 400 Bad Request status code with an error message indicating that a photo can only be associated with either a user or a worker, not both. The existing photo remains unchanged.",TC-002
+Authenticate user with valid username and password credentials,User Authentication,Configuration,High,An active user account with username 'admin' and password 'admin' exists in the system.,"1. Send a POST request to /api/auth/signin with the payload provided in testData.
+
+Test Data: {
+  ""username"": ""admin"",
+  ""password"": ""admin""
+}","HTTP 200 OK response with an Authorization header formatted as 'Bearer <jwt-token>' and a response body containing user details including id, username 'admin', email, and role list.",TC-003
+Create a new geographical area with a unique name,Area Management,Configuration,High,The user is authenticated with an administrator account assigned the ROLE_ADMIN role.,"1. Send a POST request to /api/areas with the payload provided in testData.
+
+Test Data: {
+  ""name"": ""Downtown Dhaka""
+}","HTTP 200 OK response containing a JSON body with status 'success', message 'Area created successfully', and the created Area entity containing a generated ID and name 'Downtown Dhaka'.",TC-004
+Add a new shop associated with an existing area ID,Shop Management,Configuration,High,"An area with ID 1 exists in the system, and the user is authenticated with administrative privileges.","1. Send a POST request to /api/areas/1/shops with the payload in testData.
+
+Test Data: {
+  ""shopName"": ""Master Tailors"",
+  ""shopPhone"": ""+8801700000000"",
+  ""geoLocation"": ""23.8103,90.4125"",
+  ""ownerName"": ""John Doe"",
+  ""username"": ""mastertailor"",
+  ""email"": ""shop@example.com"",
+  ""address"": ""123 Main St"",
+  ""areaId"": 1,
+  ""status"": true
+}","HTTP 201 Created response containing the created Shop entity with a generated ID, shopName 'Master Tailors', and areaId 1.",TC-005
+Add a worker to an existing shop,Worker Management,Configuration,High,"A shop with ID 1 exists in the system, and the authenticated user has ownership permissions for shop ID 1.","1. Send a POST request to /api/shops/1/workers with the payload provided in testData.
+
+Test Data: {
+  ""name"": ""Worker Joe"",
+  ""phone"": ""+8801800000000"",
+  ""address"": ""456 Side St"",
+  ""shopId"": 1,
+  ""status"": true
+}","HTTP 201 Created response containing a JSON body with status 'success', message 'Workers added successfully', and the created Worker data object matching shopId 1.",TC-006
+Successfully add a new shop to an existing area,Shop Management,Configuration,High,An Area with ID 10 exists in the database. Phone number '01711112233' is not registered in the system.,"1. Send a POST request to /api/v1/areas/10/shops with the payload provided in testData.
+2. Observe the HTTP response code and response body.
+
+Test Data: {
+  ""shopName"": ""Royal Tailors"",
+  ""shopPhone"": ""01711112233"",
+  ""address"": ""123 Main Street"",
+  ""geoLocation"": ""23.8103,90.4125"",
+  ""ownerName"": ""John Doe"",
+  ""username"": ""01711112233""
+}","HTTP 200 OK (or 201 Created) response returning the shop object with assigned shop ID, areaId set to 10, and owner user created with userType 'owner'.",TC-007
+Set account PIN for customer after registration,User Security & Authentication,Configuration,High,A user with phone number '01811112233' exists with userType 'customer'.,"1. Send a POST request to /api/v1/auth/set-pin with the payload provided in testData.
+2. Observe the HTTP response status and body.
+
+Test Data: {
+  ""phoneNumber"": ""01811112233"",
+  ""pin"": ""4321""
+}",HTTP 200 OK response with boolean result true. User password is stored encoded and role 'ROLE_CUSTOMER' is assigned.,TC-008
+Add a new worker to a shop as shop owner,Worker Management,Configuration,High,Shop with ID 5 exists and belongs to the authenticated user.,"1. Authenticate as the owner of Shop ID 5.
+2. Send a POST request to /api/v1/shops/5/workers with the worker JSON payload in testData.
+3. Observe the response.
+
+Test Data: {
+  ""name"": ""Alex Mercer"",
+  ""phone"": ""01911112233"",
+  ""address"": ""456 Worker Ave""
+}",HTTP 201 Created or 200 OK response containing the created worker object with shopId set to 5 and assigned worker ID.,TC-009
+Upload a profile photo associated with a User ID,Photo Storage,Configuration,Medium,User with ID 101 exists in the system. No workerId parameter is provided.,"1. Prepare a multipart/form-data POST request to /api/v1/photos.
+2. Include an image file, form param 'userId'=101, and leave 'workerId' blank as described in testData.
+3. Send the request and verify the outcome.
+
+Test Data: Form-data fields:
+- file: sample_profile.jpg (image/jpeg, binary content)
+- userId: 101","HTTP 200 OK response returning saved Photo entity details with userId equal to 101, matching content type, and binary photo data persisted.",TC-010
+Verify application binds to and listens on configured custom port 8083,Application Server Port Configuration,Configuration,High,Application application.properties contains server.port=8083.,"1. Deploy and start the application. 2. Monitor startup logs for server listening port. 3. Send a GET request to http://localhost:8083/api-docs.
+
+Test Data: server.port=8083",Application successfully starts and binds to port 8083. HTTP 200 OK is returned from http://localhost:8083/api-docs.,TC-011
+Verify application connects to PostgreSQL database using configured credentials and dialect,PostgreSQL Database Connection Configuration,Configuration,High,"PostgreSQL instance running at localhost:5432 with database 'tailorbook', username 'postgres', and password 'noq@dm1n'.","1. Deploy the application with configured spring.datasource properties. 2. Start the application. 3. Execute any database read/write operation.
+
+Test Data: spring.datasource.url=jdbc:postgresql://localhost:5432/tailorbook, spring.datasource.username=postgres, spring.datasource.password=noq@dm1n, spring.datasource.driver-class-name=org.postgresql.Driver",Application connects to PostgreSQL database successfully without connection or authentication errors during startup or operations.,TC-012
+Verify JWT tokens are validated using configured secret and honor 24-hour expiration duration,JWT Expiration & Secret Configuration,Configuration,High,jwt.secret set to 'test-secret' and jwt.expirationMs set to 86400000 (24 hours) in properties.,"1. Authenticate to generate a valid JWT token. 2. Verify token payload expiration claim (exp). 3. Send a request to a protected endpoint using the token.
+
+Test Data: jwt.secret=test-secret, jwt.expirationMs=86400000","Token expiration claim matches 24 hours (86,400,000 ms) from issuance time. Protected endpoint request succeeds with HTTP 200/201.",d7a62e8-TC-005
+Verify email dispatch succeeds using Gmail SSL SMTP configuration with 20s timeouts,SMTP Mail Server Integration,Configuration,High,"Valid user action requiring email dispatch (e.g., worker OTP generation).","1. Trigger an operation that sends an email (e.g., worker OTP request). 2. Verify logs and recipient inbox.
+
+Test Data: spring.mail.host=smtp.gmail.com, spring.mail.port=465, spring.mail.username=noqueue.club, spring.mail.properties.mail.smtp.ssl.enable=true, timeouts=20000",Email is sent successfully over SSL port 465 without connection timeout or authentication failure.,d7a62e8-TC-008
+Verify Swagger UI and OpenAPI JSON documentation are accessible at custom paths,Swagger UI & OpenAPI Endpoint Customization,Configuration,Medium,Application running with configured springdoc properties.,"1. Open browser/HTTP client and request GET http://localhost:8083/swagger-ui.html. 2. Request GET http://localhost:8083/api-docs.
+
+Test Data: springdoc.swagger-ui.path=/swagger-ui.html, springdoc.api-docs.path=/api-docs",Swagger UI page loads successfully at /swagger-ui.html and valid OpenAPI JSON specification is returned at /api-docs.,TC-013
+Verify appointment buffer time setting of 5 minutes is applied during scheduling,Appointment Buffer Time Configuration,Configuration,Medium,Shop appointment scheduling feature active.,"1. Attempt to schedule two consecutive appointments with a 5-minute gap. 2. Attempt to schedule two appointments with less than a 5-minute gap.
+
+Test Data: appointment.buffer.time.minutes=5",Appointments with at least 5 minutes gap are accepted; overlapping or insufficient buffer appointments are rejected.,TC-014

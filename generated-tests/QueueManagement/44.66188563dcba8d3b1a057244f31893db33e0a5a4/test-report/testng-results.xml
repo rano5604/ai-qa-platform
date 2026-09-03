@@ -1,79 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results ignored="0" total="5" passed="0" failed="0" skipped="5">
+<testng-results ignored="0" total="5" passed="0" failed="5" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2026-08-12T11:08:29 GMT+06:00" name="Command line suite" finished-at="2026-08-12T11:08:30 GMT+06:00" duration-ms="1193">
+  <suite started-at="2026-08-17T10:50:56 BDT" name="Command line suite" finished-at="2026-08-17T10:50:57 BDT" duration-ms="866">
     <groups>
     </groups>
-    <test started-at="2026-08-12T11:08:29 GMT+06:00" name="Command line test" finished-at="2026-08-12T11:08:30 GMT+06:00" duration-ms="1193">
+    <test started-at="2026-08-17T10:50:56 BDT" name="Command line test" finished-at="2026-08-17T10:50:57 BDT" duration-ms="866">
       <class name="com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4">
-        <test-method is-config="true" signature="setup()[pri:0, instance:com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4@7d898981]" started-at="2026-08-12T11:08:29 GMT+06:00" name="setup" finished-at="2026-08-12T11:08:30 GMT+06:00" duration-ms="1158" status="FAIL">
-          <exception class="java.lang.AssertionError">
-            <message>
-              <![CDATA[1 expectation failed.
-Expected status code (is <200> or is <201>) but was <404>.
-]]>
-            </message>
-            <full-stacktrace>
-              <![CDATA[java.lang.AssertionError: 1 expectation failed.
-Expected status code (is <200> or is <201>) but was <404>.
-
-at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
-at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
-at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
-at org.codehaus.groovy.reflection.CachedConstructor.invoke(CachedConstructor.java:73)
-at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
-at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
-at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
-at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
-at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
-at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
-at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
-at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
-at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
-at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
-at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
-at org.testng.internal.invokers.MethodInvocationHelper.invokeMethodConsideringTimeout(MethodInvocationHelper.java:71)
-at org.testng.internal.invokers.ConfigInvoker.invokeConfigurationMethod(ConfigInvoker.java:400)
-at org.testng.internal.invokers.ConfigInvoker.invokeConfigurations(ConfigInvoker.java:333)
-at org.testng.internal.invokers.TestMethodWorker.invokeBeforeClassMethods(TestMethodWorker.java:188)
-at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:128)
-at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-at org.testng.TestRunner.privateRun(TestRunner.java:739)
-at org.testng.TestRunner.run(TestRunner.java:614)
-at org.testng.SuiteRunner.runTest(SuiteRunner.java:421)
-at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:413)
-at org.testng.SuiteRunner.privateRun(SuiteRunner.java:373)
-at org.testng.SuiteRunner.run(SuiteRunner.java:312)
-at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:95)
-at org.testng.TestNG.runSuitesSequentially(TestNG.java:1274)
-at org.testng.TestNG.runSuitesLocally(TestNG.java:1208)
-at org.testng.TestNG.runSuites(TestNG.java:1112)
-at org.testng.TestNG.run(TestNG.java:1079)
-at org.testng.TestNG.privateMain(TestNG.java:1430)
-at org.testng.TestNG.main(TestNG.java:1394)
-]]>
-            </full-stacktrace>
-          </exception> <!-- java.lang.AssertionError -->
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4@60129b9a]" started-at="2026-08-17T10:50:56 BDT" name="setup" finished-at="2026-08-17T10:50:56 BDT" duration-ms="9" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="failToAddDuplicateHolidaysForSameShopAndDates()[pri:0, instance:com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4@7d898981]" started-at="2026-08-12T11:08:30 GMT+06:00" name="failToAddDuplicateHolidaysForSameShopAndDates" finished-at="2026-08-12T11:08:30 GMT+06:00" duration-ms="0" status="SKIP">
+        <test-method signature="failToAddDuplicateHolidaysForSameShopAndDates()[pri:0, instance:com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4@60129b9a]" started-at="2026-08-17T10:50:56 BDT" name="failToAddDuplicateHolidaysForSameShopAndDates" finished-at="2026-08-17T10:50:57 BDT" duration-ms="767" status="FAIL">
           <exception class="java.lang.AssertionError">
             <message>
               <![CDATA[1 expectation failed.
@@ -84,7 +22,7 @@ Expected status code (is <200> or is <201>) but was <404>.
               <![CDATA[java.lang.AssertionError: 1 expectation failed.
 Expected status code (is <200> or is <201>) but was <404>.
 
-at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:67)
 at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
 at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
 at org.codehaus.groovy.reflection.CachedConstructor.invoke(CachedConstructor.java:73)
@@ -100,7 +38,7 @@ at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.j
 at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
 at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
 at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+at java.base/java.lang.reflect.Method.invoke(Method.java:577)
 at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
 at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
 at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
@@ -109,16 +47,18 @@ at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCal
 at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
+at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.failToAddDuplicateHolidaysForSameShopAndDates(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:80)
 at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+at java.base/java.lang.reflect.Method.invoke(Method.java:577)
 at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
-at org.testng.internal.invokers.MethodInvocationHelper.invokeMethodConsideringTimeout(MethodInvocationHelper.java:71)
-at org.testng.internal.invokers.ConfigInvoker.invokeConfigurationMethod(ConfigInvoker.java:400)
-at org.testng.internal.invokers.ConfigInvoker.invokeConfigurations(ConfigInvoker.java:333)
-at org.testng.internal.invokers.TestMethodWorker.invokeBeforeClassMethods(TestMethodWorker.java:188)
-at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:128)
-at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230)
+at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
+at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203)
+at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154)
+at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134)
+at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
 at org.testng.TestRunner.privateRun(TestRunner.java:739)
 at org.testng.TestRunner.run(TestRunner.java:614)
 at org.testng.SuiteRunner.runTest(SuiteRunner.java:421)
@@ -139,7 +79,7 @@ at org.testng.TestNG.main(TestNG.java:1394)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- failToAddDuplicateHolidaysForSameShopAndDates -->
-        <test-method signature="failToConfigureNewSlotDueToDuplicateSlotType()[pri:0, instance:com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4@7d898981]" started-at="2026-08-12T11:08:30 GMT+06:00" name="failToConfigureNewSlotDueToDuplicateSlotType" finished-at="2026-08-12T11:08:30 GMT+06:00" duration-ms="0" status="SKIP">
+        <test-method signature="failToConfigureNewSlotDueToDuplicateSlotType()[pri:0, instance:com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4@60129b9a]" started-at="2026-08-17T10:50:57 BDT" name="failToConfigureNewSlotDueToDuplicateSlotType" finished-at="2026-08-17T10:50:57 BDT" duration-ms="20" status="FAIL">
           <exception class="java.lang.AssertionError">
             <message>
               <![CDATA[1 expectation failed.
@@ -150,41 +90,36 @@ Expected status code (is <200> or is <201>) but was <404>.
               <![CDATA[java.lang.AssertionError: 1 expectation failed.
 Expected status code (is <200> or is <201>) but was <404>.
 
-at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:67)
 at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
 at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
 at org.codehaus.groovy.reflection.CachedConstructor.invoke(CachedConstructor.java:73)
 at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
 at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
 at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
 at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
 at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
 at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
 at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+at java.base/java.lang.reflect.Method.invoke(Method.java:577)
 at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
 at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
 at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
 at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
+at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.failToConfigureNewSlotDueToDuplicateSlotType(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:215)
 at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+at java.base/java.lang.reflect.Method.invoke(Method.java:577)
 at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
-at org.testng.internal.invokers.MethodInvocationHelper.invokeMethodConsideringTimeout(MethodInvocationHelper.java:71)
-at org.testng.internal.invokers.ConfigInvoker.invokeConfigurationMethod(ConfigInvoker.java:400)
-at org.testng.internal.invokers.ConfigInvoker.invokeConfigurations(ConfigInvoker.java:333)
-at org.testng.internal.invokers.TestMethodWorker.invokeBeforeClassMethods(TestMethodWorker.java:188)
-at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:128)
-at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230)
+at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
+at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203)
+at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154)
+at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134)
+at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
 at org.testng.TestRunner.privateRun(TestRunner.java:739)
 at org.testng.TestRunner.run(TestRunner.java:614)
 at org.testng.SuiteRunner.runTest(SuiteRunner.java:421)
@@ -205,7 +140,7 @@ at org.testng.TestNG.main(TestNG.java:1394)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- failToConfigureNewSlotDueToDuplicateSlotType -->
-        <test-method signature="failToUpdateShopHolidayToDateWithExistingHoliday()[pri:0, instance:com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4@7d898981]" started-at="2026-08-12T11:08:30 GMT+06:00" name="failToUpdateShopHolidayToDateWithExistingHoliday" finished-at="2026-08-12T11:08:30 GMT+06:00" duration-ms="0" status="SKIP">
+        <test-method signature="failToUpdateShopHolidayToDateThatAlreadyHasHoliday()[pri:0, instance:com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4@60129b9a]" started-at="2026-08-17T10:50:57 BDT" name="failToUpdateShopHolidayToDateThatAlreadyHasHoliday" finished-at="2026-08-17T10:50:57 BDT" duration-ms="17" status="FAIL">
           <exception class="java.lang.AssertionError">
             <message>
               <![CDATA[1 expectation failed.
@@ -216,41 +151,36 @@ Expected status code (is <200> or is <201>) but was <404>.
               <![CDATA[java.lang.AssertionError: 1 expectation failed.
 Expected status code (is <200> or is <201>) but was <404>.
 
-at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:67)
 at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
 at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
 at org.codehaus.groovy.reflection.CachedConstructor.invoke(CachedConstructor.java:73)
 at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
 at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
 at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
 at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
 at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
 at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
 at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+at java.base/java.lang.reflect.Method.invoke(Method.java:577)
 at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
 at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
 at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
 at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
+at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.failToUpdateShopHolidayToDateThatAlreadyHasHoliday(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:131)
 at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+at java.base/java.lang.reflect.Method.invoke(Method.java:577)
 at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
-at org.testng.internal.invokers.MethodInvocationHelper.invokeMethodConsideringTimeout(MethodInvocationHelper.java:71)
-at org.testng.internal.invokers.ConfigInvoker.invokeConfigurationMethod(ConfigInvoker.java:400)
-at org.testng.internal.invokers.ConfigInvoker.invokeConfigurations(ConfigInvoker.java:333)
-at org.testng.internal.invokers.TestMethodWorker.invokeBeforeClassMethods(TestMethodWorker.java:188)
-at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:128)
-at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230)
+at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
+at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203)
+at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154)
+at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134)
+at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
 at org.testng.TestRunner.privateRun(TestRunner.java:739)
 at org.testng.TestRunner.run(TestRunner.java:614)
 at org.testng.SuiteRunner.runTest(SuiteRunner.java:421)
@@ -270,8 +200,8 @@ at org.testng.TestNG.main(TestNG.java:1394)
           </exception> <!-- java.lang.AssertionError -->
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- failToUpdateShopHolidayToDateWithExistingHoliday -->
-        <test-method signature="successfullyAddMultipleHolidaysForShop()[pri:0, instance:com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4@7d898981]" started-at="2026-08-12T11:08:30 GMT+06:00" name="successfullyAddMultipleHolidaysForShop" finished-at="2026-08-12T11:08:30 GMT+06:00" duration-ms="1" status="SKIP">
+        </test-method> <!-- failToUpdateShopHolidayToDateThatAlreadyHasHoliday -->
+        <test-method signature="successfullyAddMultipleHolidaysForShop()[pri:0, instance:com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4@60129b9a]" started-at="2026-08-17T10:50:57 BDT" name="successfullyAddMultipleHolidaysForShop" finished-at="2026-08-17T10:50:57 BDT" duration-ms="14" status="FAIL">
           <exception class="java.lang.AssertionError">
             <message>
               <![CDATA[1 expectation failed.
@@ -282,41 +212,36 @@ Expected status code (is <200> or is <201>) but was <404>.
               <![CDATA[java.lang.AssertionError: 1 expectation failed.
 Expected status code (is <200> or is <201>) but was <404>.
 
-at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:67)
 at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
 at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
 at org.codehaus.groovy.reflection.CachedConstructor.invoke(CachedConstructor.java:73)
 at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
 at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
 at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
 at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
 at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
 at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
 at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+at java.base/java.lang.reflect.Method.invoke(Method.java:577)
 at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
 at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
 at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
 at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
+at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.successfullyAddMultipleHolidaysForShop(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:42)
 at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+at java.base/java.lang.reflect.Method.invoke(Method.java:577)
 at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
-at org.testng.internal.invokers.MethodInvocationHelper.invokeMethodConsideringTimeout(MethodInvocationHelper.java:71)
-at org.testng.internal.invokers.ConfigInvoker.invokeConfigurationMethod(ConfigInvoker.java:400)
-at org.testng.internal.invokers.ConfigInvoker.invokeConfigurations(ConfigInvoker.java:333)
-at org.testng.internal.invokers.TestMethodWorker.invokeBeforeClassMethods(TestMethodWorker.java:188)
-at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:128)
-at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230)
+at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
+at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203)
+at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154)
+at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134)
+at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
 at org.testng.TestRunner.privateRun(TestRunner.java:739)
 at org.testng.TestRunner.run(TestRunner.java:614)
 at org.testng.SuiteRunner.runTest(SuiteRunner.java:421)
@@ -337,7 +262,7 @@ at org.testng.TestNG.main(TestNG.java:1394)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- successfullyAddMultipleHolidaysForShop -->
-        <test-method signature="successfullyConfigureNewSlotForShop()[pri:0, instance:com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4@7d898981]" started-at="2026-08-12T11:08:30 GMT+06:00" name="successfullyConfigureNewSlotForShop" finished-at="2026-08-12T11:08:30 GMT+06:00" duration-ms="0" status="SKIP">
+        <test-method signature="successfullyConfigureNewSlotForShop()[pri:0, instance:com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4@60129b9a]" started-at="2026-08-17T10:50:57 BDT" name="successfullyConfigureNewSlotForShop" finished-at="2026-08-17T10:50:57 BDT" duration-ms="17" status="FAIL">
           <exception class="java.lang.AssertionError">
             <message>
               <![CDATA[1 expectation failed.
@@ -348,41 +273,36 @@ Expected status code (is <200> or is <201>) but was <404>.
               <![CDATA[java.lang.AssertionError: 1 expectation failed.
 Expected status code (is <200> or is <201>) but was <404>.
 
-at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:67)
 at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
 at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
 at org.codehaus.groovy.reflection.CachedConstructor.invoke(CachedConstructor.java:73)
 at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
 at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
 at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
 at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
 at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
 at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
 at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+at java.base/java.lang.reflect.Method.invoke(Method.java:577)
 at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
 at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
 at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
-at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
-at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
 at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
+at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.successfullyConfigureNewSlotForShop(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:182)
 at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
-at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+at java.base/java.lang.reflect.Method.invoke(Method.java:577)
 at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
-at org.testng.internal.invokers.MethodInvocationHelper.invokeMethodConsideringTimeout(MethodInvocationHelper.java:71)
-at org.testng.internal.invokers.ConfigInvoker.invokeConfigurationMethod(ConfigInvoker.java:400)
-at org.testng.internal.invokers.ConfigInvoker.invokeConfigurations(ConfigInvoker.java:333)
-at org.testng.internal.invokers.TestMethodWorker.invokeBeforeClassMethods(TestMethodWorker.java:188)
-at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:128)
-at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230)
+at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
+at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992)
+at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203)
+at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154)
+at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134)
+at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
 at org.testng.TestRunner.privateRun(TestRunner.java:739)
 at org.testng.TestRunner.run(TestRunner.java:614)
 at org.testng.SuiteRunner.runTest(SuiteRunner.java:421)
@@ -403,14 +323,6 @@ at org.testng.TestNG.main(TestNG.java:1394)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- successfullyConfigureNewSlotForShop -->
-        <test-method is-config="true" signature="cleanup2()[pri:0, instance:com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4@7d898981]" started-at="2026-08-12T11:08:30 GMT+06:00" name="cleanup2" finished-at="2026-08-12T11:08:30 GMT+06:00" duration-ms="0" status="SKIP">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- cleanup2 -->
-        <test-method is-config="true" signature="cleanup()[pri:0, instance:com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4@7d898981]" started-at="2026-08-12T11:08:30 GMT+06:00" name="cleanup" finished-at="2026-08-12T11:08:30 GMT+06:00" duration-ms="0" status="SKIP">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- cleanup -->
       </class> <!-- com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4 -->
     </test> <!-- Command line test -->
   </suite> <!-- Command line suite -->

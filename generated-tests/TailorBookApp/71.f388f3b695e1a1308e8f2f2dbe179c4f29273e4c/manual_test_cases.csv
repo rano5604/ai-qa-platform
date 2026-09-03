@@ -1,0 +1,6 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify application successfully authenticates and connects to PostgreSQL using the updated database password,PostgreSQL Database Connection Configuration,Configuration,High,PostgreSQL database server is running on localhost:5432 with database 'tailorbook' and user 'postgres' configured with password 'admin'.,"1. Deploy and launch the application with the updated application.properties file containing spring.datasource.password=admin.
+2. Monitor application startup logs for database connection initialization.
+3. Execute a database read/write operation (e.g., call GET /api/v1/areas or authenticate a user).
+
+Test Data: spring.datasource.password (Previous: Ta1l0rBo0k@AppAdM1n, New: admin)","Application starts successfully without database authentication failures (e.g., PSQLException: FATAL: password authentication failed). Database queries and API requests complete successfully.",ccb47b0-TC-012

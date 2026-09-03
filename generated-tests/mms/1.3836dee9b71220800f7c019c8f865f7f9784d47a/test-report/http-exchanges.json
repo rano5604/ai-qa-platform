@@ -1,0 +1,869 @@
+[ {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "TC_011_DynamicQrTypeUsesPointOfInitiationMethod12",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Test Merchant for QR\",\n              \"tradeName\": \"QR Test Store\",\n              \"registrationNo\": \"CR-1788247130723\",\n              \"taxId\": \"TAX-1788247130723\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"qrtest1788247130723@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"website\": \"https://www.qrtest.com\",\n              \"address\": \"Test Address\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 30723\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:52 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:18:52.014165572\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 833
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "TC_012_TlvLengthFieldZeroPaddedForSingleDigitLengths",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Test Merchant for TLV Length\",\n              \"tradeName\": \"TLV Test Store\",\n              \"registrationNo\": \"CR-1788247132043\",\n              \"taxId\": \"TAX-1788247132043\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"tlvtest1788247132043@example.com\",\n              \"contactPhone\": \"+966501234568\",\n              \"website\": \"https://www.tlvtest.com\",\n              \"address\": \"Test Address\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 32043\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:52 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:18:52.534235164\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 422
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "crc16ChecksumIsAppendedAsTag63With4CharacterHexValue",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Test Merchant\",\n              \"tradeName\": \"Trade_1788247132463\",\n              \"registrationNo\": \"CR-1788247132463\",\n              \"businessType\": \"CORPORATION\",\n              \"country\": \"SA\",\n  \"userId\": 32463\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:53 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:18:53.075950955\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 585
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "merchantCityAt15CharsIncludedInFull",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Some Merchant\",\n              \"tradeName\": \"Trade_1788247133074\",\n              \"registrationNo\": \"CR-1788247133074\",\n              \"taxId\": \"TAX-1788247133074\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"m1788247133074@example.com\",\n              \"contactPhone\": \"+966500000000\",\n              \"website\": \"https://example.com\",\n              \"address\": \"123 Test Street\",\n              \"city\": \"RiyadhCityName\",\n              \"state\": \"TestState\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 33074\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:53 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:18:53.595951941\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 451
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "merchantCityExactly15CharactersInTag60",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Valid Legal Name\",\n              \"tradeName\": \"Test Trade\",\n              \"registrationNo\": \"CR-1788247133535\",\n              \"businessType\": \"CORPORATION\",\n              \"city\": \"RiyadhCityName\",\n  \"userId\": 33535\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:54 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:18:54.191896601\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 598
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "merchantCityExceeding15CharactersIsTruncatedTo15InTag60",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"TC004 Legal 1788247134152\",\n              \"tradeName\": \"TC004 Trade 1788247134152\",\n              \"registrationNo\": \"CR-TC004-1788247134152\",\n              \"taxId\": \"TAX-TC004-1788247134152\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"tc004_1788247134152@example.com\",\n              \"contactPhone\": \"+966501234001\",\n              \"city\": \"RiyadhCityNameExtra\",\n              \"country\": \"SA\",\n  \"userId\": 34152\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:54 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:18:54.792250647\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 646
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "merchantCityExceeding15CharactersTruncatedInTag60",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Valid Legal Name\",\n              \"tradeName\": \"Test Trade\",\n              \"registrationNo\": \"CR-1788247134815\",\n              \"businessType\": \"CORPORATION\",\n              \"city\": \"RiyadhCityNameExtra\",\n  \"userId\": 34815\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:55 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:18:55.390889815\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 483
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "merchantCityExceeding15CharsTruncatedTo15",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Some Merchant\",\n              \"tradeName\": \"Trade_1788247135310\",\n              \"registrationNo\": \"CR-1788247135310\",\n              \"taxId\": \"TAX-1788247135310\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"m1788247135310@example.com\",\n              \"contactPhone\": \"+966500000000\",\n              \"website\": \"https://example.com\",\n              \"address\": \"123 Test Street\",\n              \"city\": \"RiyadhCityNameExtra\",\n              \"state\": \"TestState\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 35310\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:55 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:18:55.862443452\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 506
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "merchantNameAt25CharsIncludedInFull",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\n              \"tradeName\": \"Trade_1788247135823\",\n              \"registrationNo\": \"CR-1788247135823\",\n              \"taxId\": \"TAX-1788247135823\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"m1788247135823@example.com\",\n              \"contactPhone\": \"+966500000000\",\n              \"website\": \"https://example.com\",\n              \"address\": \"123 Test Street\",\n              \"city\": \"Riyadh\",\n              \"state\": \"TestState\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 35823\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:56 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:18:56.391647474\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 474
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "merchantNameExactly25CharactersInTag59",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"ABCDEFGHIJKLMNOPQRSTUVWXY\",\n              \"tradeName\": \"Test Trade\",\n              \"registrationNo\": \"CR-1788247136320\",\n              \"businessType\": \"CORPORATION\",\n              \"city\": \"Riyadh\",\n  \"userId\": 36320\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:56 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:18:56.84255404\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 429
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "merchantNameExceeding25CharactersTruncatedInTag59",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\",\n              \"tradeName\": \"TradeName_1788247136750\",\n              \"registrationNo\": \"REG-1788247136750\",\n              \"taxId\": \"TAX-1788247136750\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"contact_1788247136750@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"website\": \"https://www.example.com\",\n              \"address\": \"123 Test Road\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 36750\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:57 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:18:57.360506134\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 526
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "merchantNameExceeding25CharactersTruncatedInTag592",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\",\n              \"tradeName\": \"Test Trade\",\n              \"registrationNo\": \"CR-1788247137301\",\n              \"businessType\": \"CORPORATION\",\n              \"city\": \"Riyadh\",\n  \"userId\": 37301\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:57 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:18:57.86389848\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 468
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "merchantNameExceeding25CharsTruncatedTo25",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\",\n              \"tradeName\": \"Trade_1788247137782\",\n              \"registrationNo\": \"CR-1788247137782\",\n              \"taxId\": \"TAX-1788247137782\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"m1788247137782@example.com\",\n              \"contactPhone\": \"+966500000000\",\n              \"website\": \"https://example.com\",\n              \"address\": \"123 Test Street\",\n              \"city\": \"Riyadh\",\n              \"state\": \"TestState\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 37782\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:58 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:18:58.326040513\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 447
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "multiByteUtf8CharactersInMerchantNameAreCountedByBytesNotCharactersForTruncation",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"商户名称测试\",\n              \"tradeName\": \"Trade_1788247138241\",\n              \"registrationNo\": \"CR-1788247138241\",\n              \"businessType\": \"CORPORATION\",\n              \"country\": \"SA\",\n  \"userId\": 38241\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:58 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:18:58.944927479\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 653
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "multiByteUtf8MerchantNameExceeding25BytesIsTruncatedByByteCountInTag59",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"商户名称测试商户名称测试商\",\n              \"tradeName\": \"Trade_1788247138903\",\n              \"registrationNo\": \"CR-1788247138903\",\n              \"businessType\": \"CORPORATION\",\n              \"country\": \"SA\",\n  \"userId\": 38903\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:18:59 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:18:59.60997161\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 679
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "nullCountryCodeDefaultsToSA",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Test Merchant\",\n              \"tradeName\": \"Test Store\",\n              \"registrationNo\": \"CR-1788247139591\",\n              \"taxId\": \"TAX-1788247139591\",\n              \"merchantCategoryCode\": null,\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"test1788247139591@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"address\": \"123 Test St\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": null,\n  \"userId\": 39591\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:00 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:19:00.183813624\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 492
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "nullCountryCodeDefaultsToSAInTag58",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Null Country Merchant 1788247140102\",\n              \"tradeName\": \"NC Trade 1788247140102\",\n              \"registrationNo\": \"CR-NULL-1788247140102\",\n              \"taxId\": \"TAX-NULL-1788247140102\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"nullcountry1788247140102@example.com\",\n              \"contactPhone\": \"+966500000001\",\n              \"address\": \"123 Test Street\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n  \"userId\": 40102\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:00 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:19:00.63142301\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 455
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "nullCurrencyDefaultsToSAR",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Test Merchant\",\n              \"tradeName\": \"Test Store\",\n              \"registrationNo\": \"CR-1788247140554\",\n              \"taxId\": \"TAX-1788247140554\",\n              \"merchantCategoryCode\": null,\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"test1788247140554@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"address\": \"123 Test St\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": null,\n  \"userId\": 40554\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:01 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:19:01.176339951\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 629
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "nullMCCDefaultsTo0000",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Test Merchant\",\n              \"tradeName\": \"Test Store\",\n              \"registrationNo\": \"CR-1788247141204\",\n              \"taxId\": \"TAX-1788247141204\",\n              \"merchantCategoryCode\": null,\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"test1788247141204@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"address\": \"123 Test St\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": null,\n  \"userId\": 41204\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:01 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:19:01.729941191\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 464
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "nullMccDefaultsToZeroZeroZeroZeroInTag52",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Test Merchant 1788247141685\",\n              \"tradeName\": \"Test Store 1788247141685\",\n              \"registrationNo\": \"CR-1788247141685\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 41685\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:02 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:19:02.307906165\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 776
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "nullMerchantCityDefaultsToRiyadh",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"NoCity Merchant\",\n              \"tradeName\": \"NoCity_1788247142458\",\n              \"registrationNo\": \"CR-NC-1788247142458\",\n              \"taxId\": \"TAX-NC-1788247142458\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"nc1788247142458@example.com\",\n              \"contactPhone\": \"+966500000001\",\n              \"address\": \"456 Test Street\",\n              \"country\": \"SA\",\n  \"userId\": 42458\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:02 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:19:02.984622719\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 478
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "nullMerchantCityDefaultsToRiyadhInTag60",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"TC005 Legal 1788247142960\",\n              \"tradeName\": \"TC005 Trade 1788247142960\",\n              \"registrationNo\": \"CR-TC005-1788247142960\",\n              \"taxId\": \"TAX-TC005-1788247142960\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"tc005_1788247142960@example.com\",\n              \"contactPhone\": \"+966501234002\",\n              \"country\": \"SA\",\n  \"userId\": 42960\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:03 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:19:03.513431544\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 507
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "nullMerchantCityDefaultsToRiyadhInTag602",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Valid Legal Name\",\n              \"tradeName\": \"Test Trade\",\n              \"registrationNo\": \"CR-1788247143474\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 43474\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:04 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:19:04.261362443\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 829
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "staticQRTypeUsesPIM11",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Test Merchant\",\n              \"tradeName\": \"Test Store\",\n              \"registrationNo\": \"CR-1788247144321\",\n              \"taxId\": \"TAX-1788247144321\",\n              \"merchantCategoryCode\": \"\"5411\"\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"test1788247144321@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"address\": \"123 Test St\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": \"\"SA\"\",\n  \"userId\": 44321\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 500,
+  "responseStatusLine" : "HTTP/1.1 500 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:04 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"An unexpected error occurred\",\"path\":\"/mms/api/v1/merchants\",\"timestamp\":\"2026-09-01T07:19:04.923106429\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 535
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "testDynamicQrTypeUsesPointOfInitiationMethod12",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Dynamic QR Merchant LLC\",\n              \"tradeName\": \"Dynamic QR Store\",\n              \"registrationNo\": \"CR-1788247144865\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 44865\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:05 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:19:05.472243893\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 556
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "testNullCountryCodeDefaultsToSA",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Null Country Merchant LLC\",\n              \"tradeName\": \"Null Country Store\",\n              \"registrationNo\": \"CR-1788247145426\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 45426\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:05 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:19:05.984463164\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 460
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "testNullCurrencyDefaultsToSAR682",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Null Currency Merchant LLC\",\n              \"tradeName\": \"Null Currency Store\",\n              \"registrationNo\": \"CR-1788247145894\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 45894\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:06 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:19:06.494795155\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 713
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "testStaticQrTypeUsesPointOfInitiationMethod11",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Static QR Merchant LLC\",\n              \"tradeName\": \"Static QR Store\",\n              \"registrationNo\": \"CR-1788247146612\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 46612\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:07 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:19:07.158379265\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 492
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "testUnrecognizedCurrencyCodeDefaultsToSAR682",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Unrecognized Currency Merchant LLC\",\n              \"tradeName\": \"Unrecognized Currency Store\",\n              \"registrationNo\": \"CR-1788247147113\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 47113\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:07 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:19:07.646203091\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 457
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "tlvLengthFieldIsZeroPaddedTo2DigitsForSingleDigitLengths",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Test Merchant\",\n              \"tradeName\": \"Trade_1788247147585\",\n              \"registrationNo\": \"CR-1788247147585\",\n              \"businessType\": \"CORPORATION\",\n              \"country\": \"SA\",\n  \"userId\": 47585\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:08 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\",\"contactPhone\":\"must not be blank\"},\"timestamp\":\"2026-09-01T07:19:08.176390468\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 628
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a",
+  "testMethodName" : "unrecognizedCurrencyDefaultsToSAR",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/merchants",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "            {\n              \"legalName\": \"Test Merchant\",\n              \"tradeName\": \"Test Store\",\n              \"registrationNo\": \"CR-1788247148218\",\n              \"taxId\": \"TAX-1788247148218\",\n              \"merchantCategoryCode\": null,\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"test1788247148218@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"address\": \"123 Test St\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": null,\n  \"userId\": 48218\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 07:19:08 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"status\":400,\"error\":\"Validation Failed\",\"message\":\"Input validation failed\",\"path\":\"/mms/api/v1/merchants\",\"validationErrors\":{\"accountNo\":\"Account No is required\"},\"timestamp\":\"2026-09-01T07:19:08.739734311\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 491
+} ]

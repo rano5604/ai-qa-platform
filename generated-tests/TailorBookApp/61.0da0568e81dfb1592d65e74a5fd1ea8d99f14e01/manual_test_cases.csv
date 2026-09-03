@@ -1,0 +1,78 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Cancel an order and verify structured API response wrapper format,Order Management - Order Cancellation,Positive,High,An order with numeric ID 101 exists in the system and all its items are in MEASUREMENT_DONE status.,"1. Send a POST request to /api/orders/101/cancel.
+
+Test Data: Order ID: 101","HTTP 200 OK response with JSON body containing status 'success', message 'Order and all items cancelled successfully.', data null, and meta null.",f3246cb-TC-001
+Upload a Base64 photo using updated payload field 'photo' and optional 'imageName',Photo Management - Base64 Upload,Positive,High,The photo storage service is active.,"1. Send a POST request to /api/photos/upload-base64 with the JSON request body in testData.
+
+Test Data: {
+  ""photo"": ""iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="",
+  ""imageName"": ""fabric-sample""
+}","HTTP 200 OK response with a JSON object containing 'url' and 'objectName', where 'objectName' starts with 'fabric-sample-'.",TC-001
+Retrieve stored file using bucket name and multi-segment object path,File Proxy Access,Positive,High,A file named 'cloth-101.jpg' exists in storage under the bucket 'customer-photos' inside folder 'customers'.,"1. Send a GET request to /customer-photos/customers/cloth-101.jpg.
+
+Test Data: Path: /customer-photos/customers/cloth-101.jpg",HTTP 200 OK response containing the binary stream of the requested photo.,d743d3c-TC-001
+Attempt to upload a base64 photo with missing or blank photo field,Photo Management,Negative,High,The service is operational and configured with MinIO temp storage.,"1. Send a POST request to /api/photos/upload-base64 with the JSON request body in testData.
+
+Test Data: {
+  ""imageName"": ""sample-test-image""
+}","HTTP 400 Bad Request with JSON body {""error"": ""Photo is required""}.",d217aa0-TC-011
+Attempt to cancel an order where an order item is not in MEASUREMENT_DONE state,Order Cancellation,Negative,High,"An order exists with ID 101, but at least one of its items has progressed past MEASUREMENT_DONE (for example, to CUTTING_DONE or DELIVERED).","1. Send a POST request to /api/orders/101/cancel.
+
+Test Data: orderId = 101","HTTP 400 Bad Request with JSON response body containing {""status"": ""error"", ""message"": ""Order can only be cancelled if all items are in MEASUREMENT_DONE state."", ""data"": null, ""meta"": null}.",f3246cb-TC-003
+Attempt to upload an empty file via file upload endpoint,Photo Management,Negative,High,The photo upload API endpoint is available.,"1. Send a POST request to /api/photos/upload passing a multipart form parameter 'file' with an empty content (0 bytes).
+
+Test Data: file = empty multipart file (0 bytes)","HTTP 400 Bad Request with JSON body {""error"": ""File must not be empty""}.",TC-002
+Attempt to create an order with a measurement group that has missing or blank cloth photo,Order Management - Order Creation,Negative,High,A shop with ID 1 exists.,"1. Send a POST request to /api/orders with the JSON body in testData where 'clothPhoto' in the measurement group is blank.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerPhone"": ""01700000000"",
+  ""customerName"": ""John Doe"",
+  ""customerGender"": ""MALE"",
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""measurementGroups"": [
+        {
+          ""clothPhoto"": """"
+        }
+      ]
+    }
+  ]
+}",The system rejects the order creation request and returns an error indicating that a cloth photo is required for the measurement group.,TC-003
+Cancel order with single item boundary where item is in MEASUREMENT_DONE state,Order Cancellation,Boundary,High,An order with ID 101 exists in the system with exactly one item in MEASUREMENT_DONE status.,"1. Send a POST request to /api/orders/101/cancel.
+
+Test Data: orderId = 101","The system responds with an HTTP 200 OK status code and a JSON ApiResponse object containing 'status': 'success', 'message': 'Order and all items cancelled successfully.', 'data': null, and 'meta': null.",f3246cb-TC-006
+Upload base64 photo with optional imageName parameter provided,Photo Management,Boundary,Medium,The photo upload service is available.,"1. Send a POST request to /api/photos/upload-base64 with the JSON request payload in testData.
+
+Test Data: {
+  ""photo"": ""iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="",
+  ""imageName"": ""custom-cloth-prefix""
+}","The system responds with HTTP 200 OK and a JSON object containing 'url' and 'objectName', where 'objectName' begins with 'custom-cloth-prefix-' followed by a UUID and the '.jpg' extension.",TC-004
+Retrieve proxied file using multi-level nested object subpath,MinIO Image Proxying,Boundary,Medium,A file named 'cloth-sample.jpg' exists in the temp bucket under a multi-segment object path 'customers/subfolder/cloth-sample.jpg'.,"1. Send a GET request to /temp-photos/customers/subfolder/cloth-sample.jpg (where 'temp-photos' corresponds to the configured temp bucket name).
+
+Test Data: bucket = temp-photos, object path = customers/subfolder/cloth-sample.jpg",The system responds with HTTP 200 OK and streams the binary image resource from the resolved bucket and nested object path.,TC-005
+Verify that file proxy requests specifying unconfigured or arbitrary bucket names are rejected,MinIO File Proxy Access Control,Security,High,"The file proxy endpoint is active with configured allowed buckets for orders, customers, and temporary storage.","1. Send a GET request to /system-config/keys.txt where system-config is not one of the allowed configured bucket names.
+
+Test Data: Path parameter bucket: system-config, object path: keys.txt",The API responds with HTTP status 404 (Not Found). No data is returned and no internal bucket or system error details are exposed.,TC-006
+Upload a Base64-encoded image with custom image name to temp storage,Base64 Photo Upload,Configuration,High,The application service is running and connected to MinIO.,"1. Send a POST request to /api/photos/upload-base64 with the JSON request body containing 'photo' (valid Base64 string) and optional 'imageName' in testData. 2. Verify the HTTP response.
+
+Test Data: {
+  ""photo"": ""iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="",
+  ""imageName"": ""profile-sketch""
+}",HTTP 200 OK status code with a JSON payload containing 'url' and 'objectName' (starting with 'profile-sketch-').,e2af361-TC-033
+Cancel an order and receive formatted ApiResponse response body,Order Cancellation,Configuration,High,An active order exists in the system with orderId 101.,"1. Send a POST request to /api/orders/101/cancel with an empty body. 2. Check the response status and structure.
+
+Test Data: Path variable orderId = 101","HTTP 200 OK response with a JSON body matching ApiResponse structure: {""status"": ""success"", ""message"": ""Order and all items cancelled successfully."", ""data"": null, ""meta"": null}.",TC-007
+Retrieve a stored image file from nested bucket path through proxy,MinIO Proxy Storage Retrieval,Configuration,Medium,An object exists in MinIO under customer-photos bucket at path 'customers/cloth-sample.jpg'.,"1. Send a GET request to /customer-photos/customers/cloth-sample.jpg. 2. Verify the response stream and headers.
+
+Test Data: Path variable bucket = customer-photos, wildcards = customers/cloth-sample.jpg",HTTP 200 OK status code with file stream payload and correct media type headers.,TC-008
+Verify order photo upload stores file in the newly configured order-photos bucket,MinIO Bucket Configuration,Configuration,High,Application deployed with updated application.properties where minio.order-bucket-name=order-photos. MinIO service running and 'order-photos' bucket exists.,"1. Start the application with the updated config. 2. Upload an order photo via the order photo API. 3. Inspect MinIO storage or retrieve object path details.
+
+Test Data: Old key: minio.bucket-name=tailor-photos -> New key: minio.order-bucket-name=order-photos",The uploaded order photo is successfully placed into the 'order-photos' bucket without errors.,TC-009
+Verify customer photo upload stores file in the newly configured customer-photos bucket,MinIO Bucket Configuration,Configuration,High,Application deployed with updated application.properties where minio.customer-bucket-name=customer-photos. MinIO service running and 'customer-photos' bucket exists.,"1. Start the application with the updated config. 2. Upload a customer profile or reference photo via the customer API. 3. Inspect MinIO storage or response object path.
+
+Test Data: New key: minio.customer-bucket-name=customer-photos",The uploaded customer photo is stored in the 'customer-photos' bucket and a valid presigned URL or path is generated.,TC-010
+Verify temporary uploads write to the newly configured tailor-photos-temp bucket,MinIO Bucket Configuration,Configuration,Medium,Application deployed with updated application.properties where minio.temp-bucket-name=tailor-photos-temp. MinIO service running and 'tailor-photos-temp' bucket exists.,"1. Start the application with the updated config. 2. Perform a temporary photo staging or draft upload operation. 3. Verify file placement in MinIO.
+
+Test Data: Old bucket: tailor-photos -> New key: minio.temp-bucket-name=tailor-photos-temp",Temporary photos are uploaded and isolated in the 'tailor-photos-temp' bucket successfully.,TC-011

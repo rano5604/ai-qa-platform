@@ -9,11 +9,11 @@
 <table>
 <tr><th>Test</th><th># Passed</th><th># Skipped</th><th># Retried</th><th># Failed</th><th>Time (ms)</th><th>Included Groups</th><th>Excluded Groups</th></tr>
 <tr><th colspan="8">Command line suite</th></tr>
-<tr><td><a href="#t0">Command line test</a></td><td class="num">0</td><td class="num attn">5</td><td class="num">0</td><td class="num">0</td><td class="num">1,193</td><td></td><td></td></tr>
+<tr><td><a href="#t0">Command line test</a></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num attn">5</td><td class="num">866</td><td></td><td></td></tr>
 </table>
-<table id='summary'><thead><tr><th>Class</th><th>Method</th><th>Start</th><th>Time (ms)</th></tr></thead><tbody><tr><th colspan="4">Command line suite</th></tr></tbody><tbody id="t0"><tr><th colspan="4">Command line test &#8212; failed (configuration methods)</th></tr><tr class="failedeven"><td rowspan="1">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4</td><td><a href="#m0">setup</a></td><td rowspan="1">1786511309389</td><td rowspan="1">1158</td></tr><tr><th colspan="4">Command line test &#8212; skipped (configuration methods)</th></tr><tr class="skippedeven"><td rowspan="2">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4</td><td><a href="#m1">cleanup</a></td><td rowspan="1">1786511310560</td><td rowspan="1">0</td></tr><tr class="skippedeven"><td><a href="#m2">cleanup2</a></td><td rowspan="1">1786511310560</td><td rowspan="1">0</td></tr><tr><th colspan="4">Command line test &#8212; skipped</th></tr><tr class="skippedeven"><td rowspan="5">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4</td><td><a href="#m3">failToAddDuplicateHolidaysForSameShopAndDates</a></td><td rowspan="1">1786511310555</td><td rowspan="1">0</td></tr><tr class="skippedeven"><td><a href="#m4">failToConfigureNewSlotDueToDuplicateSlotType</a></td><td rowspan="1">1786511310556</td><td rowspan="1">0</td></tr><tr class="skippedeven"><td><a href="#m5">failToUpdateShopHolidayToDateWithExistingHoliday</a></td><td rowspan="1">1786511310558</td><td rowspan="1">0</td></tr><tr class="skippedeven"><td><a href="#m6">successfullyAddMultipleHolidaysForShop</a></td><td rowspan="1">1786511310558</td><td rowspan="1">1</td></tr><tr class="skippedeven"><td><a href="#m7">successfullyConfigureNewSlotForShop</a></td><td rowspan="1">1786511310559</td><td rowspan="1">0</td></tr></tbody>
+<table id='summary'><thead><tr><th>Class</th><th>Method</th><th>Start</th><th>Time (ms)</th></tr></thead><tbody><tr><th colspan="4">Command line suite</th></tr></tbody><tbody id="t0"><tr><th colspan="4">Command line test &#8212; failed</th></tr><tr class="failedeven"><td rowspan="5">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4</td><td><a href="#m0">failToAddDuplicateHolidaysForSameShopAndDates</a></td><td rowspan="1">1786942256598</td><td rowspan="1">767</td></tr><tr class="failedeven"><td><a href="#m1">failToConfigureNewSlotDueToDuplicateSlotType</a></td><td rowspan="1">1786942257365</td><td rowspan="1">20</td></tr><tr class="failedeven"><td><a href="#m2">failToUpdateShopHolidayToDateThatAlreadyHasHoliday</a></td><td rowspan="1">1786942257386</td><td rowspan="1">17</td></tr><tr class="failedeven"><td><a href="#m3">successfullyAddMultipleHolidaysForShop</a></td><td rowspan="1">1786942257403</td><td rowspan="1">14</td></tr><tr class="failedeven"><td><a href="#m4">successfullyConfigureNewSlotForShop</a></td><td rowspan="1">1786942257417</td><td rowspan="1">17</td></tr></tbody>
 </table>
-<h2>Command line test</h2><h3 id="m0">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4#setup</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.AssertionError: 1 expectation failed.
+<h2>Command line test</h2><h3 id="m0">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4#failToAddDuplicateHolidaysForSameShopAndDates</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.AssertionError: 1 expectation failed.
 Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
 
 	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
@@ -35,135 +35,80 @@ Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-... Removed 28 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
-<h3 id="m1">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4#cleanup</h3><table class="result"><tr><th class="invisible"/></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
-<h3 id="m2">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4#cleanup2</h3><table class="result"><tr><th class="invisible"/></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
-<h3 id="m3">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4#failToAddDuplicateHolidaysForSameShopAndDates</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.AssertionError: 1 expectation failed.
+	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.failToAddDuplicateHolidaysForSameShopAndDates(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:80)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 30 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m1">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4#failToConfigureNewSlotDueToDuplicateSlotType</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.AssertionError: 1 expectation failed.
 Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
 
 	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
 	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
 	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
 	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-... Removed 28 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
-<h3 id="m4">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4#failToConfigureNewSlotDueToDuplicateSlotType</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.AssertionError: 1 expectation failed.
+	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.failToConfigureNewSlotDueToDuplicateSlotType(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:215)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 30 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m2">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4#failToUpdateShopHolidayToDateThatAlreadyHasHoliday</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.AssertionError: 1 expectation failed.
 Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
 
 	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
 	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
 	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
 	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-... Removed 28 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
-<h3 id="m5">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4#failToUpdateShopHolidayToDateWithExistingHoliday</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.AssertionError: 1 expectation failed.
+	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.failToUpdateShopHolidayToDateThatAlreadyHasHoliday(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:131)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 30 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m3">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4#successfullyAddMultipleHolidaysForShop</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.AssertionError: 1 expectation failed.
 Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
 
 	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
 	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
 	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
 	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-... Removed 28 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
-<h3 id="m6">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4#successfullyAddMultipleHolidaysForShop</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.AssertionError: 1 expectation failed.
+	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.successfullyAddMultipleHolidaysForShop(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:42)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 30 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m4">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4#successfullyConfigureNewSlotForShop</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.AssertionError: 1 expectation failed.
 Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
 
 	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
 	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
 	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
 	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-... Removed 28 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
-<h3 id="m7">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4#successfullyConfigureNewSlotForShop</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.AssertionError: 1 expectation failed.
-Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
-
-	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
-	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
-	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
-	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
-	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
-	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
-	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
-	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
-	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
-	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-... Removed 28 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.successfullyConfigureNewSlotForShop(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:182)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 30 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
 </body>
 </html>

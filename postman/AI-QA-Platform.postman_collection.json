@@ -1,0 +1,258 @@
+{
+  "info": {
+    "name": "AI-QA Platform",
+    "description": "Every REST endpoint the platform exposes: manual test-case generation, automation generation/execution, merge history, downloads, LLM credentials, replay, and the GitHub/GitLab webhooks. Set the collection variables (baseUrl, projectName, commitHash, repoUrl, branch, accessToken, replayToken) before running requests - most bodies reference them so one edit updates every request.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "projectName", "value": "mms" },
+    { "key": "commitHash", "value": "3836dee9b71220800f7c019c8f865f7f9784d47a" },
+    { "key": "repoUrl", "value": "https://github.com/acquiring-system/mms.git" },
+    { "key": "branch", "value": "main" },
+    { "key": "accessToken", "value": "" },
+    { "key": "targetBaseUri", "value": "http://169.58.37.242:8007/mms" },
+    { "key": "replayToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "LLM keys",
+      "item": [
+        {
+          "name": "Configure keys",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gemini\": \"AIza...\",\n  \"mistral\": \"...\",\n  \"groq\": \"...\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/llm-keys", "host": ["{{baseUrl}}"], "path": ["api", "v1", "llm-keys"] },
+            "description": "Replaces the WHOLE set of active keys - a provider left out is switched off, not kept. Stored in memory only; never logged or returned."
+          }
+        },
+        {
+          "name": "Check active keys",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/llm-keys", "host": ["{{baseUrl}}"], "path": ["api", "v1", "llm-keys"] },
+            "description": "Which providers are configured, masked - never the key values."
+          }
+        },
+        {
+          "name": "Clear keys",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/v1/llm-keys", "host": ["{{baseUrl}}"], "path": ["api", "v1", "llm-keys"] },
+            "description": "Forgets every stored key. Generation then fails until they are set again (or server-side env vars take over)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Manual test-case generation",
+      "item": [
+        {
+          "name": "Generate - local checkout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"repoPath\": \"D:/eclipse_workspace/ai-qa-platform/repo-workspace/github_com_acquiring_system_mms\",\n  \"baseRef\": \"EMPTY_TREE\",\n  \"headRef\": \"{{commitHash}}\",\n  \"testCaseMode\": \"MANUAL\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/generate-tests", "host": ["{{baseUrl}}"], "path": ["api", "v1", "generate-tests"] },
+            "description": "Runs the pipeline against a repo already on disk. Use \"baseRef\": \"EMPTY_TREE\" for a root commit with no parent, otherwise a real SHA or \"<sha>^\"."
+          }
+        },
+        {
+          "name": "Generate - from branch (latest merge)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"repoUrl\": \"{{repoUrl}}\",\n  \"branch\": \"{{branch}}\",\n  \"accessToken\": \"{{accessToken}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/generate-tests-from-branch", "host": ["{{baseUrl}}"], "path": ["api", "v1", "generate-tests-from-branch"] },
+            "description": "Clones/fetches repoUrl, finds the most recent merge commit on branch, and runs the pipeline against it. A no-op (with a clear message) if that merge was already processed."
+          }
+        },
+        {
+          "name": "Backfill (catch branch up)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"repoUrl\": \"{{repoUrl}}\",\n  \"branch\": \"{{branch}}\",\n  \"accessToken\": \"{{accessToken}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/generate-tests-from-branch/backfill", "host": ["{{baseUrl}}"], "path": ["api", "v1", "generate-tests-from-branch", "backfill"] },
+            "description": "Walks every merge commit on branch, oldest first, and processes every one not already recorded. Safe to call repeatedly - already-processed merges cost nothing."
+          }
+        },
+        {
+          "name": "Check for new commits",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"repoUrl\": \"{{repoUrl}}\",\n  \"branch\": \"{{branch}}\",\n  \"accessToken\": \"{{accessToken}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/generate-tests-from-branch/check-new-commits", "host": ["{{baseUrl}}"], "path": ["api", "v1", "generate-tests-from-branch", "check-new-commits"] },
+            "description": "Clones/fetches and reports how many merges on branch are not yet processed - zero LLM calls, a cheap check before running backfill for real."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Merge history",
+      "item": [
+        {
+          "name": "List merge history",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/merge-history?projectName={{projectName}}&branch={{branch}}",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "merge-history"],
+              "query": [{ "key": "projectName", "value": "{{projectName}}" }, { "key": "branch", "value": "{{branch}}" }]
+            },
+            "description": "Every merge this project+branch has recorded as processed, oldest first. Local state only - needs a local clone of the project to already exist."
+          }
+        },
+        {
+          "name": "List incomplete merges",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/merge-history/incomplete?projectName={{projectName}}&branch={{branch}}",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "merge-history", "incomplete"],
+              "query": [{ "key": "projectName", "value": "{{projectName}}" }, { "key": "branch", "value": "{{branch}}" }]
+            },
+            "description": "PARTIAL or FAILED merges only, each carrying missingCategories, coveragePercent, attemptCount and failureReason."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Automation",
+      "item": [
+        {
+          "name": "Generate automation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectName\": \"{{projectName}}\",\n  \"commitHash\": \"{{commitHash}}\",\n  \"baseUri\": \"{{targetBaseUri}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/generate-automation", "host": ["{{baseUrl}}"], "path": ["api", "v1", "generate-automation"] },
+            "description": "Turns the commit's already-generated manual cases into REST Assured scripts. Sends no HTTP traffic. Cases the commit already has automation for (traced via the // TC-xxx comment) are skipped, not regenerated."
+          }
+        },
+        {
+          "name": "Execute automation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectName\": \"{{projectName}}\",\n  \"commitHash\": \"{{commitHash}}\",\n  \"baseUri\": \"{{targetBaseUri}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/execute-automation", "host": ["{{baseUrl}}"], "path": ["api", "v1", "execute-automation"] },
+            "description": "RUNS the automation already generated for this commit. Fires real HTTP traffic at baseUri, including POST/PUT/DELETE the cases describe - never point this at production."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Downloads",
+      "item": [
+        {
+          "name": "Download manual test cases",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/test-cases/download?projectName={{projectName}}&commitHash={{commitHash}}",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "test-cases", "download"],
+              "query": [{ "key": "projectName", "value": "{{projectName}}" }, { "key": "commitHash", "value": "{{commitHash}}" }]
+            },
+            "description": "One commit's CSV, or the whole project's rollup if commitHash is omitted."
+          }
+        },
+        {
+          "name": "Download execution report",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/execution-report/download?projectName={{projectName}}&commitHash={{commitHash}}",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "execution-report", "download"],
+              "query": [{ "key": "projectName", "value": "{{projectName}}" }, { "key": "commitHash", "value": "{{commitHash}}" }]
+            },
+            "description": "aiqa-report.html for one commit's execution run. commitHash is required - a report is intrinsically per-run, there is no project-wide rollup."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Replay",
+      "item": [
+        {
+          "name": "Replay a captured request",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Aiqa-Replay-Token", "value": "{{replayToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"method\": \"POST\",\n  \"uri\": \"{{targetBaseUri}}/api/v1/fees\",\n  \"headers\": { \"Content-Type\": \"application/json\" },\n  \"body\": \"{}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/replay", "host": ["{{baseUrl}}"], "path": ["api", "v1", "replay"] },
+            "description": "Normally called by the report's own 'Send again'/'Edit request' buttons, not by hand. replayToken is embedded per-report and required - a request without a valid one gets a bare 403."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks (called by the git host, not by hand)",
+      "item": [
+        {
+          "name": "GitHub webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-GitHub-Event", "value": "pull_request_review" },
+              { "key": "X-Hub-Signature-256", "value": "sha256=<hmac of the body with aiqa.github.webhook-secret>" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"submitted\",\n  \"review\": { \"state\": \"approved\" },\n  \"pull_request\": { }\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/webhooks/github", "host": ["{{baseUrl}}"], "path": ["api", "v1", "webhooks", "github"] },
+            "description": "Configured under GitHub Settings -> Webhooks. Fires on pull_request_review; a request with an invalid signature is rejected with 401."
+          }
+        },
+        {
+          "name": "GitLab webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Gitlab-Token", "value": "<aiqa.gitlab.webhook-secret>" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"object_kind\": \"merge_request\",\n  \"object_attributes\": { }\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/webhooks/gitlab", "host": ["{{baseUrl}}"], "path": ["api", "v1", "webhooks", "gitlab"] },
+            "description": "Configured under GitLab Settings -> Webhooks."
+          }
+        }
+      ]
+    }
+  ]
+}

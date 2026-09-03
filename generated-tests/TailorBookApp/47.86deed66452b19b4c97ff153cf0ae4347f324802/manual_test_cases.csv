@@ -163,3 +163,186 @@ Test Data: {
     ""trialDate"": null
   }
 }",TC-005
+Attempt to create an order with an invalid customer phone number format,Order Creation Validation,Negative,High,The application service is running.,"1. Send a POST request to /api/orders with the request payload specified in testData.
+2. Observe the HTTP response code and error response body.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""123456"",
+  ""customerGender"": ""MALE"",
+  ""paidAmount"": 100.00,
+  ""deliveryDate"": ""2026-05-01"",
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": 50.00,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""value"": ""40""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The system rejects the request with HTTP 400 Bad Request. The response body contains status 'error', message 'Validation failed', and field error 'customerPhone': 'Invalid phone number format'.",TC-006
+Attempt to create an order with a negative paid amount,Order Creation Validation,Negative,High,The application service is running.,"1. Send a POST request to /api/orders with the request payload specified in testData.
+2. Observe the HTTP response code and error response body.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01711000000"",
+  ""customerGender"": ""MALE"",
+  ""paidAmount"": -50.00,
+  ""deliveryDate"": ""2026-05-01"",
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": 50.00,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Chest"",
+              ""value"": ""40""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The system rejects the request with HTTP 400 Bad Request. The response body contains status 'error', message 'Validation failed', and field error 'paidAmount': 'Paid amount cannot be negative'.",TC-007
+Attempt to record a payment for an order with a null paid amount during order creation,Order Payment Processing,Negative,High,The application service is running.,"1. Send a POST request to /api/orders with a null 'paidAmount' field as shown in testData.
+2. Observe the HTTP response status code and body.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""01811000000"",
+  ""customerGender"": ""FEMALE"",
+  ""paidAmount"": null,
+  ""deliveryDate"": ""2026-05-01"",
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": 50.00,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Length"",
+              ""value"": ""38""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The system rejects the request with HTTP 400 Bad Request. The response body contains status 'error', message 'Validation failed', and field error 'paidAmount': 'Paid amount is required'. The order is not created.",TC-008
+Attempt to update an order with a negative item making charge,Order Item Measurement Validation,Negative,High,An existing order with ID 100 exists in the system.,"1. Send a PUT request to /api/orders/100 with the request payload specified in testData.
+2. Observe the HTTP status response code and error payload.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""01911000000"",
+  ""customerGender"": ""FEMALE"",
+  ""paidAmount"": 100.00,
+  ""deliveryDate"": ""2026-05-01"",
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": -10.00,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Waist"",
+              ""value"": ""32""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}",The system rejects the order update with HTTP 400 Bad Request. The response body contains field error 'items[0].measurementGroups[0].makingCharge': 'Making charge must be >= 0'.,TC-009
+Attempt to create an order item measurement group with an empty measurements list,Order Item Measurement Validation,Negative,High,The application service is running.,"1. Send a POST request to /api/orders with an empty 'measurements' list in the measurement group payload as defined in testData.
+2. Observe the HTTP response.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01511000000"",
+  ""customerGender"": ""MALE"",
+  ""paidAmount"": 50.00,
+  ""deliveryDate"": ""2026-05-01"",
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": 100.00,
+          ""measurements"": []
+        }
+      ]
+    }
+  ]
+}",The system rejects the request with HTTP 400 Bad Request. The response body contains field error 'items[0].measurementGroups[0].measurements': 'At least one measurement is required'.,TC-010
+Create an order with zero paid amount and zero making charge at the minimum inclusive decimal boundary,Order Creation,Boundary,High,A valid shop with ID 1 exists in the system.,"1. Send a POST request to /api/orders with the JSON payload in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01712345678"",
+  ""customerGender"": ""MALE"",
+  ""paidAmount"": 0.0,
+  ""deliveryDate"": ""2026-12-31"",
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": 0.0,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Length"",
+              ""value"": ""40""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK status with response body containing status ""success"", totalAmount 0.0, paidAmount 0.0, and dueAmount 0.0.",TC-011
+Create an order with an empty string for trialDate boundary,Order Creation,Boundary,Medium,A valid shop with ID 1 exists in the system.,"1. Send a POST request to /api/orders with the JSON payload in testData containing trialDate as an empty string.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""+8801812345678"",
+  ""customerGender"": ""FEMALE"",
+  ""paidAmount"": 50.0,
+  ""trialDate"": """",
+  ""deliveryDate"": ""2026-12-31"",
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": 100.0,
+          ""measurements"": [
+            {
+              ""nameEn"": ""Waist"",
+              ""value"": ""32""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK status code with response body containing status ""success"", order summary created, and trialDate set to null without causing a date parsing error.",TC-012

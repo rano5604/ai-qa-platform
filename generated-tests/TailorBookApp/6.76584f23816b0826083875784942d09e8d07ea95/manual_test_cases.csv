@@ -233,3 +233,84 @@ Test Data: {
     }
   ]
 }",TC-003
+Attempt to create an order with a non-existent shop ID,Order Creation,Negative,High,No shop exists with ID 999999.,"1. Send a POST request to /api/orders with the request body specified in testData.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""customerPhotoUrl"": ""http://example.com/photo.jpg"",
+  ""shopId"": 999999,
+  ""items"": []
+}",The request is rejected and the system returns an error response indicating that no shop was found with ID: 999999. The order is not created.,TC-004
+Attempt to create an order containing an item ID that does not exist,Order Creation,Negative,High,A shop with ID 1 exists in the system. No item exists with ID 888888.,"1. Send a POST request to /api/orders with the request body specified in testData.
+
+Test Data: {
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""0987654321"",
+  ""customerGender"": ""female"",
+  ""orderGender"": ""female"",
+  ""customerPhotoUrl"": ""http://example.com/jane.jpg"",
+  ""shopId"": 1,
+  ""items"": [
+    {
+      ""itemId"": 888888,
+      ""quantity"": 1,
+      ""measurementGroups"": []
+    }
+  ]
+}",The request is rejected and the system returns an error response indicating that no item was found with ID: 888888. The order is not created.,TC-005
+Create an order with an empty items collection,Order Creation,Boundary,Medium,A shop with ID 1 exists in the system.,"1. Send a POST request to /api/orders with the payload provided in testData.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""shopId"": 1,
+  ""items"": []
+}",HTTP 200 OK with response body containing the saved order with ID and an empty list for 'orderItems'.,TC-006
+Create an order item with item quantity set to 0,Order Item Creation,Boundary,Medium,A shop with ID 1 exists and an item with ID 10 exists in the system.,"1. Send a POST request to /api/orders with the payload provided in testData.
+
+Test Data: {
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""0987654321"",
+  ""customerGender"": ""female"",
+  ""orderGender"": ""female"",
+  ""shopId"": 1,
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""quantity"": 0,
+      ""measurementGroups"": []
+    }
+  ]
+}",HTTP 200 OK with response body containing the saved order and an order item record with quantity equal to 0.,TC-007
+Create a measurement entry with value set to zero (0.0),Order Measurement Processing,Boundary,Low,A shop with ID 1 exists and an item with ID 10 exists in the system.,"1. Send a POST request to /api/orders with the payload provided in testData.
+
+Test Data: {
+  ""customerName"": ""Alex Smith"",
+  ""customerPhone"": ""5551234567"",
+  ""customerGender"": ""other"",
+  ""orderGender"": ""male"",
+  ""shopId"": 1,
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""http://example.com/item.jpg"",
+          ""measurements"": [
+            {
+              ""name"": ""Sleeve"",
+              ""unit"": ""inch"",
+              ""value"": 0.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}",HTTP 200 OK with response body containing the saved order and measurement with value equal to 0.0.,TC-008

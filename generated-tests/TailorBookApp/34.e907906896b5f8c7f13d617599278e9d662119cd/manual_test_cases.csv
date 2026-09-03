@@ -168,3 +168,135 @@ Test Data: {
     }
   ]
 }","1. HTTP 200 OK response with a JSON body containing: {""status"": ""success"", ""message"": ""Order created successfully"", ""data"": {""orderId"": ""<string order ID>"", ""totalAmount"": 200.50, ""dueAmount"": 200.50, ""paidAmount"": 0}}.",TC-003
+Attempt to create an order referencing a non-existent item ID in an order item,Order Creation,Negative,High,A shop exists with ID 1.,"1. Send a POST request to /api/orders with the payload provided in testData.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""MALE"",
+  ""shopId"": 1,
+  ""paidAmount"": 100.00,
+  ""trialDate"": ""2026-04-01"",
+  ""deliveryDate"": ""2026-04-10"",
+  ""items"": [
+    {
+      ""itemId"": 999999,
+      ""measurementGroups"": [
+        {
+          ""deliveryDate"": ""2026-04-08"",
+          ""makingCharge"": 500.00,
+          ""measurements"": []
+        }
+      ]
+    }
+  ]
+}",The request is rejected with an HTTP response containing status 'error' and message 'An unexpected error occurred:Item not found with ID: 999999'.,TC-046
+Attempt to create an order for a non-existent shop ID,Order Creation,Negative,High,No shop exists with ID 999999.,"1. Send a POST request to /api/orders with the payload provided in testData.
+
+Test Data: {
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""0987654321"",
+  ""customerGender"": ""FEMALE"",
+  ""shopId"": 999999,
+  ""paidAmount"": 50.00,
+  ""trialDate"": ""2026-04-01"",
+  ""deliveryDate"": ""2026-04-10"",
+  ""items"": []
+}",The request is rejected with an HTTP response containing status 'error' and message 'An unexpected error occurred:Shop not found with ID: 999999'.,TC-047
+Create an order with making charge set to zero (0.00) and verify total and due amounts,Order Total and Due Amount Calculation,Boundary,High,A shop with ID 1 exists and an item with ID 10 exists in the database.,"1. Send a POST request to /api/orders with the JSON payload provided in testData.
+2. Observe the HTTP status code and response payload.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01700000000"",
+  ""paidAmount"": 0.00,
+  ""trialDate"": ""2026-04-15"",
+  ""deliveryDate"": ""2026-04-20"",
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": 0.00,
+          ""deliveryDate"": ""2026-04-20""
+        }
+      ]
+    }
+  ]
+}","HTTP status code 200 OK is returned. The response body contains 'status': 'success' and 'data' object with 'totalAmount': 0.00, 'paidAmount': 0.00, and 'dueAmount': 0.00.",TC-048
+Create an order where paid amount exactly equals the total making charge (0.00 due amount boundary),Order Total and Due Amount Calculation,Boundary,High,A shop with ID 1 exists and an item with ID 10 exists in the database.,"1. Send a POST request to /api/orders with the JSON payload provided in testData.
+2. Observe the HTTP status code and response payload.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01700000000"",
+  ""paidAmount"": 250.50,
+  ""trialDate"": ""2026-04-15"",
+  ""deliveryDate"": ""2026-04-20"",
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": 250.50,
+          ""deliveryDate"": ""2026-04-20""
+        }
+      ]
+    }
+  ]
+}","HTTP status code 200 OK is returned with response body 'status': 'success'. The returned order summary contains 'totalAmount': 250.50, 'paidAmount': 250.50, and 'dueAmount': 0.00.",TC-049
+Create an order with null makingCharge in measurement group to verify default handling,Order Total and Due Amount Calculation,Boundary,Medium,A shop with ID 1 exists and an item with ID 10 exists in the database.,"1. Send a POST request to /api/orders with the JSON payload provided in testData where makingCharge is omitted/null.
+2. Observe the HTTP response code and payload.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01700000000"",
+  ""paidAmount"": 50.00,
+  ""trialDate"": ""2026-04-15"",
+  ""deliveryDate"": ""2026-04-20"",
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": null,
+          ""deliveryDate"": ""2026-04-20""
+        }
+      ]
+    }
+  ]
+}","HTTP status code 200 OK is returned. The null makingCharge is treated as 0.00, resulting in 'totalAmount': 0.00, 'paidAmount': 50.00, and 'dueAmount': -50.00.",TC-050
+Create an order with maximum precision boundary makingCharge across multiple measurement groups,Order Total and Due Amount Calculation,Boundary,Medium,A shop with ID 1 exists and items with IDs 10 and 11 exist in the database.,"1. Send a POST request to /api/orders with large numeric makingCharge values as specified in testData.
+2. Observe the calculated totals in the response.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01700000000"",
+  ""paidAmount"": 1000.00,
+  ""trialDate"": ""2026-04-15"",
+  ""deliveryDate"": ""2026-04-20"",
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": 99999999.99,
+          ""deliveryDate"": ""2026-04-20""
+        }
+      ]
+    },
+    {
+      ""itemId"": 11,
+      ""measurementGroups"": [
+        {
+          ""makingCharge"": 0.01,
+          ""deliveryDate"": ""2026-04-20""
+        }
+      ]
+    }
+  ]
+}","HTTP status code 200 OK is returned with response body containing 'totalAmount': 100000000.00, 'paidAmount': 1000.00, and 'dueAmount': 99999000.00 without numeric overflow or precision loss.",TC-051

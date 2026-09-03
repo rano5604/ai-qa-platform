@@ -1,0 +1,10 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Verify new order creation summary includes database ID alongside order code,Order Summary Response,Positive,High,A valid shop account exists and is ready to accept orders,"1. Navigate to the Order Creation screen.
+2. Fill in required customer details and order item measurements.
+3. Submit the order.
+
+Test Data: Customer Name: 'John Doe', Phone: '01700000000', Total Amount: 1500",The order is created successfully with HTTP 200 OK status. The returned order summary response contains both the formatted string 'orderId' and the non-null numeric database 'id'.,TC-001
+Verify shop order listing includes numeric database ID for returned orders,Order Summary Response,Positive,High,At least one order has been successfully placed for the specified shop,"1. Request the order list for the active shop.
+2. Check the details of the returned order list in the summary response.
+
+Test Data: Shop ID: 1, Page: 0, Limit: 10","The request returns HTTP 200 OK with a list of order summaries. Each order entry includes its unique numeric database 'id' in addition to 'orderId', 'shopName', total, and paid amounts.",TC-002

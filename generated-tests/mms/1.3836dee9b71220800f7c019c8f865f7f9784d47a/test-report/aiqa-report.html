@@ -1,0 +1,950 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test execution report - mms</title><style>*{box-sizing:border-box}
+body{font:14px/1.5 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+     margin:0;padding:28px;color:#1a1a1a;background:#f6f7f9}
+h1{margin:0 0 16px;font-size:22px}
+h2{margin:0 0 4px;font-size:15px}
+h3{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#666}
+table.meta{border-collapse:collapse;margin-bottom:18px;background:#fff;border:1px solid #e2e5e9;border-radius:6px}
+table.meta td{padding:6px 12px;border-bottom:1px solid #eef0f3}
+table.meta td:first-child{color:#666;white-space:nowrap}
+table.meta tr:last-child td{border-bottom:0}
+.tiles{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.tile{background:#fff;border:1px solid #e2e5e9;border-radius:6px;padding:10px 18px;min-width:88px}
+.tile .n{font-size:22px;font-weight:600}
+.tile .l{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#666}
+.tile.pass .n{color:#127a3d}.tile.fail .n{color:#b3261e}
+.tile.err .n{color:#8a4b00}.tile.skip .n{color:#5a6472}
+.sub{color:#666;margin:6px 0 18px}
+.banner{background:#fff4e5;border:1px solid #f0c894;border-radius:6px;padding:10px 14px;margin-bottom:16px}
+.banner.warn{background:#fdf0ef;border-color:#f0b3ae}
+.banner ul{margin:6px 0 0 18px;padding:0}
+section.test{background:#fff;border:1px solid #e2e5e9;border-left-width:4px;
+             border-radius:6px;padding:14px 16px;margin-bottom:12px}
+section.test.pass{border-left-color:#2f9e5f}
+section.test.fail{border-left-color:#d93025}
+section.test.err{border-left-color:#e08600}
+section.test.skip{border-left-color:#9aa3ad}
+.where{color:#777;font-size:12px;margin-bottom:10px}
+.badge{display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;
+       font-weight:600;color:#fff;vertical-align:middle}
+.badge.pass{background:#2f9e5f}.badge.fail{background:#d93025}
+.badge.err{background:#e08600}.badge.skip{background:#9aa3ad}
+.failure{background:#fdf0ef;border:1px solid #f3c2be;border-radius:5px;padding:8px 10px;margin:8px 0}
+details.xch{border:1px solid #e6e9ed;border-radius:5px;margin-top:8px;background:#fbfcfd}
+details.xch summary{cursor:pointer;padding:7px 10px;font-size:13px;user-select:none}
+details.xch[open] summary{border-bottom:1px solid #e6e9ed}
+.n{color:#8b95a1;margin-right:4px}
+.verb{font-weight:700;font-family:ui-monospace,Consolas,monospace}
+.uri{font-family:ui-monospace,Consolas,monospace;word-break:break-all}
+.ms{color:#8b95a1;font-size:11px;margin-left:4px}
+.line{font-weight:400;text-transform:none;letter-spacing:0;color:#888}
+.cols{display:flex;gap:14px;padding:10px;flex-wrap:wrap}
+.col{flex:1 1 340px;min-width:0}
+table.hdr{border-collapse:collapse;width:100%;margin-bottom:6px;font-size:11px}
+table.hdr td{padding:2px 6px;border-bottom:1px solid #eef0f3;
+             font-family:ui-monospace,Consolas,monospace;word-break:break-all}
+table.hdr td:first-child{color:#777;white-space:nowrap;width:1%}
+pre{background:#f4f6f8;border:1px solid #e6e9ed;border-radius:4px;padding:8px 10px;
+    margin:0 0 6px;overflow-x:auto;white-space:pre-wrap;word-break:break-word;
+    font-family:ui-monospace,Consolas,monospace;font-size:12px;max-height:420px}
+.none{color:#8b95a1;font-size:12px;font-style:italic;margin:0 0 6px}
+.send{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+      padding:8px 10px;border-top:1px solid #eef0f3;background:#fff}
+.send-btn{font:inherit;font-size:12px;font-weight:600;color:#fff;background:#3060c0;
+          border:0;border-radius:4px;padding:5px 14px;cursor:pointer}
+.send-btn:hover{background:#254c9c}
+.send-btn:disabled{background:#9aa3ad;cursor:default}
+.send-note{color:#8b95a1;font-size:11px}
+.send-out{flex:1 1 100%;margin-top:2px}
+.send-out h3{margin-top:6px}
+.edit-btn,.reset-btn{font:inherit;font-size:12px;font-weight:600;color:#3060c0;
+          background:#fff;border:1px solid #c6d0dc;border-radius:4px;
+          padding:5px 12px;cursor:pointer}
+.edit-btn:hover,.reset-btn:hover{background:#f0f4fa;border-color:#3060c0}
+.send-edit{flex:1 1 100%;display:flex;flex-direction:column;gap:8px;
+           margin-top:4px;padding:10px;background:#f8f9fb;
+           border:1px solid #e2e5e9;border-radius:6px}
+.send-edit label{display:flex;flex-direction:column;gap:3px;
+                 font-size:11px;font-weight:600;text-transform:uppercase;
+                 letter-spacing:.05em;color:#666}
+.send-edit em{font-weight:400;font-style:normal;text-transform:none;
+              letter-spacing:0;color:#8b95a1}
+.send-edit input,.send-edit select,.send-edit textarea{
+              font-family:ui-monospace,Consolas,monospace;font-size:12px;
+              padding:6px 8px;border:1px solid #d5dae0;border-radius:4px;
+              background:#fff;color:#1a1a1a;width:100%}
+.send-edit textarea{resize:vertical;white-space:pre;overflow-wrap:normal;overflow-x:auto}
+.send-edit input:focus,.send-edit select:focus,.send-edit textarea:focus{
+              outline:2px solid #3060c0;outline-offset:-1px;border-color:#3060c0}
+.edit-line{display:flex;gap:8px;align-items:flex-end}
+.edit-method-l{flex:0 0 110px}
+.edit-uri-l{flex:1 1 auto}
+.reset-btn{align-self:flex-start}
+.edited-warn{margin:0 0 6px;padding:6px 9px;font-size:12px;
+             color:#7a4a00;background:#fff6e5;border:1px solid #f0d9a8;
+             border-radius:4px;font-family:ui-monospace,Consolas,monospace}
+</style></head><body><h1>Test execution report</h1><table class="meta"><tr><td>Project</td><td>mms</td></tr><tr><td>Commit</td><td>3836dee9b71220800f7c019c8f865f7f9784d47a</td></tr><tr><td>Base URI</td><td>http://169.58.37.242:8007/mms</td></tr><tr><td>Generated</td><td>2026-09-01 13:19:09</td></tr></table><div class="tiles"><div class="tile total"><div class="n">31</div><div class="l">Total</div></div><div class="tile pass"><div class="n">0</div><div class="l">Passed</div></div><div class="tile fail"><div class="n">31</div><div class="l">Failed</div></div><div class="tile err"><div class="n">0</div><div class="l">Errors</div></div><div class="tile skip"><div class="n">0</div><div class="l">Skipped</div></div></div><p class="sub">Scripts attempted 1, compiled 1.</p><div class="banner warn"><strong>Read this before the results below</strong><ul><li>31 of 31 failing test(s) stopped on their very first call, which was a create/update, not the request they exist to verify. Those tests never established their preconditions, so they say nothing about the rules in their names - fix the setup before reading them as defects: POST /mms/api/v1/merchants -&gt; 400 (x30), POST /mms/api/v1/merchants -&gt; 500 (x1)</li></ul></div><section class="test fail"><h2><span class="badge fail">FAILED</span> TC_011_DynamicQrTypeUsesPointOfInitiationMethod12</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 1319 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">833 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Test Merchant for QR&quot;,
+  &quot;tradeName&quot; : &quot;QR Test Store&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247130723&quot;,
+  &quot;taxId&quot; : &quot;TAX-1788247130723&quot;,
+  &quot;merchantCategoryCode&quot; : &quot;5411&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;qrtest1788247130723@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966501234567&quot;,
+  &quot;website&quot; : &quot;https://www.qrtest.com&quot;,
+  &quot;address&quot; : &quot;Test Address&quot;,
+  &quot;city&quot; : &quot;Riyadh&quot;,
+  &quot;state&quot; : &quot;Riyadh Province&quot;,
+  &quot;postalCode&quot; : &quot;11564&quot;,
+  &quot;country&quot; : &quot;SA&quot;,
+  &quot;userId&quot; : 30723
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:52 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:52.014165572&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Test Merchant for QR\",\n              \"tradeName\": \"QR Test Store\",\n              \"registrationNo\": \"CR-1788247130723\",\n              \"taxId\": \"TAX-1788247130723\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"qrtest1788247130723@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"website\": \"https://www.qrtest.com\",\n              \"address\": \"Test Address\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 30723\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> TC_012_TlvLengthFieldZeroPaddedForSingleDigitLengths</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 420 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">422 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Test Merchant for TLV Length&quot;,
+  &quot;tradeName&quot; : &quot;TLV Test Store&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247132043&quot;,
+  &quot;taxId&quot; : &quot;TAX-1788247132043&quot;,
+  &quot;merchantCategoryCode&quot; : &quot;5411&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;tlvtest1788247132043@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966501234568&quot;,
+  &quot;website&quot; : &quot;https://www.tlvtest.com&quot;,
+  &quot;address&quot; : &quot;Test Address&quot;,
+  &quot;city&quot; : &quot;Riyadh&quot;,
+  &quot;state&quot; : &quot;Riyadh Province&quot;,
+  &quot;postalCode&quot; : &quot;11564&quot;,
+  &quot;country&quot; : &quot;SA&quot;,
+  &quot;userId&quot; : 32043
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:52 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:52.534235164&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Test Merchant for TLV Length\",\n              \"tradeName\": \"TLV Test Store\",\n              \"registrationNo\": \"CR-1788247132043\",\n              \"taxId\": \"TAX-1788247132043\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"tlvtest1788247132043@example.com\",\n              \"contactPhone\": \"+966501234568\",\n              \"website\": \"https://www.tlvtest.com\",\n              \"address\": \"Test Address\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 32043\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> crc16ChecksumIsAppendedAsTag63With4CharacterHexValue</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 607 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">585 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Test Merchant&quot;,
+  &quot;tradeName&quot; : &quot;Trade_1788247132463&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247132463&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;country&quot; : &quot;SA&quot;,
+  &quot;userId&quot; : 32463
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:53 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:53.075950955&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Test Merchant\",\n              \"tradeName\": \"Trade_1788247132463\",\n              \"registrationNo\": \"CR-1788247132463\",\n              \"businessType\": \"CORPORATION\",\n              \"country\": \"SA\",\n  \"userId\": 32463\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> merchantCityAt15CharsIncludedInFull</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 463 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">451 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Some Merchant&quot;,
+  &quot;tradeName&quot; : &quot;Trade_1788247133074&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247133074&quot;,
+  &quot;taxId&quot; : &quot;TAX-1788247133074&quot;,
+  &quot;merchantCategoryCode&quot; : &quot;5411&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;m1788247133074@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966500000000&quot;,
+  &quot;website&quot; : &quot;https://example.com&quot;,
+  &quot;address&quot; : &quot;123 Test Street&quot;,
+  &quot;city&quot; : &quot;RiyadhCityName&quot;,
+  &quot;state&quot; : &quot;TestState&quot;,
+  &quot;postalCode&quot; : &quot;11564&quot;,
+  &quot;country&quot; : &quot;SA&quot;,
+  &quot;userId&quot; : 33074
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:53 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:53.595951941&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Some Merchant\",\n              \"tradeName\": \"Trade_1788247133074\",\n              \"registrationNo\": \"CR-1788247133074\",\n              \"taxId\": \"TAX-1788247133074\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"m1788247133074@example.com\",\n              \"contactPhone\": \"+966500000000\",\n              \"website\": \"https://example.com\",\n              \"address\": \"123 Test Street\",\n              \"city\": \"RiyadhCityName\",\n              \"state\": \"TestState\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 33074\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> merchantCityExactly15CharactersInTag60</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 614 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">598 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Valid Legal Name&quot;,
+  &quot;tradeName&quot; : &quot;Test Trade&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247133535&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;city&quot; : &quot;RiyadhCityName&quot;,
+  &quot;userId&quot; : 33535
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:54 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:54.191896601&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Valid Legal Name\",\n              \"tradeName\": \"Test Trade\",\n              \"registrationNo\": \"CR-1788247133535\",\n              \"businessType\": \"CORPORATION\",\n              \"city\": \"RiyadhCityName\",\n  \"userId\": 33535\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> merchantCityExceeding15CharactersIsTruncatedTo15InTag60</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 661 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">646 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;TC004 Legal 1788247134152&quot;,
+  &quot;tradeName&quot; : &quot;TC004 Trade 1788247134152&quot;,
+  &quot;registrationNo&quot; : &quot;CR-TC004-1788247134152&quot;,
+  &quot;taxId&quot; : &quot;TAX-TC004-1788247134152&quot;,
+  &quot;merchantCategoryCode&quot; : &quot;5411&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;tc004_1788247134152@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966501234001&quot;,
+  &quot;city&quot; : &quot;RiyadhCityNameExtra&quot;,
+  &quot;country&quot; : &quot;SA&quot;,
+  &quot;userId&quot; : 34152
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:54 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:54.792250647&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"TC004 Legal 1788247134152\",\n              \"tradeName\": \"TC004 Trade 1788247134152\",\n              \"registrationNo\": \"CR-TC004-1788247134152\",\n              \"taxId\": \"TAX-TC004-1788247134152\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"tc004_1788247134152@example.com\",\n              \"contactPhone\": \"+966501234001\",\n              \"city\": \"RiyadhCityNameExtra\",\n              \"country\": \"SA\",\n  \"userId\": 34152\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> merchantCityExceeding15CharactersTruncatedInTag60</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 494 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">483 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Valid Legal Name&quot;,
+  &quot;tradeName&quot; : &quot;Test Trade&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247134815&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;city&quot; : &quot;RiyadhCityNameExtra&quot;,
+  &quot;userId&quot; : 34815
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:55 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:55.390889815&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Valid Legal Name\",\n              \"tradeName\": \"Test Trade\",\n              \"registrationNo\": \"CR-1788247134815\",\n              \"businessType\": \"CORPORATION\",\n              \"city\": \"RiyadhCityNameExtra\",\n  \"userId\": 34815\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> merchantCityExceeding15CharsTruncatedTo15</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 513 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">506 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Some Merchant&quot;,
+  &quot;tradeName&quot; : &quot;Trade_1788247135310&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247135310&quot;,
+  &quot;taxId&quot; : &quot;TAX-1788247135310&quot;,
+  &quot;merchantCategoryCode&quot; : &quot;5411&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;m1788247135310@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966500000000&quot;,
+  &quot;website&quot; : &quot;https://example.com&quot;,
+  &quot;address&quot; : &quot;123 Test Street&quot;,
+  &quot;city&quot; : &quot;RiyadhCityNameExtra&quot;,
+  &quot;state&quot; : &quot;TestState&quot;,
+  &quot;postalCode&quot; : &quot;11564&quot;,
+  &quot;country&quot; : &quot;SA&quot;,
+  &quot;userId&quot; : 35310
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:55 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:55.862443452&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Some Merchant\",\n              \"tradeName\": \"Trade_1788247135310\",\n              \"registrationNo\": \"CR-1788247135310\",\n              \"taxId\": \"TAX-1788247135310\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"m1788247135310@example.com\",\n              \"contactPhone\": \"+966500000000\",\n              \"website\": \"https://example.com\",\n              \"address\": \"123 Test Street\",\n              \"city\": \"RiyadhCityNameExtra\",\n              \"state\": \"TestState\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 35310\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> merchantNameAt25CharsIncludedInFull</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 495 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">474 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;,
+  &quot;tradeName&quot; : &quot;Trade_1788247135823&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247135823&quot;,
+  &quot;taxId&quot; : &quot;TAX-1788247135823&quot;,
+  &quot;merchantCategoryCode&quot; : &quot;5411&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;m1788247135823@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966500000000&quot;,
+  &quot;website&quot; : &quot;https://example.com&quot;,
+  &quot;address&quot; : &quot;123 Test Street&quot;,
+  &quot;city&quot; : &quot;Riyadh&quot;,
+  &quot;state&quot; : &quot;TestState&quot;,
+  &quot;postalCode&quot; : &quot;11564&quot;,
+  &quot;country&quot; : &quot;SA&quot;,
+  &quot;userId&quot; : 35823
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:56 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:56.391647474&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\n              \"tradeName\": \"Trade_1788247135823\",\n              \"registrationNo\": \"CR-1788247135823\",\n              \"taxId\": \"TAX-1788247135823\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"m1788247135823@example.com\",\n              \"contactPhone\": \"+966500000000\",\n              \"website\": \"https://example.com\",\n              \"address\": \"123 Test Street\",\n              \"city\": \"Riyadh\",\n              \"state\": \"TestState\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 35823\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> merchantNameExactly25CharactersInTag59</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 431 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">429 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;ABCDEFGHIJKLMNOPQRSTUVWXY&quot;,
+  &quot;tradeName&quot; : &quot;Test Trade&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247136320&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;city&quot; : &quot;Riyadh&quot;,
+  &quot;userId&quot; : 36320
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:56 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:56.84255404&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"ABCDEFGHIJKLMNOPQRSTUVWXY\",\n              \"tradeName\": \"Test Trade\",\n              \"registrationNo\": \"CR-1788247136320\",\n              \"businessType\": \"CORPORATION\",\n              \"city\": \"Riyadh\",\n  \"userId\": 36320\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> merchantNameExceeding25CharactersTruncatedInTag59</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 550 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">526 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&quot;,
+  &quot;tradeName&quot; : &quot;TradeName_1788247136750&quot;,
+  &quot;registrationNo&quot; : &quot;REG-1788247136750&quot;,
+  &quot;taxId&quot; : &quot;TAX-1788247136750&quot;,
+  &quot;merchantCategoryCode&quot; : &quot;5411&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;contact_1788247136750@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966501234567&quot;,
+  &quot;website&quot; : &quot;https://www.example.com&quot;,
+  &quot;address&quot; : &quot;123 Test Road&quot;,
+  &quot;city&quot; : &quot;Riyadh&quot;,
+  &quot;state&quot; : &quot;Riyadh Province&quot;,
+  &quot;postalCode&quot; : &quot;11564&quot;,
+  &quot;country&quot; : &quot;SA&quot;,
+  &quot;userId&quot; : 36750
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:57 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:57.360506134&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\",\n              \"tradeName\": \"TradeName_1788247136750\",\n              \"registrationNo\": \"REG-1788247136750\",\n              \"taxId\": \"TAX-1788247136750\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"contact_1788247136750@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"website\": \"https://www.example.com\",\n              \"address\": \"123 Test Road\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 36750\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> merchantNameExceeding25CharactersTruncatedInTag592</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 479 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">468 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&quot;,
+  &quot;tradeName&quot; : &quot;Test Trade&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247137301&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;city&quot; : &quot;Riyadh&quot;,
+  &quot;userId&quot; : 37301
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:57 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:57.86389848&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\",\n              \"tradeName\": \"Test Trade\",\n              \"registrationNo\": \"CR-1788247137301\",\n              \"businessType\": \"CORPORATION\",\n              \"city\": \"Riyadh\",\n  \"userId\": 37301\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> merchantNameExceeding25CharsTruncatedTo25</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 457 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">447 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&quot;,
+  &quot;tradeName&quot; : &quot;Trade_1788247137782&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247137782&quot;,
+  &quot;taxId&quot; : &quot;TAX-1788247137782&quot;,
+  &quot;merchantCategoryCode&quot; : &quot;5411&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;m1788247137782@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966500000000&quot;,
+  &quot;website&quot; : &quot;https://example.com&quot;,
+  &quot;address&quot; : &quot;123 Test Street&quot;,
+  &quot;city&quot; : &quot;Riyadh&quot;,
+  &quot;state&quot; : &quot;TestState&quot;,
+  &quot;postalCode&quot; : &quot;11564&quot;,
+  &quot;country&quot; : &quot;SA&quot;,
+  &quot;userId&quot; : 37782
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:58 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:58.326040513&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\",\n              \"tradeName\": \"Trade_1788247137782\",\n              \"registrationNo\": \"CR-1788247137782\",\n              \"taxId\": \"TAX-1788247137782\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"m1788247137782@example.com\",\n              \"contactPhone\": \"+966500000000\",\n              \"website\": \"https://example.com\",\n              \"address\": \"123 Test Street\",\n              \"city\": \"Riyadh\",\n              \"state\": \"TestState\",\n              \"postalCode\": \"11564\",\n              \"country\": \"SA\",\n  \"userId\": 37782\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> multiByteUtf8CharactersInMerchantNameAreCountedByBytesNotCharactersForTruncation</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 660 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">653 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;商户名称测试&quot;,
+  &quot;tradeName&quot; : &quot;Trade_1788247138241&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247138241&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;country&quot; : &quot;SA&quot;,
+  &quot;userId&quot; : 38241
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:58 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:58.944927479&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"商户名称测试\",\n              \"tradeName\": \"Trade_1788247138241\",\n              \"registrationNo\": \"CR-1788247138241\",\n              \"businessType\": \"CORPORATION\",\n              \"country\": \"SA\",\n  \"userId\": 38241\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> multiByteUtf8MerchantNameExceeding25BytesIsTruncatedByByteCountInTag59</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 688 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">679 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;商户名称测试商户名称测试商&quot;,
+  &quot;tradeName&quot; : &quot;Trade_1788247138903&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247138903&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;country&quot; : &quot;SA&quot;,
+  &quot;userId&quot; : 38903
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:18:59 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:18:59.60997161&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"商户名称测试商户名称测试商\",\n              \"tradeName\": \"Trade_1788247138903\",\n              \"registrationNo\": \"CR-1788247138903\",\n              \"businessType\": \"CORPORATION\",\n              \"country\": \"SA\",\n  \"userId\": 38903\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> nullCountryCodeDefaultsToSA</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 496 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">492 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Test Merchant&quot;,
+  &quot;tradeName&quot; : &quot;Test Store&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247139591&quot;,
+  &quot;taxId&quot; : &quot;TAX-1788247139591&quot;,
+  &quot;merchantCategoryCode&quot; : null,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;test1788247139591@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966501234567&quot;,
+  &quot;address&quot; : &quot;123 Test St&quot;,
+  &quot;city&quot; : &quot;Riyadh&quot;,
+  &quot;state&quot; : &quot;Riyadh Province&quot;,
+  &quot;postalCode&quot; : &quot;11564&quot;,
+  &quot;country&quot; : null,
+  &quot;userId&quot; : 39591
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:00 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:00.183813624&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Test Merchant\",\n              \"tradeName\": \"Test Store\",\n              \"registrationNo\": \"CR-1788247139591\",\n              \"taxId\": \"TAX-1788247139591\",\n              \"merchantCategoryCode\": null,\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"test1788247139591@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"address\": \"123 Test St\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": null,\n  \"userId\": 39591\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> nullCountryCodeDefaultsToSAInTag58</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 467 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">455 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Null Country Merchant 1788247140102&quot;,
+  &quot;tradeName&quot; : &quot;NC Trade 1788247140102&quot;,
+  &quot;registrationNo&quot; : &quot;CR-NULL-1788247140102&quot;,
+  &quot;taxId&quot; : &quot;TAX-NULL-1788247140102&quot;,
+  &quot;merchantCategoryCode&quot; : &quot;5411&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;nullcountry1788247140102@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966500000001&quot;,
+  &quot;address&quot; : &quot;123 Test Street&quot;,
+  &quot;city&quot; : &quot;Riyadh&quot;,
+  &quot;state&quot; : &quot;Riyadh Province&quot;,
+  &quot;postalCode&quot; : &quot;11564&quot;,
+  &quot;userId&quot; : 40102
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:00 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:00.63142301&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Null Country Merchant 1788247140102\",\n              \"tradeName\": \"NC Trade 1788247140102\",\n              \"registrationNo\": \"CR-NULL-1788247140102\",\n              \"taxId\": \"TAX-NULL-1788247140102\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"nullcountry1788247140102@example.com\",\n              \"contactPhone\": \"+966500000001\",\n              \"address\": \"123 Test Street\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n  \"userId\": 40102\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> nullCurrencyDefaultsToSAR</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 645 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">629 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Test Merchant&quot;,
+  &quot;tradeName&quot; : &quot;Test Store&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247140554&quot;,
+  &quot;taxId&quot; : &quot;TAX-1788247140554&quot;,
+  &quot;merchantCategoryCode&quot; : null,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;test1788247140554@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966501234567&quot;,
+  &quot;address&quot; : &quot;123 Test St&quot;,
+  &quot;city&quot; : &quot;Riyadh&quot;,
+  &quot;state&quot; : &quot;Riyadh Province&quot;,
+  &quot;postalCode&quot; : &quot;11564&quot;,
+  &quot;country&quot; : null,
+  &quot;userId&quot; : 40554
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:01 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:01.176339951&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Test Merchant\",\n              \"tradeName\": \"Test Store\",\n              \"registrationNo\": \"CR-1788247140554\",\n              \"taxId\": \"TAX-1788247140554\",\n              \"merchantCategoryCode\": null,\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"test1788247140554@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"address\": \"123 Test St\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": null,\n  \"userId\": 40554\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> nullMCCDefaultsTo0000</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 480 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">464 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Test Merchant&quot;,
+  &quot;tradeName&quot; : &quot;Test Store&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247141204&quot;,
+  &quot;taxId&quot; : &quot;TAX-1788247141204&quot;,
+  &quot;merchantCategoryCode&quot; : null,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;test1788247141204@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966501234567&quot;,
+  &quot;address&quot; : &quot;123 Test St&quot;,
+  &quot;city&quot; : &quot;Riyadh&quot;,
+  &quot;state&quot; : &quot;Riyadh Province&quot;,
+  &quot;postalCode&quot; : &quot;11564&quot;,
+  &quot;country&quot; : null,
+  &quot;userId&quot; : 41204
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:01 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:01.729941191&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Test Merchant\",\n              \"tradeName\": \"Test Store\",\n              \"registrationNo\": \"CR-1788247141204\",\n              \"taxId\": \"TAX-1788247141204\",\n              \"merchantCategoryCode\": null,\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"test1788247141204@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"address\": \"123 Test St\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": null,\n  \"userId\": 41204\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> nullMccDefaultsToZeroZeroZeroZeroInTag52</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 773 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">776 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Test Merchant 1788247141685&quot;,
+  &quot;tradeName&quot; : &quot;Test Store 1788247141685&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247141685&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;userId&quot; : 41685
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:02 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:02.307906165&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Test Merchant 1788247141685\",\n              \"tradeName\": \"Test Store 1788247141685\",\n              \"registrationNo\": \"CR-1788247141685\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 41685\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> nullMerchantCityDefaultsToRiyadh</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 502 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">478 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;NoCity Merchant&quot;,
+  &quot;tradeName&quot; : &quot;NoCity_1788247142458&quot;,
+  &quot;registrationNo&quot; : &quot;CR-NC-1788247142458&quot;,
+  &quot;taxId&quot; : &quot;TAX-NC-1788247142458&quot;,
+  &quot;merchantCategoryCode&quot; : &quot;5411&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;nc1788247142458@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966500000001&quot;,
+  &quot;address&quot; : &quot;456 Test Street&quot;,
+  &quot;country&quot; : &quot;SA&quot;,
+  &quot;userId&quot; : 42458
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:02 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:02.984622719&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"NoCity Merchant\",\n              \"tradeName\": \"NoCity_1788247142458\",\n              \"registrationNo\": \"CR-NC-1788247142458\",\n              \"taxId\": \"TAX-NC-1788247142458\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"nc1788247142458@example.com\",\n              \"contactPhone\": \"+966500000001\",\n              \"address\": \"456 Test Street\",\n              \"country\": \"SA\",\n  \"userId\": 42458\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> nullMerchantCityDefaultsToRiyadhInTag60</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 514 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">507 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;TC005 Legal 1788247142960&quot;,
+  &quot;tradeName&quot; : &quot;TC005 Trade 1788247142960&quot;,
+  &quot;registrationNo&quot; : &quot;CR-TC005-1788247142960&quot;,
+  &quot;taxId&quot; : &quot;TAX-TC005-1788247142960&quot;,
+  &quot;merchantCategoryCode&quot; : &quot;5411&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;tc005_1788247142960@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966501234002&quot;,
+  &quot;country&quot; : &quot;SA&quot;,
+  &quot;userId&quot; : 42960
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:03 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:03.513431544&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"TC005 Legal 1788247142960\",\n              \"tradeName\": \"TC005 Trade 1788247142960\",\n              \"registrationNo\": \"CR-TC005-1788247142960\",\n              \"taxId\": \"TAX-TC005-1788247142960\",\n              \"merchantCategoryCode\": \"5411\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"tc005_1788247142960@example.com\",\n              \"contactPhone\": \"+966501234002\",\n              \"country\": \"SA\",\n  \"userId\": 42960\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> nullMerchantCityDefaultsToRiyadhInTag602</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 845 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">829 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Valid Legal Name&quot;,
+  &quot;tradeName&quot; : &quot;Test Trade&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247143474&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;userId&quot; : 43474
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:04 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:04.261362443&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Valid Legal Name\",\n              \"tradeName\": \"Test Trade\",\n              \"registrationNo\": \"CR-1788247143474\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 43474\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> staticQRTypeUsesPIM11</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 539 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;500&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">500</span> <span class="ms">535 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>            {
+              &quot;legalName&quot;: &quot;Test Merchant&quot;,
+              &quot;tradeName&quot;: &quot;Test Store&quot;,
+              &quot;registrationNo&quot;: &quot;CR-1788247144321&quot;,
+              &quot;taxId&quot;: &quot;TAX-1788247144321&quot;,
+              &quot;merchantCategoryCode&quot;: &quot;&quot;5411&quot;&quot;,
+              &quot;businessType&quot;: &quot;CORPORATION&quot;,
+              &quot;contactEmail&quot;: &quot;test1788247144321@example.com&quot;,
+              &quot;contactPhone&quot;: &quot;+966501234567&quot;,
+              &quot;address&quot;: &quot;123 Test St&quot;,
+              &quot;city&quot;: &quot;Riyadh&quot;,
+              &quot;state&quot;: &quot;Riyadh Province&quot;,
+              &quot;postalCode&quot;: &quot;11564&quot;,
+              &quot;country&quot;: &quot;&quot;SA&quot;&quot;,
+  &quot;userId&quot;: 44321
+}
+</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 500 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:04 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 500,
+  &quot;error&quot; : &quot;Internal Server Error&quot;,
+  &quot;message&quot; : &quot;An unexpected error occurred&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:04.923106429&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Test Merchant\",\n              \"tradeName\": \"Test Store\",\n              \"registrationNo\": \"CR-1788247144321\",\n              \"taxId\": \"TAX-1788247144321\",\n              \"merchantCategoryCode\": \"\"5411\"\",\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"test1788247144321@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"address\": \"123 Test St\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": \"\"SA\"\",\n  \"userId\": 44321\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> testDynamicQrTypeUsesPointOfInitiationMethod12</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 547 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">556 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Dynamic QR Merchant LLC&quot;,
+  &quot;tradeName&quot; : &quot;Dynamic QR Store&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247144865&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;userId&quot; : 44865
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:05 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:05.472243893&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Dynamic QR Merchant LLC\",\n              \"tradeName\": \"Dynamic QR Store\",\n              \"registrationNo\": \"CR-1788247144865\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 44865\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> testNullCountryCodeDefaultsToSA</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 468 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">460 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Null Country Merchant LLC&quot;,
+  &quot;tradeName&quot; : &quot;Null Country Store&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247145426&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;userId&quot; : 45426
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:05 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:05.984463164&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Null Country Merchant LLC\",\n              \"tradeName\": \"Null Country Store\",\n              \"registrationNo\": \"CR-1788247145426\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 45426\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> testNullCurrencyDefaultsToSAR682</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 718 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">713 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Null Currency Merchant LLC&quot;,
+  &quot;tradeName&quot; : &quot;Null Currency Store&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247145894&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;userId&quot; : 45894
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:06 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:06.494795155&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Null Currency Merchant LLC\",\n              \"tradeName\": \"Null Currency Store\",\n              \"registrationNo\": \"CR-1788247145894\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 45894\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> testStaticQrTypeUsesPointOfInitiationMethod11</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 501 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">492 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Static QR Merchant LLC&quot;,
+  &quot;tradeName&quot; : &quot;Static QR Store&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247146612&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;userId&quot; : 46612
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:07 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:07.158379265&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Static QR Merchant LLC\",\n              \"tradeName\": \"Static QR Store\",\n              \"registrationNo\": \"CR-1788247146612\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 46612\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> testUnrecognizedCurrencyCodeDefaultsToSAR682</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 470 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">457 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Unrecognized Currency Merchant LLC&quot;,
+  &quot;tradeName&quot; : &quot;Unrecognized Currency Store&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247147113&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;userId&quot; : 47113
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:07 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:07.646203091&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Unrecognized Currency Merchant LLC\",\n              \"tradeName\": \"Unrecognized Currency Store\",\n              \"registrationNo\": \"CR-1788247147113\",\n              \"businessType\": \"CORPORATION\",\n  \"userId\": 47113\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> tlvLengthFieldIsZeroPaddedTo2DigitsForSingleDigitLengths</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 635 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">628 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Test Merchant&quot;,
+  &quot;tradeName&quot; : &quot;Trade_1788247147585&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247147585&quot;,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;country&quot; : &quot;SA&quot;,
+  &quot;userId&quot; : 47585
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:08 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;,
+    &quot;contactPhone&quot; : &quot;must not be blank&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:08.176390468&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Test Merchant\",\n              \"tradeName\": \"Trade_1788247147585\",\n              \"registrationNo\": \"CR-1788247147585\",\n              \"businessType\": \"CORPORATION\",\n              \"country\": \"SA\",\n  \"userId\": 47585\n}\n"}</script></div></details></section><section class="test fail"><h2><span class="badge fail">FAILED</span> unrecognizedCurrencyDefaultsToSAR</h2><div class="where">com.company.aiqa.generated.AutomationTest_3836dee9b71220800f7c019c8f865f7f9784d47a &middot; 499 ms</div><div class="failure"><strong>java.lang.AssertionError</strong><pre>1 expectation failed.
+Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;400&gt;.</pre></div><details class="xch" open><summary><span class="n">#1</span> <span class="verb">POST</span> <span class="uri">http://169.58.37.242:8007/mms/api/v1/merchants</span> <span class="badge fail">400</span> <span class="ms">491 ms</span></summary><div class="cols"><div class="col"><h3>Request</h3><table class="hdr"><tr><td>Accept</td><td>*/*</td></tr><tr><td>Content-Type</td><td>application/json</td></tr></table><pre>{
+  &quot;legalName&quot; : &quot;Test Merchant&quot;,
+  &quot;tradeName&quot; : &quot;Test Store&quot;,
+  &quot;registrationNo&quot; : &quot;CR-1788247148218&quot;,
+  &quot;taxId&quot; : &quot;TAX-1788247148218&quot;,
+  &quot;merchantCategoryCode&quot; : null,
+  &quot;businessType&quot; : &quot;CORPORATION&quot;,
+  &quot;contactEmail&quot; : &quot;test1788247148218@example.com&quot;,
+  &quot;contactPhone&quot; : &quot;+966501234567&quot;,
+  &quot;address&quot; : &quot;123 Test St&quot;,
+  &quot;city&quot; : &quot;Riyadh&quot;,
+  &quot;state&quot; : &quot;Riyadh Province&quot;,
+  &quot;postalCode&quot; : &quot;11564&quot;,
+  &quot;country&quot; : null,
+  &quot;userId&quot; : 48218
+}</pre></div><div class="col"><h3>Response <span class="line">HTTP/1.1 400 </span></h3><table class="hdr"><tr><td>X-Content-Type-Options</td><td>nosniff</td></tr><tr><td>X-XSS-Protection</td><td>0</td></tr><tr><td>Cache-Control</td><td>no-cache, no-store, max-age=0, must-revalidate</td></tr><tr><td>Pragma</td><td>no-cache</td></tr><tr><td>Expires</td><td>0</td></tr><tr><td>X-Frame-Options</td><td>DENY</td></tr><tr><td>Content-Type</td><td>application/json</td></tr><tr><td>Transfer-Encoding</td><td>chunked</td></tr><tr><td>Date</td><td>Tue, 01 Sep 2026 07:19:08 GMT</td></tr><tr><td>Connection</td><td>close</td></tr></table><pre>{
+  &quot;status&quot; : 400,
+  &quot;error&quot; : &quot;Validation Failed&quot;,
+  &quot;message&quot; : &quot;Input validation failed&quot;,
+  &quot;path&quot; : &quot;/mms/api/v1/merchants&quot;,
+  &quot;validationErrors&quot; : {
+    &quot;accountNo&quot; : &quot;Account No is required&quot;
+  },
+  &quot;timestamp&quot; : &quot;2026-09-01T07:19:08.739734311&quot;
+}</pre></div></div><div class="send"><button type="button" class="send-btn">Send again</button><button type="button" class="edit-btn">Edit request</button><span class="send-note">Sends this request from your browser - as captured, or with your edits.</span><div class="send-edit" hidden><div class="edit-line"><label class="edit-method-l">Method<select class="edit-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option></select></label><label class="edit-uri-l">URL<input type="text" class="edit-uri" spellcheck="false"></label></div><label>Headers <em>one per line, as Name: value</em><textarea class="edit-headers" rows="3" spellcheck="false"></textarea></label><label>Body<textarea class="edit-body" rows="8" spellcheck="false"></textarea></label><button type="button" class="reset-btn">Reset to captured</button></div><div class="send-out" hidden></div><script type="application/json" class="send-req">{"method":"POST","uri":"http://169.58.37.242:8007/mms/api/v1/merchants","headers":{"Accept":"*/*","Content-Type":"application/json"},"body":"            {\n              \"legalName\": \"Test Merchant\",\n              \"tradeName\": \"Test Store\",\n              \"registrationNo\": \"CR-1788247148218\",\n              \"taxId\": \"TAX-1788247148218\",\n              \"merchantCategoryCode\": null,\n              \"businessType\": \"CORPORATION\",\n              \"contactEmail\": \"test1788247148218@example.com\",\n              \"contactPhone\": \"+966501234567\",\n              \"address\": \"123 Test St\",\n              \"city\": \"Riyadh\",\n              \"state\": \"Riyadh Province\",\n              \"postalCode\": \"11564\",\n              \"country\": null,\n  \"userId\": 48218\n}\n"}</script></div></details></section><script>
+var AIQA_REPLAY_URL = "http://localhost:8080/api/v1/replay";
+var AIQA_REPLAY_TOKEN = "57f8fa1e-2cba-404b-8241-b3cd6581ca81";
+</script>
+<script>
+(function () {
+  // The browser sets these itself and rejects any attempt to
+  // override them; sending them back verbatim would fail the
+  // whole request rather than being ignored.
+  var FORBIDDEN = ['host','content-length','connection','accept-encoding',
+                   'transfer-encoding','origin','referer','cookie'];
+
+  function esc(text) {
+    return String(text).replace(/[&<>]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c];
+    });
+  }
+
+  function pretty(text) {
+    try { return JSON.stringify(JSON.parse(text), null, 2); } catch (e) { return text; }
+  }
+
+  function curlFor(req) {
+    var parts = ["curl -i -X " + req.method + " '" + req.uri + "'"];
+    Object.keys(req.headers || {}).forEach(function (name) {
+      parts.push("-H '" + name + ": " + req.headers[name] + "'");
+    });
+    if (req.body) { parts.push("-d '" + String(req.body).replace(/'/g, "'\\''") + "'"); }
+    return parts.join(" ");
+  }
+
+  // What will actually go on the wire: the browser sets the
+  // forbidden headers itself and rejects any attempt to override
+  // them, so a request carrying them back fails outright rather
+  // than having them ignored. Dropping them here means the
+  // editor shows exactly what gets sent, with nothing in it that
+  // silently will not.
+  function sendable(req) {
+    var headers = {};
+    Object.keys(req.headers || {}).forEach(function (name) {
+      if (FORBIDDEN.indexOf(name.toLowerCase()) < 0) { headers[name] = req.headers[name]; }
+    });
+    return { method: req.method || 'GET', uri: req.uri || '', headers: headers,
+             body: req.body || '' };
+  }
+
+  function fillEditor(panel, req) {
+    panel.querySelector('.edit-method').value = req.method;
+    panel.querySelector('.edit-uri').value = req.uri;
+    panel.querySelector('.edit-headers').value = Object.keys(req.headers)
+      .map(function (name) { return name + ': ' + req.headers[name]; }).join('\n');
+    panel.querySelector('.edit-body').value = req.body;
+  }
+
+  // A header line is "Name: value". Anything without a colon is
+  // half-typed rather than meaningful, so it is skipped instead
+  // of being sent as a header with an empty name.
+  function readEditor(panel) {
+    var headers = {};
+    panel.querySelector('.edit-headers').value.split(/[\r\n]+/).forEach(function (line) {
+      var at = line.indexOf(':');
+      if (at > 0) {
+        var name = line.slice(0, at).trim();
+        if (name && FORBIDDEN.indexOf(name.toLowerCase()) < 0) {
+          headers[name] = line.slice(at + 1).trim();
+        }
+      }
+    });
+    return {
+      method: panel.querySelector('.edit-method').value,
+      uri: panel.querySelector('.edit-uri').value.trim(),
+      headers: headers,
+      body: panel.querySelector('.edit-body').value
+    };
+  }
+
+  // Header order is not meaningful and the editor does not
+  // preserve it, so compare on sorted names - otherwise merely
+  // opening the editor would report the request as edited.
+  function canonical(req) {
+    var names = Object.keys(req.headers).sort();
+    return JSON.stringify([req.method, req.uri, names.map(function (n) {
+      return [n, req.headers[n]];
+    }), req.body]);
+  }
+
+  // Two ways to send. The proxy is this platform re-issuing the
+  // call server-side, where no same-origin policy exists at all;
+  // the direct call is the browser doing it, which works only
+  // when the service under test allows this page's origin - and
+  // a report opened from disk has none. Proxy first, direct as
+  // the fallback, curl as the answer when neither can.
+  function viaProxy(req) {
+    return fetch(AIQA_REPLAY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Aiqa-Replay-Token': AIQA_REPLAY_TOKEN },
+      body: JSON.stringify({ method: req.method, uri: req.uri, headers: req.headers,
+                             body: req.body })
+    }).then(function (response) {
+      // A proxy that is down or refuses the token says nothing
+      // about the service - fall through to the direct call
+      // rather than reporting it as an answer.
+      if (!response.ok) { throw new Error('replay endpoint answered ' + response.status); }
+      return response.json();
+    }).then(function (result) {
+      // The proxy DID run the call and it failed. That is a real
+      // answer about the service, so report it as one.
+      if (result.error) { return { failed: true, message: result.error, ms: result.durationMillis }; }
+      return { status: result.status, text: result.body || '', ms: result.durationMillis,
+               via: 'via this platform' };
+    });
+  }
+
+  function direct(req, started) {
+    return fetch(req.uri, {
+      method: req.method,
+      headers: req.headers,
+      body: (req.method === 'GET' || req.method === 'HEAD') ? undefined : req.body
+    }).then(function (response) {
+      return response.text().then(function (text) {
+        return { status: response.status, text: text, ms: Date.now() - started,
+                 via: 'direct from your browser' };
+      });
+    });
+  }
+
+  document.querySelectorAll('.send').forEach(function (panel) {
+    var button = panel.querySelector('.send-btn');
+    var editButton = panel.querySelector('.edit-btn');
+    var resetButton = panel.querySelector('.reset-btn');
+    var editor = panel.querySelector('.send-edit');
+    var out = panel.querySelector('.send-out');
+    var captured = sendable(JSON.parse(panel.querySelector('.send-req').textContent));
+
+    fillEditor(panel, captured);
+
+    editButton.addEventListener('click', function () {
+      editor.hidden = !editor.hidden;
+      editButton.textContent = editor.hidden ? 'Edit request' : 'Hide editor';
+    });
+
+    resetButton.addEventListener('click', function () {
+      fillEditor(panel, captured);
+    });
+
+    button.addEventListener('click', function () {
+      var req = readEditor(panel);
+      var edited = canonical(req) !== canonical(captured);
+
+      if (!req.uri) {
+        editor.hidden = false;
+        editButton.textContent = 'Hide editor';
+        out.hidden = false;
+        out.innerHTML = '<p class="none">Give the request a URL before sending it.</p>';
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Sending...';
+      out.hidden = false;
+      out.innerHTML = '<p class="none">Waiting for a response...</p>';
+      var started = Date.now();
+
+      var attempt = AIQA_REPLAY_URL
+        ? viaProxy(req).catch(function () { return direct(req, started); })
+        : direct(req, started);
+
+      attempt.then(function (result) {
+        // An edited request is a different request. Saying so is
+        // the whole point: a green 200 from a payload you fixed
+        // by hand is not evidence that the test above passes, and
+        // a reader scrolling past the badge will assume it is.
+        var title = edited ? 'Result of your edited request' : 'Replay';
+        var caution = edited
+          ? '<p class="edited-warn">' + esc(req.method + ' ' + req.uri) +
+            ' - this is not the request the test sent, so it neither confirms nor ' +
+            'clears the verdict above.</p>'
+          : '';
+        if (result.failed) {
+          out.innerHTML =
+            '<h3>' + title + ' failed <span class="ms">' + result.ms + ' ms</span></h3>' +
+            caution + '<pre>' + esc(result.message) + '</pre>';
+          return;
+        }
+        var cls = result.status < 300 ? 'pass' : (result.status >= 400 ? 'fail' : 'skip');
+        out.innerHTML =
+          '<h3>' + title + ' <span class="badge ' + cls + '">' + result.status + '</span>' +
+          '<span class="ms">' + result.ms + ' ms, ' + result.via + '</span></h3>' +
+          caution + '<pre>' + esc(pretty(result.text)) + '</pre>';
+      }).catch(function (error) {
+        out.innerHTML =
+          '<h3>Request blocked</h3>' +
+          '<p class="none">' + esc(error.message) + ' - the request never left the browser. ' +
+          'Opened from a file this page has no origin, so a direct call needs the service to ' +
+          'allow cross-origin requests' + (AIQA_REPLAY_URL
+            ? ', and this platform was not reachable at ' + esc(AIQA_REPLAY_URL) + ' to send it for you.'
+            : '. Start the platform to have it sent server-side instead.') +
+          ' Run this meanwhile:</p>' +
+          '<pre>' + esc(curlFor(req)) + '</pre>';
+      }).then(function () {
+        button.disabled = false;
+        button.textContent = 'Send again';
+      });
+    });
+  });
+})();
+</script>
+</body></html>

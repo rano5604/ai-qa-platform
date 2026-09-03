@@ -1,0 +1,1 @@
+Processed 5 changed source file(s) and 0 changed config file(s), parsed 5 class(es), impact radius 7 class(es). Mode=MANUAL: 0 business test case(s) (0 new, 0 updated), 0 automated test file(s). Method-level impact radius: 26 method(s). 1 category was not applicable to this change and correctly returned no test cases: [BOUNDARY].

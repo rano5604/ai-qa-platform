@@ -88,3 +88,64 @@ Test Data: {
     }
   ]
 }","1. HTTP 200 OK response with a JSON body containing the order summary. 2. HTTP 200 OK response with a JSON body containing the full order details, including measurementGroups with photoUrl fields either null or absent for each measurement group.",86c0b01-TC-002
+Attempt to retrieve order details using a non-existent order ID,Order Management,Negative,High,No order exists in the system with ID 99999.,"1. Send a GET request to /api/orders/99999.
+
+Test Data: Path variable: id = 99999",The request is rejected and returns an error response indicating 'Order not found with ID: 99999'.,TC-087
+Create an order with an empty measurements list in a measurement group and retrieve it by ID,Order Creation and Retrieval,Boundary,Medium,A shop with ID 1 exists and an item with ID 101 exists.,"1. Send a POST request to /api/orders with the payload in testData.
+2. Extract the orderId from the response.
+3. Send a GET request to /api/orders/{id} using the extracted orderId.
+
+Test Data: {
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""FEMALE"",
+  ""orderGender"": ""FEMALE"",
+  ""shopId"": 1,
+  ""totalAmount"": 150.00,
+  ""paidAmount"": 50.00,
+  ""dueAmount"": 100.00,
+  ""items"": [
+    {
+      ""itemId"": 101,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""http://example.com/item.jpg"",
+          ""measurements"": []
+        }
+      ]
+    }
+  ]
+}","The POST request returns HTTP status code 200 OK with an OrderSummaryResponse. The GET request to /api/orders/{id} returns HTTP status code 200 OK with an OrderResponse body where items[0].measurementGroups[0].photoUrl is ""http://example.com/item.jpg"" and items[0].measurementGroups[0].measurements is an empty array [].",TC-088
+Create an order with null photoUrl in measurement group request and verify response payload,Order Creation and Retrieval,Boundary,Medium,A shop with ID 1 exists and an item with ID 101 exists.,"1. Send a POST request to /api/orders with the payload in testData.
+2. Extract the orderId from the response.
+3. Send a GET request to /api/orders/{id} using the extracted orderId.
+
+Test Data: {
+  ""customerName"": ""John Smith"",
+  ""customerPhone"": ""0987654321"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""shopId"": 1,
+  ""totalAmount"": 100.00,
+  ""paidAmount"": 100.00,
+  ""dueAmount"": 0.00,
+  ""items"": [
+    {
+      ""itemId"": 101,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": null,
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inches"",
+              ""value"": 40.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}",The POST request succeeds with HTTP status code 200 OK. The GET request returns HTTP status code 200 OK where items[0].measurementGroups[0].photoUrl is null and items[0].measurementGroups[0].measurements[0].value is 40.0.,TC-089

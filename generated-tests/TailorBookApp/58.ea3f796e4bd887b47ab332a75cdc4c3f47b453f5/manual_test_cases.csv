@@ -1,0 +1,21 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create an order with measurement cloth photo and design drawing photo at the measurement group level,Order Management - Measurement Group Photo Attachments,Positive,High,A valid shop exists and an order item 'Shirt' is configured in the shop catalog,"1. Create a new order request containing customer details and an order item.
+2. In the order item's measurement group request, provide base64 image strings for 'measurementClothPhoto' and 'designDrawingPhoto'.
+3. Submit the order request.
+4. Retrieve the created order details using the returned order ID.
+
+Test Data: measurementClothPhoto=""data:image/jpeg;base64,/9j/4AAQ..."", designDrawingPhoto=""data:image/jpeg;base64,/9j/4AAQ...""","The order is created successfully, and the item's measurement group response includes generated image URLs for both 'measurementClothPhoto' and 'designDrawingPhoto'.",TC-001
+Update an existing order with a new customer profile photo,Order Management - Customer Photo Update,Positive,Medium,An existing order exists with a customer who already has an uploaded profile photo,"1. Send an update request for the existing order ID containing an updated base64 image string for 'customerPhoto'.
+2. Verify the order update response.
+3. Retrieve the order details by order ID.
+
+Test Data: customerPhoto=""data:image/jpeg;base64,/9j/4AAQNewPhotoData...""","The order is updated successfully, returning HTTP 200 with status 'success', and the customer details contain the updated profile photo URL.",TC-002
+Create an order with null photo fields in request and verify GET order response payload structure for measurement group photos,Order Measurement Group Photo Handling,Boundary,High,A valid shop and customer record exist in the system.,"1. Submit a POST request to /api/orders with valid customer and item details where clothPhoto, patternClothPhoto, measurementClothPhoto, and designDrawingPhoto in the measurement group request are all set to null.
+2. Note the returned orderId from the response.
+3. Send a GET request to /api/orders/{orderId} to fetch the order details.
+
+Test Data: Order request with item measurement group having clothPhoto=null, patternClothPhoto=null, measurementClothPhoto=null, designDrawingPhoto=null.","The POST request succeeds with HTTP 200 OK. The GET response returns HTTP 200 OK with order details where each measurement group object in items[0].measurementGroups contains measurementClothPhoto as null and designDrawingPhoto as null, and the top-level order object no longer contains a root-level measurementClothPhoto field.",3df4809-TC-003
+Create order item measurement group with blank/whitespace string values for measurement cloth photo and design drawing photo,Order Measurement Group Photo Handling,Boundary,Medium,A valid shop and customer record exist in the system.,"1. Submit a POST request to /api/orders with a valid item measurement group containing whitespace-only strings (""   "") for measurementClothPhoto and designDrawingPhoto.
+2. Send a GET request to /api/orders/{orderId} using the generated order ID.
+
+Test Data: measurementGroupRequest = { measurementClothPhoto: ""   "", designDrawingPhoto: ""   "" }","The order is created successfully with HTTP 200 OK without attempting base64 image upload. In the GET /api/orders/{orderId} response, items[0].measurementGroups[0] contains null for both measurementClothPhoto and designDrawingPhoto.",TC-003

@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+  <meta charset='utf-8'>
+  <title>TestNG reports</title>
+
+    <link type="text/css" href="testng-reports1.css" rel="stylesheet" id="ultra" />
+    <link type="text/css" href="testng-reports.css" rel="stylesheet" id="retro" disabled="false"/>
+    <script type="text/javascript" src="jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="testng-reports.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['table']});
+      google.setOnLoadCallback(drawTable);
+      var suiteTableInitFunctions = new Array();
+      var suiteTableData = new Array();
+    </script>
+    <!--
+      <script type="text/javascript" src="jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+     -->
+  </head>
+
+  <body>    <div class="top-banner-root">
+      <span class="top-banner-title-font">Test results</span>
+      <button id="button" class="button">Switch Retro Theme</button> <!-- button -->
+      <br/>
+      <span class="top-banner-font-1">1 suite, 11 failed tests</span>
+    </div> <!-- top-banner-root -->
+    <div class="navigator-root">
+      <div class="navigator-suite-header">
+        <span>All suites</span>
+        <a href="#" title="Collapse/expand all the suites" class="collapse-all-link">
+          <img src="collapseall.gif" class="collapse-all-icon">
+          </img> <!-- collapse-all-icon -->
+        </a> <!-- collapse-all-link -->
+      </div> <!-- navigator-suite-header -->
+      <div class="suite">
+        <div class="rounded-window">
+          <div class="suite-header light-rounded-window-top">
+            <a href="#" panel-name="suite-Command_line_suite" class="navigator-link">
+              <span class="suite-name border-failed">Command line suite</span>
+            </a> <!-- navigator-link -->
+          </div> <!-- suite-header light-rounded-window-top -->
+          <div class="navigator-suite-content">
+            <div class="suite-section-title">
+              <span>Info</span>
+            </div> <!-- suite-section-title -->
+            <div class="suite-section-content">
+              <ul>
+                <li>
+                  <a href="#" panel-name="test-xml-Command_line_suite" class="navigator-link ">
+                    <span>[unset file name]</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="testlist-Command_line_suite" class="navigator-link ">
+                    <span class="test-stats">1 test</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="group-Command_line_suite" class="navigator-link ">
+                    <span>0 groups</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="times-Command_line_suite" class="navigator-link ">
+                    <span>Times</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="reporter-Command_line_suite" class="navigator-link ">
+                    <span>Reporter output</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="ignored-methods-Command_line_suite" class="navigator-link ">
+                    <span>Ignored methods</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" panel-name="chronological-Command_line_suite" class="navigator-link ">
+                    <span>Chronological view</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+              </ul>
+            </div> <!-- suite-section-content -->
+            <div class="result-section">
+              <div class="suite-section-title">
+                <span>Results</span>
+              </div> <!-- suite-section-title -->
+              <div class="suite-section-content">
+                <ul>
+                  <li>
+                    <span class="method-stats">20 methods, 11 failed,   9 passed</span>
+                  </li>
+                  <li>
+                    <span class="method-list-title failed">Failed methods</span>
+                    <span class="show-or-hide-methods failed">
+                      <a href="#" panel-name="suite-Command_line_suite" class="hide-methods failed suite-Command_line_suite"> (hide)</a> <!-- hide-methods failed suite-Command_line_suite -->
+                      <a href="#" panel-name="suite-Command_line_suite" class="show-methods failed suite-Command_line_suite"> (show)</a> <!-- show-methods failed suite-Command_line_suite -->
+                    </span>
+                    <div class="method-list-content failed suite-Command_line_suite">
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="createOrderWithDecimalPrice">createOrderWithDecimalPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="createOrderWithFractionalPrice">createOrderWithFractionalPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="createOrderWithNegativeIntegerPrice">createOrderWithNegativeIntegerPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="createOrderWithPriceAsNegativeNumber">createOrderWithPriceAsNegativeNumber</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="createOrderWithPriceAsNumericString">createOrderWithPriceAsNumericString</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="createOrderWithWholeLookingDecimalPrice">createOrderWithWholeLookingDecimalPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="updateOrderWithFractionalPrice">updateOrderWithFractionalPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="updateOrderWithNegativePrice">updateOrderWithNegativePrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="updateOrderWithPriceAsDecimalNumber">updateOrderWithPriceAsDecimalNumber</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="updateOrderWithPriceAsNumericString">updateOrderWithPriceAsNumericString</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="updateOrderWithPriceAsWholeLookingDecimal">updateOrderWithPriceAsWholeLookingDecimal</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                    </div> <!-- method-list-content failed suite-Command_line_suite -->
+                  </li>
+                  <li>
+                    <span class="method-list-title passed">Passed methods</span>
+                    <span class="show-or-hide-methods passed">
+                      <a href="#" panel-name="suite-Command_line_suite" class="hide-methods passed suite-Command_line_suite"> (hide)</a> <!-- hide-methods passed suite-Command_line_suite -->
+                      <a href="#" panel-name="suite-Command_line_suite" class="show-methods passed suite-Command_line_suite"> (show)</a> <!-- show-methods passed suite-Command_line_suite -->
+                    </span>
+                    <div class="method-list-content passed suite-Command_line_suite">
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="createNewOrderWithWholeNumberPrice">createNewOrderWithWholeNumberPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="createOrderWithMaximumAllowedIntegerPrice">createOrderWithMaximumAllowedIntegerPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="createOrderWithMinimumAllowedIntegerPrice">createOrderWithMinimumAllowedIntegerPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="createOrderWithPriceOneAboveMaximumInteger">createOrderWithPriceOneAboveMaximumInteger</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="retrieveDetailsOfOrderWithWholeNumberPrice">retrieveDetailsOfOrderWithWholeNumberPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="updateExistingOrderWithWholeNumberPrice">updateExistingOrderWithWholeNumberPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="updateOrderWithMaxIntegerPrice">updateOrderWithMaxIntegerPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="updateOrderWithMinimumAllowedIntegerPrice">updateOrderWithMinimumAllowedIntegerPrice</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img src="passed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a" class="method navigator-link" hash-for-method="updateOrderWithPriceAboveMaxInteger">updateOrderWithPriceAboveMaxInteger</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                    </div> <!-- method-list-content passed suite-Command_line_suite -->
+                  </li>
+                </ul>
+              </div> <!-- suite-section-content -->
+            </div> <!-- result-section -->
+          </div> <!-- navigator-suite-content -->
+        </div> <!-- rounded-window -->
+      </div> <!-- suite -->
+    </div> <!-- navigator-root -->
+    <div class="wrapper">
+      <div class="main-panel-root">
+        <div panel-name="suite-Command_line_suite" class="panel Command_line_suite">
+          <div class="suite-Command_line_suite-class-failed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="failed.png"/>
+              <span class="class-name">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="createOrderWithDecimalPrice">
+                  </a> <!-- createOrderWithDecimalPrice -->
+                  <span class="method-name">createOrderWithDecimalPrice</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.createOrderWithDecimalPrice(AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.java:89)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="createOrderWithFractionalPrice">
+                  </a> <!-- createOrderWithFractionalPrice -->
+                  <span class="method-name">createOrderWithFractionalPrice</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.createOrderWithFractionalPrice(AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.java:377)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="createOrderWithNegativeIntegerPrice">
+                  </a> <!-- createOrderWithNegativeIntegerPrice -->
+                  <span class="method-name">createOrderWithNegativeIntegerPrice</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.createOrderWithNegativeIntegerPrice(AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.java:236)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="createOrderWithPriceAsNegativeNumber">
+                  </a> <!-- createOrderWithPriceAsNegativeNumber -->
+                  <span class="method-name">createOrderWithPriceAsNegativeNumber</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.createOrderWithPriceAsNegativeNumber(AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.java:208)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="createOrderWithPriceAsNumericString">
+                  </a> <!-- createOrderWithPriceAsNumericString -->
+                  <span class="method-name">createOrderWithPriceAsNumericString</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.createOrderWithPriceAsNumericString(AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.java:119)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="createOrderWithWholeLookingDecimalPrice">
+                  </a> <!-- createOrderWithWholeLookingDecimalPrice -->
+                  <span class="method-name">createOrderWithWholeLookingDecimalPrice</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.createOrderWithWholeLookingDecimalPrice(AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.java:104)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="updateOrderWithFractionalPrice">
+                  </a> <!-- updateOrderWithFractionalPrice -->
+                  <span class="method-name">updateOrderWithFractionalPrice</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.updateOrderWithFractionalPrice(AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.java:402)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="updateOrderWithNegativePrice">
+                  </a> <!-- updateOrderWithNegativePrice -->
+                  <span class="method-name">updateOrderWithNegativePrice</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.updateOrderWithNegativePrice(AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.java:312)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="updateOrderWithPriceAsDecimalNumber">
+                  </a> <!-- updateOrderWithPriceAsDecimalNumber -->
+                  <span class="method-name">updateOrderWithPriceAsDecimalNumber</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.updateOrderWithPriceAsDecimalNumber(AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.java:144)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="updateOrderWithPriceAsNumericString">
+                  </a> <!-- updateOrderWithPriceAsNumericString -->
+                  <span class="method-name">updateOrderWithPriceAsNumericString</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.updateOrderWithPriceAsNumericString(AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.java:194)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="updateOrderWithPriceAsWholeLookingDecimal">
+                  </a> <!-- updateOrderWithPriceAsWholeLookingDecimal -->
+                  <span class="method-name">updateOrderWithPriceAsWholeLookingDecimal</span>
+                  <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
+Expected status code (is &lt;400&gt; or is &lt;422&gt;) but was &lt;200&gt;.
+
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
+	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
+	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
+	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
+	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
+	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
+	at com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.updateOrderWithPriceAsWholeLookingDecimal(AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a.java:169)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+... Removed 30 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-failed -->
+          <div class="suite-Command_line_suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="createNewOrderWithWholeNumberPrice">
+                  </a> <!-- createNewOrderWithWholeNumberPrice -->
+                  <span class="method-name">createNewOrderWithWholeNumberPrice</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="createOrderWithMaximumAllowedIntegerPrice">
+                  </a> <!-- createOrderWithMaximumAllowedIntegerPrice -->
+                  <span class="method-name">createOrderWithMaximumAllowedIntegerPrice</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="createOrderWithMinimumAllowedIntegerPrice">
+                  </a> <!-- createOrderWithMinimumAllowedIntegerPrice -->
+                  <span class="method-name">createOrderWithMinimumAllowedIntegerPrice</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="createOrderWithPriceOneAboveMaximumInteger">
+                  </a> <!-- createOrderWithPriceOneAboveMaximumInteger -->
+                  <span class="method-name">createOrderWithPriceOneAboveMaximumInteger</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="retrieveDetailsOfOrderWithWholeNumberPrice">
+                  </a> <!-- retrieveDetailsOfOrderWithWholeNumberPrice -->
+                  <span class="method-name">retrieveDetailsOfOrderWithWholeNumberPrice</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="updateExistingOrderWithWholeNumberPrice">
+                  </a> <!-- updateExistingOrderWithWholeNumberPrice -->
+                  <span class="method-name">updateExistingOrderWithWholeNumberPrice</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="updateOrderWithMaxIntegerPrice">
+                  </a> <!-- updateOrderWithMaxIntegerPrice -->
+                  <span class="method-name">updateOrderWithMaxIntegerPrice</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="updateOrderWithMinimumAllowedIntegerPrice">
+                  </a> <!-- updateOrderWithMinimumAllowedIntegerPrice -->
+                  <span class="method-name">updateOrderWithMinimumAllowedIntegerPrice</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="updateOrderWithPriceAboveMaxInteger">
+                  </a> <!-- updateOrderWithPriceAboveMaxInteger -->
+                  <span class="method-name">updateOrderWithPriceAboveMaxInteger</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Command_line_suite-class-passed -->
+        </div> <!-- panel Command_line_suite -->
+        <div panel-name="test-xml-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE suite SYSTEM &quot;https://testng.org/testng-1.0.dtd&quot;&gt;
+&lt;suite name=&quot;Command line suite&quot;&gt;
+  &lt;test thread-count=&quot;5&quot; name=&quot;Command line test&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- Command line test --&gt;
+&lt;/suite&gt; &lt;!-- Command line suite --&gt;
+            </pre>
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="testlist-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Tests for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <ul>
+              <li>
+                <span class="test-name">Command line test (1 class)</span>
+              </li>
+            </ul>
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="group-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Groups for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="times-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Times for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="times-div">
+              <script type="text/javascript">
+suiteTableInitFunctions.push('tableData_Command_line_suite');
+function tableData_Command_line_suite() {
+var data = new google.visualization.DataTable();
+data.addColumn('number', 'Number');
+data.addColumn('string', 'Method');
+data.addColumn('string', 'Class');
+data.addColumn('number', 'Time (ms)');
+data.addRows(20);
+data.setCell(0, 0, 0)
+data.setCell(0, 1, 'createNewOrderWithWholeNumberPrice')
+data.setCell(0, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(0, 3, 1375);
+data.setCell(1, 0, 1)
+data.setCell(1, 1, 'retrieveDetailsOfOrderWithWholeNumberPrice')
+data.setCell(1, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(1, 3, 362);
+data.setCell(2, 0, 2)
+data.setCell(2, 1, 'updateOrderWithPriceAsWholeLookingDecimal')
+data.setCell(2, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(2, 3, 284);
+data.setCell(3, 0, 3)
+data.setCell(3, 1, 'updateOrderWithMaxIntegerPrice')
+data.setCell(3, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(3, 3, 280);
+data.setCell(4, 0, 4)
+data.setCell(4, 1, 'updateExistingOrderWithWholeNumberPrice')
+data.setCell(4, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(4, 3, 237);
+data.setCell(5, 0, 5)
+data.setCell(5, 1, 'updateOrderWithFractionalPrice')
+data.setCell(5, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(5, 3, 234);
+data.setCell(6, 0, 6)
+data.setCell(6, 1, 'updateOrderWithNegativePrice')
+data.setCell(6, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(6, 3, 230);
+data.setCell(7, 0, 7)
+data.setCell(7, 1, 'createOrderWithPriceAsNumericString')
+data.setCell(7, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(7, 3, 207);
+data.setCell(8, 0, 8)
+data.setCell(8, 1, 'updateOrderWithMinimumAllowedIntegerPrice')
+data.setCell(8, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(8, 3, 204);
+data.setCell(9, 0, 9)
+data.setCell(9, 1, 'updateOrderWithPriceAsDecimalNumber')
+data.setCell(9, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(9, 3, 200);
+data.setCell(10, 0, 10)
+data.setCell(10, 1, 'updateOrderWithPriceAboveMaxInteger')
+data.setCell(10, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(10, 3, 184);
+data.setCell(11, 0, 11)
+data.setCell(11, 1, 'createOrderWithDecimalPrice')
+data.setCell(11, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(11, 3, 161);
+data.setCell(12, 0, 12)
+data.setCell(12, 1, 'createOrderWithMaximumAllowedIntegerPrice')
+data.setCell(12, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(12, 3, 159);
+data.setCell(13, 0, 13)
+data.setCell(13, 1, 'updateOrderWithPriceAsNumericString')
+data.setCell(13, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(13, 3, 150);
+data.setCell(14, 0, 14)
+data.setCell(14, 1, 'createOrderWithWholeLookingDecimalPrice')
+data.setCell(14, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(14, 3, 138);
+data.setCell(15, 0, 15)
+data.setCell(15, 1, 'createOrderWithMinimumAllowedIntegerPrice')
+data.setCell(15, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(15, 3, 105);
+data.setCell(16, 0, 16)
+data.setCell(16, 1, 'createOrderWithPriceAsNegativeNumber')
+data.setCell(16, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(16, 3, 104);
+data.setCell(17, 0, 17)
+data.setCell(17, 1, 'createOrderWithPriceOneAboveMaximumInteger')
+data.setCell(17, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(17, 3, 99);
+data.setCell(18, 0, 18)
+data.setCell(18, 1, 'createOrderWithFractionalPrice')
+data.setCell(18, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(18, 3, 82);
+data.setCell(19, 0, 19)
+data.setCell(19, 1, 'createOrderWithNegativeIntegerPrice')
+data.setCell(19, 2, 'com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a')
+data.setCell(19, 3, 74);
+window.suiteTableData['Command_line_suite']= { tableData: data, tableDiv: 'times-div-Command_line_suite'}
+return data;
+}
+              </script>
+              <span class="suite-total-time">Total running time: 4 seconds</span>
+              <div id="times-div-Command_line_suite">
+              </div> <!-- times-div-Command_line_suite -->
+            </div> <!-- times-div -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="reporter-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Reporter output for Command line suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="ignored-methods-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">0 ignored methods</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="chronological-Command_line_suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Methods in chronological order</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">setup</span>
+                <span class="method-start">0 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">createNewOrderWithWholeNumberPrice</span>
+                <span class="method-start">17 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">createOrderWithDecimalPrice</span>
+                <span class="method-start">1394 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">createOrderWithFractionalPrice</span>
+                <span class="method-start">1557 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">createOrderWithMaximumAllowedIntegerPrice</span>
+                <span class="method-start">1640 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">createOrderWithMinimumAllowedIntegerPrice</span>
+                <span class="method-start">1799 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">createOrderWithNegativeIntegerPrice</span>
+                <span class="method-start">1904 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">createOrderWithPriceAsNegativeNumber</span>
+                <span class="method-start">1978 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">createOrderWithPriceAsNumericString</span>
+                <span class="method-start">2083 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">createOrderWithPriceOneAboveMaximumInteger</span>
+                <span class="method-start">2290 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">createOrderWithWholeLookingDecimalPrice</span>
+                <span class="method-start">2389 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">retrieveDetailsOfOrderWithWholeNumberPrice</span>
+                <span class="method-start">2527 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">updateExistingOrderWithWholeNumberPrice</span>
+                <span class="method-start">2889 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">updateOrderWithFractionalPrice</span>
+                <span class="method-start">3126 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">updateOrderWithMaxIntegerPrice</span>
+                <span class="method-start">3360 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">updateOrderWithMinimumAllowedIntegerPrice</span>
+                <span class="method-start">3640 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">updateOrderWithNegativePrice</span>
+                <span class="method-start">3844 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">updateOrderWithPriceAboveMaxInteger</span>
+                <span class="method-start">4074 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">updateOrderWithPriceAsDecimalNumber</span>
+                <span class="method-start">4258 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">updateOrderWithPriceAsNumericString</span>
+                <span class="method-start">4458 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">updateOrderWithPriceAsWholeLookingDecimal</span>
+                <span class="method-start">4608 ms</span>
+              </div> <!-- test-method -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+      </div> <!-- main-panel-root -->
+    </div> <!-- wrapper -->
+  </body>
+<script type="text/javascript" src="testng-reports2.js"></script>
+</html>

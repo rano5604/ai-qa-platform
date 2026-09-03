@@ -1,0 +1,27 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Onboard a new merchant via portal endpoint using multipart form data,Merchant Onboarding,Positive,High,The MMS application is running and accessible.,"1. Send a POST request to /api/v1/onboarding/portal with content type multipart/form-data (or form URL-encoded) containing the parameters in testData. 2. Verify the HTTP response status and body content.
+
+Test Data: mobileNumber=01670000000, merchantName=Zamal Uddin, businessType=CORPORATION, tradeLicenseNo=12354345, email=zamal@example.com, nidNumber=9123456789, storeName=ABC Store - Dhaka Branch, storeLocation=123 Gulshan Avenue Dhaka, notificationMobileNumber=01670636253",HTTP status code 201 Created is returned with a success response body containing message 'Merchant onboarded successfully'.,TC-001
+Reject portal merchant onboarding request when required fields are missing,Merchant Portal Onboarding,Negative,High,The onboarding service is running and accessible.,"1. Send a POST request to /api/v1/onboarding/portal with the payload in testData where mandatory fields are omitted.
+
+Test Data: {
+  ""email"": ""merchant@example.com"",
+  ""tradeLicenseNo"": ""TL-12345""
+}","The request is rejected with HTTP status 400 Bad Request with validation errors indicating that mobile number, merchant name, business type, NID number, store name, and store location are required.",TC-002
+Reject portal merchant onboarding request when email address format is invalid,Merchant Portal Onboarding,Negative,Medium,The onboarding service is running and accessible.,"1. Send a POST request to /api/v1/onboarding/portal with the payload in testData containing a malformed email format.
+
+Test Data: {
+  ""mobileNumber"": ""01670636253"",
+  ""merchantName"": ""Zamal Uddin"",
+  ""businessType"": ""CORPORATION"",
+  ""email"": ""invalid-email-address"",
+  ""nidNumber"": ""9123456789"",
+  ""storeName"": ""ABC Store - Dhaka Branch"",
+  ""storeLocation"": ""123 Gulshan Avenue, Dhaka""
+}",The request is rejected with HTTP status 400 Bad Request stating that the email address format is invalid.,TC-003
+Successfully submit merchant onboarding request via portal endpoint,Merchant Portal Onboarding,Configuration,High,The application service is running and connected to integrated KYC and store management services.,"1. Send a POST request to /api/v1/onboarding/portal with multipart/form-data or form-urlencoded parameters using valid merchant portal onboarding data provided in testData.
+
+Test Data: mobileNumber=01670636253&merchantName=Zamal Uddin&businessType=CORPORATION&tradeLicenseNo=12354345&email=zamal@example.com&nidNumber=9123456789&storeName=ABC Store - Dhaka Branch&storeLocation=123 Gulshan Avenue, Dhaka&notificationMobileNumber=01670636253",The HTTP status code is 201 Created and the response body confirms 'Merchant onboarded successfully'.,TC-004
+Application starts up and connects to PostgreSQL database successfully with updated credentials,Database Connection Configuration,Configuration,High,PostgreSQL database 'mms_db' is running at localhost:5432 and user 'postgres' with password 'Abc@1234.' is configured with database access permissions.,"1. Deploy application with updated application.yml containing username 'postgres' and password 'Abc@1234.'. 2. Start the mms-app service. 3. Monitor startup logs for datasource connection pool initialization. 4. Trigger an API request requiring database access (e.g., application health check or merchant fetch).
+
+Test Data: Old credentials: username='mms_user', password='mms_password' | New credentials: username='postgres', password='Abc@1234.'","Application starts up successfully without datasource authentication errors or connection timeouts, and successfully executes queries against mms_db using the postgres account.",TC-005

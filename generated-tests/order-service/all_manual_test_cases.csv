@@ -1,0 +1,187 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References,Source Ref
+Create a new order with a whole number price value,Order Management,Positive,High,No preconditions; the system is ready to accept new orders,"1. Navigate to the 'Create Order' screen. 2. Enter customer name as 'Alice Johnson'. 3. Enter product name as 'Monitor'. 4. Enter quantity as 3. 5. Enter price as 250. 6. Submit the order.
+
+Test Data: customerName: 'Alice Johnson', productName: 'Monitor', quantity: 3, price: 250","The response status is 200 OK. The response body contains the created order with a non-null ID, matching customerName 'Alice Johnson', productName 'Monitor', quantity 3, and price 250.",a1e801d-TC-001,26ade1c7ec9d874767476da6d3e83813352f611a
+Retrieve details of a created order,Order Management,Positive,High,An order with ID 1 exists in the system (created via POST /orders),1. Send a GET request to /orders/1.,"The response status is 200 OK. The response body contains the order details with ID 1, matching the customerName, productName, quantity, and price used during creation.",a1e801d-TC-002,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Update an existing order with a whole number price value,Order Management,Positive,High,"An order exists with ID 1, customerName 'John Doe', productName 'Laptop', quantity 1, and price 999","1. Navigate to the 'Update Order' screen for order ID 1. 2. Change the price to 850. 3. Submit the update.
+
+Test Data: price: 850","The response status is 200 OK. The response body contains the updated order with ID 1, customerName 'John Doe', productName 'Laptop', quantity 1, and price 850.",a1e801d-TC-003,26ade1c7ec9d874767476da6d3e83813352f611a
+Retrieve all orders in the system,Order Management,Positive,Medium,At least two orders exist in the system (created via POST /orders),1. Send a GET request to /orders.,"The response status is 200 OK. The response body is a list containing all created orders, each with their respective IDs, customerNames, productNames, quantities, and prices.",a1e801d-TC-004,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Create order with missing customerName,Order Creation,Negative,High,None,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""productName"": ""Laptop"", ""quantity"": 1, ""price"": 999.99}","The API responds with HTTP 400 Bad Request, indicating that 'customerName' is required.",a1e801d-TC-005,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Create order with missing productName,Order Creation,Negative,High,None,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""quantity"": 1, ""price"": 999.99}","The API responds with HTTP 400 Bad Request, indicating that 'productName' is required.",a1e801d-TC-006,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Create order with quantity as zero,Order Creation,Negative,High,None,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Laptop"", ""quantity"": 0, ""price"": 999.99}","The API responds with HTTP 400 Bad Request, indicating that 'quantity' must be a positive integer.",a1e801d-TC-007,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Create order with quantity as negative number,Order Creation,Negative,High,None,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Laptop"", ""quantity"": -1, ""price"": 999.99}","The API responds with HTTP 400 Bad Request, indicating that 'quantity' must be a positive integer.",a1e801d-TC-008,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Create order with quantity as decimal,Order Creation,Negative,High,None,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Laptop"", ""quantity"": 1.5, ""price"": 999.99}","The API responds with HTTP 400 Bad Request, indicating that 'quantity' must be an integer.",a1e801d-TC-009,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Create order with price as a negative number (updated validation),Order Creation,Negative,High,User is on the 'Create Order' screen,"1. Enter a valid customer name (e.g., 'John Doe').
+2. Enter a valid product name (e.g., 'Laptop').
+3. Enter a valid quantity (e.g., 1).
+4. Enter a price as a negative number (e.g., -50).
+5. Click 'Submit'.
+
+Test Data: customerName: 'John Doe', productName: 'Laptop', quantity: 1, price: -50",The system rejects the order and displays an error message indicating that 'price' must be a positive whole number (integer).,a1e801d-TC-010,26ade1c7ec9d874767476da6d3e83813352f611a
+Update order with non-existent ID,Order Update,Negative,High,None,"1. Send a PUT request to /orders/999 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Laptop"", ""quantity"": 1, ""price"": 999.99}","The API responds with HTTP 404 Not Found, indicating that the order with the specified ID does not exist.",a1e801d-TC-011,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Update order with missing customerName,Order Update,Negative,High,An order exists with ID 1,"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""productName"": ""Laptop"", ""quantity"": 1, ""price"": 999.99}","The API responds with HTTP 400 Bad Request, indicating that 'customerName' is required.",a1e801d-TC-012,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Update order with quantity as zero,Order Update,Negative,High,An order exists with ID 1,"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Laptop"", ""quantity"": 0, ""price"": 999.99}","The API responds with HTTP 400 Bad Request, indicating that 'quantity' must be a positive integer.",a1e801d-TC-013,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Get order details with non-existent ID,Order Retrieval,Negative,Medium,None,1. Send a GET request to /orders/999.,"The API responds with HTTP 404 Not Found, indicating that the order with the specified ID does not exist.",a1e801d-TC-014,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Create order with minimum allowed quantity (1),Order Creation,Boundary,High,No existing orders,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 1, ""price"": 9.99}","HTTP 200 OK. Response body contains the created order with id=1, quantity=1, and all other fields matching the request.",a1e801d-TC-015,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Create order with quantity zero (boundary below minimum),Order Creation,Boundary,High,No existing orders,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 0, ""price"": 9.99}","HTTP 200 OK. Response body contains the created order with quantity=0. (Note: This proves the boundary is accepted, not rejected, as the code does not enforce a minimum quantity.)",a1e801d-TC-016,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Create order with maximum integer quantity (2147483647),Order Creation,Boundary,High,No existing orders,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 2147483647, ""price"": 9.99}",HTTP 200 OK. Response body contains the created order with quantity=2147483647 and all other fields matching the request.,a1e801d-TC-017,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Create order with quantity one above maximum integer (2147483648),Order Creation,Boundary,Medium,No existing orders,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 2147483648, ""price"": 9.99}",HTTP 400 Bad Request or equivalent error due to integer overflow/parsing failure. (Note: This proves the boundary is rejected.),a1e801d-TC-018,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Create order with minimum allowed integer price (0),Order Price Validation,Boundary,High,No pre-existing orders required. Order creation endpoint is available.,"1. Navigate to the 'Create Order' form. 2. Enter customer name: 'John Doe'. 3. Enter product name: 'Widget'. 4. Enter quantity: 1. 5. Enter price: 0. 6. Submit the form.
+
+Test Data: customerName='John Doe', productName='Widget', quantity=1, price=0","Order is created successfully. Response shows HTTP 200 OK. Response body contains the created order with id, customerName='John Doe', productName='Widget', quantity=1, and price=0.",a1e801d-TC-019,26ade1c7ec9d874767476da6d3e83813352f611a
+Create order with negative integer price (-1) - boundary below minimum,Order Price Validation,Boundary,High,No pre-existing orders required. Order creation endpoint is available.,"1. Navigate to the 'Create Order' form. 2. Enter customer name: 'John Doe'. 3. Enter product name: 'Widget'. 4. Enter quantity: 1. 5. Enter price: -1. 6. Submit the form.
+
+Test Data: customerName='John Doe', productName='Widget', quantity=1, price=-1",Order creation fails. Response shows HTTP 400 Bad Request or equivalent error indicating price must be a non-negative integer.,a1e801d-TC-020,26ade1c7ec9d874767476da6d3e83813352f611a
+Create order with maximum double price (1.7976931348623157E308),Order Creation,Boundary,Medium,No existing orders,"1. Send a POST request to /orders with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 1, ""price"": 1.7976931348623157E308}",HTTP 200 OK. Response body contains the created order with price=1.7976931348623157E308 and all other fields matching the request.,a1e801d-TC-021,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Update order quantity to minimum allowed (1),Order Update,Boundary,High,An existing order with id=1 and quantity=5,"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 1, ""price"": 9.99}","HTTP 200 OK. Response body contains the updated order with id=1, quantity=1, and all other fields matching the request.",a1e801d-TC-022,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Update order quantity to zero (boundary below minimum),Order Update,Boundary,High,An existing order with id=1 and quantity=5,"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 0, ""price"": 9.99}","HTTP 200 OK. Response body contains the updated order with quantity=0. (Note: This proves the boundary is accepted, not rejected, as the code does not enforce a minimum quantity.)",a1e801d-TC-023,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Update order quantity to maximum integer (2147483647),Order Update,Boundary,High,An existing order with id=1 and quantity=5,"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Widget"", ""quantity"": 2147483647, ""price"": 9.99}",HTTP 200 OK. Response body contains the updated order with quantity=2147483647 and all other fields matching the request.,a1e801d-TC-024,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Update order with minimum allowed integer price (0),Order Price Validation,Boundary,High,An existing order with id=1 is available for update. Order update endpoint is available.,"1. Navigate to the 'Update Order' form for order id=1. 2. Update price to 0. 3. Submit the form.
+
+Test Data: orderId=1, price=0",Order is updated successfully. Response shows HTTP 200 OK. Response body contains the updated order with id=1 and price=0.,a1e801d-TC-025,26ade1c7ec9d874767476da6d3e83813352f611a
+Update order with negative integer price (-1) - boundary below minimum,Order Price Validation,Boundary,High,An existing order with id=1 is available for update. Order update endpoint is available.,"1. Navigate to the 'Update Order' form for order id=1. 2. Update price to -1. 3. Submit the form.
+
+Test Data: orderId=1, price=-1",Order update fails. Response shows HTTP 400 Bad Request or equivalent error indicating price must be a non-negative integer.,a1e801d-TC-026,26ade1c7ec9d874767476da6d3e83813352f611a
+Retrieve order with minimum id (1),Order Retrieval,Boundary,High,An existing order with id=1,1. Send a GET request to /orders/1.,HTTP 200 OK. Response body contains the order with id=1 and all fields matching the original creation values.,a1e801d-TC-027,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Retrieve order with non-existent id (0),Order Retrieval,Boundary,Medium,No orders exist with id=0,1. Send a GET request to /orders/0.,"HTTP 200 OK. Response body is empty (null). (Note: This proves the boundary id=0 is not found, as ids start at 1.)",a1e801d-TC-028,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Retrieve order with maximum long id (9223372036854775807),Order Retrieval,Boundary,Low,An existing order with id=9223372036854775807,1. Send a GET request to /orders/9223372036854775807.,HTTP 200 OK. Response body contains the order with id=9223372036854775807 and all fields matching the original creation values.,a1e801d-TC-029,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Verify that a user cannot access another user's order by guessing or manipulating the order ID,Order Service - Insecure Direct Object Reference (IDOR),Security,High,"Two orders exist in the system with IDs 1 and 2, created by different customers (e.g., 'Alice' and 'Bob')","1. Send a GET request to /orders/2 using the ID of the second order. 2. Observe the response.
+
+Test Data: No request body required. Use path variable id=2.","The response returns HTTP 200 with the order details for ID 2, including customerName 'Bob'. This is a SECURITY FAILURE if the system does not enforce ownership checks, but the current code does not implement any such checks, so this case proves the vulnerability exists. The expectedResult is the actual behavior, not the desired one, to document the defect.",a1e801d-TC-030,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+"Verify that the system does not allow setting the order ID via the request body, preventing ID manipulation",Order Service - Mass Assignment,Security,High,No pre-existing orders required,"1. Send a POST request to /orders with the payload in testData, including an explicit 'id' field. 2. Observe the response.
+
+Test Data: {""id"": 999, ""customerName"": ""Charlie"", ""productName"": ""Widget"", ""quantity"": 1, ""price"": 10.0}","The response returns HTTP 200 with an order object where the 'id' is NOT 999, but instead the next sequential ID (e.g., 1). The 'id' field in the request body is ignored, proving the system does not allow mass assignment of IDs.",a1e801d-TC-031,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Verify that error responses do not leak internal details or stack traces when an invalid order ID is requested,Order Service - Sensitive Data Exposure in Error Responses,Security,Medium,No pre-existing orders required,"1. Send a GET request to /orders/9999 (a non-existent ID). 2. Observe the response.
+
+Test Data: No request body required. Use path variable id=9999.","The response returns HTTP 404 (or 204) with an empty body or a generic error message (e.g., 'Order not found'). No stack trace, internal class names, or raw null values are exposed in the response.",a1e801d-TC-032,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Verify that special characters in productName or customerName do not cause injection or malformed responses,Order Service - Input Injection via Product or Customer Name,Security,High,No pre-existing orders required,"1. Send a POST request to /orders with the payload in testData, containing special characters in productName and customerName. 2. Observe the response. 3. Send a GET request to /orders/1 to retrieve the order. 4. Observe the response.
+
+Test Data: {""customerName"": ""<script>alert('xss')</script>"", ""productName"": ""Widget'; DROP TABLE orders;--"", ""quantity"": 1, ""price"": 10.0}","The response for both requests returns HTTP 200 with the order details exactly as submitted, including the special characters. No errors, malformed responses, or injection side effects (e.g., SQL errors, script execution) occur. This proves the system does not sanitize or escape these fields, which is a potential injection vector.",a1e801d-TC-033,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Create a new order with valid details,Order Management,Configuration,High,No pre-existing orders in the system,"1. Send a POST request to /orders with the payload in testData. 2. Note the returned order ID.
+
+Test Data: {""customerName"": ""John Doe"", ""productName"": ""Laptop"", ""quantity"": 1, ""price"": 999.99}","The response status is 200 OK. The response body contains the created order with an auto-assigned ID, matching the customerName, productName, quantity, and price provided in the request.",a1e801d-TC-034,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Retrieve details of a previously created order,Order Management,Configuration,High,An order with ID 1 exists in the system (created via POST /orders),1. Send a GET request to /orders/1.,"The response status is 200 OK. The response body contains the order details matching the customerName, productName, quantity, and price of the order created in preconditions.",a1e801d-TC-035,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Update an existing order with valid details,Order Management,Configuration,High,An order with ID 1 exists in the system (created via POST /orders),"1. Send a PUT request to /orders/1 with the payload in testData.
+
+Test Data: {""customerName"": ""Jane Smith"", ""productName"": ""Smartphone"", ""quantity"": 2, ""price"": 699.99}","The response status is 200 OK. The response body contains the updated order details with the new customerName, productName, quantity, and price, while the ID remains unchanged.",a1e801d-TC-036,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Retrieve all orders in the system,Order Management,Configuration,Medium,At least two orders exist in the system (created via POST /orders),1. Send a GET request to /orders.,"The response status is 200 OK. The response body is a list containing all orders in the system, each with their respective ID, customerName, productName, quantity, and price.",a1e801d-TC-037,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Verify compiler configuration is applied correctly,Compiler Configuration,Configuration,High,Project is set up with the new compiler configuration,"1. Build the project. 2. Verify the annotation processing profile is applied. 3. Check the generated sources.
+
+Test Data: Maven default annotation processors profile, target/generated-sources/annotations, target/generated-test-sources/test-annotations",The project builds successfully and the annotation processing profile is applied correctly.,a1e801d-TC-038,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Verify encoding configuration is applied correctly,Encoding Configuration,Configuration,Medium,Project is set up with the new encoding configuration,"1. Open a file in the project. 2. Verify the encoding is set to UTF-8. 3. Check for any encoding-related issues.
+
+Test Data: UTF-8, order-service/src/main/java",The encoding is set to UTF-8 and there are no encoding-related issues.,a1e801d-TC-039,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Verify jar repositories configuration is applied correctly,Jar Repositories Configuration,Configuration,High,Project is set up with the new jar repositories configuration,"1. Build the project. 2. Verify the jar repositories are used. 3. Check for any dependency-related issues.
+
+Test Data: Central Repository, Maven Central repository, JBoss Community repository",The jar repositories are used correctly and there are no dependency-related issues.,a1e801d-TC-040,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Verify miscellaneous configuration is applied correctly,Miscellaneous Configuration,Configuration,Medium,Project is set up with the new miscellaneous configuration,"1. Build the project. 2. Verify the external storage configuration is enabled. 3. Check the Maven projects manager configuration.
+
+Test Data: ExternalStorageConfigurationManager, MavenProjectsManager",The miscellaneous configuration is applied correctly and the project builds successfully.,a1e801d-TC-041,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Verify module configuration is applied correctly,Module Configuration,Configuration,Medium,Project is set up with the new module configuration,"1. Build the project. 2. Verify the module is recognized. 3. Check the module's configuration.
+
+Test Data: order-service.iml",The module is recognized and its configuration is applied correctly.,a1e801d-TC-042,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Verify VCS configuration is applied correctly,VCS Configuration,Configuration,Medium,Project is set up with the new VCS configuration,"1. Check the VCS directory mappings. 2. Verify the Git repository is recognized. 3. Check for any VCS-related issues.
+
+Test Data: Git, $PROJECT_DIR$",The VCS configuration is applied correctly and the Git repository is recognized.,a1e801d-TC-043,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Verify application properties are applied correctly,Application Properties,Configuration,High,Project is set up with the new application properties,"1. Run the application. 2. Verify the spring application name is set correctly. 3. Check for any property-related issues.
+
+Test Data: spring.application.name, order-service",The application properties are applied correctly and the spring application name is set to order-service.,a1e801d-TC-044,a1e801d1f5eb4810f887b8e2ad9314f364d38bc3
+Retrieve details of an order with a whole number price value,Order Management,Positive,High,"An order exists with ID 1, customerName 'Alice Johnson', productName 'Monitor', quantity 3, and price 250","1. Navigate to the 'Order Details' screen. 2. Enter order ID 1. 3. Submit the request.
+
+Test Data: orderId: 1","The response status is 200 OK. The response body contains the order details with ID 1, customerName 'Alice Johnson', productName 'Monitor', quantity 3, and price 250.",26ade1c-TC-001,26ade1c7ec9d874767476da6d3e83813352f611a
+"Create order with price as a decimal number (e.g., 19.99)",Order Creation,Negative,High,User is on the 'Create Order' screen,"1. Enter a valid customer name (e.g., 'John Doe').
+2. Enter a valid product name (e.g., 'Laptop').
+3. Enter a valid quantity (e.g., 1).
+4. Enter a price as a decimal number (e.g., 19.99).
+5. Click 'Submit'.
+
+Test Data: customerName: 'John Doe', productName: 'Laptop', quantity: 1, price: 19.99",The system rejects the order and displays an error message indicating that 'price' must be a whole number (integer).,26ade1c-TC-002,26ade1c7ec9d874767476da6d3e83813352f611a
+"Create order with price as a whole-looking decimal (e.g., 20.0)",Order Creation,Negative,High,User is on the 'Create Order' screen,"1. Enter a valid customer name (e.g., 'Jane Smith').
+2. Enter a valid product name (e.g., 'Monitor').
+3. Enter a valid quantity (e.g., 2).
+4. Enter a price as a whole-looking decimal (e.g., 20.0).
+5. Click 'Submit'.
+
+Test Data: customerName: 'Jane Smith', productName: 'Monitor', quantity: 2, price: 20.0",The system rejects the order and displays an error message indicating that 'price' must be a whole number (integer).,26ade1c-TC-003,26ade1c7ec9d874767476da6d3e83813352f611a
+"Create order with price as a numeric string (e.g., '50')",Order Creation,Negative,High,User is on the 'Create Order' screen,"1. Enter a valid customer name (e.g., 'Alice Brown').
+2. Enter a valid product name (e.g., 'Keyboard').
+3. Enter a valid quantity (e.g., 3).
+4. Enter a price as a numeric string (e.g., '50').
+5. Click 'Submit'.
+
+Test Data: customerName: 'Alice Brown', productName: 'Keyboard', quantity: 3, price: '50'",The system rejects the order and displays an error message indicating that 'price' must be a whole number (integer).,26ade1c-TC-004,26ade1c7ec9d874767476da6d3e83813352f611a
+"Update order with price as a decimal number (e.g., 99.99)",Order Update,Negative,High,An existing order with ID 123 exists in the system,"1. Navigate to the 'Update Order' screen for order ID 123.
+2. Enter a valid customer name (e.g., 'John Doe').
+3. Enter a valid product name (e.g., 'Laptop').
+4. Enter a valid quantity (e.g., 1).
+5. Enter a price as a decimal number (e.g., 99.99).
+6. Click 'Submit'.
+
+Test Data: orderId: 123, customerName: 'John Doe', productName: 'Laptop', quantity: 1, price: 99.99",The system rejects the update and displays an error message indicating that 'price' must be a whole number (integer).,26ade1c-TC-005,26ade1c7ec9d874767476da6d3e83813352f611a
+"Update order with price as a whole-looking decimal (e.g., 100.0)",Order Update,Negative,High,An existing order with ID 123 exists in the system,"1. Navigate to the 'Update Order' screen for order ID 123.
+2. Enter a valid customer name (e.g., 'Jane Smith').
+3. Enter a valid product name (e.g., 'Monitor').
+4. Enter a valid quantity (e.g., 2).
+5. Enter a price as a whole-looking decimal (e.g., 100.0).
+6. Click 'Submit'.
+
+Test Data: orderId: 123, customerName: 'Jane Smith', productName: 'Monitor', quantity: 2, price: 100.0",The system rejects the update and displays an error message indicating that 'price' must be a whole number (integer).,26ade1c-TC-006,26ade1c7ec9d874767476da6d3e83813352f611a
+"Update order with price as a numeric string (e.g., '75')",Order Update,Negative,High,An existing order with ID 123 exists in the system,"1. Navigate to the 'Update Order' screen for order ID 123.
+2. Enter a valid customer name (e.g., 'Alice Brown').
+3. Enter a valid product name (e.g., 'Keyboard').
+4. Enter a valid quantity (e.g., 3).
+5. Enter a price as a numeric string (e.g., '75').
+6. Click 'Submit'.
+
+Test Data: orderId: 123, customerName: 'Alice Brown', productName: 'Keyboard', quantity: 3, price: '75'",The system rejects the update and displays an error message indicating that 'price' must be a whole number (integer).,26ade1c-TC-007,26ade1c7ec9d874767476da6d3e83813352f611a
+Create order with maximum allowed integer price (2147483647),Order Price Validation,Boundary,High,No pre-existing orders required. Order creation endpoint is available.,"1. Navigate to the 'Create Order' form. 2. Enter customer name: 'John Doe'. 3. Enter product name: 'Widget'. 4. Enter quantity: 1. 5. Enter price: 2147483647. 6. Submit the form.
+
+Test Data: customerName='John Doe', productName='Widget', quantity=1, price=2147483647","Order is created successfully. Response shows HTTP 200 OK. Response body contains the created order with id, customerName='John Doe', productName='Widget', quantity=1, and price=2147483647.",26ade1c-TC-008,26ade1c7ec9d874767476da6d3e83813352f611a
+Create order with price one above maximum integer (2147483648) - boundary overflow,Order Price Validation,Boundary,High,No pre-existing orders required. Order creation endpoint is available.,"1. Navigate to the 'Create Order' form. 2. Enter customer name: 'John Doe'. 3. Enter product name: 'Widget'. 4. Enter quantity: 1. 5. Enter price: 2147483648. 6. Submit the form.
+
+Test Data: customerName='John Doe', productName='Widget', quantity=1, price=2147483648",Order creation fails. Response shows HTTP 400 Bad Request or equivalent error indicating price exceeds maximum allowed value.,26ade1c-TC-009,26ade1c7ec9d874767476da6d3e83813352f611a
+Update order with maximum allowed integer price (2147483647),Order Price Validation,Boundary,High,An existing order with id=1 is available for update. Order update endpoint is available.,"1. Navigate to the 'Update Order' form for order id=1. 2. Update price to 2147483647. 3. Submit the form.
+
+Test Data: orderId=1, price=2147483647",Order is updated successfully. Response shows HTTP 200 OK. Response body contains the updated order with id=1 and price=2147483647.,26ade1c-TC-010,26ade1c7ec9d874767476da6d3e83813352f611a
+Update order with price one above maximum integer (2147483648) - boundary overflow,Order Price Validation,Boundary,High,An existing order with id=1 is available for update. Order update endpoint is available.,"1. Navigate to the 'Update Order' form for order id=1. 2. Update price to 2147483648. 3. Submit the form.
+
+Test Data: orderId=1, price=2147483648",Order update fails. Response shows HTTP 400 Bad Request or equivalent error indicating price exceeds maximum allowed value.,26ade1c-TC-011,26ade1c7ec9d874767476da6d3e83813352f611a
+Create order with fractional price (1.99) - type boundary,Order Price Validation,Boundary,High,No pre-existing orders required. Order creation endpoint is available.,"1. Navigate to the 'Create Order' form. 2. Enter customer name: 'John Doe'. 3. Enter product name: 'Widget'. 4. Enter quantity: 1. 5. Enter price: 1.99. 6. Submit the form.
+
+Test Data: customerName='John Doe', productName='Widget', quantity=1, price=1.99",Order creation fails. Response shows HTTP 400 Bad Request or equivalent error indicating price must be an integer.,26ade1c-TC-012,26ade1c7ec9d874767476da6d3e83813352f611a
+Update order with fractional price (1.99) - type boundary,Order Price Validation,Boundary,High,An existing order with id=1 is available for update. Order update endpoint is available.,"1. Navigate to the 'Update Order' form for order id=1. 2. Update price to 1.99. 3. Submit the form.
+
+Test Data: orderId=1, price=1.99",Order update fails. Response shows HTTP 400 Bad Request or equivalent error indicating price must be an integer.,26ade1c-TC-013,26ade1c7ec9d874767476da6d3e83813352f611a

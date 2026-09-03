@@ -97,3 +97,20 @@ Test Data: Query parameters: {""page"": 0, ""limit"": 10}","The API responds wit
 Verify that paginated order retrieval by phone number does not expose raw database details in meta field,Order Management - Order Retrieval by Phone,Security,Medium,User has existing orders recorded with phone number '1234567890'.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/by-phone with query parameters: phone='1234567890', page=0, limit=10.
 
 Test Data: Query parameters: {""phone"": ""1234567890"", ""page"": 0, ""limit"": 10}","The API responds with HTTP status 200 (OK) and a response body containing 'status: success', 'message: Orders retrieved successfully', and a 'data' array with order records. The 'meta' field contains only pagination details (totalElements, page, totalPages) and no raw database details (e.g., SQL queries, table names).",d3da340-TC-020
+Retrieve orders for a shop that has zero recorded orders (empty collection boundary),Order Retrieval by Shop,Boundary,High,A shop with ID 999 exists and has no orders recorded for it,"1. Send a GET request to /api/orders/shop/999?page=0&limit=10.
+
+Test Data: shopId = 999, page = 0, limit = 10",HTTP 404 Not Found status code with an empty response body.,TC-087
+Create an item with a null parameters payload field (null collection boundary),Item Creation,Boundary,High,The item management service is available,"1. Send a POST request to /api/items with the JSON payload in testData.
+
+Test Data: {
+  ""name"": ""Standard Trouser"",
+  ""status"": ""ACTIVE"",
+  ""parameters"": null
+}","HTTP 200 OK status code with response body displaying the created item details where ""parameters"" is an empty list [].",TC-088
+Create an item with an empty parameters array (zero-length collection boundary),Item Creation,Boundary,Medium,The item management service is available,"1. Send a POST request to /api/items with the JSON payload in testData.
+
+Test Data: {
+  ""name"": ""Standard Shirt"",
+  ""status"": ""ACTIVE"",
+  ""parameters"": []
+}","HTTP 200 OK status code with response body displaying the created item details where ""parameters"" is an empty list [].",TC-089

@@ -1,0 +1,45 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Update existing order while retaining existing permanent customer and item photos,Order Management,Positive,High,An active order exists in the system with a customer photo already stored in permanent storage (URL path containing 'customers') and a measurement group cloth photo stored in permanent storage (URL path containing 'orders').,"1. Navigate to the Order Update screen for the existing order.
+2. Modify non-photo fields such as delivery date or special instructions, keeping the customer photo and cloth photo fields populated with their existing permanent URLs.
+3. Save the order changes.
+
+Test Data: orderId: 101, customerPhoto: ""http://minio/customer-photos/customers/cust_101.jpg"", clothPhoto: ""http://minio/order-photos/orders/cloth_101.jpg"", deliveryDate: ""2026-04-20""","The order updates successfully with HTTP 200 OK. The existing customer photo and item cloth photo URLs remain unchanged, and no temp-to-permanent file relocation is executed.",5f2baf0-TC-001
+Update existing order with a newly uploaded customer photo from temporary storage,Order Management,Positive,High,An existing order is recorded in the system. A new customer photo has been uploaded to temporary storage and has a temporary photo URL (path does not contain 'customers').,"1. Open the edit screen for the existing order.
+2. Replace the customer photo with the newly uploaded temporary photo URL.
+3. Submit the updated order.
+
+Test Data: orderId: 101, customerPhoto: ""temp-bucket/temp_customer_789.jpg""","The order is updated successfully. The new customer photo is relocated from temporary storage to permanent customer storage, and the updated customer profile displays the new permanent image URL.",TC-001
+Update order with existing customer photo URL containing permanent 'customers' path segment,Order Photo Updating,Boundary,High,An existing order with ID 101 exists in the system. The customer profile currently points to permanent photo URL 'http://minio/customer-photos/customers/profile123.jpg'.,"1. Open the order edit screen for order ID 101. 2. Keep the customer photo URL as 'http://minio/customer-photos/customers/profile123.jpg' without uploading a new temp photo. 3. Submit the order update request.
+
+Test Data: orderId = 101, customerPhoto = 'http://minio/customer-photos/customers/profile123.jpg'",The system retains the existing permanent customer photo URL 'http://minio/customer-photos/customers/profile123.jpg' without attempting to transfer the image from temporary storage.,TC-002
+Update order with temporary customer photo URL missing 'customers' path segment,Order Photo Updating,Boundary,High,An existing order with ID 102 exists in the system. A new customer photo has been uploaded to temporary storage at 'http://minio/temp-photos/temp_profile456.jpg'.,"1. Open the order edit screen for order ID 102. 2. Select and assign the new temporary photo URL 'http://minio/temp-photos/temp_profile456.jpg' to the customer profile. 3. Submit the order update request.
+
+Test Data: orderId = 102, customerPhoto = 'http://minio/temp-photos/temp_profile456.jpg'",The system processes the photo transfer from temporary storage to permanent customer storage and saves the updated permanent URL on the customer record.,TC-003
+Update order item measurement group with existing cloth photo URL containing permanent 'orders' path segment,Order Photo Updating,Boundary,High,"An order with ID 103 exists, containing an item measurement group with permanent cloth photo URL 'http://minio/order-photos/orders/cloth789.jpg'.","1. Open the order edit screen for order ID 103. 2. Keep the measurement group's cloth photo URL as 'http://minio/order-photos/orders/cloth789.jpg'. 3. Submit the update request.
+
+Test Data: orderId = 103, clothPhoto = 'http://minio/order-photos/orders/cloth789.jpg'",The order item measurement group retains the existing photo URL 'http://minio/order-photos/orders/cloth789.jpg' without performing temporary storage file movement.,TC-004
+Update order item measurement group with temporary cloth photo URL missing 'orders' path segment,Order Photo Updating,Boundary,High,An order with ID 104 exists. A new fabric image is uploaded to temporary storage at 'http://minio/temp-photos/temp_fabric001.jpg'.,"1. Open the order edit screen for order ID 104. 2. Assign 'http://minio/temp-photos/temp_fabric001.jpg' as the cloth photo for the measurement group. 3. Submit the update request.
+
+Test Data: orderId = 104, clothPhoto = 'http://minio/temp-photos/temp_fabric001.jpg'",The system moves the cloth photo from temporary storage into the permanent order storage location and updates the measurement group cloth photo URL accordingly.,TC-005
+Verify that photo processing failure during order update does not leak internal storage details or raw exception messages,Order Management - Photo Upload Security,Security,High,An existing order exists in the system,"1. Send a request to update an existing order containing a new customer photo URL that triggers a storage processing error. 2. Inspect the returned error message in the response.
+
+Test Data: Order ID: 101, customerPhoto: 'temp/invalid-storage-key.jpg'","The system fails the order update and returns a generic error message 'Unable to process customer photo at this time. Please try again later.' without leaking internal MinIO bucket names, server endpoints, or raw stack traces.",TC-006
+Update order while retaining existing permanent customer and cloth photo URLs,Order Management,Configuration,High,An existing order exists in the system where the customer photo URL contains 'customers' and the order measurement group cloth photo URL contains 'orders'.,"1. Navigate to the order edit screen for the existing order.
+2. Modify order details such as special instructions while keeping the existing customer photo and cloth photo URLs unchanged.
+3. Submit the order update request.
+
+Test Data: Customer photo: 'http://storage-server/customer-photos/customers/cust101.jpg', Cloth photo: 'http://storage-server/order-photos/orders/cloth202.jpg'",The order is updated successfully with the new details. The existing customer and cloth photo URLs are preserved unchanged without re-uploading from temporary storage.,e2af361-TC-034
+Update order with a newly uploaded temporary cloth photo,Order Management,Configuration,High,An existing order exists in the system and a new image file has been uploaded to temporary storage.,"1. Navigate to the order edit screen for the existing order.
+2. Replace the current cloth photo URL with the newly generated temporary photo path.
+3. Submit the order update request.
+
+Test Data: Temporary photo path: 'temp/cloth-new-789.jpg'","The order is updated successfully, the temporary cloth photo is moved to permanent order storage, and the order record reflects the updated permanent image URL.",TC-007
+Verify order photo uploads prepend configured prefix 'orders/' to object keys in order-photos bucket,MinIO Storage Path Configuration,Configuration,High,Application is deployed with minio.order-photo-prefix=orders/ in application.properties. MinIO service and order-photos bucket are accessible.,"1. Upload a photo for a new or existing order. 2. Query the object storage or check file metadata via API. 3. Inspect the stored object key in the 'order-photos' bucket.
+
+Test Data: minio.order-photo-prefix=orders/","The uploaded order photo is stored with an object key prefixed with 'orders/' (e.g., 'orders/sample-photo.jpg') in the order-photos bucket.",TC-008
+Verify customer photo uploads prepend configured prefix 'customers/' to object keys in customer-photos bucket,MinIO Storage Path Configuration,Configuration,High,Application is deployed with minio.customer-photo-prefix=customers/ in application.properties. MinIO service and customer-photos bucket are accessible.,"1. Upload a customer profile or reference photo. 2. Query object storage or check photo path details via API response. 3. Inspect the stored object key in the 'customer-photos' bucket.
+
+Test Data: minio.customer-photo-prefix=customers/","The uploaded customer photo is stored with an object key prefixed with 'customers/' (e.g., 'customers/customer-123.jpg') in the customer-photos bucket.",TC-009
+Verify temporary file cleanup runs on schedule using updated property key 'minio.cleanup-interval-ms',MinIO Temp File Cleanup Configuration,Configuration,High,Application is deployed with updated minio.cleanup-interval-ms=300000 setting. A temp file older than 30 minutes exists in tailor-photos-temp bucket.,"1. Place a temporary file older than 30 minutes in the 'tailor-photos-temp' bucket. 2. Observe background logs and bucket contents across the 300,000 ms (5 minute) cleanup interval cycle. 3. Check if the expired file is purged.
+
+Test Data: minio.temp-cleanup-interval-ms (old) -> minio.cleanup-interval-ms=300000 (new)","The background cleanup process triggers every 300,000 ms using the new 'minio.cleanup-interval-ms' property key and removes files older than the retention threshold from the tailor-photos-temp bucket without errors.",77db461-TC-006

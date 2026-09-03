@@ -407,3 +407,139 @@ Test Data: {
     }
   ]
 }","1. The API responds with HTTP status 400 (Bad Request) and an error message indicating invalid totalAmount (e.g., 'Total amount must be a positive value'). 2. The API responds with HTTP status 400 (Bad Request) and an error message indicating invalid totalAmount (e.g., 'Total amount must be a numeric value').",TC-008
+Attempt to create an order with a non-existent Shop ID,Order Creation Validation,Negative,High,No shop exists in the system with ID 999999.,"1. Send a POST request to /api/orders with the request body specified in testData.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""shopId"": 999999,
+  ""totalAmount"": 100.00,
+  ""paidAmount"": 50.00,
+  ""dueAmount"": 50.00,
+  ""trialDate"": ""2026-05-01"",
+  ""deliveryDate"": ""2026-05-10"",
+  ""items"": []
+}","The system rejects the request with a server response error stating ""Shop not found with ID: 999999"".",TC-76585
+Attempt to create an order referencing an item that does not exist,Order Creation Validation,Negative,High,A shop with ID 1 exists in the system. No item exists in the system with ID 888888.,"1. Send a POST request to /api/orders with the payload in testData.
+
+Test Data: {
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""0987654321"",
+  ""shopId"": 1,
+  ""totalAmount"": 200.00,
+  ""paidAmount"": 100.00,
+  ""dueAmount"": 100.00,
+  ""trialDate"": ""2026-06-01"",
+  ""deliveryDate"": ""2026-06-10"",
+  ""items"": [
+    {
+      ""itemId"": 888888,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": []
+        }
+      ]
+    }
+  ]
+}","The system rejects the request with an error message stating ""Item not found with ID: 888888"".",TC-76586
+Attempt to create an order item where quantity does not match measurement groups count,Order Creation Validation,Negative,High,A shop with ID 1 exists and an item with ID 10 exists in the database.,"1. Send a POST request to /api/orders with the payload in testData where the quantity is 2 but only 1 measurement group is provided.
+
+Test Data: {
+  ""customerName"": ""Alice Smith"",
+  ""customerPhone"": ""5551234567"",
+  ""shopId"": 1,
+  ""totalAmount"": 150.00,
+  ""paidAmount"": 50.00,
+  ""dueAmount"": 100.00,
+  ""trialDate"": ""2026-07-01"",
+  ""deliveryDate"": ""2026-07-10"",
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""quantity"": 2,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 40.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","The system rejects the order creation request with an error stating ""Item count and number of measurement groups must match for item ID: 10"".",TC-76587
+Attempt to create an order with an invalid date format for trial date,Order Creation Validation,Negative,Medium,A shop with ID 1 exists in the system.,"1. Send a POST request to /api/orders with trialDate in non-ISO format (MM/DD/YYYY instead of YYYY-MM-DD).
+
+Test Data: {
+  ""customerName"": ""Bob Brown"",
+  ""customerPhone"": ""4449876543"",
+  ""shopId"": 1,
+  ""totalAmount"": 120.00,
+  ""paidAmount"": 120.00,
+  ""dueAmount"": 0.00,
+  ""trialDate"": ""05/20/2026"",
+  ""deliveryDate"": ""2026-05-25"",
+  ""items"": []
+}","The request fails due to date parsing error on trialDate, and the order is not created.",TC-76588
+Create an order with item quantity 0 and empty measurement groups list,Order Creation Boundaries,Boundary,High,A shop with ID 1 and an item with ID 10 exist in the system.,"1. Send a POST request to /api/orders with the JSON payload in testData.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""1234567890"",
+  ""customerGender"": ""male"",
+  ""orderGender"": ""male"",
+  ""customerPhotoUrl"": ""http://example.com/photo.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 100.00,
+  ""paidAmount"": 50.00,
+  ""dueAmount"": 50.00,
+  ""trialDate"": ""2026-04-01"",
+  ""orderDate"": ""2026-03-30"",
+  ""deliveryDate"": ""2026-04-05"",
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""quantity"": 0,
+      ""photoUrl"": ""http://example.com/item.jpg"",
+      ""measurementGroups"": []
+    }
+  ]
+}","HTTP 200 OK response returning an OrderSummaryResponse JSON object with itemCount set to 0, customerName 'John Doe', totalAmount 100.00, paidAmount 50.00, and dueAmount 50.00.",TC-76589
+Create an order with item quantity 1 and exactly 1 measurement group,Order Creation Boundaries,Boundary,High,A shop with ID 1 and an item with ID 10 exist in the system.,"1. Send a POST request to /api/orders with the JSON payload in testData.
+
+Test Data: {
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""0987654321"",
+  ""customerGender"": ""female"",
+  ""orderGender"": ""female"",
+  ""customerPhotoUrl"": ""http://example.com/photo2.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 150.00,
+  ""paidAmount"": 150.00,
+  ""dueAmount"": 0.00,
+  ""trialDate"": ""2026-04-02"",
+  ""orderDate"": ""2026-03-30"",
+  ""deliveryDate"": ""2026-04-06"",
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""quantity"": 1,
+      ""photoUrl"": ""http://example.com/item2.jpg"",
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""name"": ""Chest"",
+              ""unit"": ""inch"",
+              ""value"": 38.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response returning an OrderSummaryResponse JSON object with customerName 'Jane Doe', itemCount 1, totalAmount 150.00, paidAmount 150.00, and dueAmount 0.00.",TC-76590

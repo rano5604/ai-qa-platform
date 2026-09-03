@@ -77,3 +77,18 @@ Test Data: Customer photo: malicious.exe, Measurement cloth photo: oversized.jpg
 Verify that a shop worker cannot update an order for a shop they do not own via the UI,Order Management - Insecure Direct Object Reference (IDOR),Security,High,User A (shop owner) has an existing order. User B (shop worker) has access to the system but is not associated with User A's shop.,"1. Log in as User B (shop worker). 2. Navigate to the order listing page. 3. Attempt to edit User A's order by manually entering the order ID in the URL or via direct UI actions. 4. Modify any field (e.g., paid amount) and save the order. 5. Observe the system response.
 
 Test Data: Order ID: 12345 (belonging to User A's shop), Paid amount: 3000 (updated from 2000)","The system displays a generic error message (e.g., 'Access denied'). The order is not updated with the changes made by User B.",f3ee410-TC-019
+Create an order with measurement groups omitting individual delivery dates and verify they default to the main order delivery date,Order Management - Measurement Group Delivery Date Defaulting,Positive,High,A shop exists in the system and clothing items exist for selection.,"1. Submit an order creation request with the main order delivery date set to '2026-05-20'.
+2. Include an item measurement group where the group delivery date is left blank or null.
+3. Verify the created order response.
+
+Test Data: Order Delivery Date: '2026-05-20', Group Delivery Date: null, Paid Amount: 500.00","The order is created successfully, and the measurement group's delivery date is automatically set to match the main order delivery date '2026-05-20'.",TC-034
+"Retrieve order details by order ID and verify total, paid, and due amounts are returned in the response",Order Management - Order Details Financial Summary Mapping,Positive,High,"An order exists with a total making charge/amount of 1500.00, paid amount of 500.00, and remaining due amount of 1000.00.","1. Send a request to fetch order details using the existing order ID.
+2. Observe the returned financial fields in the response.
+
+Test Data: Order ID: '1-20260330-0001'","The order details are retrieved successfully with HTTP 200, containing totalAmount of 1500.00, paidAmount of 500.00, and dueAmount of 1000.00 in the response body.",TC-035
+Create order with empty group delivery date to verify default fallback to order delivery date,Order Group Delivery Date Assignment,Boundary,High,A shop with ID 1 exists in the system,"1. Send a POST request to /api/orders with shopId 1, order delivery date '2025-06-10', and one item measurement group having deliveryDate as an empty string (""""). 2. Inspect the created order response.
+
+Test Data: shopId: 1, orderDate: ""2025-05-01"", trialDate: ""2025-06-05"", deliveryDate: ""2025-06-10"", group deliveryDate: """"","The order is created successfully with HTTP 200 OK, and the item group delivery date defaults to the order delivery date '2025-06-10'.",TC-036
+Create order with urgent group delivery date set to exactly one day before the order delivery date,Order Urgent Group Delivery Date Boundary,Boundary,High,A shop with ID 1 exists in the system,"1. Send a POST request to /api/orders with shopId 1, order delivery date '2025-06-10', and one urgent item group with deliveryDate '2025-06-09'. 2. Verify the created order details in the response.
+
+Test Data: shopId: 1, orderDate: ""2025-05-01"", trialDate: ""2025-06-05"", deliveryDate: ""2025-06-10"", group deliveryDate: ""2025-06-09""","The order is created successfully with HTTP 200 OK, and the item group delivery date is saved as '2025-06-09'.",TC-037

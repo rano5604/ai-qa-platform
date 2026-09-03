@@ -144,3 +144,69 @@ Verify that order update with photo URLs enforces proper input validation to pre
 Verify that order retrieval by orderId does not expose sensitive photo URLs to unauthorized users,Order Management - Order Retrieval,Security,High,"An order exists with orderId '50-20231001-0001' and contains photo URLs (e.g., customerPhoto, measurementClothPhoto). The tester does not have authorization to access the order.",1. Send a GET request to /api/orders/50-20231001-0001 without valid authentication or with insufficient permissions.,"The API responds with HTTP status 403 (Forbidden) or 404 (Not Found) and a response body containing a generic error message (e.g., 'Access denied' or 'Order not found'). No photo URLs or order details are exposed.",TC-006
 Verify that order retrieval by orderId exposes photo URLs only to authorized users,Order Management - Order Retrieval,Security,Medium,"An order exists with orderId '50-20231001-0001' and contains photo URLs (e.g., customerPhoto, measurementClothPhoto). The tester has valid authentication and authorization to access the order.",1. Send a GET request to /api/orders/50-20231001-0001 with valid authentication headers.,"The API responds with HTTP status 200 (OK) and a response body containing 'status: success'. The response includes the order details with the 'customerPhoto', 'measurementClothPhoto', 'clothPhoto', and 'patternClothPhoto' fields populated with valid URLs. No sensitive system details are exposed.",TC-007
 Verify that order retrieval by orderId enforces rate limiting to prevent abuse,Order Management - Order Retrieval,Security,Medium,An order exists with orderId '50-20231001-0001'. The tester has valid authentication.,1. Send 10 GET requests to /api/orders/50-20231001-0001 in rapid succession with valid authentication headers.,"The API responds with HTTP status 200 (OK) for the first few requests, then starts responding with HTTP status 429 (Too Many Requests) and a response body containing 'status: error', 'message: Too many requests. Please try again later.', and no sensitive system details.",TC-008
+Attempt to fetch an order using a non-existent string order identifier,Order Retrieval,Negative,High,No order exists in the system with the order identifier 'ORD-NONEXISTENT-999'.,"1. Send a GET request to /api/orders/ORD-NONEXISTENT-999.
+
+Test Data: Path variable orderId = 'ORD-NONEXISTENT-999'",The system rejects the request and returns an error response indicating that no order was found with orderId 'ORD-NONEXISTENT-999'.,TC-046
+Attempt to update an order with an urgent measurement group missing a required delivery date,Order Management - Order Update,Negative,High,An order with order ID 'ORD-1001' exists in the system.,"1. Send a PUT request to /api/orders/ORD-1001 with the payload in testData containing an urgent measurement group where deliveryDate is empty.
+
+Test Data: {
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01711111111"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""customerPhoto"": ""customer.jpg"",
+  ""measurementClothPhoto"": ""cloth.jpg"",
+  ""shopId"": 1,
+  ""totalAmount"": 500.0,
+  ""paidAmount"": 200.0,
+  ""dueAmount"": 300.0,
+  ""status"": ""PENDING"",
+  ""urgent"": true,
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""clothPhoto"": ""fabric1.jpg"",
+          ""patternClothPhoto"": ""pattern1.jpg"",
+          ""urgent"": true,
+          ""deliveryDate"": """",
+          ""measurements"": []
+        }
+      ]
+    }
+  ]
+}",The system rejects the update request and returns an error message stating 'Delivery date is required for urgent items'. The order remains unchanged.,TC-047
+Create an order with null photo fields in request and verify GET order by string orderId response payload,Order Creation and Retrieval,Boundary,High,A shop with ID 1 and an item with ID 10 exist in the system.,"1. Send a POST request to /api/orders with the JSON payload provided in testData.
+2. Extract the string orderId from the response.
+3. Send a GET request to /api/orders/{orderId} using the extracted string orderId.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""01700000000"",
+  ""customerGender"": ""FEMALE"",
+  ""orderGender"": ""FEMALE"",
+  ""customerPhoto"": null,
+  ""measurementClothPhoto"": null,
+  ""totalAmount"": 100.0,
+  ""paidAmount"": 50.0,
+  ""dueAmount"": 50.0,
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""clothPhoto"": null,
+          ""patternClothPhoto"": null,
+          ""urgent"": false
+        }
+      ]
+    }
+  ]
+}","The POST request succeeds with HTTP status code 200 OK. The GET request to /api/orders/{orderId} returns HTTP status code 200 OK with customerPhoto as null, measurementClothPhoto as null, and items[0].measurementGroups[0].clothPhoto and patternClothPhoto both returned as null.",TC-048
+Retrieve an order using an alphanumeric string orderId format,Order Retrieval,Boundary,High,An order has been created for shop ID 1 and generated the string orderId 'ORD-20260330-001'.,"1. Send a GET request to /api/orders/ORD-20260330-001.
+
+Test Data: Path variable orderId = 'ORD-20260330-001'","HTTP status code 200 OK with response data matching the order details for orderId 'ORD-20260330-001'. Previously, passing a non-numeric string to GET /api/orders/{id} caused a type mismatch error or looked up by numeric internal ID.",TC-049

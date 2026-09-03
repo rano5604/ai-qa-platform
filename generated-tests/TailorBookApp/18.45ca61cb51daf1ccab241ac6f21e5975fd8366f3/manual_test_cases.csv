@@ -383,3 +383,118 @@ Test Data: {
   ],
   ""shopId"": 1
 }","The API responds with HTTP status 403 (Forbidden) or 404 (Not Found), and the order is not updated. No order details are returned in the response body.",TC-009
+Attempt to create an order with an urgent measurement group but a missing or blank delivery date,Order Management - Urgent Item Measurement Validation,Negative,High,A shop with ID 1 and an item with ID 10 exist in the system.,"1. Send a POST request to /api/orders with the JSON body provided in testData.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01700000000"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""trialDate"": ""2025-05-10"",
+  ""orderDate"": ""2025-05-01"",
+  ""deliveryDate"": ""2025-05-15"",
+  ""urgent"": true,
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""http://example.com/photo.jpg"",
+          ""urgent"": true,
+          ""deliveryDate"": """",
+          ""measurements"": []
+        }
+      ]
+    }
+  ]
+}","The system rejects the request and returns an error response with the message ""Delivery date is required for urgent measurement group.""",TC-844
+Attempt to create an order item with a null measurement groups list,Order Management - Item Measurement Group Validation,Negative,Medium,A shop with ID 1 and an item with ID 10 exist in the system.,"1. Send a POST request to /api/orders with the JSON body provided in testData where measurementGroups is null.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""01700000001"",
+  ""customerGender"": ""FEMALE"",
+  ""orderGender"": ""FEMALE"",
+  ""trialDate"": ""2025-05-10"",
+  ""orderDate"": ""2025-05-01"",
+  ""deliveryDate"": ""2025-05-15"",
+  ""urgent"": false,
+  ""items"": [
+    {
+      ""itemId"": 10,
+      ""quantity"": 1,
+      ""measurementGroups"": null
+    }
+  ]
+}","The system rejects the request and returns an error response with the message ""Item count and number of measurement groups must match for item ID: 10"".",TC-845
+Create an order with measurement group urgent flag set to false and an empty delivery date string,Order Processing,Boundary,High,A shop with ID 1 and an item with ID 101 exist.,"1. Send a POST request to /api/orders with the JSON payload specified in testData.
+2. Verify the HTTP response status code and response body.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01700000000"",
+  ""customerGender"": ""MALE"",
+  ""orderGender"": ""MALE"",
+  ""totalAmount"": 500.0,
+  ""paidAmount"": 200.0,
+  ""dueAmount"": 300.0,
+  ""orderDate"": ""2025-05-01"",
+  ""trialDate"": ""2025-05-10"",
+  ""deliveryDate"": ""2025-05-15"",
+  ""urgent"": false,
+  ""items"": [
+    {
+      ""itemId"": 101,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""http://example.com/photo.jpg"",
+          ""urgent"": false,
+          ""deliveryDate"": """",
+          ""measurements"": []
+        }
+      ]
+    }
+  ]
+}",HTTP status code 200 OK with status 'success'. The returned order summary contains 'urgent': false.,TC-846
+Create an order with multiple measurement groups where exactly one group is marked urgent,Order Processing,Boundary,High,A shop with ID 1 and an item with ID 101 exist.,"1. Send a POST request to /api/orders with the JSON payload in testData containing 2 measurement groups (one urgent with valid delivery date, one non-urgent with null delivery date).
+2. Verify the response status code and summary urgency field.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""01800000000"",
+  ""customerGender"": ""FEMALE"",
+  ""orderGender"": ""FEMALE"",
+  ""totalAmount"": 1000.0,
+  ""paidAmount"": 500.0,
+  ""dueAmount"": 500.0,
+  ""orderDate"": ""2025-05-01"",
+  ""trialDate"": ""2025-05-10"",
+  ""deliveryDate"": ""2025-05-15"",
+  ""urgent"": false,
+  ""items"": [
+    {
+      ""itemId"": 101,
+      ""quantity"": 2,
+      ""measurementGroups"": [
+        {
+          ""photoUrl"": ""http://example.com/photo1.jpg"",
+          ""urgent"": false,
+          ""deliveryDate"": null,
+          ""measurements"": []
+        },
+        {
+          ""photoUrl"": ""http://example.com/photo2.jpg"",
+          ""urgent"": true,
+          ""deliveryDate"": ""2025-05-12"",
+          ""measurements"": []
+        }
+      ]
+    }
+  ]
+}",HTTP status code 200 OK with status 'success'. The overall order summary 'urgent' flag is set to true because at least one measurement group is urgent.,TC-847

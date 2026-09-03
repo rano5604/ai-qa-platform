@@ -88,3 +88,63 @@ Test Data: {""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": 
 Attempt to update an order with a BOOLEAN measurement parameter containing an invalid boolean value,Order Measurement Management,Negative,High,An existing order with at least one measurement parameter.,"1. Send a PUT request to /api/orders/{id} (or relevant endpoint) with a BOOLEAN measurement parameter containing an invalid 'value'.
 
 Test Data: {""items"": [{""itemId"": 1, ""quantity"": 1, ""measurementGroups"": [{""measurements"": [{""nameEn"": ""Single Pocket"", ""nameBn"": ""সিঙ্গেল পকেট"", ""unit"": null, ""value"": ""yes"", ""type"": ""BOOLEAN""}]}]}]}",The system returns an HTTP 400 Bad Request status code with an error message indicating that the 'value' field must be either 'true' or 'false' for BOOLEAN measurements.,TC-014
+Create order item measurement with NUMERIC parameter type using string zero boundary ('0.0'),Order Measurement Processing,Boundary,High,A shop with ID 1 exists and an item with ID 1 exists in the system,"1. Send a POST request to /api/orders with the JSON payload in testData.
+2. Verify that the response status is 200 OK and check the measurement fields in the returned order summary.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""John Doe"",
+  ""customerPhone"": ""01700000000"",
+  ""totalAmount"": 100.0,
+  ""paidAmount"": 50.0,
+  ""dueAmount"": 50.0,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""nameEn"": ""Waist"",
+              ""nameBn"": ""কোমর"",
+              ""unit"": ""inch"",
+              ""value"": ""0.0"",
+              ""type"": ""NUMERIC""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response returning status 'success'. The returned order item measurement has value 0.0, booleanValue null, and type 'NUMERIC'.",TC-9396
+Create order item measurement with BOOLEAN parameter type using string boundary value 'false',Order Measurement Processing,Boundary,High,A shop with ID 1 exists and an item with ID 1 exists in the system,"1. Send a POST request to /api/orders with the JSON payload in testData.
+2. Verify that the response status is 200 OK and check the boolean measurement values.
+
+Test Data: {
+  ""shopId"": 1,
+  ""customerName"": ""Jane Doe"",
+  ""customerPhone"": ""01800000000"",
+  ""totalAmount"": 150.0,
+  ""paidAmount"": 150.0,
+  ""dueAmount"": 0.0,
+  ""items"": [
+    {
+      ""itemId"": 1,
+      ""quantity"": 1,
+      ""measurementGroups"": [
+        {
+          ""measurements"": [
+            {
+              ""nameEn"": ""Single Pocket"",
+              ""nameBn"": ""এক পকেট"",
+              ""unit"": null,
+              ""value"": ""false"",
+              ""type"": ""BOOLEAN""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}","HTTP 200 OK response returning status 'success'. The order item measurement response contains booleanValue false, value null, unit null, and type 'BOOLEAN'.",TC-9397

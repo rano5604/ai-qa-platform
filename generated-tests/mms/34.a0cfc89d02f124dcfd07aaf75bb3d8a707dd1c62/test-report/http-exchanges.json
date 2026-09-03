@@ -1,0 +1,122 @@
+[ {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_a0cfc89d02f124dcfd07aaf75bb3d8a707dd1c62",
+  "testMethodName" : "nullMobileNumberPassedToMaskerDoesNotThrow",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/onboarding",
+  "requestHeaders" : {
+    "X-Auth-Subject" : "12345",
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"storeName\": \"ABC Store - Dhaka Branch\",\n  \"storeLocation\": \"123 - Store address\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 422,
+  "responseStatusLine" : "HTTP/1.1 422 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 10:04:04 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"status\":422,\"error\":\"Business Rule Violation\",\"message\":\"KYC verification failed: 404 Not Found on GET request for \\\"http://localhost:8009/kyc/api/v1/kyc/user/12345\\\": [no body]\",\"path\":\"/mms/api/v1/onboarding\",\"timestamp\":\"2026-09-01T10:04:04.570352247\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 1107
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_a0cfc89d02f124dcfd07aaf75bb3d8a707dd1c62",
+  "testMethodName" : "standardLengthMobileNumberRevealsOnlyLastFourDigits",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/onboarding",
+  "requestHeaders" : {
+    "X-Auth-Subject" : "12345",
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"storeName\": \"ABC Store - Dhaka Branch\",\n  \"storeLocation\": \"123 - Store address\",\n  \"notificationMobileNumber\": \"01712345678\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 422,
+  "responseStatusLine" : "HTTP/1.1 422 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 10:04:05 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"status\":422,\"error\":\"Business Rule Violation\",\"message\":\"KYC verification failed: 404 Not Found on GET request for \\\"http://localhost:8009/kyc/api/v1/kyc/user/12345\\\": [no body]\",\"path\":\"/mms/api/v1/onboarding\",\"timestamp\":\"2026-09-01T10:04:05.373553852\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 782
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_a0cfc89d02f124dcfd07aaf75bb3d8a707dd1c62",
+  "testMethodName" : "submitKycInformationSuccessfully",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/onboarding",
+  "requestHeaders" : {
+    "X-Auth-Subject" : "12345",
+    "auth-subject" : "12345",
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"storeName\": \"Store_1788257045303\",\n  \"storeLocation\": \"123 Main Street, Dhaka\",\n  \"notificationMobileNumber\": \"01670636253\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 422,
+  "responseStatusLine" : "HTTP/1.1 422 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 10:04:06 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"status\":422,\"error\":\"Business Rule Violation\",\"message\":\"KYC verification failed: 404 Not Found on GET request for \\\"http://localhost:8009/kyc/api/v1/kyc/user/12345\\\": [no body]\",\"path\":\"/mms/api/v1/onboarding\",\"timestamp\":\"2026-09-01T10:04:06.048491773\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 701
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_a0cfc89d02f124dcfd07aaf75bb3d8a707dd1c62",
+  "testMethodName" : "whenKycRegistrationFailsDuringMerchantOnboardingProcessHandlesFailure",
+  "requestMethod" : "POST",
+  "requestUri" : "http://169.58.37.242:8007/mms/api/v1/onboarding",
+  "requestHeaders" : {
+    "X-Auth-Subject" : "12345",
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"storeName\": \"Test Store 1788257046033\",\n  \"storeLocation\": \"Dhaka\",\n  \"notificationMobileNumber\": \"9999999999\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 422,
+  "responseStatusLine" : "HTTP/1.1 422 ",
+  "responseHeaders" : {
+    "X-Content-Type-Options" : "nosniff",
+    "X-XSS-Protection" : "0",
+    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+    "Pragma" : "no-cache",
+    "Expires" : "0",
+    "X-Frame-Options" : "DENY",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Tue, 01 Sep 2026 10:04:06 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"status\":422,\"error\":\"Business Rule Violation\",\"message\":\"KYC verification failed: 404 Not Found on GET request for \\\"http://localhost:8009/kyc/api/v1/kyc/user/12345\\\": [no body]\",\"path\":\"/mms/api/v1/onboarding\",\"timestamp\":\"2026-09-01T10:04:06.781237458\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 614
+} ]

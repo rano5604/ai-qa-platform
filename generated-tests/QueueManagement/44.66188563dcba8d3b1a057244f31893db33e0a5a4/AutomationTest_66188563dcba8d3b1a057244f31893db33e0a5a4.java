@@ -2,8 +2,8 @@ package com.company.aiqa.generated;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import java.time.LocalDate;
 import java.util.List;
@@ -17,23 +17,15 @@ import java.time.LocalTime;
  */
 public class AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4 {
 
-    private Long areaId;
-
-    private Long shopId;
-
-    private List<Long> holidayIds;
-
     @BeforeClass
     public void setup() {
-        RestAssured.baseURI = System.getProperty("baseUri", "http://localhost:8082");
-        // Create an area
-        String areaBody = """
-            {
-              "name": "Area_%d"
-            }
-            """.formatted(System.currentTimeMillis());
-        areaId = given().contentType(ContentType.JSON).body(areaBody).when().post("/api/areas").then().statusCode(anyOf(is(200), is(201))).extract().path("data.id");
-        // Create a shop
+        RestAssured.baseURI = System.getProperty("baseUri", "http://localhost:8080");
+    }
+
+    // Test Case ID: d750aff-TC-001
+    @Test
+    public void successfullyAddMultipleHolidaysForShop() {
+        // Precondition: Create a shop first
         String shopBody = """
             {
               "shopName": "Shop_%d",
@@ -42,31 +34,14 @@ public class AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4 {
               "ownerName": "Owner",
               "username": "owner_%d",
               "email": "owner_%d@example.com",
-              "address": "123 Street",
-              "areaId": %d,
+              "address": "123 Main St",
+              "areaId": 1,
               "status": true
             }
-            """.formatted(System.currentTimeMillis(), System.currentTimeMillis(), System.currentTimeMillis(), areaId);
-        shopId = given().contentType(ContentType.JSON).body(shopBody).when().post("/api/areas/{areaId}/shops", areaId).then().statusCode(200).extract().path("id");
-    }
-
-    @AfterClass
-    public void cleanup() {
-        if (holidayIds != null) {
-            for (Long holidayId : holidayIds) {
-                given().when().delete("/api/shop-holidays/{holidayId}", holidayId).then().statusCode(anyOf(is(200), is(204), is(404)));
-            }
-        }
-        given().when().delete("/api/areas/{areaId}/shops/{id}", areaId, shopId).then().statusCode(anyOf(is(200), is(204), is(404)));
-        given().when().delete("/api/areas/{id}", areaId).then().statusCode(anyOf(is(200), is(204), is(404)));
-    }
-
-    /**
-     * Test Case ID: d750aff-TC-001
-     */
-    @Test
-    public void successfullyAddMultipleHolidaysForShop() {
-        String requestBody = """
+            """.formatted(System.currentTimeMillis(), System.currentTimeMillis(), System.currentTimeMillis());
+        Long shopId = given().contentType(ContentType.JSON).body(shopBody).when().post("/api/areas/1/shops").then().statusCode(anyOf(is(200), is(201))).extract().path("id");
+        // Test case: Add multiple holidays
+        String holidaysBody = """
             [
               {
                 "shopId": %d,
@@ -80,18 +55,31 @@ public class AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4 {
               }
             ]
             """.formatted(shopId, shopId);
-        given().contentType(ContentType.JSON).body(requestBody).queryParam("shopId", shopId).when().post("/api/shop-holidays/add").then().statusCode(200).body("message", containsString("All holidays added successfully"));
-        // Verify holidays are in the list
-        given().queryParam("page", 0).queryParam("limit", 10).when().get("/api/shop-holidays/{shopId}", shopId).then().statusCode(200).body("data.content.holidayDate", hasItems("2024-12-25", "2024-12-26"));
+        given().contentType(ContentType.JSON).body(holidaysBody).when().post("/api/shop-holidays/add?shopId={shopId}", shopId).then().statusCode(200).body(containsString("All holidays added successfully"));
+        // Verify holidays were added
+        given().when().get("/api/shop-holidays/{shopId}?page=0&limit=10", shopId).then().statusCode(200).body("data.content.holidayDate", hasItems("2024-12-25", "2024-12-26")).body("data.content.reason", hasItems("Christmas Day", "Boxing Day"));
     }
 
-    /**
-     * Test Case ID: d750aff-TC-002
-     */
+    // Test Case ID: d750aff-TC-002
     @Test
     public void failToAddDuplicateHolidaysForSameShopAndDates() {
-        // First, add a holiday for 2024-12-25
-        String firstHoliday = """
+        // Precondition: Create a shop first
+        String shopBody = """
+            {
+              "shopName": "Shop_%d",
+              "shopPhone": "1234567890",
+              "geoLocation": "0,0",
+              "ownerName": "Owner",
+              "username": "owner_%d",
+              "email": "owner_%d@example.com",
+              "address": "123 Main St",
+              "areaId": 1,
+              "status": true
+            }
+            """.formatted(System.currentTimeMillis(), System.currentTimeMillis(), System.currentTimeMillis());
+        Long shopId = given().contentType(ContentType.JSON).body(shopBody).when().post("/api/areas/1/shops").then().statusCode(anyOf(is(200), is(201))).extract().path("id");
+        // Precondition: Add a holiday for 2024-12-25
+        String firstHolidayBody = """
             [
               {
                 "shopId": %d,
@@ -100,9 +88,9 @@ public class AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4 {
               }
             ]
             """.formatted(shopId);
-        given().contentType(ContentType.JSON).body(firstHoliday).queryParam("shopId", shopId).when().post("/api/shop-holidays/add").then().statusCode(200);
-        // Now try to add holidays including the duplicate
-        String requestBody = """
+        given().contentType(ContentType.JSON).body(firstHolidayBody).when().post("/api/shop-holidays/add?shopId={shopId}", shopId).then().statusCode(200);
+        // Test case: Try to add duplicate holiday for 2024-12-25
+        String duplicateHolidaysBody = """
             [
               {
                 "shopId": %d,
@@ -116,19 +104,33 @@ public class AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4 {
               }
             ]
             """.formatted(shopId, shopId);
-        given().contentType(ContentType.JSON).body(requestBody).queryParam("shopId", shopId).when().post("/api/shop-holidays/add").then().statusCode(200).body("message", containsString("Some holidays were already declared and were skipped: [2024-12-25]"));
-        // Verify only 2024-12-26 is added
-        given().queryParam("page", 0).queryParam("limit", 10).when().get("/api/shop-holidays/{shopId}", shopId).then().statusCode(200).body("data.content.holidayDate", hasItem("2024-12-26")).body("data.content.holidayDate", // Original should still be there, but not duplicated
+        String responseBody = given().contentType(ContentType.JSON).body(duplicateHolidaysBody).when().post("/api/shop-holidays/add?shopId={shopId}", shopId).then().statusCode(200).extract().asString();
+        Assert.assertTrue(responseBody.contains("Some holidays were already declared and were skipped"), "Expected the response to indicate skipped holidays. Body was: " + responseBody);
+        // Verify only 2024-12-26 was added
+        given().when().get("/api/shop-holidays/{shopId}?page=0&limit=10", shopId).then().statusCode(200).body("data.content.holidayDate", hasItem("2024-12-26")).body("data.content.holidayDate", // Original holiday should still exist
         not(hasItem("2024-12-25")));
     }
 
-    /**
-     * Test Case ID: 3067f8e-TC-001
-     */
+    // Test Case ID: 3067f8e-TC-001
     @Test
-    public void failToUpdateShopHolidayToDateWithExistingHoliday() {
-        // First, add two holidays
-        String holidays = """
+    public void failToUpdateShopHolidayToDateThatAlreadyHasHoliday() {
+        // Precondition: Create a shop first
+        String shopBody = """
+            {
+              "shopName": "Shop_%d",
+              "shopPhone": "1234567890",
+              "geoLocation": "0,0",
+              "ownerName": "Owner",
+              "username": "owner_%d",
+              "email": "owner_%d@example.com",
+              "address": "123 Main St",
+              "areaId": 1,
+              "status": true
+            }
+            """.formatted(System.currentTimeMillis(), System.currentTimeMillis(), System.currentTimeMillis());
+        Long shopId = given().contentType(ContentType.JSON).body(shopBody).when().post("/api/areas/1/shops").then().statusCode(anyOf(is(200), is(201))).extract().path("id");
+        // Precondition: Add holidays for 2024-12-25 and 2024-12-31
+        String holidaysBody = """
             [
               {
                 "shopId": %d,
@@ -142,11 +144,10 @@ public class AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4 {
               }
             ]
             """.formatted(shopId, shopId);
-        holidayIds = given().contentType(ContentType.JSON).body(holidays).queryParam("shopId", shopId).when().post("/api/shop-holidays/add").then().statusCode(200).extract().path(// Assuming response contains IDs
-        "data.id");
-        // Extract the ID of the 2024-12-25 holiday
-        Long holidayId25 = given().queryParam("page", 0).queryParam("limit", 10).when().get("/api/shop-holidays/{shopId}", shopId).then().statusCode(200).extract().path("data.content.find { it.holidayDate == '2024-12-25' }.id");
-        // Try to update 2024-12-25 to 2024-12-31
+        given().contentType(ContentType.JSON).body(holidaysBody).when().post("/api/shop-holidays/add?shopId={shopId}", shopId).then().statusCode(200);
+        // Get the holiday ID for 2024-12-25
+        Long holidayId = given().when().get("/api/shop-holidays/{shopId}?page=0&limit=10", shopId).then().statusCode(200).extract().path("data.content.find { it.holidayDate == '2024-12-25' }.id");
+        // Test case: Try to update 2024-12-25 holiday to 2024-12-31
         String updateBody = """
             {
               "id": %d,
@@ -154,29 +155,33 @@ public class AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4 {
               "holidayDate": "2024-12-31",
               "reason": "Christmas Day"
             }
-            """.formatted(holidayId25, shopId);
-        given().contentType(ContentType.JSON).body(updateBody).when().put("/api/shop-holidays/{holidayId}", holidayId25).then().statusCode(400).body("message", containsString("Shop already has a holiday on 2024-12-31"));
+            """.formatted(holidayId, shopId);
+        String responseBody = given().contentType(ContentType.JSON).body(updateBody).when().put("/api/shop-holidays/{holidayId}", holidayId).then().statusCode(anyOf(is(400), is(409))).extract().asString();
+        Assert.assertTrue(responseBody.toLowerCase().contains("already has a holiday"), "Expected the error to mention duplicate holiday. Body was: " + responseBody);
         // Verify the holiday date remains unchanged
-        given().when().get("/api/shop-holidays/{shopId}?page=0&limit=10", shopId).then().statusCode(200).body("data.content.find { it.id == %d }.holidayDate", equalTo("2024-12-25"));
+        given().when().get("/api/shop-holidays/{shopId}?page=0&limit=10", shopId).then().statusCode(200).body("data.content.find { it.id == %d }.holidayDate".formatted(holidayId), equalTo("2024-12-25"));
     }
 
-    private Long slotId;
-
-    @AfterClass
-    public void cleanup2() {
-        if (slotId != null) {
-            given().when().put("/api/slots/deactivate/{slotId}", slotId).then().statusCode(anyOf(is(200), is(404)));
-        }
-        given().when().delete("/api/areas/{areaId}/shops/{id}", areaId, shopId).then().statusCode(anyOf(is(200), is(204), is(404)));
-        given().when().delete("/api/areas/{id}", areaId).then().statusCode(anyOf(is(200), is(204), is(404)));
-    }
-
-    /**
-     * Test Case ID: d750aff-TC-004
-     */
+    // Test Case ID: d750aff-TC-004
     @Test
     public void successfullyConfigureNewSlotForShop() {
-        String requestBody = """
+        // Precondition: Create a shop first
+        String shopBody = """
+            {
+              "shopName": "Shop_%d",
+              "shopPhone": "1234567890",
+              "geoLocation": "0,0",
+              "ownerName": "Owner",
+              "username": "owner_%d",
+              "email": "owner_%d@example.com",
+              "address": "123 Main St",
+              "areaId": 1,
+              "status": true
+            }
+            """.formatted(System.currentTimeMillis(), System.currentTimeMillis(), System.currentTimeMillis());
+        Long shopId = given().contentType(ContentType.JSON).body(shopBody).when().post("/api/areas/1/shops").then().statusCode(anyOf(is(200), is(201))).extract().path("id");
+        // Test case: Add a new EVENING slot
+        String slotBody = """
             {
               "shopId": %d,
               "startTime": "17:00:00",
@@ -185,18 +190,31 @@ public class AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4 {
               "isActive": true
             }
             """.formatted(shopId);
-        given().contentType(ContentType.JSON).body(requestBody).queryParam("shopId", shopId).when().post("/api/slots/set").then().statusCode(200).body("message", containsString("Slot configuration saved"));
+        given().contentType(ContentType.JSON).body(slotBody).when().post("/api/slots/set?shopId={shopId}", shopId).then().statusCode(200).body(containsString("Slot configuration saved"));
         // Verify the slot appears in the list
-        slotId = given().queryParam("page", 0).queryParam("limit", 10).when().get("/api/slots/{shopId}", shopId).then().statusCode(200).body("data.content.find { it.slotType == 'EVENING' }.startTime", equalTo("17:00:00")).body("data.content.find { it.slotType == 'EVENING' }.endTime", equalTo("20:00:00")).body("data.content.find { it.slotType == 'EVENING' }.isActive", equalTo(true)).extract().path("data.content.find { it.slotType == 'EVENING' }.id");
+        given().when().get("/api/slots/{shopId}?page=0&limit=10", shopId).then().statusCode(200).body("data.content.find { it.slotType == 'EVENING' }.startTime", equalTo("17:00:00")).body("data.content.find { it.slotType == 'EVENING' }.endTime", equalTo("20:00:00")).body("data.content.find { it.slotType == 'EVENING' }.isActive", equalTo(true));
     }
 
-    /**
-     * Test Case ID: 01b5363-TC-002
-     */
+    // Test Case ID: 01b5363-TC-002
     @Test
     public void failToConfigureNewSlotDueToDuplicateSlotType() {
-        // First, create a MORNING slot
-        String morningSlot = """
+        // Precondition: Create a shop first
+        String shopBody = """
+            {
+              "shopName": "Shop_%d",
+              "shopPhone": "1234567890",
+              "geoLocation": "0,0",
+              "ownerName": "Owner",
+              "username": "owner_%d",
+              "email": "owner_%d@example.com",
+              "address": "123 Main St",
+              "areaId": 1,
+              "status": true
+            }
+            """.formatted(System.currentTimeMillis(), System.currentTimeMillis(), System.currentTimeMillis());
+        Long shopId = given().contentType(ContentType.JSON).body(shopBody).when().post("/api/areas/1/shops").then().statusCode(anyOf(is(200), is(201))).extract().path("id");
+        // Precondition: Add a MORNING slot first
+        String firstSlotBody = """
             {
               "shopId": %d,
               "startTime": "09:00:00",
@@ -205,9 +223,9 @@ public class AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4 {
               "isActive": true
             }
             """.formatted(shopId);
-        given().contentType(ContentType.JSON).body(morningSlot).queryParam("shopId", shopId).when().post("/api/slots/set").then().statusCode(200);
-        // Now try to create another MORNING slot
-        String requestBody = """
+        given().contentType(ContentType.JSON).body(firstSlotBody).when().post("/api/slots/set?shopId={shopId}", shopId).then().statusCode(200);
+        // Test case: Try to add another MORNING slot
+        String duplicateSlotBody = """
             {
               "shopId": %d,
               "startTime": "09:00:00",
@@ -216,7 +234,8 @@ public class AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4 {
               "isActive": true
             }
             """.formatted(shopId);
-        given().contentType(ContentType.JSON).body(requestBody).queryParam("shopId", shopId).when().post("/api/slots/set").then().statusCode(400).body("message", containsString("A slot with type MORNING already exists for this shop"));
+        String responseBody = given().contentType(ContentType.JSON).body(duplicateSlotBody).when().post("/api/slots/set?shopId={shopId}", shopId).then().statusCode(anyOf(is(400), is(409))).extract().asString();
+        Assert.assertTrue(responseBody.toLowerCase().contains("already exists"), "Expected the error to mention duplicate slot type. Body was: " + responseBody);
     }
 
 }

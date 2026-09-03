@@ -83,3 +83,13 @@ Test Data: Order ID: [existing order ID], Injected field: 'isUrgent=true'",The s
 Verify that last measurement retrieval does not expose Bengali measurement names to unauthorized users,Order Management - Last Measurement Retrieval,Security,Medium,User is logged in but does not have permission to view multilingual data. User has a valid customer phone number and item ID with existing measurements.,"1. Navigate to the 'Last Measurement' screen. 2. Enter a valid customer phone number and item ID. 3. Click 'Retrieve Measurements'. 4. Review the measurement names displayed in the response. 5. Check that no Bengali measurement names or internal system details are exposed.
 
 Test Data: Customer phone: '01712345678', Item ID: [valid item ID]","The system responds with the last measurements, displaying only English measurement names (e.g., 'Chest', 'Waist') and no Bengali names or internal system details.",TC-017
+Save order measurement name with maximum allowed string length (255 characters),Order Measurement Processing,Boundary,High,A valid shop and item exist in the catalog to place an order.,"1. Submit a request to create a new order with a measurement item.
+2. Set nameEn to a 255-character string and nameBn to a 255-character string.
+3. Retrieve the created order details.
+
+Test Data: nameEn: 'A' repeated 255 times, nameBn: 'ব' repeated 255 times, unit: 'inch', value: 36.5",The order is successfully created and the response returns both nameEn and nameBn exactly matching the 255-character input values.,TC-051
+Save order measurement with empty string localized names,Order Measurement Processing,Boundary,Medium,A valid shop and item exist in the catalog to place an order.,"1. Submit a request to create an order containing measurement details.
+2. Provide empty strings for nameEn and nameBn.
+3. Retrieve the created order details.
+
+Test Data: nameEn: '', nameBn: '', unit: 'cm', value: 100.0",The order measurement is processed and returned with empty strings for both nameEn and nameBn fields.,TC-052

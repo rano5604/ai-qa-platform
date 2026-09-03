@@ -1,0 +1,24 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Successfully fetch consolidated merchant onboarding data including active stores and terminal IDs,Merchant Onboarding Data Retrieval,Positive,High,"A user with ID 10001 is onboarded with completed KYC verification, an active merchant profile, an active merchant account, and at least one active store with registered terminals.","1. Send a GET request to /api/v1/merchant-data with header 'AUTH_SUBJECT' set to '10001'.
+2. Verify the HTTP response status and body content.
+
+Test Data: Header: AUTH_SUBJECT = 10001","HTTP status 200 OK with success=true, message 'Merchant get data successfully', and payload containing kycData, merchant, merchantAccount, and store list where each active store includes its associated terminalIds.",TC-001
+Successfully fetch merchant onboarding data for a merchant with active store having no registered terminals,Merchant Onboarding Data Retrieval,Positive,Medium,A user with ID 10002 has verified KYC data and an active merchant profile with an active store that has no terminals assigned.,"1. Send a GET request to /api/v1/merchant-data with header 'AUTH_SUBJECT' set to '10002'.
+2. Verify the HTTP response status code and data structure.
+
+Test Data: Header: AUTH_SUBJECT = 10002","HTTP status 200 OK with success=true, message 'Merchant get data successfully', containing valid kycData, merchant, and store details with empty or null terminalIds list.",TC-002
+Reject merchant data retrieval when Auth-Subject header contains non-numeric user ID,Merchant Onboarding Data Retrieval,Negative,High,None,"1. Send a GET request to /api/v1/merchant-data including request header Auth-Subject set to 'ABC_INVALID'.
+
+Test Data: Header: Auth-Subject: ABC_INVALID",The request is rejected with HTTP status 400 Bad Request due to invalid numeric format for the authentication subject header.,TC-003
+Reject merchant data retrieval when user ID does not exist in KYC records,Merchant Onboarding Data Retrieval,Negative,High,No user or KYC verification record exists for user ID 999999.,"1. Send a GET request to /api/v1/merchant-data including request header Auth-Subject set to '999999'.
+
+Test Data: Header: Auth-Subject: 999999",The request is rejected with a business error stating 'Couldn't find user. ID:999999'.,TC-004
+Retrieve merchant data when merchant has zero active stores (empty store collection edge),Merchant Data Retrieval,Boundary,High,"A user account exists in the KYC service with user ID 1001 and has an associated merchant account, but zero active stores are configured for this merchant.","1. Send a GET request to /api/v1/merchant-data with header 'X-Auth-Subject: 1001'.
+
+Test Data: Header X-Auth-Subject: 1001","HTTP 200 OK response with success status and a response body containing KYC and merchant details, with the 'store' field set to an empty list [].",TC-005
+Retrieve merchant data when an active store has zero assigned terminals (empty terminal list edge),Merchant Data Retrieval,Boundary,Medium,"A user account exists in the KYC service with user ID 1002 and has an active store created, but zero terminals are assigned to that store.","1. Send a GET request to /api/v1/merchant-data with header 'X-Auth-Subject: 1002'.
+
+Test Data: Header X-Auth-Subject: 1002",HTTP 200 OK response with response body containing 1 store entry where 'terminalIds' is null or an empty list.,TC-006
+Retrieve merchant data using maximum allowed 64-bit integer user ID boundary value,Merchant Data Retrieval,Boundary,Low,A user account exists in the KYC system configured with the maximum 64-bit integer ID 9223372036854775807.,"1. Send a GET request to /api/v1/merchant-data with header 'X-Auth-Subject: 9223372036854775807'.
+
+Test Data: Header X-Auth-Subject: 9223372036854775807",HTTP 200 OK response returning merchant data corresponding to user ID 9223372036854775807 without numeric parsing error.,TC-007

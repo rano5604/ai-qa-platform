@@ -1,0 +1,13 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Create a new order successfully with customer gender and item details,Order Management,Positive,High,A registered shop exists in the system and valid item definitions are configured.,"1. Submit a request to create a new order with valid customer name, customer phone, customer gender, delivery date, and order items.
+2. Verify the server response status and message.
+3. Retrieve the created order details using the generated order ID.
+
+Test Data: Customer Name: ""Alice Smith"", Customer Phone: ""01711223344"", Customer Gender: ""FEMALE"", Delivery Date: ""2026-04-30"", Paid Amount: 500, Items: [Item ID: 1, Making Charge: 300]","The order is created successfully with HTTP status 200, returning a generated order ID and summary containing total amount, paid amount, due amount, and customer details.",TC-001
+Access API documentation specification via updated endpoint path,API Documentation,Positive,Medium,The application service is running.,"1. Send an HTTP GET request to access the OpenAPI documentation endpoint at '/v3/api-docs'.
+2. Inspect the response status and the returned OpenAPI specification schema.
+
+Test Data: Endpoint URL: '/v3/api-docs'","The API documentation is returned successfully with HTTP 200 OK, containing server configuration set to 'http://localhost:8083' with description 'Local server'.",TC-002
+Unauthenticated access attempt to endpoint under /v3 path outside of /v3/api-docs,API Security & Access Control,Negative,High,The application service is running and no authentication token or user session is provided,"1. Send an HTTP GET request to an endpoint under the /v3 path other than api-docs, such as /v3/config. 2. Check the response status and message.
+
+Test Data: URL: /v3/config",The system rejects the unauthenticated request with an HTTP 401 Unauthorized or HTTP 403 Forbidden status instead of permitting access.,TC-003

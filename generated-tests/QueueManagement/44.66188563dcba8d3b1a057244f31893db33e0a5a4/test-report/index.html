@@ -25,7 +25,7 @@
       <span class="top-banner-title-font">Test results</span>
       <button id="button" class="button">Switch Retro Theme</button> <!-- button -->
       <br/>
-      <span class="top-banner-font-1">1 suite</span>
+      <span class="top-banner-font-1">1 suite, 5 failed tests</span>
     </div> <!-- top-banner-root -->
     <div class="navigator-root">
       <div class="navigator-suite-header">
@@ -39,7 +39,7 @@
         <div class="rounded-window">
           <div class="suite-header light-rounded-window-top">
             <a href="#" panel-name="suite-Command_line_suite" class="navigator-link">
-              <span class="suite-name border-skipped">Command line suite</span>
+              <span class="suite-name border-failed">Command line suite</span>
             </a> <!-- navigator-link -->
           </div> <!-- suite-header light-rounded-window-top -->
           <div class="navigator-suite-content">
@@ -92,41 +92,41 @@
               <div class="suite-section-content">
                 <ul>
                   <li>
-                    <span class="method-stats">5 methods,  5 skipped,  </span>
+                    <span class="method-stats">5 methods, 5 failed,   </span>
                   </li>
                   <li>
-                    <span class="method-list-title skipped">Skipped methods</span>
-                    <span class="show-or-hide-methods skipped">
-                      <a href="#" panel-name="suite-Command_line_suite" class="hide-methods skipped suite-Command_line_suite"> (hide)</a> <!-- hide-methods skipped suite-Command_line_suite -->
-                      <a href="#" panel-name="suite-Command_line_suite" class="show-methods skipped suite-Command_line_suite"> (show)</a> <!-- show-methods skipped suite-Command_line_suite -->
+                    <span class="method-list-title failed">Failed methods</span>
+                    <span class="show-or-hide-methods failed">
+                      <a href="#" panel-name="suite-Command_line_suite" class="hide-methods failed suite-Command_line_suite"> (hide)</a> <!-- hide-methods failed suite-Command_line_suite -->
+                      <a href="#" panel-name="suite-Command_line_suite" class="show-methods failed suite-Command_line_suite"> (show)</a> <!-- show-methods failed suite-Command_line_suite -->
                     </span>
-                    <div class="method-list-content skipped suite-Command_line_suite">
+                    <div class="method-list-content failed suite-Command_line_suite">
                       <span>
-                        <img src="skipped.png" width="3%"/>
+                        <img src="failed.png" width="3%"/>
                         <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4" class="method navigator-link" hash-for-method="failToAddDuplicateHolidaysForSameShopAndDates">failToAddDuplicateHolidaysForSameShopAndDates</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
-                        <img src="skipped.png" width="3%"/>
+                        <img src="failed.png" width="3%"/>
                         <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4" class="method navigator-link" hash-for-method="failToConfigureNewSlotDueToDuplicateSlotType">failToConfigureNewSlotDueToDuplicateSlotType</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
-                        <img src="skipped.png" width="3%"/>
-                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4" class="method navigator-link" hash-for-method="failToUpdateShopHolidayToDateWithExistingHoliday">failToUpdateShopHolidayToDateWithExistingHoliday</a> <!-- method navigator-link -->
+                        <img src="failed.png" width="3%"/>
+                        <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4" class="method navigator-link" hash-for-method="failToUpdateShopHolidayToDateThatAlreadyHasHoliday">failToUpdateShopHolidayToDateThatAlreadyHasHoliday</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
-                        <img src="skipped.png" width="3%"/>
+                        <img src="failed.png" width="3%"/>
                         <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4" class="method navigator-link" hash-for-method="successfullyAddMultipleHolidaysForShop">successfullyAddMultipleHolidaysForShop</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
-                        <img src="skipped.png" width="3%"/>
+                        <img src="failed.png" width="3%"/>
                         <a href="#" panel-name="suite-Command_line_suite" title="com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4" class="method navigator-link" hash-for-method="successfullyConfigureNewSlotForShop">successfullyConfigureNewSlotForShop</a> <!-- method navigator-link -->
                       </span>
                       <br/>
-                    </div> <!-- method-list-content skipped suite-Command_line_suite -->
+                    </div> <!-- method-list-content failed suite-Command_line_suite -->
                   </li>
                 </ul>
               </div> <!-- suite-section-content -->
@@ -138,9 +138,9 @@
     <div class="wrapper">
       <div class="main-panel-root">
         <div panel-name="suite-Command_line_suite" class="panel Command_line_suite">
-          <div class="suite-Command_line_suite-class-skipped">
+          <div class="suite-Command_line_suite-class-failed">
             <div class="main-panel-header rounded-window-top">
-              <img src="skipped.png"/>
+              <img src="failed.png"/>
               <span class="class-name">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
@@ -171,9 +171,9 @@ Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-... Removed 28 stack frames
+	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.failToAddDuplicateHolidaysForSameShopAndDates(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:80)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 30 stack frames
 </div> <!-- stack-trace -->
                 </div> <!-- method-content -->
               </div> <!-- method -->
@@ -186,60 +186,46 @@ Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
 Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
 
 	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
 	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
 	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
 	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-... Removed 28 stack frames
+	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.failToConfigureNewSlotDueToDuplicateSlotType(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:215)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 30 stack frames
 </div> <!-- stack-trace -->
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="failToUpdateShopHolidayToDateWithExistingHoliday">
-                  </a> <!-- failToUpdateShopHolidayToDateWithExistingHoliday -->
-                  <span class="method-name">failToUpdateShopHolidayToDateWithExistingHoliday</span>
+                  <a name="failToUpdateShopHolidayToDateThatAlreadyHasHoliday">
+                  </a> <!-- failToUpdateShopHolidayToDateThatAlreadyHasHoliday -->
+                  <span class="method-name">failToUpdateShopHolidayToDateThatAlreadyHasHoliday</span>
                   <div class="stack-trace">java.lang.AssertionError: 1 expectation failed.
 Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
 
 	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
 	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
 	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
 	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-... Removed 28 stack frames
+	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.failToUpdateShopHolidayToDateThatAlreadyHasHoliday(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:131)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 30 stack frames
 </div> <!-- stack-trace -->
                 </div> <!-- method-content -->
               </div> <!-- method -->
@@ -252,27 +238,20 @@ Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
 Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
 
 	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
 	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
 	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
 	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-... Removed 28 stack frames
+	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.successfullyAddMultipleHolidaysForShop(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:42)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 30 stack frames
 </div> <!-- stack-trace -->
                 </div> <!-- method-content -->
               </div> <!-- method -->
@@ -285,32 +264,25 @@ Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
 Expected status code (is &lt;200&gt; or is &lt;201&gt;) but was &lt;404&gt;.
 
 	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:108)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:57)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:263)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:277)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure.validate(ResponseSpecificationImpl.groovy:512)
 	at io.restassured.internal.ResponseSpecificationImpl$HamcrestAssertionClosure$validate$1.call(Unknown Source)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:45)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:125)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:139)
 	at io.restassured.internal.ResponseSpecificationImpl.validateResponseIfRequired(ResponseSpecificationImpl.groovy:696)
 	at io.restassured.internal.ResponseSpecificationImpl.this$2$validateResponseIfRequired(ResponseSpecificationImpl.groovy)
 	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:198)
 	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:62)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:49)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:171)
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:185)
 	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:135)
 	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:84)
-	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.setup(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:35)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
-... Removed 28 stack frames
+	at com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.successfullyConfigureNewSlotForShop(AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4.java:182)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+... Removed 30 stack frames
 </div> <!-- stack-trace -->
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
-          </div> <!-- suite-Command_line_suite-class-skipped -->
+          </div> <!-- suite-Command_line_suite-class-failed -->
         </div> <!-- panel Command_line_suite -->
         <div panel-name="test-xml-Command_line_suite" class="panel">
           <div class="main-panel-header rounded-window-top">
@@ -364,30 +336,30 @@ data.addColumn('string', 'Class');
 data.addColumn('number', 'Time (ms)');
 data.addRows(5);
 data.setCell(0, 0, 0)
-data.setCell(0, 1, 'successfullyAddMultipleHolidaysForShop')
+data.setCell(0, 1, 'failToAddDuplicateHolidaysForSameShopAndDates')
 data.setCell(0, 2, 'com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4')
-data.setCell(0, 3, 1);
+data.setCell(0, 3, 767);
 data.setCell(1, 0, 1)
-data.setCell(1, 1, 'successfullyConfigureNewSlotForShop')
+data.setCell(1, 1, 'failToConfigureNewSlotDueToDuplicateSlotType')
 data.setCell(1, 2, 'com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4')
-data.setCell(1, 3, 0);
+data.setCell(1, 3, 20);
 data.setCell(2, 0, 2)
-data.setCell(2, 1, 'failToUpdateShopHolidayToDateWithExistingHoliday')
+data.setCell(2, 1, 'failToUpdateShopHolidayToDateThatAlreadyHasHoliday')
 data.setCell(2, 2, 'com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4')
-data.setCell(2, 3, 0);
+data.setCell(2, 3, 17);
 data.setCell(3, 0, 3)
-data.setCell(3, 1, 'failToConfigureNewSlotDueToDuplicateSlotType')
+data.setCell(3, 1, 'successfullyConfigureNewSlotForShop')
 data.setCell(3, 2, 'com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4')
-data.setCell(3, 3, 0);
+data.setCell(3, 3, 17);
 data.setCell(4, 0, 4)
-data.setCell(4, 1, 'failToAddDuplicateHolidaysForSameShopAndDates')
+data.setCell(4, 1, 'successfullyAddMultipleHolidaysForShop')
 data.setCell(4, 2, 'com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4')
-data.setCell(4, 3, 0);
+data.setCell(4, 3, 14);
 window.suiteTableData['Command_line_suite']= { tableData: data, tableDiv: 'times-div-Command_line_suite'}
 return data;
 }
               </script>
-              <span class="suite-total-time">Total running time: 1 ms</span>
+              <span class="suite-total-time">Total running time: 835 ms</span>
               <div id="times-div-Command_line_suite">
               </div> <!-- times-div-Command_line_suite -->
             </div> <!-- times-div -->
@@ -415,39 +387,39 @@ return data;
             <div class="chronological-class">
               <div class="chronological-class-name">com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4</div> <!-- chronological-class-name -->
               <div class="configuration-class before">
-                <img src="failed.png">
-                </img>
                 <span class="method-name">setup</span>
                 <span class="method-start">0 ms</span>
               </div> <!-- configuration-class before -->
               <div class="test-method">
+                <img src="failed.png">
+                </img>
                 <span class="method-name">failToAddDuplicateHolidaysForSameShopAndDates</span>
-                <span class="method-start">1166 ms</span>
+                <span class="method-start">15 ms</span>
               </div> <!-- test-method -->
               <div class="test-method">
+                <img src="failed.png">
+                </img>
                 <span class="method-name">failToConfigureNewSlotDueToDuplicateSlotType</span>
-                <span class="method-start">1167 ms</span>
+                <span class="method-start">782 ms</span>
               </div> <!-- test-method -->
               <div class="test-method">
-                <span class="method-name">failToUpdateShopHolidayToDateWithExistingHoliday</span>
-                <span class="method-start">1169 ms</span>
+                <img src="failed.png">
+                </img>
+                <span class="method-name">failToUpdateShopHolidayToDateThatAlreadyHasHoliday</span>
+                <span class="method-start">803 ms</span>
               </div> <!-- test-method -->
               <div class="test-method">
+                <img src="failed.png">
+                </img>
                 <span class="method-name">successfullyAddMultipleHolidaysForShop</span>
-                <span class="method-start">1169 ms</span>
+                <span class="method-start">820 ms</span>
               </div> <!-- test-method -->
               <div class="test-method">
+                <img src="failed.png">
+                </img>
                 <span class="method-name">successfullyConfigureNewSlotForShop</span>
-                <span class="method-start">1170 ms</span>
+                <span class="method-start">834 ms</span>
               </div> <!-- test-method -->
-              <div class="configuration-class after">
-                <span class="method-name">cleanup2</span>
-                <span class="method-start">1171 ms</span>
-              </div> <!-- configuration-class after -->
-              <div class="configuration-class after">
-                <span class="method-name">cleanup</span>
-                <span class="method-start">1171 ms</span>
-              </div> <!-- configuration-class after -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->
       </div> <!-- main-panel-root -->

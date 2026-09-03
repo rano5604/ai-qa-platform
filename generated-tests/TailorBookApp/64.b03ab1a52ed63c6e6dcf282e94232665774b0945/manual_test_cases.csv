@@ -1,0 +1,44 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References
+Process partial payment for an order and verify updated balance,Order Payment Processing,Positive,High,"An order exists with ID 100, having total amount 1000.00, paid amount 200.00, and remaining due amount 800.00","1. Send a POST request to /api/orders/100/pay with the payload in testData.
+
+Test Data: {
+  ""paymentAmount"": 300.00
+}","HTTP 200 OK response returning a PaymentResponse body with totalAmount 1000.00, paidAmount 500.00, dueAmount 500.00, and message 'Partial payment received'.",TC-001
+Process final payment to completely clear an order due balance,Order Payment Processing,Positive,High,"An order exists with ID 101, having total amount 1000.00, paid amount 500.00, and remaining due amount 500.00","1. Send a POST request to /api/orders/101/pay with the payload in testData.
+
+Test Data: {
+  ""paymentAmount"": 500.00
+}","HTTP 200 OK response returning a PaymentResponse body with totalAmount 1000.00, paidAmount 1000.00, dueAmount 0.00, and message 'Full payment completed successfully'.",TC-002
+Attempt to process a payment that exceeds the total order amount,Order Payment Processing,Negative,High,An order exists with ID 101 having a total amount of 100.00 and an existing paid amount of 30.00,"1. Send a POST request to /api/orders/101/pay with the payload in testData.
+
+Test Data: {""paymentAmount"": 80.00}","The system refuses to process the payment and returns HTTP 200 OK with a response body containing totalAmount 100.00, paidAmount 30.00, dueAmount 70.00, and message 'Payment exceeds total order amount'. The stored paid amount on the order is not updated.",TC-003
+Attempt to process a payment for an order ID that does not exist,Order Payment Processing,Negative,High,No order exists with ID 999999,"1. Send a POST request to /api/orders/999999/pay with the payload in testData.
+
+Test Data: {""paymentAmount"": 50.00}",The request is rejected with an error indicating that the order was not found.,TC-004
+Make payment with zero amount,Order Payment Processing,Boundary,Medium,"An order exists in the system with orderId 1, totalAmount of 500.00, paidAmount of 200.00, and dueAmount of 300.00","1. Send a POST request to /api/orders/1/pay with paymentAmount set to 0 in the request body
+
+Test Data: { ""paymentAmount"": 0.00 }","HTTP 200 OK status code is returned. The response body contains totalAmount: 500.00, paidAmount: 200.00 (unchanged, no zero added), dueAmount: 300.00, and message: 'Partial payment received'.",TC-005
+Make exact payment that settles the order in full,Order Payment Processing,Boundary,High,"An order exists in the system with orderId 2, totalAmount of 500.00, paidAmount of 200.00, and dueAmount of 300.00","1. Send a POST request to /api/orders/2/pay with paymentAmount set to 300.00 in the request body
+
+Test Data: { ""paymentAmount"": 300.00 }","HTTP 200 OK status code is returned. The response body contains totalAmount: 500.00, paidAmount: 500.00 (now equals total), dueAmount: 0.00, and message: 'Full payment completed successfully'. The order is saved with updated payment fields.",TC-006
+Make payment that exceeds the total order amount (overpayment),Order Payment Processing,Boundary,High,"An order exists in the system with orderId 3, totalAmount of 500.00, paidAmount of 200.00, and dueAmount of 300.00","1. Send a POST request to /api/orders/3/pay with paymentAmount set to 400.00 in the request body
+
+Test Data: { ""paymentAmount"": 400.00 }","HTTP 200 OK status code is returned. The response body contains totalAmount: 500.00, paidAmount: 200.00 (unchanged), dueAmount: 300.00 (unchanged), and message: 'Payment exceeds total order amount'. The order is NOT updated/saved with the overpayment.",TC-007
+Make payment with one cent over the remaining due amount,Order Payment Processing,Boundary,High,"An order exists in the system with orderId 4, totalAmount of 500.00, paidAmount of 200.00, and dueAmount of 300.00","1. Send a POST request to /api/orders/4/pay with paymentAmount set to 300.01 in the request body
+
+Test Data: { ""paymentAmount"": 300.01 }","HTTP 200 OK status code is returned. The response body contains totalAmount: 500.00, paidAmount: 200.00 (unchanged), dueAmount: 300.00 (unchanged), and message: 'Payment exceeds total order amount'. The single cent overpayment is rejected.",TC-008
+Verify payment endpoint rejects requests for orders belonging to other shops (IDOR vulnerability),Order Payment Processing,Security,High,"Two shop owner accounts exist (Shop A and Shop B), each with at least one completed order. The authenticated user is logged in as Shop A owner.","1. Authenticate as Shop A owner. 2. Send a POST request to /api/orders/{shopB_orderId}/pay with a PaymentRequest containing paymentAmount: 500.
+
+Test Data: {""paymentAmount"": 500.00}","The API responds with HTTP status 403 (Forbidden) or 404 (Not Found). The response body does not contain any financial details (totalAmount, paidAmount, dueAmount) belonging to Shop B. The payment is not processed.",TC-009
+Verify payment endpoint rejects requests to view payment details for orders belonging to other shops,Order Payment Processing,Security,High,"Two shop owner accounts exist (Shop A and Shop B), each with at least one completed order with payment history. The authenticated user is logged in as Shop A owner.","1. Authenticate as Shop A owner. 2. Send a POST request to /api/orders/{shopB_orderId}/pay with any PaymentRequest (even empty paymentAmount: 0).
+
+Test Data: {""paymentAmount"": 0.00}","The API responds with HTTP status 403 (Forbidden) or 404 (Not Found). The response body does not expose any financial data (totalAmount, paidAmount, dueAmount, message) belonging to Shop B's order.",TC-010
+Verify payment processing for non-existent order returns secure error without internal details,Order Payment Processing,Security,High,The authenticated user is logged in as a shop owner with at least one valid order.,"1. Send a POST request to /api/orders/999999/pay with PaymentRequest containing paymentAmount: 100 (using an orderId that does not exist).
+
+Test Data: {""paymentAmount"": 100.00}","The API responds with HTTP status 404 (Not Found) or a generic error. The response body contains a generic error message (e.g., 'Order not found') without exposing internal exception details, stack traces, database queries, or the raw RuntimeException message.",0b31caa-TC-006
+Verify negative payment amounts are rejected securely,Order Payment Processing,Security,Medium,A shop owner account exists with at least one completed order. The authenticated user is logged in as that shop owner.,"1. Send a POST request to /api/orders/{orderId}/pay with a negative PaymentRequest (paymentAmount: -500).
+
+Test Data: {""paymentAmount"": -500.00}","The API responds with HTTP status 400 (Bad Request) and a generic error message (e.g., 'Invalid payment amount'). The order's paidAmount and dueAmount remain unchanged. No financial data is exposed in the error response.",TC-011
+Verify payment response does not expose financial data of other shops in error scenarios,Order Payment Processing,Security,High,"Two shop owner accounts exist (Shop A and Shop B), each with completed orders. The authenticated user is logged in as Shop A owner.","1. Authenticate as Shop A owner. 2. Send a POST request to /api/orders/{shopB_orderId}/pay with PaymentRequest containing paymentAmount: 1000. 3. Observe the response.
+
+Test Data: {""paymentAmount"": 1000.00}","The API responds with HTTP status 403 (Forbidden) or 404 (Not Found). The response body does NOT contain PaymentResponse fields (totalAmount, paidAmount, dueAmount) that belong to Shop B's order.",TC-012

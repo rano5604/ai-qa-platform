@@ -154,3 +154,6 @@ Verify that order retrieval by ID does not expose sensitive system details in er
 Verify that paginated order retrieval by phone number does not expose raw database details in meta field,Order Management - Order Retrieval by Phone,Security,Medium,User is authenticated and has at least one order associated with their phone number.,"1. Authenticate as a valid user. 2. Send a GET request to /api/orders/by-phone with the query parameters: phone='1234567890', page=0, limit=10.
 
 Test Data: Query parameters: { ""phone"": ""1234567890"", ""page"": 0, ""limit"": 10 }","The API responds with HTTP status 200 (OK) and a response body containing 'status: success', 'message: Orders fetched successfully', and a 'data' array with order records. The 'meta' field contains only pagination details (e.g., totalElements, totalPages, size, number) and no raw database or internal system details.",TC-020
+Attempt to retrieve orders by phone number for a phone number with no matching orders,Order Pagination and Retrieval,Negative,High,No orders exist in the system associated with the phone number 9999999999,"1. Send a GET request to /api/orders/by-phone with query parameters phone=9999999999, page=0, and limit=10.
+
+Test Data: phone=9999999999&page=0&limit=10",The HTTP response status is 404 Not Found.,TC-021

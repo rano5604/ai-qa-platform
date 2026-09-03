@@ -1,0 +1,229 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-08-25T00:00:00.000Z",
+  "__export_source": "ai-qa-platform.manual",
+  "resources": [
+    {
+      "_id": "wrk_aiqa",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "AI-QA Platform",
+      "description": "Manual test-case generation, automation generation/execution, merge history, downloads, LLM credentials, replay, and the GitHub/GitLab webhooks.",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "parentId": "wrk_aiqa",
+      "name": "Base Environment",
+      "data": {
+        "baseUrl": "http://localhost:8080",
+        "projectName": "mms",
+        "commitHash": "3836dee9b71220800f7c019c8f865f7f9784d47a",
+        "repoUrl": "https://github.com/acquiring-system/mms.git",
+        "branch": "main",
+        "accessToken": "",
+        "targetBaseUri": "http://169.58.37.242:8007/mms",
+        "replayToken": ""
+      },
+      "dataPropertyOrder": {
+        "&": ["baseUrl", "projectName", "commitHash", "repoUrl", "branch", "accessToken", "targetBaseUri", "replayToken"]
+      },
+      "color": null,
+      "isPrivate": false
+    },
+
+    { "_id": "fld_llmkeys", "_type": "request_group", "parentId": "wrk_aiqa", "name": "LLM keys" },
+    {
+      "_id": "req_llmkeys_post", "_type": "request", "parentId": "fld_llmkeys",
+      "name": "Configure keys", "method": "POST",
+      "url": "{{ _.baseUrl }}/api/v1/llm-keys",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"gemini\": \"AIza...\",\n  \"mistral\": \"...\",\n  \"groq\": \"...\"\n}"
+      },
+      "description": "Replaces the WHOLE set of active keys - a provider left out is switched off, not kept. Stored in memory only; never logged or returned."
+    },
+    {
+      "_id": "req_llmkeys_get", "_type": "request", "parentId": "fld_llmkeys",
+      "name": "Check active keys", "method": "GET",
+      "url": "{{ _.baseUrl }}/api/v1/llm-keys",
+      "headers": [],
+      "description": "Which providers are configured, masked - never the key values."
+    },
+    {
+      "_id": "req_llmkeys_delete", "_type": "request", "parentId": "fld_llmkeys",
+      "name": "Clear keys", "method": "DELETE",
+      "url": "{{ _.baseUrl }}/api/v1/llm-keys",
+      "headers": [],
+      "description": "Forgets every stored key. Generation then fails until they are set again (or server-side env vars take over)."
+    },
+
+    { "_id": "fld_generate", "_type": "request_group", "parentId": "wrk_aiqa", "name": "Manual test-case generation" },
+    {
+      "_id": "req_generate_local", "_type": "request", "parentId": "fld_generate",
+      "name": "Generate - local checkout", "method": "POST",
+      "url": "{{ _.baseUrl }}/api/v1/generate-tests",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"repoPath\": \"D:/eclipse_workspace/ai-qa-platform/repo-workspace/github_com_acquiring_system_mms\",\n  \"baseRef\": \"EMPTY_TREE\",\n  \"headRef\": \"{{ _.commitHash }}\",\n  \"testCaseMode\": \"MANUAL\"\n}"
+      },
+      "description": "Runs the pipeline against a repo already on disk. Use \"baseRef\": \"EMPTY_TREE\" for a root commit with no parent, otherwise a real SHA or \"<sha>^\"."
+    },
+    {
+      "_id": "req_generate_branch", "_type": "request", "parentId": "fld_generate",
+      "name": "Generate - from branch (latest merge)", "method": "POST",
+      "url": "{{ _.baseUrl }}/api/v1/generate-tests-from-branch",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"repoUrl\": \"{{ _.repoUrl }}\",\n  \"branch\": \"{{ _.branch }}\",\n  \"accessToken\": \"{{ _.accessToken }}\"\n}"
+      },
+      "description": "Clones/fetches repoUrl, finds the most recent merge commit on branch, and runs the pipeline against it. A no-op (with a clear message) if that merge was already processed."
+    },
+    {
+      "_id": "req_generate_backfill", "_type": "request", "parentId": "fld_generate",
+      "name": "Backfill (catch branch up)", "method": "POST",
+      "url": "{{ _.baseUrl }}/api/v1/generate-tests-from-branch/backfill",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"repoUrl\": \"{{ _.repoUrl }}\",\n  \"branch\": \"{{ _.branch }}\",\n  \"accessToken\": \"{{ _.accessToken }}\"\n}"
+      },
+      "description": "Walks every merge commit on branch, oldest first, and processes every one not already recorded. Safe to call repeatedly - already-processed merges cost nothing."
+    },
+    {
+      "_id": "req_generate_checknew", "_type": "request", "parentId": "fld_generate",
+      "name": "Check for new commits", "method": "POST",
+      "url": "{{ _.baseUrl }}/api/v1/generate-tests-from-branch/check-new-commits",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"repoUrl\": \"{{ _.repoUrl }}\",\n  \"branch\": \"{{ _.branch }}\",\n  \"accessToken\": \"{{ _.accessToken }}\"\n}"
+      },
+      "description": "Clones/fetches and reports how many merges on branch are not yet processed - zero LLM calls, a cheap check before running backfill for real."
+    },
+
+    { "_id": "fld_history", "_type": "request_group", "parentId": "wrk_aiqa", "name": "Merge history" },
+    {
+      "_id": "req_history_list", "_type": "request", "parentId": "fld_history",
+      "name": "List merge history", "method": "GET",
+      "url": "{{ _.baseUrl }}/api/v1/merge-history",
+      "parameters": [
+        { "name": "projectName", "value": "{{ _.projectName }}" },
+        { "name": "branch", "value": "{{ _.branch }}" }
+      ],
+      "headers": [],
+      "description": "Every merge this project+branch has recorded as processed, oldest first. Local state only - needs a local clone of the project to already exist."
+    },
+    {
+      "_id": "req_history_incomplete", "_type": "request", "parentId": "fld_history",
+      "name": "List incomplete merges", "method": "GET",
+      "url": "{{ _.baseUrl }}/api/v1/merge-history/incomplete",
+      "parameters": [
+        { "name": "projectName", "value": "{{ _.projectName }}" },
+        { "name": "branch", "value": "{{ _.branch }}" }
+      ],
+      "headers": [],
+      "description": "PARTIAL or FAILED merges only, each carrying missingCategories, coveragePercent, attemptCount and failureReason."
+    },
+
+    { "_id": "fld_automation", "_type": "request_group", "parentId": "wrk_aiqa", "name": "Automation" },
+    {
+      "_id": "req_automation_generate", "_type": "request", "parentId": "fld_automation",
+      "name": "Generate automation", "method": "POST",
+      "url": "{{ _.baseUrl }}/api/v1/generate-automation",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"projectName\": \"{{ _.projectName }}\",\n  \"commitHash\": \"{{ _.commitHash }}\",\n  \"baseUri\": \"{{ _.targetBaseUri }}\"\n}"
+      },
+      "description": "Turns the commit's already-generated manual cases into REST Assured scripts. Sends no HTTP traffic. Cases the commit already has automation for (traced via the // TC-xxx comment) are skipped, not regenerated."
+    },
+    {
+      "_id": "req_automation_execute", "_type": "request", "parentId": "fld_automation",
+      "name": "Execute automation", "method": "POST",
+      "url": "{{ _.baseUrl }}/api/v1/execute-automation",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"projectName\": \"{{ _.projectName }}\",\n  \"commitHash\": \"{{ _.commitHash }}\",\n  \"baseUri\": \"{{ _.targetBaseUri }}\"\n}"
+      },
+      "description": "RUNS the automation already generated for this commit. Fires real HTTP traffic at baseUri, including POST/PUT/DELETE the cases describe - never point this at production."
+    },
+
+    { "_id": "fld_downloads", "_type": "request_group", "parentId": "wrk_aiqa", "name": "Downloads" },
+    {
+      "_id": "req_download_testcases", "_type": "request", "parentId": "fld_downloads",
+      "name": "Download manual test cases", "method": "GET",
+      "url": "{{ _.baseUrl }}/api/v1/test-cases/download",
+      "parameters": [
+        { "name": "projectName", "value": "{{ _.projectName }}" },
+        { "name": "commitHash", "value": "{{ _.commitHash }}" }
+      ],
+      "headers": [],
+      "description": "One commit's CSV, or the whole project's rollup if commitHash is omitted."
+    },
+    {
+      "_id": "req_download_report", "_type": "request", "parentId": "fld_downloads",
+      "name": "Download execution report", "method": "GET",
+      "url": "{{ _.baseUrl }}/api/v1/execution-report/download",
+      "parameters": [
+        { "name": "projectName", "value": "{{ _.projectName }}" },
+        { "name": "commitHash", "value": "{{ _.commitHash }}" }
+      ],
+      "headers": [],
+      "description": "aiqa-report.html for one commit's execution run. commitHash is required - a report is intrinsically per-run, there is no project-wide rollup."
+    },
+
+    { "_id": "fld_replay", "_type": "request_group", "parentId": "wrk_aiqa", "name": "Replay" },
+    {
+      "_id": "req_replay", "_type": "request", "parentId": "fld_replay",
+      "name": "Replay a captured request", "method": "POST",
+      "url": "{{ _.baseUrl }}/api/v1/replay",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "X-Aiqa-Replay-Token", "value": "{{ _.replayToken }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"method\": \"POST\",\n  \"uri\": \"{{ _.targetBaseUri }}/api/v1/fees\",\n  \"headers\": { \"Content-Type\": \"application/json\" },\n  \"body\": \"{}\"\n}"
+      },
+      "description": "Normally called by the report's own 'Send again'/'Edit request' buttons, not by hand. replayToken is embedded per-report and required - a request without a valid one gets a bare 403."
+    },
+
+    { "_id": "fld_webhooks", "_type": "request_group", "parentId": "wrk_aiqa", "name": "Webhooks (called by the git host, not by hand)" },
+    {
+      "_id": "req_webhook_github", "_type": "request", "parentId": "fld_webhooks",
+      "name": "GitHub webhook", "method": "POST",
+      "url": "{{ _.baseUrl }}/api/v1/webhooks/github",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "X-GitHub-Event", "value": "pull_request_review" },
+        { "name": "X-Hub-Signature-256", "value": "sha256=<hmac of the body with aiqa.github.webhook-secret>" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"action\": \"submitted\",\n  \"review\": { \"state\": \"approved\" },\n  \"pull_request\": { }\n}"
+      },
+      "description": "Configured under GitHub Settings -> Webhooks. Fires on pull_request_review; a request with an invalid signature is rejected with 401."
+    },
+    {
+      "_id": "req_webhook_gitlab", "_type": "request", "parentId": "fld_webhooks",
+      "name": "GitLab webhook", "method": "POST",
+      "url": "{{ _.baseUrl }}/api/v1/webhooks/gitlab",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "X-Gitlab-Token", "value": "<aiqa.gitlab.webhook-secret>" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"object_kind\": \"merge_request\",\n  \"object_attributes\": { }\n}"
+      },
+      "description": "Configured under GitLab Settings -> Webhooks."
+    }
+  ]
+}

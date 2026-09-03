@@ -1,31 +1,121 @@
 [ {
   "testClassName" : "com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4",
-  "testMethodName" : "setup",
+  "testMethodName" : "failToAddDuplicateHolidaysForSameShopAndDates",
   "requestMethod" : "POST",
-  "requestUri" : "http://localhost:8082/api/areas",
+  "requestUri" : "http://localhost:8080/api/areas/1/shops",
   "requestHeaders" : {
     "Accept" : "*/*",
     "Content-Type" : "application/json"
   },
-  "requestBody" : "{\n  \"name\": \"Area_1786511309399\"\n}\n",
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786942256599\",\n  \"shopPhone\": \"1234567890\",\n  \"geoLocation\": \"0,0\",\n  \"ownerName\": \"Owner\",\n  \"username\": \"owner_1786942256599\",\n  \"email\": \"owner_1786942256599@example.com\",\n  \"address\": \"123 Main St\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
   "requestBodyTruncated" : false,
   "responseStatusCode" : 404,
   "responseStatusLine" : "HTTP/1.1 404 ",
   "responseHeaders" : {
     "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
-    "X-Content-Type-Options" : "nosniff",
-    "X-XSS-Protection" : "1; mode=block",
-    "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
-    "Pragma" : "no-cache",
-    "Expires" : "0",
-    "X-Frame-Options" : "DENY",
     "Content-Type" : "application/json",
     "Transfer-Encoding" : "chunked",
-    "Date" : "Wed, 12 Aug 2026 05:08:30 GMT",
+    "Date" : "Mon, 17 Aug 2026 04:50:57 GMT",
     "Keep-Alive" : "timeout=60",
     "Connection" : "keep-alive"
   },
-  "responseBody" : "{\"statusCode\":404,\"message\":null,\"details\":\"uri=/api/areas\"}",
+  "responseBody" : "{\"timestamp\":\"2026-08-17T04:50:57.300+00:00\",\"status\":404,\"error\":\"Not Found\",\"path\":\"/api/areas/1/shops\"}",
   "responseBodyTruncated" : false,
-  "durationMillis" : 392
+  "durationMillis" : 353
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4",
+  "testMethodName" : "failToConfigureNewSlotDueToDuplicateSlotType",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8080/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786942257365\",\n  \"shopPhone\": \"1234567890\",\n  \"geoLocation\": \"0,0\",\n  \"ownerName\": \"Owner\",\n  \"username\": \"owner_1786942257365\",\n  \"email\": \"owner_1786942257365@example.com\",\n  \"address\": \"123 Main St\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Mon, 17 Aug 2026 04:50:57 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":\"2026-08-17T04:50:57.375+00:00\",\"status\":404,\"error\":\"Not Found\",\"path\":\"/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 12
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4",
+  "testMethodName" : "failToUpdateShopHolidayToDateThatAlreadyHasHoliday",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8080/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786942257386\",\n  \"shopPhone\": \"1234567890\",\n  \"geoLocation\": \"0,0\",\n  \"ownerName\": \"Owner\",\n  \"username\": \"owner_1786942257386\",\n  \"email\": \"owner_1786942257386@example.com\",\n  \"address\": \"123 Main St\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Mon, 17 Aug 2026 04:50:57 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":\"2026-08-17T04:50:57.399+00:00\",\"status\":404,\"error\":\"Not Found\",\"path\":\"/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 13
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4",
+  "testMethodName" : "successfullyAddMultipleHolidaysForShop",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8080/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786942257403\",\n  \"shopPhone\": \"1234567890\",\n  \"geoLocation\": \"0,0\",\n  \"ownerName\": \"Owner\",\n  \"username\": \"owner_1786942257403\",\n  \"email\": \"owner_1786942257403@example.com\",\n  \"address\": \"123 Main St\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Mon, 17 Aug 2026 04:50:57 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":\"2026-08-17T04:50:57.417+00:00\",\"status\":404,\"error\":\"Not Found\",\"path\":\"/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 11
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_66188563dcba8d3b1a057244f31893db33e0a5a4",
+  "testMethodName" : "successfullyConfigureNewSlotForShop",
+  "requestMethod" : "POST",
+  "requestUri" : "http://localhost:8080/api/areas/1/shops",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"shopName\": \"Shop_1786942257417\",\n  \"shopPhone\": \"1234567890\",\n  \"geoLocation\": \"0,0\",\n  \"ownerName\": \"Owner\",\n  \"username\": \"owner_1786942257417\",\n  \"email\": \"owner_1786942257417@example.com\",\n  \"address\": \"123 Main St\",\n  \"areaId\": 1,\n  \"status\": true\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 404,
+  "responseStatusLine" : "HTTP/1.1 404 ",
+  "responseHeaders" : {
+    "Vary" : "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Mon, 17 Aug 2026 04:50:57 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"timestamp\":\"2026-08-17T04:50:57.434+00:00\",\"status\":404,\"error\":\"Not Found\",\"path\":\"/api/areas/1/shops\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 11
 } ]

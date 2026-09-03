@@ -1,0 +1,688 @@
+[ {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "createNewOrderWithWholeNumberPrice",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"Alice Johnson\",\n  \"productName\": \"Monitor\",\n  \"quantity\": 3,\n  \"price\": 250\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "89",
+    "Date" : "Mon, 17 Aug 2026 09:18:54 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":42,\"customerName\":\"Alice Johnson\",\"productName\":\"Monitor\",\"quantity\":3,\"price\":250}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 478
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "createOrderWithDecimalPrice",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe\",\n  \"productName\": \"Laptop\",\n  \"quantity\": 1,\n  \"price\": 19.99\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "82",
+    "Date" : "Mon, 17 Aug 2026 09:18:55 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":43,\"customerName\":\"John Doe\",\"productName\":\"Laptop\",\"quantity\":1,\"price\":19}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 115
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "createOrderWithFractionalPrice",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe_1786958335465\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": 1.99\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "95",
+    "Date" : "Mon, 17 Aug 2026 09:18:55 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":44,\"customerName\":\"John Doe_1786958335465\",\"productName\":\"Widget\",\"quantity\":1,\"price\":1}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 65
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "createOrderWithMaximumAllowedIntegerPrice",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": 2147483647\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "90",
+    "Date" : "Mon, 17 Aug 2026 09:18:55 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":45,\"customerName\":\"John Doe\",\"productName\":\"Widget\",\"quantity\":1,\"price\":2147483647}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 95
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "createOrderWithMinimumAllowedIntegerPrice",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": 0\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "81",
+    "Date" : "Mon, 17 Aug 2026 09:18:55 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":46,\"customerName\":\"John Doe\",\"productName\":\"Widget\",\"quantity\":1,\"price\":0}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 74
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "createOrderWithNegativeIntegerPrice",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": -1\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "82",
+    "Date" : "Mon, 17 Aug 2026 09:18:55 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":47,\"customerName\":\"John Doe\",\"productName\":\"Widget\",\"quantity\":1,\"price\":-1}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 67
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "createOrderWithPriceAsNegativeNumber",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe\",\n  \"productName\": \"Laptop\",\n  \"quantity\": 1,\n  \"price\": -50\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "83",
+    "Date" : "Mon, 17 Aug 2026 09:18:55 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":48,\"customerName\":\"John Doe\",\"productName\":\"Laptop\",\"quantity\":1,\"price\":-50}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 96
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "createOrderWithPriceAsNumericString",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"Alice Brown\",\n  \"productName\": \"Keyboard\",\n  \"quantity\": 3,\n  \"price\": \"50\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "87",
+    "Date" : "Mon, 17 Aug 2026 09:18:56 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":49,\"customerName\":\"Alice Brown\",\"productName\":\"Keyboard\",\"quantity\":3,\"price\":50}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 201
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "createOrderWithPriceOneAboveMaximumInteger",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": 2147483648\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Mon, 17 Aug 2026 09:18:56 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"timestamp\":\"2026-08-17T09:18:56.260Z\",\"status\":400,\"error\":\"Bad Request\",\"path\":\"/orders\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 94
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "createOrderWithWholeLookingDecimalPrice",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"Jane Smith\",\n  \"productName\": \"Monitor\",\n  \"quantity\": 2,\n  \"price\": 20.0\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "85",
+    "Date" : "Mon, 17 Aug 2026 09:18:56 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":50,\"customerName\":\"Jane Smith\",\"productName\":\"Monitor\",\"quantity\":2,\"price\":20}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 122
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "retrieveDetailsOfOrderWithWholeNumberPrice",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"Alice Johnson\",\n  \"productName\": \"Monitor\",\n  \"quantity\": 3,\n  \"price\": 250\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "89",
+    "Date" : "Mon, 17 Aug 2026 09:18:56 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":51,\"customerName\":\"Alice Johnson\",\"productName\":\"Monitor\",\"quantity\":3,\"price\":250}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 105
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "retrieveDetailsOfOrderWithWholeNumberPrice",
+  "requestMethod" : "GET",
+  "requestUri" : "http://10.88.233.81:8080/orders/51",
+  "requestHeaders" : {
+    "Accept" : "*/*"
+  },
+  "requestBody" : null,
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "89",
+    "Date" : "Mon, 17 Aug 2026 09:18:56 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":51,\"customerName\":\"Alice Johnson\",\"productName\":\"Monitor\",\"quantity\":3,\"price\":250}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 128
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateExistingOrderWithWholeNumberPrice",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe\",\n  \"productName\": \"Laptop\",\n  \"quantity\": 1,\n  \"price\": 999\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "83",
+    "Date" : "Mon, 17 Aug 2026 09:18:56 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":52,\"customerName\":\"John Doe\",\"productName\":\"Laptop\",\"quantity\":1,\"price\":999}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 55
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateExistingOrderWithWholeNumberPrice",
+  "requestMethod" : "PUT",
+  "requestUri" : "http://10.88.233.81:8080/orders/52",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe\",\n  \"productName\": \"Laptop\",\n  \"quantity\": 1,\n  \"price\": 850\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "83",
+    "Date" : "Mon, 17 Aug 2026 09:18:56 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":52,\"customerName\":\"John Doe\",\"productName\":\"Laptop\",\"quantity\":1,\"price\":850}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 104
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithFractionalPrice",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe_1786958337034\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": 100\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "97",
+    "Date" : "Mon, 17 Aug 2026 09:18:57 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":53,\"customerName\":\"John Doe_1786958337034\",\"productName\":\"Widget\",\"quantity\":1,\"price\":100}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 104
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithFractionalPrice",
+  "requestMethod" : "PUT",
+  "requestUri" : "http://10.88.233.81:8080/orders/53",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe_1786958337165\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": 1.99\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "95",
+    "Date" : "Mon, 17 Aug 2026 09:18:57 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":53,\"customerName\":\"John Doe_1786958337165\",\"productName\":\"Widget\",\"quantity\":1,\"price\":1}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 96
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithMaxIntegerPrice",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe_1786958337268\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": 100\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "97",
+    "Date" : "Mon, 17 Aug 2026 09:18:57 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":54,\"customerName\":\"John Doe_1786958337268\",\"productName\":\"Widget\",\"quantity\":1,\"price\":100}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 111
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithMaxIntegerPrice",
+  "requestMethod" : "PUT",
+  "requestUri" : "http://10.88.233.81:8080/orders/54",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe_1786958337399\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": 2147483647\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "104",
+    "Date" : "Mon, 17 Aug 2026 09:18:57 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":54,\"customerName\":\"John Doe_1786958337399\",\"productName\":\"Widget\",\"quantity\":1,\"price\":2147483647}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 113
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithMinimumAllowedIntegerPrice",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe_1786958337550\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": 100\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "97",
+    "Date" : "Mon, 17 Aug 2026 09:18:57 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":55,\"customerName\":\"John Doe_1786958337550\",\"productName\":\"Widget\",\"quantity\":1,\"price\":100}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 83
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithMinimumAllowedIntegerPrice",
+  "requestMethod" : "PUT",
+  "requestUri" : "http://10.88.233.81:8080/orders/55",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe_1786958337654\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": 0\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "95",
+    "Date" : "Mon, 17 Aug 2026 09:18:57 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":55,\"customerName\":\"John Doe_1786958337654\",\"productName\":\"Widget\",\"quantity\":1,\"price\":0}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 48
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithNegativePrice",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe_1786958337752\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": 100\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "97",
+    "Date" : "Mon, 17 Aug 2026 09:18:57 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":56,\"customerName\":\"John Doe_1786958337752\",\"productName\":\"Widget\",\"quantity\":1,\"price\":100}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 90
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithNegativePrice",
+  "requestMethod" : "PUT",
+  "requestUri" : "http://10.88.233.81:8080/orders/56",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe_1786958337866\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": -1\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "96",
+    "Date" : "Mon, 17 Aug 2026 09:18:57 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":56,\"customerName\":\"John Doe_1786958337866\",\"productName\":\"Widget\",\"quantity\":1,\"price\":-1}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 103
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithPriceAboveMaxInteger",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe_1786958337982\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": 100\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "97",
+    "Date" : "Mon, 17 Aug 2026 09:18:57 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":57,\"customerName\":\"John Doe_1786958337982\",\"productName\":\"Widget\",\"quantity\":1,\"price\":100}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 45
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithPriceAboveMaxInteger",
+  "requestMethod" : "PUT",
+  "requestUri" : "http://10.88.233.81:8080/orders/57",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe_1786958338050\",\n  \"productName\": \"Widget\",\n  \"quantity\": 1,\n  \"price\": 2147483648\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 400,
+  "responseStatusLine" : "HTTP/1.1 400 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Transfer-Encoding" : "chunked",
+    "Date" : "Mon, 17 Aug 2026 09:18:58 GMT",
+    "Connection" : "close"
+  },
+  "responseBody" : "{\"timestamp\":\"2026-08-17T09:18:58.121Z\",\"status\":400,\"error\":\"Bad Request\",\"path\":\"/orders/57\"}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 118
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithPriceAsDecimalNumber",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe\",\n  \"productName\": \"Laptop\",\n  \"quantity\": 1,\n  \"price\": 100\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "83",
+    "Date" : "Mon, 17 Aug 2026 09:18:58 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":58,\"customerName\":\"John Doe\",\"productName\":\"Laptop\",\"quantity\":1,\"price\":100}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 82
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithPriceAsDecimalNumber",
+  "requestMethod" : "PUT",
+  "requestUri" : "http://10.88.233.81:8080/orders/58",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"John Doe\",\n  \"productName\": \"Laptop\",\n  \"quantity\": 1,\n  \"price\": 99.99\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "82",
+    "Date" : "Mon, 17 Aug 2026 09:18:58 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":58,\"customerName\":\"John Doe\",\"productName\":\"Laptop\",\"quantity\":1,\"price\":99}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 75
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithPriceAsNumericString",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"Alice Brown\",\n  \"productName\": \"Keyboard\",\n  \"quantity\": 3,\n  \"price\": 75\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "87",
+    "Date" : "Mon, 17 Aug 2026 09:18:58 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":59,\"customerName\":\"Alice Brown\",\"productName\":\"Keyboard\",\"quantity\":3,\"price\":75}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 43
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithPriceAsNumericString",
+  "requestMethod" : "PUT",
+  "requestUri" : "http://10.88.233.81:8080/orders/59",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"Alice Brown\",\n  \"productName\": \"Keyboard\",\n  \"quantity\": 3,\n  \"price\": \"75\"\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "87",
+    "Date" : "Mon, 17 Aug 2026 09:18:58 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":59,\"customerName\":\"Alice Brown\",\"productName\":\"Keyboard\",\"quantity\":3,\"price\":75}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 73
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithPriceAsWholeLookingDecimal",
+  "requestMethod" : "POST",
+  "requestUri" : "http://10.88.233.81:8080/orders",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"Jane Smith\",\n  \"productName\": \"Monitor\",\n  \"quantity\": 2,\n  \"price\": 200\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "86",
+    "Date" : "Mon, 17 Aug 2026 09:18:58 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":60,\"customerName\":\"Jane Smith\",\"productName\":\"Monitor\",\"quantity\":2,\"price\":200}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 175
+}, {
+  "testClassName" : "com.company.aiqa.generated.AutomationTest_26ade1c7ec9d874767476da6d3e83813352f611a",
+  "testMethodName" : "updateOrderWithPriceAsWholeLookingDecimal",
+  "requestMethod" : "PUT",
+  "requestUri" : "http://10.88.233.81:8080/orders/60",
+  "requestHeaders" : {
+    "Accept" : "*/*",
+    "Content-Type" : "application/json"
+  },
+  "requestBody" : "{\n  \"customerName\": \"Jane Smith\",\n  \"productName\": \"Monitor\",\n  \"quantity\": 2,\n  \"price\": 100.0\n}\n",
+  "requestBodyTruncated" : false,
+  "responseStatusCode" : 200,
+  "responseStatusLine" : "HTTP/1.1 200 ",
+  "responseHeaders" : {
+    "Content-Type" : "application/json",
+    "Content-Length" : "86",
+    "Date" : "Mon, 17 Aug 2026 09:18:58 GMT",
+    "Keep-Alive" : "timeout=60",
+    "Connection" : "keep-alive"
+  },
+  "responseBody" : "{\"id\":60,\"customerName\":\"Jane Smith\",\"productName\":\"Monitor\",\"quantity\":2,\"price\":100}",
+  "responseBodyTruncated" : false,
+  "durationMillis" : 91
+} ]

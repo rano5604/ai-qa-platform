@@ -26,3 +26,31 @@ Test Data: {""worker"": {""role"": ""verylongrole""}}",The API responds with a 4
 Send worker OTP with duplicate worker objects,Worker Management,Boundary,Medium,User is authenticated and has a shop,"1. Send a POST request to /api/shops/{shopId}/workers/sendOtp with a worker object in the request body. 2. Send another POST request to /api/shops/{shopId}/workers/sendOtp with the same worker object in the request body.
 
 Test Data: {""worker"": {""email"": ""worker@example.com"", ""role"": ""worker""}}",The API responds with a 400 Bad Request status code and an error message indicating that the worker object is a duplicate.,TC-009
+Successfully send worker OTP when a pending shop request exists,Worker Management - Send OTP,Positive,High,A pending shop change or add worker request exists for the authenticated shop owner account.,"1. Send a POST request to /api/shops/1/workers/sendOtp with the JSON payload in testData.
+
+Test Data: {
+  ""name"": ""John Worker"",
+  ""email"": ""worker@example.com"",
+  ""phone"": ""+1234567890"",
+  ""role"": ""TAILOR""
+}","HTTP 201 Created status code with a JSON response body containing: {""status"": ""success"", ""message"": ""Otp Send Successfully""}",TC-010
+Successfully set PIN and assign worker role for a worker user type,User Authentication - Worker PIN Activation,Positive,High,"A user with phone number '+1234567890' exists with userType set to 'worker', and a valid OTP has been requested for this phone number.","1. Send a POST request to /api/auth/set-pin with the JSON payload in testData.
+
+Test Data: {
+  ""phoneNumber"": ""+1234567890"",
+  ""otp"": ""123456"",
+  ""pin"": ""1234"",
+  ""confirmPin"": ""1234""
+}","HTTP 200 OK status code with a JSON response body containing: {""status"": ""success"", ""message"": ""PIN set successfully""}",TC-011
+Attempt to send worker OTP when no pending shop change request exists for the authenticated user,Worker Management - OTP Dispatch,Negative,High,The current authenticated user is logged in but does not have an active or pending shop change request.,"1. Send a POST request to /api/shops/1/workers/sendOtp with the JSON payload specified in testData.
+
+Test Data: {
+  ""email"": ""worker@example.com"",
+  ""role"": ""SHOP_WORKER""
+}","The system rejects the request and throws an error with the message ""You have no add worker request"".",TC-012
+Verify that requesting a worker OTP without an active pending shop change request is rejected,Worker Management - OTP Generation Access Control,Security,High,"A shop owner user is authenticated with a valid JWT token, but has no pending worker addition or shop change request registered.","1. Send a POST request to /api/shops/1/workers/sendOtp using the authenticated shop owner's credentials with the JSON payload in testData.
+
+Test Data: {
+  ""email"": ""unauthorized_worker@example.com"",
+  ""role"": ""SHOP_WORKER""
+}",The system rejects the request and throws an error with message 'You have no add worker request'. No OTP is generated or saved for the specified email.,TC-013

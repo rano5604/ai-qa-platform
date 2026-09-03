@@ -50,3 +50,15 @@ Test Data: Order ID: 1001, Item: Shirt, Parameter NSID: INVALID",The system disp
 "Attempt to submit a measurement with a parameter type not matching the configured type (e.g., submit TEXT for a NUMERIC parameter)",Order Measurements,Negative,High,User is logged in as a tailor with measurement permissions. An order exists with at least one item requiring measurements. A measuring parameter of type NUMERIC is configured for the item with NSID 'NUM1'.,"1. Navigate to the order details page for the existing order. 2. Select the item requiring measurements. 3. In the measurement form, enter a text value in the 'Text Value' field for the NUMERIC parameter (even though it expects a numeric value). 4. Attempt to save the measurements.
 
 Test Data: Order ID: 1001, Item: Shirt, Parameter: Chest Width (NUMERIC), Text Value: Large, Parameter ID: NUM1",The system displays an error message indicating that the parameter type does not match the expected type (NUMERIC). The measurement is not saved.,TC-012
+Auto-generate 4-character nsId when measuring parameter request leaves nsId blank,Measuring Parameter Management,Boundary,High,The user is adding a new measuring parameter to an item definition.,"1. Submit a request to add a measuring parameter with nameEn 'Chest', unit 'inch', type 'NUMERIC', and nsId left blank or null.
+2. Verify the generated measuring parameter response.
+
+Test Data: nsId: null or ''",The system automatically assigns a 4-character random alphanumeric string to nsId for the parameter.,TC-048
+Retain explicitly provided 4-character nsId when creating measuring parameter,Measuring Parameter Management,Boundary,High,The user is creating a measuring parameter with a custom nsId.,"1. Submit a request to create a measuring parameter with nsId set to 'A1B2'.
+2. Verify the saved parameter response.
+
+Test Data: nsId: 'A1B2'",The system retains the provided nsId 'A1B2' without regenerating a new value.,TC-049
+Verify nsId and textValue fields in last measurement details response,Order Measurement Retrieval,Boundary,High,An order exists for a customer with a specific item containing a measurement that has a valid 4-character nsId ('X1Y2') and a TEXT measurement type.,"1. Fetch the last measurement details by providing the customer's phone number, customer ID, and item ID.
+2. Inspect the returned measurement response list.
+
+Test Data: phone: '01700000000', customerId: 10, itemId: 5, nsId: 'X1Y2', textValue: 'Loose Fit'","The response includes the nsId field populated with 'X1Y2', textValue set to 'Loose Fit', and type set to 'TEXT'.",TC-050

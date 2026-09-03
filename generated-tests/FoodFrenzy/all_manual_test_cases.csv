@@ -1,0 +1,36 @@
+Title,Section,Type,Priority,Preconditions,Steps,Expected Result,References,Source Ref
+Successfully register a new user with valid details,User Management,Positive,High,None,"1. Send a POST request to /addingUser with the form parameters supplied in testData.
+
+Test Data: uname=John Doe&uemail=john.doe@example.com&upassword=password123&unumber=9876543210","HTTP 302 Found response redirecting to /admin/services, confirming user creation",be08a47-TC-001,be08a4727ca9d58c2d8c2677dd11c3b9d266e189
+Successfully add a new product to the catalog,Product Management,Positive,High,None,"1. Send a POST request to /addingProduct with the product details in testData.
+
+Test Data: pname=Margherita Pizza&pprice=12.99&pdescription=Classic cheese and tomato pizza","HTTP 302 Found response redirecting to /admin/services, indicating product was successfully added",be08a47-TC-002,be08a4727ca9d58c2d8c2677dd11c3b9d266e189
+Successfully search for an existing product by name,Product Search,Positive,Medium,A product named 'Margherita Pizza' exists in the catalog,"1. Send a POST request to /product/search with query parameter productName set as in testData.
+
+Test Data: productName=Margherita Pizza",HTTP 200 OK response returning the BuyProduct view containing the product details for 'Margherita Pizza',be08a47-TC-003,be08a4727ca9d58c2d8c2677dd11c3b9d266e189
+Successfully create a new administrator account,Admin Management,Positive,High,None,"1. Send a POST request to /addingAdmin with the administrator details in testData.
+
+Test Data: adminName=System Admin&adminEmail=admin@example.com&adminPassword=SecurePass123&adminNumber=5551234567","HTTP 302 Found response redirecting to /admin/services, confirming administrator record creation",be08a47-TC-004,be08a4727ca9d58c2d8c2677dd11c3b9d266e189
+Admin login fails with invalid credentials,Admin Authentication,Negative,High,The application is running and accessible.,"1. Send a GET request to /adminLogin with email 'wrongadmin@example.com' and password 'wrongpassword'.
+
+Test Data: email=wrongadmin@example.com&password=wrongpassword",The request returns HTTP status 200 rendering the 'Login' page with error model attribute 'error' set to 'Invalid email or password'.,be08a47-TC-005,be08a4727ca9d58c2d8c2677dd11c3b9d266e189
+User login fails with invalid email or password,User Authentication,Negative,High,The application is running and accessible.,"1. Send a GET request to /userlogin with userEmail 'unknownuser@example.com' and userPassword 'invalidpass'.
+
+Test Data: userEmail=unknownuser@example.com&userPassword=invalidpass",The request returns HTTP status 200 rendering the 'Login' page with error model attribute 'error2' set to 'Invalid email or password'.,be08a47-TC-006,be08a4727ca9d58c2d8c2677dd11c3b9d266e189
+Search for a non-existent product name,Product Search,Negative,Medium,The product catalog does not contain an item named 'NonExistentProduct123'.,"1. Send a POST request to /product/search with query parameter productName set to 'NonExistentProduct123'.
+
+Test Data: productName=NonExistentProduct123",The request returns HTTP status 200 rendering the 'BuyProduct' view with model message 'SORRY...!  Product Unavailable'.,be08a47-TC-007,be08a4727ca9d58c2d8c2677dd11c3b9d266e189
+Calculate order total amount when order quantity is zero,Order Total Calculation,Boundary,Medium,A user with email 'customer@example.com' exists in the system,"1. Send a POST request to /product/order with the order payload provided in testData. 2. Observe the total calculation result in the system response.
+
+Test Data: {
+  ""oName"": ""Pizza"",
+  ""oPrice"": 12.50,
+  ""oQuantity"": 0
+}",The order is processed with totalAmmout calculated as 0.0.,be08a47-TC-008,be08a4727ca9d58c2d8c2677dd11c3b9d266e189
+Calculate order total amount when product unit price is zero,Order Total Calculation,Boundary,Medium,A user with email 'customer@example.com' exists in the system,"1. Send a POST request to /product/order with the order payload provided in testData. 2. Observe the total calculation result in the system response.
+
+Test Data: {
+  ""oName"": ""Promotional Sample"",
+  ""oPrice"": 0.00,
+  ""oQuantity"": 10
+}",The order is processed with totalAmmout calculated as 0.0.,be08a47-TC-009,be08a4727ca9d58c2d8c2677dd11c3b9d266e189
